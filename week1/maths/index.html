@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maths · Week 1 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
+  .subject-hero { background-color: #007291; padding: 0 2rem 2rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fde0c0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .resource-card { background: #ffffff; border: 2px solid #007291; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,114,145,0.15); }
+  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
+  .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
+  .resource-name { font-size: 1.05rem; font-weight: 700; color: #007291; line-height: 1.3; }
+  .resource-name.muted { color: #999; }
+  .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
+  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #007291; }
+  .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
 
+<header class="site-header">
+  <a class="back-link" href="../index.html">← Week 1</a>
+  <span class="breadcrumb">/ Maths</span>
+</header>
+
+<div class="subject-hero">
+  <p class="subject-label">Week 1 · Maths</p>
+  <h1>🔢 Maths</h1>
+</div>
+
+<main class="main">
+  <p class="section-label">Resources</p>
+  <div class="resources-grid">
+
+    <a class="resource-card" href="area-interactive.html">
+      <div class="resource-icon">📐</div>
+      <span class="resource-name">Area Explorer</span>
+      <span class="resource-desc">Explore how to calculate the area of different shapes interactively.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
+
+    <div class="resource-card placeholder">
+      <div class="resource-icon">➕</div>
+      <span class="resource-name muted">More coming soon</span>
+      <span class="resource-desc">Additional resources will appear here.</span>
+      <span class="resource-tag">Coming soon</span>
+    </div>
+
+    <div class="resource-card placeholder">
+      <div class="resource-icon">➕</div>
+      <span class="resource-name muted">More coming soon</span>
+      <span class="resource-desc">Additional resources will appear here.</span>
+      <span class="resource-tag">Coming soon</span>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+</body>
+</html>
