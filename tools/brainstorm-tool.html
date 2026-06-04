@@ -1,1 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Project Thinking Space</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf8f0;
+    --card: #ffffff;
+    --soft: #f3ede0;
+    --green: #3d7a5e;
+    --green-light: #e8f5ef;
+    --green-mid: #a8d5bc;
+    --amber: #e07b2a;
+    --amber-light: #fef3e8;
+    --sky: #3a7bbf;
+    --sky-light: #e8f1fb;
+    --purple: #7059a6;
+    --purple-light: #f0ecf9;
+    --rose: #c0455a;
+    --rose-light: #fceef1;
+    --text: #2a2420;
+    --muted: #7a6e65;
+    --border: #e0d8cc;
+    --radius: 18px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.07);
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--green);
+    padding: 28px 32px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .header h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .header p {
+    color: rgba(255,255,255,0.85);
+    font-size: 1rem;
+    margin-top: 6px;
+  }
+  .question-banner {
+    background: rgba(255,255,255,0.15);
+    border-left: 4px solid rgba(255,255,255,0.6);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    color: #fff;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 14px 32px 0;
+  }
+  .progress-dots {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .progress-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s, transform 0.2s;
+    cursor: pointer;
+  }
+  .progress-dot.active { background: var(--green); transform: scale(1.3); }
+  .progress-dot.done { background: var(--green-mid); }
+  .progress-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+  .section-intro {
+    color: var(--muted);
+    font-size: 0.97rem;
+    margin-bottom: 22px;
+    line-height: 1.7;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    border: 1.5px solid var(--border);
+  }
+  .card-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  /* CHOICE CHIPS */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .chip {
+    background: var(--soft);
+    border: 2px solid var(--border);
+    border-radius: 40px;
+    padding: 9px 18px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    color: var(--text);
+    user-select: none;
+    line-height: 1.3;
+  }
+  .chip:hover { border-color: var(--green-mid); background: var(--green-light); }
+  .chip.selected {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 700;
+  }
+  .chip .chip-emoji { margin-right: 5px; }
+
+  /* TEXTAREA */
+  textarea {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+    resize: vertical;
+    min-height: 90px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--green); background: #fff; }
+  textarea::placeholder { color: #b5afa8; font-style: italic; }
+
+  /* TRIP CARDS */
+  .trip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 560px) { .trip-grid { grid-template-columns: 1fr; } }
+
+  .trip-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .trip-card:hover { border-color: var(--sky); background: var(--sky-light); }
+  .trip-card.selected { border-color: var(--sky); background: var(--sky-light); }
+  .trip-card.selected .trip-name { color: var(--sky); }
+  .trip-emoji { font-size: 1.6rem; margin-bottom: 6px; }
+  .trip-name {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .trip-why {
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    border-radius: 40px;
+    padding: 13px 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary {
+    background: var(--green);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #2e5e47; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 2px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+  .btn-email {
+    background: var(--amber);
+    color: #fff;
+  }
+  .btn-email:hover { background: #c06820; transform: translateY(-1px); }
+
+  /* SUMMARY BOX */
+  .summary-block {
+    background: var(--soft);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--green);
+  }
+  .summary-block h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--green);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .summary-block p, .summary-block li {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .summary-block ul { padding-left: 18px; }
+
+  /* WELCOME */
+  .welcome-big {
+    font-family: 'Nunito', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--green);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .welcome-text {
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
+  .welcome-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .rule-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    font-size: 0.97rem;
+    line-height: 1.5;
+  }
+  .rule-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* SKIP HINT */
+  .skip-hint {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  /* COLOUR ACCENT VARIANTS */
+  .accent-amber .section-title { color: var(--amber); }
+  .accent-amber textarea:focus { border-color: var(--amber); }
+  .accent-sky .section-title { color: var(--sky); }
+  .accent-purple .section-title { color: var(--purple); }
+  .accent-rose .section-title { color: var(--rose); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>🌱 My Project Thinking Space</h1>
+    <p>Chilton Bridge School · 7-Week Project</p>
+    <div class="question-banner">
+      "How do our choices today shape the worlds of tomorrow?"
+    </div>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-dots" id="progressDots"></div>
+</div>
+
+<main>
+
+  <!-- SECTION 0: WELCOME -->
+  <div class="section active" id="sec-0">
+    <div class="welcome-big">Welcome 👋</div>
+    <p class="welcome-text">
+      This is your space to think, explore and gather ideas for your 7-week project.<br>
+      There are no wrong answers here — just interesting ones.
+    </p>
+    <div class="welcome-rules">
+      <div class="rule-pill"><span class="rule-icon">🎯</span> You can skip any part you don't want to fill in right now</div>
+      <div class="rule-pill"><span class="rule-icon">✏️</span> Nothing gets saved until you choose to send it to Jay</div>
+      <div class="rule-pill"><span class="rule-icon">🔁</span> You can go back and change anything at any time</div>
+      <div class="rule-pill"><span class="rule-icon">💡</span> Short answers are completely fine — even one word works</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="goTo(1)">Let's explore →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 1: WHAT MIGHT YOU MAKE? -->
+  <div class="section" id="sec-1">
+    <div class="section-title accent-green">What might you make? 🛠️</div>
+    <p class="section-intro">
+      Some people answer a big question by writing about it. Others build something, make something, or perform something. 
+      What feels possible or interesting?<br>
+      <span class="skip-hint">Pick as many as you like, or none — just browsing is fine too.</span>
+    </p>
+
+    <div class="card">
+      <div class="card-label">Ideas that feel interesting to me:</div>
+      <div class="chips" id="makeChips">
+        <span class="chip" data-val="A short film or video"><span class="chip-emoji">🎬</span>A short film or video</span>
+        <span class="chip" data-val="A poster or artwork"><span class="chip-emoji">🎨</span>A poster or artwork</span>
+        <span class="chip" data-val="A story or comic"><span class="chip-emoji">📖</span>A story or comic</span>
+        <span class="chip" data-val="A game or quiz"><span class="chip-emoji">🎮</span>A game or quiz</span>
+        <span class="chip" data-val="A podcast or audio recording"><span class="chip-emoji">🎙️</span>A podcast or audio recording</span>
+        <span class="chip" data-val="A website or digital presentation"><span class="chip-emoji">💻</span>A website or digital presentation</span>
+        <span class="chip" data-val="A photo project or exhibition"><span class="chip-emoji">📸</span>A photo project or exhibition</span>
+        <span class="chip" data-val="A model or 3D build"><span class="chip-emoji">🏗️</span>A model or 3D build</span>
+        <span class="chip" data-val="A song or performance"><span class="chip-emoji">🎵</span>A song or performance</span>
+        <span class="chip" data-val="A written report or guide"><span class="chip-emoji">📄</span>A written report or guide</span>
+        <span class="chip" data-val="A campaign or action plan"><span class="chip-emoji">📣</span>A campaign or action plan</span>
+        <span class="chip" data-val="Something else entirely"><span class="chip-emoji">✨</span>Something else entirely</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Anything else you're thinking about making?</div>
+      <textarea id="makeOther" placeholder="Or just anything that came to mind while looking at those options..." rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2: WHAT TOPICS INTEREST YOU -->
+  <div class="section accent-amber" id="sec-2">
+    <div class="section-title">What feels interesting? 🔍</div>
+    <p class="section-intro">
+      The driving question is huge — it touches almost everything. Which of these topics spark something for you?<br>
+      <span class="skip-hint">No pressure to pick many. Even one is useful.</span>
+    </p>
+
+    <div class="card">
+      <div class="card-label">Topics that connect with me:</div>
+      <div class="chips" id="topicChips">
+        <span class="chip" data-val="The environment and climate"><span class="chip-emoji">🌍</span>The environment and climate</span>
+        <span class="chip" data-val="Technology and AI"><span class="chip-emoji">🤖</span>Technology and AI</span>
+        <span class="chip" data-val="Food and farming"><span class="chip-emoji">🌾</span>Food and farming</span>
+        <span class="chip" data-val="Animals and wildlife"><span class="chip-emoji">🦋</span>Animals and wildlife</span>
+        <span class="chip" data-val="Money and fairness"><span class="chip-emoji">💰</span>Money and fairness</span>
+        <span class="chip" data-val="Health and wellbeing"><span class="chip-emoji">💚</span>Health and wellbeing</span>
+        <span class="chip" data-val="Community and belonging"><span class="chip-emoji">🏘️</span>Community and belonging</span>
+        <span class="chip" data-val="Shopping and waste"><span class="chip-emoji">🛍️</span>Shopping and waste</span>
+        <span class="chip" data-val="Travel and transport"><span class="chip-emoji">🚗</span>Travel and transport</span>
+        <span class="chip" data-val="History and how things change over time"><span class="chip-emoji">⏳</span>History and how things change over time</span>
+        <span class="chip" data-val="Art, music and creativity"><span class="chip-emoji">🎭</span>Art, music and creativity</span>
+        <span class="chip" data-val="Space and the future"><span class="chip-emoji">🚀</span>Space and the future</span>
+        <span class="chip" data-val="Social media and online life"><span class="chip-emoji">📱</span>Social media and online life</span>
+        <span class="chip" data-val="Something personal to me"><span class="chip-emoji">🌟</span>Something personal to me</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">What's drawing you to that topic?</div>
+      <textarea id="topicWhy" placeholder="Even just a few words about why it feels relevant or interesting..." rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3: TRIPS NEAR YEOVIL -->
+  <div class="section accent-sky" id="sec-3">
+    <div class="section-title">Trips and visits 📍</div>
+    <p class="section-intro">
+      Sometimes the best research happens when you go somewhere. Here are some places near Yeovil that might connect with the project.<br>
+      <span class="skip-hint">Tap any that feel worth exploring. You can add your own ideas too.</span>
+    </p>
+
+    <div class="trip-grid" id="tripGrid">
+
+      <div class="trip-card" data-val="Fleet Air Arm Museum, Yeovilton">
+        <div class="trip-emoji">✈️</div>
+        <div class="trip-name">Fleet Air Arm Museum, Yeovilton</div>
+        <div class="trip-why">How has military technology changed over time? How do those choices still affect us?</div>
+      </div>
+
+      <div class="trip-card" data-val="Haynes Motor Museum, Sparkford">
+        <div class="trip-emoji">🚗</div>
+        <div class="trip-name">Haynes Motor Museum, Sparkford</div>
+        <div class="trip-why">The story of transport choices — from early cars to electric vehicles and what comes next.</div>
+      </div>
+
+      <div class="trip-card" data-val="Montacute House (National Trust)">
+        <div class="trip-emoji">🏰</div>
+        <div class="trip-name">Montacute House (National Trust)</div>
+        <div class="trip-why">400 years of choices about land, wealth and power — and how they shaped the local area.</div>
+      </div>
+
+      <div class="trip-card" data-val="Yarlington Brewery or local food producer">
+        <div class="trip-emoji">🍎</div>
+        <div class="trip-name">Local Farm or Food Producer</div>
+        <div class="trip-why">Where does food come from? How do farming choices affect the land and the future?</div>
+      </div>
+
+      <div class="trip-card" data-val="Yeovil Country Park and Ninesprings">
+        <div class="trip-emoji">🌳</div>
+        <div class="trip-name">Ninesprings / Yeovil Country Park</div>
+        <div class="trip-why">A green space that exists because of choices made by the town. What keeps places like this going?</div>
+      </div>
+
+      <div class="trip-card" data-val="Yeovil town centre — charity shops and independent businesses">
+        <div class="trip-emoji">🛍️</div>
+        <div class="trip-name">Yeovil Town Centre</div>
+        <div class="trip-why">Charity shops, independent businesses — how do where we shop and what we buy shape the high street?</div>
+      </div>
+
+      <div class="trip-card" data-val="Local recycling centre or sustainability project">
+        <div class="trip-emoji">♻️</div>
+        <div class="trip-name">Recycling Centre / Repair Café</div>
+        <div class="trip-why">Waste, repair, reuse — how do individual choices add up across a whole community?</div>
+      </div>
+
+      <div class="trip-card" data-val="Sherborne or Bruton — art galleries and creative spaces">
+        <div class="trip-emoji">🎨</div>
+        <div class="trip-name">Sherborne or Bruton — galleries</div>
+        <div class="trip-why">How does art respond to the world and capture ideas about the future? Bruton has some brilliant small galleries.</div>
+      </div>
+
+      <div class="trip-card" data-val="Somerset Rural Life Museum, Glastonbury">
+        <div class="trip-emoji">🌾</div>
+        <div class="trip-name">Somerset Rural Life Museum, Glastonbury</div>
+        <div class="trip-why">How has life in Somerset changed over 200 years? What choices drove those changes?</div>
+      </div>
+
+      <div class="trip-card" data-val="A local library or archive">
+        <div class="trip-emoji">📚</div>
+        <div class="trip-name">Yeovil Library or Local Archive</div>
+        <div class="trip-why">Old newspapers and photographs can show how people made decisions — and what happened next.</div>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <div class="card-label">Any other places you'd like to visit for this project?</div>
+      <textarea id="tripOther" placeholder="Somewhere local, a family connection, a place you already know..." rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4: MY IDEAS -->
+  <div class="section accent-purple" id="sec-4">
+    <div class="section-title">My own ideas 💭</div>
+    <p class="section-intro">
+      This is just for you — a space to capture anything that's floating around. 
+      Half-formed ideas are welcome here.<br>
+      <span class="skip-hint">All of this is optional. Leave anything blank that doesn't feel useful.</span>
+    </p>
+
+    <div class="card">
+      <div class="card-label">The part of the question that feels most interesting to me:</div>
+      <textarea id="freeInterest" placeholder="Something like: the bit about small choices mattering, or what people don't realise they're choosing..." rows="3"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">An idea I have for my project so far:</div>
+      <textarea id="freeIdea" placeholder="Even just a fragment or a direction — nothing needs to be finished yet..." rows="4"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Something I'd like to find out more about:</div>
+      <textarea id="freeResearch" placeholder="A question I'd want to research, or something I'm curious about..." rows="3"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Anything else — notes, thoughts, random ideas:</div>
+      <textarea id="freeOther" placeholder="No format needed here — just anything worth keeping..." rows="4"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(5)">See my summary →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 5: SUMMARY + EMAIL -->
+  <div class="section accent-rose" id="sec-5">
+    <div class="section-title">Here's what you've got 🌟</div>
+    <p class="section-intro">
+      A summary of everything you've picked and written. Have a look — does it feel like a fair picture of your thinking?
+    </p>
+
+    <div id="summaryOutput"></div>
+
+    <div class="card" style="border-color: var(--amber); background: var(--amber-light);">
+      <div class="card-label" style="color: var(--amber);">📧 Send this to Jay</div>
+      <p style="font-size:0.95rem; color: var(--muted); margin-bottom:14px; line-height:1.6;">
+        When you're ready, this button will open an email with your ideas already written out — ready to send to Jay at Chilton Bridge School.
+        You can add anything else before you send it.
+      </p>
+      <button class="btn btn-email" onclick="sendEmail()">Open email to Jay →</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Go back and edit</button>
+      <button class="btn btn-secondary" onclick="goTo(0)">Start again</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const SECTIONS = 6;
+  let current = 0;
+
+  // Build progress dots
+  const dotsEl = document.getElementById('progressDots');
+  const sectionNames = ['Welcome','What to make','Interests','Trips','My ideas','Summary'];
+  for (let i = 0; i < SECTIONS; i++) {
+    const d = document.createElement('span');
+    d.className = 'progress-dot' + (i === 0 ? ' active' : '');
+    d.title = sectionNames[i];
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+  const labelEl = document.createElement('span');
+  labelEl.className = 'progress-label';
+  labelEl.id = 'progressLabel';
+  labelEl.textContent = sectionNames[0];
+  dotsEl.appendChild(labelEl);
+
+  function goTo(n) {
+    document.getElementById('sec-' + current).classList.remove('active');
+    current = n;
+    document.getElementById('sec-' + current).classList.add('active');
+    // Update dots
+    const dots = dotsEl.querySelectorAll('.progress-dot');
+    dots.forEach((d, i) => {
+      d.classList.remove('active', 'done');
+      if (i < current) d.classList.add('done');
+      if (i === current) d.classList.add('active');
+    });
+    document.getElementById('progressLabel').textContent = sectionNames[current];
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (n === 5) buildSummary();
+  }
+
+  // Chip toggles
+  document.querySelectorAll('.chips').forEach(group => {
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => chip.classList.toggle('selected'));
+    });
+  });
+
+  // Trip card toggles
+  document.querySelectorAll('.trip-card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('selected'));
+  });
+
+  function getChips(id) {
+    return Array.from(document.querySelectorAll(`#${id} .chip.selected`))
+      .map(c => c.dataset.val);
+  }
+
+  function getTripCards() {
+    return Array.from(document.querySelectorAll('#tripGrid .trip-card.selected'))
+      .map(c => c.dataset.val);
+  }
+
+  function val(id) {
+    return (document.getElementById(id)?.value || '').trim();
+  }
+
+  function buildSummary() {
+    const makeSelected = getChips('makeChips');
+    const makeOther = val('makeOther');
+    const topicSelected = getChips('topicChips');
+    const topicWhy = val('topicWhy');
+    const tripsSelected = getTripCards();
+    const tripOther = val('tripOther');
+    const freeInterest = val('freeInterest');
+    const freeIdea = val('freeIdea');
+    const freeResearch = val('freeResearch');
+    const freeOther = val('freeOther');
+
+    let html = '';
+
+    const block = (icon, title, items, extra) => {
+      let inner = '';
+      if (items && items.length) {
+        inner += '<ul>';
+        items.forEach(i => inner += `<li>${i}</li>`);
+        inner += '</ul>';
+      }
+      if (extra) inner += `<p style="margin-top:${items&&items.length?'8px':'0'}">${extra}</p>`;
+      if (!inner) inner = '<p style="color:#b5afa8;font-style:italic;font-size:0.9rem;">Nothing added here yet</p>';
+      return `<div class="summary-block"><h3>${icon} ${title}</h3>${inner}</div>`;
+    };
+
+    html += block('🛠️', 'What I might make', makeSelected, makeOther);
+    html += block('🔍', 'Topics that interest me', topicSelected, topicWhy);
+    html += block('📍', 'Trips worth exploring', tripsSelected, tripOther);
+
+    let ideas = '';
+    if (freeInterest) ideas += `<p><strong>Most interesting part:</strong> ${freeInterest}</p>`;
+    if (freeIdea) ideas += `<p style="margin-top:8px"><strong>Project idea so far:</strong> ${freeIdea}</p>`;
+    if (freeResearch) ideas += `<p style="margin-top:8px"><strong>Want to find out more about:</strong> ${freeResearch}</p>`;
+    if (freeOther) ideas += `<p style="margin-top:8px"><strong>Other notes:</strong> ${freeOther}</p>`;
+    html += block('💭', 'My ideas and notes', [], ideas || '');
+
+    document.getElementById('summaryOutput').innerHTML = html;
+  }
+
+  function sendEmail() {
+    const makeSelected = getChips('makeChips');
+    const makeOther = val('makeOther');
+    const topicSelected = getChips('topicChips');
+    const topicWhy = val('topicWhy');
+    const tripsSelected = getTripCards();
+    const tripOther = val('tripOther');
+    const freeInterest = val('freeInterest');
+    const freeIdea = val('freeIdea');
+    const freeResearch = val('freeResearch');
+    const freeOther = val('freeOther');
+
+    const now = new Date().toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+    let body = `Project Brainstorm — How do our choices today shape the worlds of tomorrow?\n`;
+    body += `Completed: ${now}\n\n`;
+
+    body += `--- WHAT I MIGHT MAKE ---\n`;
+    if (makeSelected.length) body += makeSelected.map(i => `• ${i}`).join('\n') + '\n';
+    if (makeOther) body += `Other ideas: ${makeOther}\n`;
+
+    body += `\n--- TOPICS THAT INTEREST ME ---\n`;
+    if (topicSelected.length) body += topicSelected.map(i => `• ${i}`).join('\n') + '\n';
+    if (topicWhy) body += `Why: ${topicWhy}\n`;
+
+    body += `\n--- TRIPS TO LOOK INTO ---\n`;
+    if (tripsSelected.length) body += tripsSelected.map(i => `• ${i}`).join('\n') + '\n';
+    if (tripOther) body += `Other places: ${tripOther}\n`;
+
+    body += `\n--- MY IDEAS AND NOTES ---\n`;
+    if (freeInterest) body += `Most interesting part of the question: ${freeInterest}\n`;
+    if (freeIdea) body += `Project idea so far: ${freeIdea}\n`;
+    if (freeResearch) body += `Want to find out more about: ${freeResearch}\n`;
+    if (freeOther) body += `Other notes: ${freeOther}\n`;
+
+    const subject = encodeURIComponent('My Project Brainstorm — Worlds of Tomorrow');
+    const bodyEncoded = encodeURIComponent(body);
+    window.location.href = `mailto:jay.raine@chiltonbridgeschool.co.uk?subject=${subject}&body=${bodyEncoded}`;
+  }
+</script>
+</body>
+</html>
