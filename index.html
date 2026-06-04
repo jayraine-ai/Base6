@@ -1,1 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 2rem 2rem 1.5rem; text-align: center; }
+  .site-header h1 { font-size: 2.8rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .driving-question { background-color: #ef7724; padding: 1.5rem 2rem; text-align: center; }
+  .driving-question p.label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .driving-question p.question { font-size: 1.25rem; font-weight: 700; color: #fef8f4; line-height: 1.5; max-width: 700px; margin: 0 auto; }
+  .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+  .weeks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+  .week-card { background: #ffffff; border: 2px solid #007291; border-radius: 14px; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.4rem; transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: pointer; }
+  .week-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,114,145,0.15); }
+  .week-card .week-number { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ef7724; }
+  .week-card .week-title { font-size: 1.05rem; font-weight: 700; color: #007291; line-height: 1.3; }
+  .week-card .week-desc { font-size: 0.9rem; color: #444; line-height: 1.5; }
+  .week-card .week-status { margin-top: 0.5rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; width: fit-content; }
+  .status-available { background-color: #e6f5f8; color: #007291; }
+  .status-current { background-color: #fdeee0; color: #c05a10; }
+  .status-soon { background-color: #f0ede8; color: #888; }
+  .week-card.current { border-color: #ef7724; }
+  .week-card.current .week-title { color: #c05a10; }
+  .week-card.coming-soon { border-color: #ccc; opacity: 0.65; cursor: default; pointer-events: none; }
+  .week-card.coming-soon .week-title { color: #555; }
+  .tools-section { margin-top: 1rem; }
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+  .tool-card { background: #fff7f0; border: 1.5px solid #ef7724; border-radius: 12px; padding: 1rem 1.25rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; font-weight: 700; color: #c05a10; transition: transform 0.15s ease; }
+  .tool-card:hover { transform: translateY(-2px); }
+  .tool-icon { font-size: 1.4rem; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
 
+<header class="site-header">
+  <h1>Base 6</h1>
+</header>
+
+<div class="driving-question">
+  <p class="label">Our driving question</p>
+  <p class="question">How do our choices today shape the worlds of tomorrow?</p>
+</div>
+
+<main class="main">
+
+  <p class="section-label">Project weeks</p>
+  <div class="weeks-grid">
+
+    <a class="week-card" href="week1/index.html">
+      <span class="week-number">Week 1</span>
+      <span class="week-title">Getting Started</span>
+      <span class="week-desc">Introducing the project and exploring our big question.</span>
+      <span class="week-status status-available">Available</span>
+    </a>
+
+    <a class="week-card current" href="week2/index.html">
+      <span class="week-number">Week 2</span>
+      <span class="week-title">This Week</span>
+      <span class="week-desc">This week's activities are ready for you.</span>
+      <span class="week-status status-current">We are here</span>
+    </a>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 3</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 4</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 5</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 6</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 7</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+  </div>
+
+  <div class="tools-section">
+    <p class="section-label">Tools &amp; resources</p>
+    <div class="tools-grid">
+      <a class="tool-card" href="tools/getting-to-know-me.html">
+        <span class="tool-icon">👤</span> Getting to Know Me
+      </a>
+      <a class="tool-card" href="tools/vocabulary.html">
+        <span class="tool-icon">📖</span> Vocabulary
+      </a>
+      <a class="tool-card" href="tools/brainstorm.html">
+        <span class="tool-icon">💡</span> Brainstorm
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+</body>
+</html>
