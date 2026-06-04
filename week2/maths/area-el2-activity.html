@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Area Explorer 🟦 Entry Level 2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#faf8f4;--card:#fff;--text:#2d2a26;--muted:#6b6560;--border:#e0dbd3;
+  --col-intro:#f0ebe2;--ia:#a88b6a;
+  --col-mc:#e8f0ea;--ma:#5a8a62;
+  --col-drag:#e8eaf5;--da:#5a62a8;
+  --col-cloze:#f5eae8;--ca:#a86a5a;
+  --col-sort:#eaf0f5;--sa:#5a8aa8;
+  --col-check:#f0ede8;--ha:#8a7a5a;
+  --col-score:#eaf5ea;--sca:#5a9a5a;
+  --font-size:18px;--radius:14px;--shadow:0 2px 12px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-style:normal!important}
+body{font-family:'Lexend','Atkinson Hyperlegible',sans-serif;font-size:var(--font-size);background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;padding-bottom:80px}
+header{background:#fff;border-bottom:2px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+header h1{font-size:1.1em;font-weight:700;flex:1;min-width:160px}
+.font-controls{display:flex;align-items:center;gap:8px;font-size:.82em;color:var(--muted)}
+.font-controls button{width:32px;height:32px;border:1.5px solid var(--border);background:var(--bg);border-radius:8px;cursor:pointer;font-size:1em;font-family:inherit;transition:background .15s}
+.font-controls button:hover{background:#ede9e2}
+.points-badge{background:#eaf5ea;border:1.5px solid #5a9a5a;border-radius:20px;padding:4px 14px;font-size:.85em;font-weight:600;color:#2d6e2d;white-space:nowrap}
+.progress-bar-wrap{height:6px;background:var(--border);position:sticky;top:61px;z-index:99}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#a8c8a8,#5a8a62);transition:width .4s ease}
+.progress-label{text-align:center;font-size:.78em;color:var(--muted);padding:6px 0 2px}
+main{max-width:740px;margin:0 auto;padding:24px 16px 0}
+.card{background:var(--card);border-radius:var(--radius);padding:28px 28px 24px;box-shadow:var(--shadow);border:1.5px solid var(--border);margin-bottom:8px;animation:fadeIn .35s ease;display:none}
+.card.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px}
+.section-tag{font-size:.72em;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.step-num{font-size:.78em;color:var(--muted);white-space:nowrap}
+h2{font-size:1.2em;font-weight:600;margin-bottom:10px;line-height:1.45}
+h3{font-size:1em;font-weight:600;margin-bottom:8px}
+p{margin-bottom:12px}
+p:last-child{margin-bottom:0}
+.big-emoji{font-size:2.8em;margin-bottom:12px;display:block}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;font-size:.93em;font-weight:600;transition:all .15s;line-height:1.3}
+.btn-primary{background:#3d7a4a;color:#fff}
+.btn-primary:hover{background:#2e6038;transform:translateY(-1px)}
+.btn-skip{background:transparent;color:var(--muted);border:1.5px solid var(--border);font-size:.82em;padding:8px 16px}
+.btn-skip:hover{background:#f0ede8}
+.btn-check{background:#4a6fa8;color:#fff}
+.btn-check:hover{background:#3a5a90}
+.btn-row{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;align-items:center}
+.shape-wrap{background:var(--bg);border-radius:10px;padding:16px;margin:16px 0;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border)}
+svg text{font-family:'Lexend',sans-serif;font-style:normal!important}
+.mc-options{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.mc-option{padding:13px 16px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;font-family:inherit;font-size:1em;text-align:left;background:var(--bg);color:var(--text);line-height:1.5}
+.mc-option:hover{border-color:#5a8a62;background:#f0f6f1}
+.mc-option.correct{border-color:#3a8a3a;background:#d8f0d8;color:#1a5a1a}
+.mc-option.wrong{border-color:#c05a3a;background:#f5e0da;color:#7a2a1a}
+.feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:.92em;font-weight:500;display:none}
+.feedback.show{display:block}
+.feedback.good{background:#d8f0d8;color:#1a5a1a;border:1px solid #5a9a5a}
+.feedback.try{background:#f5e8da;color:#7a3a1a;border:1px solid #c07a5a}
+.drag-area{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0}
+.drag-column{flex:1;min-width:140px}
+.drag-column h3{font-size:.88em;color:var(--muted);margin-bottom:8px}
+.drag-bank{display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:var(--bg);border-radius:10px;border:1.5px dashed var(--border);min-height:60px}
+.drop-zone{min-height:70px;background:var(--bg);border-radius:10px;border:2px dashed #5a62a8;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;transition:background .15s}
+.drop-zone.over{background:#e8eaf5}
+.drag-chip{padding:8px 14px;background:#fff;border:1.5px solid #5a62a8;border-radius:20px;cursor:grab;font-size:.88em;font-weight:500;color:var(--text);user-select:none;transition:all .15s}
+.drag-chip:hover{background:#e8eaf5;transform:scale(1.04)}
+.drag-chip.dragging{opacity:.4}
+.drag-chip.placed{background:#e8eaf5;border-color:#3a4a90}
+.shape-labels{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.shape-label-item{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.9em;display:flex;align-items:center;gap:8px}
+.shape-dot{width:18px;height:18px;border-radius:3px;flex-shrink:0}
+.cloze-text{font-size:1.05em;line-height:2.4;margin:16px 0}
+.blank{display:inline-block;min-width:90px;border-bottom:2.5px solid #a86a5a;margin:0 4px;padding:2px 8px;text-align:center;background:#fdf5f3;border-radius:6px 6px 0 0;cursor:pointer;font-weight:600;color:#a86a5a;transition:background .15s;vertical-align:bottom}
+.blank:hover{background:#f5e5e0}
+.blank.filled{color:#2d2a26;border-bottom-color:#5a8a62;background:#eef7ee}
+.blank.wrong{border-bottom-color:#c05a3a;background:#fde8e0;color:#7a2a1a}
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:#fdf5f3;border-radius:10px;border:1.5px solid #e8c0b0;margin-bottom:12px}
+.word-chip{padding:7px 14px;background:#fff;border:1.5px solid #a86a5a;border-radius:20px;cursor:pointer;font-size:.88em;font-weight:500;transition:all .15s}
+.word-chip:hover{background:#f5e5e0}
+.word-chip.used{opacity:.35;pointer-events:none;text-decoration:line-through}
+.word-chip.active{background:#a86a5a;color:#fff;border-color:#7a4a3a}
+.sort-list{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.sort-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;border:1.5px solid var(--border);border-radius:10px;cursor:grab;transition:all .2s;font-size:.95em;font-weight:500}
+.sort-item:hover{border-color:#5a8aa8;background:#eaf0f5}
+.sort-item.dragging-sort{opacity:.4;border-style:dashed}
+.sort-item.drag-over-sort{border-color:#3a6a90;background:#d8ecf5;transform:scale(1.01)}
+.sort-handle{font-size:1.2em;color:var(--muted);flex-shrink:0}
+.sort-num{width:28px;height:28px;background:#5a8aa8;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82em;font-weight:700;flex-shrink:0}
+.check-list{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:13px 16px;background:#fff;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s}
+.check-item:hover{border-color:#8a7a5a;background:#f8f5ee}
+.check-item.ticked{background:#f5f0e5;border-color:#8a7a5a}
+.check-box{width:26px;height:26px;border:2px solid #8a7a5a;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1em;background:#fff;transition:all .15s}
+.check-item.ticked .check-box{background:#8a7a5a;color:#fff;border-color:#6a5a3a}
+.check-text{line-height:1.55;font-size:.95em}
+.check-text strong{font-weight:600;display:block;margin-bottom:2px}
+.score-big{padding:8px 0 16px}
+.score-number{font-size:3em;font-weight:700;color:#3a7a3a;line-height:1;margin-bottom:6px}
+.score-bar-wrap{height:18px;background:var(--border);border-radius:20px;overflow:hidden;margin:12px 0 18px}
+.score-bar{height:100%;background:linear-gradient(90deg,#7ac87a,#3a8a3a);border-radius:20px;transition:width 1.2s cubic-bezier(.25,.8,.25,1);width:0%}
+.score-medal{font-size:3em;margin-bottom:8px}
+.email-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;background:#4a6fa8;color:#fff;border-radius:10px;text-decoration:none;font-family:inherit;font-size:.93em;font-weight:600;transition:all .15s;border:none;cursor:pointer;margin-top:6px}
+.email-btn:hover{background:#3a5a90;transform:translateY(-1px)}
+.response-log{margin:16px 0}
+.response-log details{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.response-log summary{padding:10px 14px;cursor:pointer;font-size:.88em;font-weight:600;background:var(--bg);color:var(--muted);list-style:none}
+.response-log summary:hover{background:#ede9e2}
+.response-log pre{padding:14px;font-family:inherit;font-size:.82em;line-height:1.7;white-space:pre-wrap;background:#fff;color:var(--text);border-top:1px solid var(--border);max-height:260px;overflow-y:auto}
+.info-box{background:var(--bg);border-left:4px solid #5a8a62;border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:.92em;line-height:1.65}
+.card[data-section=intro]{border-top:4px solid var(--ia)}
+.card[data-section=mc]{border-top:4px solid var(--ma)}
+.card[data-section=drag]{border-top:4px solid var(--da)}
+.card[data-section=cloze]{border-top:4px solid var(--ca)}
+.card[data-section=sort]{border-top:4px solid var(--sa)}
+.card[data-section=check]{border-top:4px solid var(--ha)}
+.card[data-section=score]{border-top:4px solid var(--sca)}
+.card[data-section=game]{border-top:4px solid #6a9fd8}
+.tag-intro{background:var(--col-intro);color:var(--ia)}
+.tag-mc{background:var(--col-mc);color:var(--ma)}
+.tag-drag{background:var(--col-drag);color:var(--da)}
+.tag-cloze{background:var(--col-cloze);color:var(--ca)}
+.tag-sort{background:var(--col-sort);color:var(--sa)}
+.tag-check{background:var(--col-check);color:var(--ha)}
+.tag-score{background:var(--col-score);color:var(--sca)}
+.tag-game{background:#1e2a3a;color:#6ad8f8}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#2d2a26;color:#fff;padding:10px 22px;border-radius:20px;font-size:.88em;font-weight:500;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ══════════════════════════════════════
+   TETRIS AREA GAME
+══════════════════════════════════════ */
+#game-container{background:#12182a;border-radius:12px;padding:16px;color:#e8eaf0}
+.game-level-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.lvl-btn{padding:7px 16px;border-radius:8px;border:2px solid #2a3a5a;background:#1a2438;color:#8aaccc;font-family:inherit;font-size:.82em;font-weight:600;cursor:pointer;transition:all .15s}
+.lvl-btn:hover{border-color:#4a7aaa;color:#a8d8f8}
+.lvl-btn.active{background:#2a4a6a;border-color:#4a9ad8;color:#c8e8ff}
+.game-main{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+#tetris-canvas{border:2px solid #2a3a5a;border-radius:6px;background:#0c1018;display:block;image-rendering:pixelated;flex-shrink:0}
+#game-side{flex:1;min-width:180px;display:flex;flex-direction:column;gap:10px}
+.gstat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gstat{background:#1a2438;border:1px solid #2a3a5a;border-radius:8px;padding:8px 10px}
+.gstat-label{font-size:.68em;color:#607090;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.gstat-val{font-size:1.3em;font-weight:700;color:#a8d8f8;line-height:1}
+#question-panel{background:#1a2438;border:1.5px solid #3a5a7a;border-radius:10px;padding:14px}
+.q-heading{font-size:.78em;color:#6090b0;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+#q-shape-info{font-size:.95em;color:#c8e8f8;font-weight:600;margin-bottom:10px;line-height:1.5}
+.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ans-btn{padding:10px 6px;background:#12233a;border:2px solid #2a4a6a;border-radius:8px;color:#9ac8e8;font-family:inherit;font-size:.9em;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+.ans-btn:hover:not(:disabled){background:#1a3a5a;border-color:#4a8ac8;color:#d8f0ff;transform:scale(1.03)}
+.ans-btn.correct-ans{background:#1a4a2a;border-color:#3a9a4a;color:#8affa8!important}
+.ans-btn.wrong-ans{background:#4a1a1a;border-color:#9a3a3a;color:#ffaaaa!important}
+.ans-btn:disabled{cursor:default}
+#game-msg{min-height:22px;font-size:.82em;font-weight:600;color:#a8e8a8;margin-top:8px;line-height:1.4}
+#next-piece-preview{background:#12182a;border:1px solid #2a3a5a;border-radius:8px;padding:8px}
+.np-label{font-size:.68em;color:#607090;text-transform:uppercase;margin-bottom:6px}
+#np-canvas{display:block;margin:0 auto}
+.game-ctrl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.gcb{padding:9px 18px;border-radius:8px;border:none;font-family:inherit;font-size:.88em;font-weight:600;cursor:pointer;transition:all .15s}
+.gcb-start{background:#2a6a3a;color:#a8ffa8}
+.gcb-start:hover{background:#1a5a2a}
+.gcb-pause{background:#3a4a6a;color:#a8c8f8}
+.gcb-pause:hover{background:#2a3a5a}
+.gcb-skip{background:transparent;color:#607090;border:1.5px solid #2a3a5a;font-size:.78em;padding:7px 12px}
+.gcb-skip:hover{background:#1a2438}
+#level-intro-box{background:#1a2438;border:1.5px solid #3a5a7a;border-radius:10px;padding:14px;margin-bottom:10px}
+.lib-title{font-size:1em;font-weight:700;color:#a8d8f8;margin-bottom:6px}
+.lib-desc{font-size:.85em;color:#7090b0;line-height:1.6}
+#level-complete-overlay,#game-over-overlay{display:none;flex-direction:column;align-items:center;justify-content:center;position:absolute;inset:0;background:rgba(12,16,24,.92);border-radius:6px;z-index:20;padding:16px;text-align:center}
+#level-complete-overlay.show,#game-over-overlay.show{display:flex}
+#canvas-wrap{position:relative}
+.ov-title{font-size:1.3em;font-weight:700;color:#a8f8a8;margin-bottom:6px}
+.ov-score{font-size:.9em;color:#8ac8f8;margin-bottom:14px}
+.ov-btn{padding:10px 22px;background:#2a5a3a;color:#a8ffa8;border:none;border-radius:8px;font-family:inherit;font-size:.9em;font-weight:600;cursor:pointer;margin:4px}
+.ov-btn:hover{background:#1a4a2a}
+.ov-btn-sec{background:#2a3a5a;color:#a8c8f8}
+.ov-btn-sec:hover{background:#1a2a4a}
+.level-intro-table{width:100%;border-collapse:collapse;font-size:.82em;margin:8px 0}
+.level-intro-table th{color:#607090;font-weight:600;text-align:left;padding:4px 6px;border-bottom:1px solid #2a3a5a}
+.level-intro-table td{color:#8aaccc;padding:5px 6px;border-bottom:1px solid #1a2a3a;vertical-align:top}
+.level-intro-table tr:last-child td{border-bottom:none}
+@media(max-width:520px){.card{padding:20px 16px 18px}.shape-labels{grid-template-columns:1fr}.game-main{flex-direction:column}#tetris-canvas{width:100%!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🟦 Area Explorer</h1>
+  <div class="font-controls">
+    <span>Text</span>
+    <button onclick="changeFontSize(-1)">A−</button>
+    <button onclick="changeFontSize(1)">A+</button>
+  </div>
+  <div class="points-badge" id="pointsBadge">⭐ 0 pts</div>
+</header>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+<p class="progress-label" id="progressLabel">Step 1 of 13</p>
+<div class="toast" id="toast"></div>
+
+<main>
+
+<!-- STEP 1: WELCOME -->
+<div class="card active" data-section="intro" data-step="1">
+  <div class="card-header"><span class="section-tag tag-intro">Welcome</span><span class="step-num">1 / 13</span></div>
+  <span class="big-emoji">🟦</span>
+  <h2>Welcome to Area Explorer!</h2>
+  <p>This activity is all about <strong>area</strong> — finding out how much space a shape takes up.</p>
+  <p>You'll explore shapes, answer questions, sort things, and play a game! There's no rush. You can skip anything, any time, no questions asked.</p>
+  <div class="info-box">💡 Your progress saves automatically, so you can come back whenever you like.</div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="goNext()">Let's go! →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 2: WHAT IS AREA -->
+<div class="card" data-section="intro" data-step="2">
+  <div class="card-header"><span class="section-tag tag-intro">Big Idea</span><span class="step-num">2 / 13</span></div>
+  <h2>What is area?</h2>
+  <p>Area is the amount of <strong>space inside</strong> a flat shape — like how much carpet you'd need to cover a floor.</p>
+  <div class="shape-wrap">
+    <svg width="260" height="165" viewBox="0 0 260 165" aria-label="A 4 by 3 grid of squares, shaded blue, showing area = 12 squares">
+      <defs><pattern id="gp" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#c8ddf0" stroke="#fff" stroke-width="2"/></pattern></defs>
+      <rect x="20" y="20" width="160" height="120" fill="url(#gp)" rx="4"/>
+      <rect x="20" y="20" width="160" height="120" fill="none" stroke="#4a6fa8" stroke-width="2.5" rx="4"/>
+      <defs><marker id="ah" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4a6fa8"/></marker></defs>
+      <line x1="20" y1="155" x2="180" y2="155" stroke="#4a6fa8" stroke-width="1.5" marker-end="url(#ah)"/>
+      <text x="100" y="163" font-size="11" fill="#4a6fa8" text-anchor="middle">4 squares wide</text>
+      <text x="100" y="83" font-size="14" fill="#1a3a6a" font-weight="600" text-anchor="middle">Area = 12 squares</text>
+    </svg>
+  </div>
+  <p>We measure area in <strong>square units</strong> — like cm² or m².</p>
+  <div class="btn-row"><button class="btn btn-primary" onclick="goNext()">Got it →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 3: FORMULA -->
+<div class="card" data-section="intro" data-step="3">
+  <div class="card-header"><span class="section-tag tag-intro">The Formula</span><span class="step-num">3 / 13</span></div>
+  <h2>Finding the area of a rectangle</h2>
+  <p>You don't have to count every square — there's a shortcut!</p>
+  <div class="info-box"><strong>Area = length × width</strong><br>Multiply the two sides together.</div>
+  <div class="shape-wrap">
+    <svg width="260" height="160" viewBox="0 0 260 160" aria-label="A rectangle labelled 5cm wide and 3cm tall. Area = 15cm squared.">
+      <rect x="20" y="30" width="180" height="100" fill="#c8ddf0" stroke="#4a6fa8" stroke-width="2.5" rx="4"/>
+      <line x1="20" y1="148" x2="200" y2="148" stroke="#2d5a8a" stroke-width="1.5"/><line x1="20" y1="143" x2="20" y2="153" stroke="#2d5a8a" stroke-width="1.5"/><line x1="200" y1="143" x2="200" y2="153" stroke="#2d5a8a" stroke-width="1.5"/>
+      <text x="110" y="158" font-size="13" fill="#2d5a8a" text-anchor="middle">5 cm</text>
+      <line x1="8" y1="30" x2="8" y2="130" stroke="#2d5a8a" stroke-width="1.5"/><line x1="3" y1="30" x2="13" y2="30" stroke="#2d5a8a" stroke-width="1.5"/><line x1="3" y1="130" x2="13" y2="130" stroke="#2d5a8a" stroke-width="1.5"/>
+      <text x="8" y="83" font-size="13" fill="#2d5a8a" text-anchor="middle" transform="rotate(-90,8,83)">3 cm</text>
+      <text x="110" y="88" font-size="15" fill="#1a3a6a" font-weight="600" text-anchor="middle">5 × 3 = 15 cm²</text>
+    </svg>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="goNext()">Next →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 4: MC Q1 -->
+<div class="card" data-section="mc" data-step="4">
+  <div class="card-header"><span class="section-tag tag-mc">Quiz</span><span class="step-num">4 / 13</span></div>
+  <h2>Have a go 🟩</h2>
+  <p>What is the area of this rectangle?</p>
+  <div class="shape-wrap">
+    <svg width="240" height="140" viewBox="0 0 240 140" aria-label="Rectangle 4cm wide 6cm tall">
+      <rect x="40" y="10" width="120" height="90" fill="#d0e8d0" stroke="#4a8a4a" stroke-width="2.5" rx="4"/>
+      <line x1="40" y1="115" x2="160" y2="115" stroke="#2d6a2d" stroke-width="1.5"/><line x1="40" y1="110" x2="40" y2="120" stroke="#2d6a2d" stroke-width="1.5"/><line x1="160" y1="110" x2="160" y2="120" stroke="#2d6a2d" stroke-width="1.5"/>
+      <text x="100" y="130" font-size="13" fill="#2d6a2d" text-anchor="middle">4 cm</text>
+      <line x1="175" y1="10" x2="175" y2="100" stroke="#2d6a2d" stroke-width="1.5"/><line x1="170" y1="10" x2="180" y2="10" stroke="#2d6a2d" stroke-width="1.5"/><line x1="170" y1="100" x2="180" y2="100" stroke="#2d6a2d" stroke-width="1.5"/>
+      <text x="175" y="58" font-size="13" fill="#2d6a2d" text-anchor="middle" transform="rotate(-90,175,58)">6 cm</text>
+    </svg>
+  </div>
+  <div class="mc-options" id="mc1-options">
+    <button class="mc-option" onclick="checkMC(this,'mc1',false)">10 cm²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc1',false)">20 cm²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc1',true)">24 cm²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc1',false)">12 cm²</button>
+  </div>
+  <div class="feedback" id="mc1-feedback"></div>
+  <div class="btn-row"><button class="btn btn-primary" id="mc1-next" style="display:none" onclick="goNext()">Next →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 5: MC Q2 -->
+<div class="card" data-section="mc" data-step="5">
+  <div class="card-header"><span class="section-tag tag-mc">Quiz</span><span class="step-num">5 / 13</span></div>
+  <h2>A square 🔷</h2>
+  <p>A square has sides of <strong>5 cm</strong>. What is its area?</p>
+  <div class="shape-wrap">
+    <svg width="200" height="155" viewBox="0 0 200 155" aria-label="Square 5cm by 5cm">
+      <rect x="30" y="20" width="100" height="100" fill="#e0d8f0" stroke="#6a5aaa" stroke-width="2.5" rx="4"/>
+      <line x1="30" y1="135" x2="130" y2="135" stroke="#4a3a8a" stroke-width="1.5"/><line x1="30" y1="130" x2="30" y2="140" stroke="#4a3a8a" stroke-width="1.5"/><line x1="130" y1="130" x2="130" y2="140" stroke="#4a3a8a" stroke-width="1.5"/>
+      <text x="80" y="150" font-size="13" fill="#4a3a8a" text-anchor="middle">5 cm</text>
+      <line x1="145" y1="20" x2="145" y2="120" stroke="#4a3a8a" stroke-width="1.5"/><line x1="140" y1="20" x2="150" y2="20" stroke="#4a3a8a" stroke-width="1.5"/><line x1="140" y1="120" x2="150" y2="120" stroke="#4a3a8a" stroke-width="1.5"/>
+      <text x="145" y="73" font-size="13" fill="#4a3a8a" text-anchor="middle" transform="rotate(-90,145,73)">5 cm</text>
+      <text x="80" y="78" font-size="14" fill="#3a2a7a" font-weight="600" text-anchor="middle">5 × 5 = ?</text>
+    </svg>
+  </div>
+  <div class="mc-options" id="mc2-options">
+    <button class="mc-option" onclick="checkMC(this,'mc2',false)">10 cm²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc2',false)">20 cm²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc2',false)">15 cm²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc2',true)">25 cm²</button>
+  </div>
+  <div class="feedback" id="mc2-feedback"></div>
+  <div class="btn-row"><button class="btn btn-primary" id="mc2-next" style="display:none" onclick="goNext()">Next →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 6: MC Q3 units -->
+<div class="card" data-section="mc" data-step="6">
+  <div class="card-header"><span class="section-tag tag-mc">Quiz</span><span class="step-num">6 / 13</span></div>
+  <h2>Which unit? 🤔</h2>
+  <p>A kitchen floor is 3 metres by 4 metres. Which unit should you use for its area?</p>
+  <div class="mc-options" id="mc3-options">
+    <button class="mc-option" onclick="checkMC(this,'mc3',false)">cm (centimetres)</button>
+    <button class="mc-option" onclick="checkMC(this,'mc3',true)">m² (square metres)</button>
+    <button class="mc-option" onclick="checkMC(this,'mc3',false)">kg (kilograms)</button>
+    <button class="mc-option" onclick="checkMC(this,'mc3',false)">mm (millimetres)</button>
+  </div>
+  <div class="feedback" id="mc3-feedback"></div>
+  <div class="btn-row"><button class="btn btn-primary" id="mc3-next" style="display:none" onclick="goNext()">Next →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 7: DRAG -->
+<div class="card" data-section="drag" data-step="7">
+  <div class="card-header"><span class="section-tag tag-drag">Matching</span><span class="step-num">7 / 13</span></div>
+  <h2>Match the shape to its area 🎯</h2>
+  <p>Drag each area answer to the correct shape.</p>
+  <div class="shape-labels">
+    <div class="shape-label-item"><div class="shape-dot" style="background:#c8ddf0;border:1.5px solid #4a6fa8"></div><strong>Shape A:</strong> 6 cm × 2 cm</div>
+    <div class="shape-label-item"><div class="shape-dot" style="background:#d0e8d0;border:1.5px solid #4a8a4a"></div><strong>Shape B:</strong> 4 cm × 4 cm</div>
+    <div class="shape-label-item"><div class="shape-dot" style="background:#e0d8f0;border:1.5px solid #6a5aaa"></div><strong>Shape C:</strong> 7 cm × 3 cm</div>
+    <div class="shape-label-item"><div class="shape-dot" style="background:#f5e8d0;border:1.5px solid #a87a3a"></div><strong>Shape D:</strong> 9 cm × 9 cm</div>
+  </div>
+  <div class="drag-area">
+    <div class="drag-column">
+      <h3>Drag these:</h3>
+      <div class="drag-bank" id="dragBank">
+        <div class="drag-chip" draggable="true" data-val="12 cm²" id="chip-12">12 cm²</div>
+        <div class="drag-chip" draggable="true" data-val="16 cm²" id="chip-16">16 cm²</div>
+        <div class="drag-chip" draggable="true" data-val="21 cm²" id="chip-21">21 cm²</div>
+        <div class="drag-chip" draggable="true" data-val="81 cm²" id="chip-81">81 cm²</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+    <div><p style="font-size:.82em;color:var(--muted);margin-bottom:4px">Shape A (6×2)</p><div class="drop-zone" id="drop-A" data-answer="12 cm²" ondragover="onDragOver(event)" ondrop="onDrop(event,'drop-A')">Drop here</div></div>
+    <div><p style="font-size:.82em;color:var(--muted);margin-bottom:4px">Shape B (4×4)</p><div class="drop-zone" id="drop-B" data-answer="16 cm²" ondragover="onDragOver(event)" ondrop="onDrop(event,'drop-B')">Drop here</div></div>
+    <div><p style="font-size:.82em;color:var(--muted);margin-bottom:4px">Shape C (7×3)</p><div class="drop-zone" id="drop-C" data-answer="21 cm²" ondragover="onDragOver(event)" ondrop="onDrop(event,'drop-C')">Drop here</div></div>
+    <div><p style="font-size:.82em;color:var(--muted);margin-bottom:4px">Shape D (9×9)</p><div class="drop-zone" id="drop-D" data-answer="81 cm²" ondragover="onDragOver(event)" ondrop="onDrop(event,'drop-D')">Drop here</div></div>
+  </div>
+  <div class="feedback" id="drag-feedback"></div>
+  <div class="btn-row"><button class="btn btn-check" onclick="checkDrag()">Check matches ✓</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+  <div id="drag-next-wrap" style="display:none;margin-top:10px"><button class="btn btn-primary" onclick="goNext()">Next →</button></div>
+</div>
+
+<!-- STEP 8: CLOZE -->
+<div class="card" data-section="cloze" data-step="8">
+  <div class="card-header"><span class="section-tag tag-cloze">Fill the Gaps</span><span class="step-num">8 / 13</span></div>
+  <h2>Fill in the missing words 📝</h2>
+  <p>Tap a word, then tap a gap to place it.</p>
+  <div class="word-bank" id="wordBank">
+    <span class="word-chip" data-word="multiply" onclick="selectWord(this)">multiply</span>
+    <span class="word-chip" data-word="length"   onclick="selectWord(this)">length</span>
+    <span class="word-chip" data-word="square"   onclick="selectWord(this)">square</span>
+    <span class="word-chip" data-word="inside"   onclick="selectWord(this)">inside</span>
+    <span class="word-chip" data-word="cm²"      onclick="selectWord(this)">cm²</span>
+    <span class="word-chip" data-word="width"    onclick="selectWord(this)">width</span>
+  </div>
+  <div class="cloze-text">
+    Area is the amount of space <span class="blank" data-answer="inside" onclick="placeWord(this)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> a shape.<br><br>
+    To find the area of a rectangle, you <span class="blank" data-answer="multiply" onclick="placeWord(this)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the <span class="blank" data-answer="length" onclick="placeWord(this)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> by the <span class="blank" data-answer="width" onclick="placeWord(this)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>.<br><br>
+    Area is measured in <span class="blank" data-answer="square" onclick="placeWord(this)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> units, for example <span class="blank" data-answer="cm²" onclick="placeWord(this)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>.
+  </div>
+  <div class="feedback" id="cloze-feedback"></div>
+  <div class="btn-row"><button class="btn btn-check" onclick="checkCloze()">Check answers ✓</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+  <div id="cloze-next-wrap" style="display:none;margin-top:10px"><button class="btn btn-primary" onclick="goNext()">Next →</button></div>
+</div>
+
+<!-- STEP 9: SORT -->
+<div class="card" data-section="sort" data-step="9">
+  <div class="card-header"><span class="section-tag tag-sort">Sort It Out</span><span class="step-num">9 / 13</span></div>
+  <h2>Sort smallest to biggest area 📏</h2>
+  <p>Drag these rectangles into order — smallest at the top, biggest at the bottom.</p>
+  <div class="sort-list" id="sortList">
+    <div class="sort-item" draggable="true" data-area="30" ondragstart="sortDragStart(event)" ondragover="sortDragOver(event)" ondrop="sortDrop(event)" ondragleave="sortDragLeave(event)" ondragend="sortDragEnd(event)"><span class="sort-handle">⠿</span><span class="sort-num">?</span><span>Rectangle: 5 cm × 6 cm</span></div>
+    <div class="sort-item" draggable="true" data-area="8"  ondragstart="sortDragStart(event)" ondragover="sortDragOver(event)" ondrop="sortDrop(event)" ondragleave="sortDragLeave(event)" ondragend="sortDragEnd(event)"><span class="sort-handle">⠿</span><span class="sort-num">?</span><span>Rectangle: 2 cm × 4 cm</span></div>
+    <div class="sort-item" draggable="true" data-area="50" ondragstart="sortDragStart(event)" ondragover="sortDragOver(event)" ondrop="sortDrop(event)" ondragleave="sortDragLeave(event)" ondragend="sortDragEnd(event)"><span class="sort-handle">⠿</span><span class="sort-num">?</span><span>Rectangle: 10 cm × 5 cm</span></div>
+    <div class="sort-item" draggable="true" data-area="16" ondragstart="sortDragStart(event)" ondragover="sortDragOver(event)" ondrop="sortDrop(event)" ondragleave="sortDragLeave(event)" ondragend="sortDragEnd(event)"><span class="sort-handle">⠿</span><span class="sort-num">?</span><span>Square: 4 cm × 4 cm</span></div>
+  </div>
+  <div class="feedback" id="sort-feedback"></div>
+  <div class="btn-row"><button class="btn btn-check" onclick="checkSort()">Check order ✓</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+  <div id="sort-next-wrap" style="display:none;margin-top:10px"><button class="btn btn-primary" onclick="goNext()">Next →</button></div>
+</div>
+
+<!-- STEP 10: TETRIS AREA GAME -->
+<div class="card" data-section="game" data-step="10">
+  <div class="card-header"><span class="section-tag tag-game">Area Tetris 🕹️</span><span class="step-num">10 / 13</span></div>
+  <h2>Area Tetris!</h2>
+  <p>Tetris pieces fall into the grid. Each time one lands, it makes a rectangle — then you answer: what is the area? Get it right and score points. Five levels, getting trickier each time!</p>
+
+  <div id="game-container">
+    <!-- level select -->
+    <div class="game-level-row" id="levelSelectRow">
+      <button class="lvl-btn active" id="lb1" onclick="selectLevel(1)">Level 1</button>
+      <button class="lvl-btn" id="lb2" onclick="selectLevel(2)">Level 2</button>
+      <button class="lvl-btn" id="lb3" onclick="selectLevel(3)">Level 3</button>
+      <button class="lvl-btn" id="lb4" onclick="selectLevel(4)">Level 4</button>
+      <button class="lvl-btn" id="lb5" onclick="selectLevel(5)">Level 5</button>
+    </div>
+
+    <!-- level description -->
+    <div id="level-intro-box">
+      <div class="lib-title" id="lib-title">Level 1 — Warm-up</div>
+      <div class="lib-desc" id="lib-desc">Simple rectangles, small numbers. Pieces fall slowly. Plenty of time to think!</div>
+      <table class="level-intro-table">
+        <tr><th>Level</th><th>What changes</th><th>Speed</th></tr>
+        <tr><td>1</td><td>Small rectangles (up to 4×3). 3 wrong options close to the answer</td><td>Very slow</td></tr>
+        <tr><td>2</td><td>Bigger rectangles (up to 5×4). Options further apart</td><td>Slow</td></tr>
+        <tr><td>3</td><td>Mix of shapes including squares. Decoy answers more tricky</td><td>Medium</td></tr>
+        <tr><td>4</td><td>Larger dimensions (up to 8×6). Four options, two are close</td><td>Fast</td></tr>
+        <tr><td>5</td><td>All shapes, L-pieces shown as bounding rectangles. Fast drops, tricky options</td><td>Very fast</td></tr>
+      </table>
+    </div>
+
+    <div class="game-main">
+      <!-- canvas -->
+      <div id="canvas-wrap">
+        <canvas id="tetris-canvas" width="200" height="340"></canvas>
+        <div id="level-complete-overlay">
+          <div class="ov-title" id="ov-title">Level 1 done! 🎉</div>
+          <div class="ov-score" id="ov-score">You scored 0 pts</div>
+          <button class="ov-btn" id="ov-next-btn" onclick="advanceLevel()">Level 2 →</button>
+          <button class="ov-btn ov-btn-sec" onclick="startGame()">Play again ↺</button>
+        </div>
+        <div id="game-over-overlay">
+          <div class="ov-title" style="color:#ffa8a8">Oh no! 💥</div>
+          <div class="ov-score" id="go-score">Stack reached the top!</div>
+          <button class="ov-btn" onclick="startGame()">Try again ↺</button>
+          <button class="ov-btn ov-btn-sec" onclick="selectLevel(Math.max(1,gameLevel-1));startGame()">Try easier level</button>
+        </div>
+      </div>
+      <!-- side panel -->
+      <div id="game-side">
+        <div class="gstat-row">
+          <div class="gstat"><div class="gstat-label">Score</div><div class="gstat-val" id="gp-score">0</div></div>
+          <div class="gstat"><div class="gstat-label">Level</div><div class="gstat-val" id="gp-level">1</div></div>
+          <div class="gstat"><div class="gstat-label">Pieces</div><div class="gstat-val" id="gp-pieces">0</div></div>
+          <div class="gstat"><div class="gstat-label">Streak 🔥</div><div class="gstat-val" id="gp-streak">0</div></div>
+        </div>
+        <div id="next-piece-preview">
+          <div class="np-label">Next piece</div>
+          <canvas id="np-canvas" width="80" height="80"></canvas>
+        </div>
+        <div id="question-panel">
+          <div class="q-heading">What is the area of the landed piece?</div>
+          <div id="q-shape-info">–</div>
+          <div class="ans-grid" id="ans-grid"></div>
+          <div id="game-msg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-ctrl-row">
+      <button class="gcb gcb-start" id="gcb-start" onclick="startGame()">▶ Start Level 1</button>
+      <button class="gcb gcb-pause" id="gcb-pause" onclick="pauseGame()" style="display:none">⏸ Pause</button>
+      <button class="gcb gcb-skip" onclick="goNext()">Skip game →</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 11: MC REAL WORLD -->
+<div class="card" data-section="mc" data-step="11">
+  <div class="card-header"><span class="section-tag tag-mc">Real World</span><span class="step-num">11 / 13</span></div>
+  <h2>Real-life area 🏠</h2>
+  <p>A bedroom floor is <strong>4 metres long</strong> and <strong>3 metres wide</strong>. How much carpet is needed to cover it?</p>
+  <div class="shape-wrap">
+    <svg width="240" height="150" viewBox="0 0 240 150" aria-label="Bedroom floor 4m by 3m">
+      <rect x="20" y="15" width="160" height="90" fill="#f5e8d0" stroke="#a87a3a" stroke-width="2.5" rx="4"/>
+      <line x1="60" y1="15" x2="60" y2="105" stroke="#e0c89a" stroke-width="1"/><line x1="100" y1="15" x2="100" y2="105" stroke="#e0c89a" stroke-width="1"/><line x1="140" y1="15" x2="140" y2="105" stroke="#e0c89a" stroke-width="1"/>
+      <line x1="20" y1="45" x2="180" y2="45" stroke="#e0c89a" stroke-width="1"/><line x1="20" y1="75" x2="180" y2="75" stroke="#e0c89a" stroke-width="1"/>
+      <line x1="20" y1="130" x2="180" y2="130" stroke="#a87a3a" stroke-width="1.5"/><line x1="20" y1="125" x2="20" y2="135" stroke="#a87a3a" stroke-width="1.5"/><line x1="180" y1="125" x2="180" y2="135" stroke="#a87a3a" stroke-width="1.5"/>
+      <text x="100" y="144" font-size="13" fill="#7a5a2a" text-anchor="middle">4 m</text>
+      <line x1="200" y1="15" x2="200" y2="105" stroke="#a87a3a" stroke-width="1.5"/><line x1="195" y1="15" x2="205" y2="15" stroke="#a87a3a" stroke-width="1.5"/><line x1="195" y1="105" x2="205" y2="105" stroke="#a87a3a" stroke-width="1.5"/>
+      <text x="200" y="63" font-size="13" fill="#7a5a2a" text-anchor="middle" transform="rotate(-90,200,63)">3 m</text>
+      <text x="100" y="65" font-size="22" fill="#6a4a1a" text-anchor="middle">🛏️</text>
+    </svg>
+  </div>
+  <div class="mc-options" id="mc4-options">
+    <button class="mc-option" onclick="checkMC(this,'mc4',false)">7 m²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc4',true)">12 m²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc4',false)">14 m²</button>
+    <button class="mc-option" onclick="checkMC(this,'mc4',false)">10 m²</button>
+  </div>
+  <div class="feedback" id="mc4-feedback"></div>
+  <div class="btn-row"><button class="btn btn-primary" id="mc4-next" style="display:none" onclick="goNext()">Next →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 12: CHECKLIST -->
+<div class="card" data-section="check" data-step="12">
+  <div class="card-header"><span class="section-tag tag-check">I Can...</span><span class="step-num">12 / 13</span></div>
+  <h2>How are you feeling about area? 🌱</h2>
+  <p>Tick the things you feel you can do. Just for you — no right or wrong answers here.</p>
+  <div class="check-list" id="checkList">
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text"><strong>I can say what area means</strong>I know area is the space inside a flat shape.</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text"><strong>I can use cm² or m²</strong>I know what units are used for area.</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text"><strong>I can use the formula</strong>I can do length × width to find area.</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text"><strong>I can compare areas</strong>I can say which shape has the bigger area.</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text"><strong>I can use area in real life</strong>I can work out how much floor space a room has.</div></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="saveChecklist();goNext()">Save and continue →</button><button class="btn btn-skip" onclick="goNext()">Skip</button></div>
+</div>
+
+<!-- STEP 13: SCORE -->
+<div class="card" data-section="score" data-step="13">
+  <div class="card-header"><span class="section-tag tag-score">All Done!</span><span class="step-num">13 / 13</span></div>
+  <div class="score-big">
+    <div class="score-medal" id="scoreMedal">🏅</div>
+    <div class="score-number" id="scoreNumber">0 pts</div>
+    <div class="score-bar-wrap"><div class="score-bar" id="scoreBar"></div></div>
+    <p id="scoreMessage">Well done for exploring area today!</p>
+  </div>
+  <div class="response-log"><details><summary>See your answers summary</summary><pre id="responseLog">Loading…</pre></details></div>
+  <p style="margin-top:16px">Would you like to send your work to your teacher?</p>
+  <button class="email-btn" onclick="sendEmail()">📧 Send to Jay</button>
+  <div class="btn-row" style="margin-top:20px"><button class="btn btn-primary" onclick="restartActivity()">Start again 🔄</button></div>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  GLOBAL STATE
+// ═══════════════════════════════════════════════════════════
+const TOTAL_STEPS = 13;
+let currentStep = 1, points = 0, responses = {};
+const LS_KEY = 'areaEl2_v3';
+function saveState(){try{localStorage.setItem(LS_KEY,JSON.stringify({currentStep,points,responses}))}catch(e){}}
+function loadState(){try{const r=localStorage.getItem(LS_KEY);if(!r)return;const s=JSON.parse(r);currentStep=s.currentStep||1;points=s.points||0;responses=s.responses||{}}catch(e){}}
+
+// ═══════════════════════════════════════════════════════════
+//  FONT SIZE
+// ═══════════════════════════════════════════════════════════
+let fontSize=parseInt(localStorage.getItem('areaEl2_fs')||'18');
+function applyFontSize(){document.documentElement.style.setProperty('--font-size',fontSize+'px')}
+function changeFontSize(d){fontSize=Math.min(26,Math.max(14,fontSize+d));localStorage.setItem('areaEl2_fs',fontSize);applyFontSize()}
+
+// ═══════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function showStep(n){
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
+  const t=document.querySelector(`.card[data-step="${n}"]`);
+  if(t){t.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+  updateProgress(n);
+  if(n===13)buildScoreScreen();
+  if(n===10)initGameStep();
+}
+function goNext(){if(currentStep<TOTAL_STEPS){currentStep++;saveState();showStep(currentStep)}}
+function updateProgress(n){
+  document.getElementById('progressFill').style.width=(((n-1)/(TOTAL_STEPS-1))*100)+'%';
+  document.getElementById('progressLabel').textContent=`Step ${n} of ${TOTAL_STEPS}`;
+}
+function updatePointsBadge(){document.getElementById('pointsBadge').textContent=`⭐ ${points} pts`}
+
+// ═══════════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════════
+let toastT;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
+
+// ═══════════════════════════════════════════════════════════
+//  MULTIPLE CHOICE
+// ═══════════════════════════════════════════════════════════
+function checkMC(btn,id,correct){
+  document.querySelectorAll(`#${id}-options .mc-option`).forEach(o=>{
+    o.disabled=true;
+    if(o.getAttribute('onclick')&&o.getAttribute('onclick').includes(',true)'))o.classList.add('correct');
+  });
+  const fb=document.getElementById(`${id}-feedback`),nxt=document.getElementById(`${id}-next`);
+  if(correct){btn.classList.add('correct');fb.textContent='✅ Spot on!';fb.className='feedback show good';points+=10;updatePointsBadge();showToast('⭐ +10 pts!');responses[id]={answer:btn.textContent.trim(),correct:true}}
+  else{btn.classList.add('wrong');fb.textContent='Not quite — the correct answer is highlighted above.';fb.className='feedback show try';responses[id]={answer:btn.textContent.trim(),correct:false}}
+  if(nxt)nxt.style.display='inline-flex';
+  saveState();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  DRAG & DROP
+// ═══════════════════════════════════════════════════════════
+let draggedChip=null;
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.drag-chip').forEach(chip=>{
+    chip.addEventListener('dragstart',e=>{draggedChip=chip;chip.classList.add('dragging');e.dataTransfer.setData('text/plain',chip.dataset.val)});
+    chip.addEventListener('dragend',()=>chip.classList.remove('dragging'));
+  });
+});
+function onDragOver(e){e.preventDefault();e.currentTarget.classList.add('over')}
+function onDrop(e,zoneId){
+  e.preventDefault();const zone=document.getElementById(zoneId);zone.classList.remove('over');
+  if(!draggedChip)return;
+  zone.querySelectorAll('.drag-chip').forEach(c=>document.getElementById('dragBank').appendChild(c));
+  zone.innerHTML='';zone.appendChild(draggedChip);draggedChip.classList.add('placed');draggedChip=null;
+}
+function checkDrag(){
+  const zones=['drop-A','drop-B','drop-C','drop-D'];let correct=0,log={};
+  zones.forEach(zid=>{
+    const zone=document.getElementById(zid),chip=zone.querySelector('.drag-chip'),expected=zone.dataset.answer;
+    if(chip&&chip.dataset.val===expected){correct++;chip.style.background='#d8f0d8';chip.style.borderColor='#3a8a3a'}
+    else if(chip){chip.style.background='#f5e0da';chip.style.borderColor='#c05a3a'}
+    log[zid]=chip?chip.dataset.val:'empty';
+  });
+  const fb=document.getElementById('drag-feedback');
+  if(correct===4){fb.textContent='✅ All 4 correct! Brilliant! +20 pts';fb.className='feedback show good';points+=20;updatePointsBadge();showToast('⭐⭐ +20 pts!')}
+  else{fb.textContent=`You got ${correct} out of 4. Green = correct, red = needs changing.`;fb.className='feedback show try';if(correct>0){points+=correct*3;updatePointsBadge()}}
+  responses.drag={score:correct+'/4',answers:log};
+  document.getElementById('drag-next-wrap').style.display='block';saveState();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CLOZE
+// ═══════════════════════════════════════════════════════════
+let selectedWord=null;
+function selectWord(el){document.querySelectorAll('.word-chip').forEach(c=>c.classList.remove('active'));if(selectedWord===el){selectedWord=null;return}el.classList.add('active');selectedWord=el}
+function placeWord(blankEl){
+  if(!selectedWord)return;
+  blankEl.textContent=selectedWord.dataset.word;blankEl.classList.add('filled');blankEl.classList.remove('wrong');
+  blankEl.dataset.placed=selectedWord.dataset.word;
+  selectedWord.classList.add('used');selectedWord.classList.remove('active');selectedWord=null;
+}
+function checkCloze(){
+  const blanks=document.querySelectorAll('.cloze-text .blank');let correct=0,log={};
+  blanks.forEach(b=>{const placed=b.dataset.placed||'',answer=b.dataset.answer;if(placed===answer){correct++;b.classList.add('filled');b.classList.remove('wrong')}else{b.classList.add('wrong');b.classList.remove('filled')}log[answer]=placed||'(empty)'});
+  const fb=document.getElementById('cloze-feedback');
+  if(correct===6){fb.textContent='✅ All 6 correct! Amazing! +15 pts';fb.className='feedback show good';points+=15;updatePointsBadge();showToast('⭐⭐ +15 pts!')}
+  else{fb.textContent=`You got ${correct} out of 6. Red gaps need another try.`;fb.className='feedback show try';if(correct>0){points+=correct*2;updatePointsBadge()}}
+  responses.cloze={score:correct+'/6',answers:log};document.getElementById('cloze-next-wrap').style.display='block';saveState();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SORT
+// ═══════════════════════════════════════════════════════════
+let sortDragEl=null;
+function sortDragStart(e){sortDragEl=e.currentTarget;sortDragEl.classList.add('dragging-sort')}
+function sortDragEnd(e){e.currentTarget.classList.remove('dragging-sort');document.querySelectorAll('.sort-item').forEach(i=>i.classList.remove('drag-over-sort'))}
+function sortDragOver(e){e.preventDefault();const t=e.currentTarget;if(t!==sortDragEl)t.classList.add('drag-over-sort')}
+function sortDragLeave(e){e.currentTarget.classList.remove('drag-over-sort')}
+function sortDrop(e){
+  e.preventDefault();const target=e.currentTarget;target.classList.remove('drag-over-sort');
+  if(!sortDragEl||target===sortDragEl)return;
+  const list=document.getElementById('sortList'),items=[...list.querySelectorAll('.sort-item')];
+  const fi=items.indexOf(sortDragEl),ti=items.indexOf(target);
+  if(fi<ti)list.insertBefore(sortDragEl,target.nextSibling);else list.insertBefore(sortDragEl,target);
+  [...list.querySelectorAll('.sort-item')].forEach((item,i)=>item.querySelector('.sort-num').textContent=i+1);
+}
+function checkSort(){
+  const list=document.getElementById('sortList'),items=[...list.querySelectorAll('.sort-item')];
+  const areas=items.map(i=>parseInt(i.dataset.area)),sorted=[...areas].sort((a,b)=>a-b);
+  const correct=areas.every((v,i)=>v===sorted[i]);
+  const fb=document.getElementById('sort-feedback');
+  if(correct){fb.textContent='✅ Perfect order! +10 pts';fb.className='feedback show good';points+=10;updatePointsBadge();showToast('⭐⭐ +10 pts!')}
+  else{fb.textContent='Not quite — the correct order is: 8 cm², 16 cm², 30 cm², 50 cm²';fb.className='feedback show try'}
+  responses.sort={order:areas.join(', '),correct};document.getElementById('sort-next-wrap').style.display='block';saveState();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CHECKLIST
+// ═══════════════════════════════════════════════════════════
+function toggleCheck(el){el.classList.toggle('ticked')}
+function saveChecklist(){
+  responses.checklist=[...document.querySelectorAll('.check-item.ticked')].map(i=>i.querySelector('strong').textContent);
+  saveState();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SCORE SCREEN
+// ═══════════════════════════════════════════════════════════
+function buildScoreScreen(){
+  const max=185;
+  const pct=Math.min(100,Math.round((points/max)*100));
+  document.getElementById('scoreNumber').textContent=points+' pts';
+  setTimeout(()=>document.getElementById('scoreBar').style.width=pct+'%',100);
+  let medal='⭐',msg='Thanks for exploring area today!';
+  if(pct>=80){medal='🥇';msg="Incredible — you really know your area!"}
+  else if(pct>=55){medal='🥈';msg="Great effort — you've picked up loads today!"}
+  else if(pct>=30){medal='🥉';msg="Well done for giving it a go — every bit of practice counts!"}
+  document.getElementById('scoreMedal').textContent=medal;
+  document.getElementById('scoreMessage').textContent=msg;
+  let log='=== Area Explorer — Activity Summary ===\n\n';
+  log+=`Points scored: ${points}\n\n`;
+  const secs={mc1:'Quiz Q1 (rectangle 4×6)',mc2:'Quiz Q2 (square 5×5)',mc3:'Quiz Q3 (units)',mc4:'Quiz Q4 (bedroom)',drag:'Matching activity',cloze:'Fill-the-gaps',sort:'Sorting activity',checklist:'"I can" checklist',game:'Area Tetris game'};
+  for(const[k,label]of Object.entries(secs)){
+    if(responses[k]){
+      log+=`${label}:\n`;
+      const r=responses[k];
+      if(Array.isArray(r)){log+=r.length?'  '+r.join('\n  '):'  (none ticked)'}
+      else{for(const[rk,rv]of Object.entries(r)){log+=`  ${rk}: ${typeof rv==='object'?JSON.stringify(rv):rv}\n`}}
+      log+='\n';
+    }
+  }
+  document.getElementById('responseLog').textContent=log;
+}
+
+function sendEmail(){
+  const max=185;
+  let body=`Hello Jay,\n\nHere is my Area Explorer activity summary:\n\nPoints scored: ${points} out of ${max}\n\n`;
+  const labels={mc1:'Quiz Q1 (rectangle 4×6)',mc2:'Quiz Q2 (square 5×5)',mc3:'Quiz Q3 (units)',mc4:'Quiz Q4 (bedroom)',drag:'Matching',cloze:'Fill-the-gaps',sort:'Sorting',checklist:'"I can" checklist',game:'Area Tetris game'};
+  for(const[k,label]of Object.entries(labels)){
+    if(responses[k]){
+      body+=`${label}:\n`;
+      const r=responses[k];
+      if(Array.isArray(r)){body+=r.length?'  '+r.join('\n  '):'  (none ticked)'}
+      else{for(const[rk,rv]of Object.entries(r)){body+=`  ${rk}: ${typeof rv==='object'?JSON.stringify(rv):rv}\n`}}
+      body+='\n';
+    }
+  }
+  body+='\nFrom your Area Explorer 🟦';
+  const gmailURL=`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent('jay.raine@chiltonbridgeschool.co.uk')}&su=${encodeURIComponent('Area Explorer — Activity Results')}&body=${encodeURIComponent(body)}`;
+  window.open(gmailURL,'_blank');
+}
+
+function restartActivity(){
+  if(!confirm('This will clear your saved progress. Are you sure?'))return;
+  try{localStorage.removeItem(LS_KEY)}catch(e){}
+  currentStep=1;points=0;responses={};updatePointsBadge();
+  document.querySelectorAll('.mc-option').forEach(o=>{o.disabled=false;o.className='mc-option'});
+  document.querySelectorAll('.feedback').forEach(f=>{f.textContent='';f.className='feedback'});
+  document.querySelectorAll('[id$="-next"]').forEach(b=>b.style.display='none');
+  ['drag-next-wrap','cloze-next-wrap','sort-next-wrap'].forEach(id=>document.getElementById(id).style.display='none');
+  document.querySelectorAll('.blank').forEach(b=>{b.innerHTML='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';b.className='blank';delete b.dataset.placed});
+  document.querySelectorAll('.word-chip').forEach(c=>c.className='word-chip');
+  document.querySelectorAll('.check-item').forEach(i=>i.classList.remove('ticked'));
+  document.querySelectorAll('.sort-num').forEach(n=>n.textContent='?');
+  showStep(1);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  ████████╗███████╗████████╗██████╗ ██╗███████╗    GAME
+//  ╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝
+//     ██║   █████╗     ██║   ██████╔╝██║███████╗
+//     ██║   ██╔══╝     ██║   ██╔══██╗██║╚════██║
+//     ██║   ███████╗   ██║   ██║  ██║██║███████║
+//     ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝
+// ═══════════════════════════════════════════════════════════════════
+
+// Grid: 10 wide × 17 tall  (each cell = 20px → canvas 200×340)
+const COLS=10,ROWS=17,CELL=20;
+const COLORS=['#4a7fd8','#4ab86a','#d84a4a','#d8a84a','#a84ad8','#4ad8d8','#d84aaa'];
+
+// Piece definitions (each is array of [row,col] offsets from top-left of bounding box)
+const PIECES=[
+  // I-H: 1×4
+  {name:'I-H', cells:[[0,0],[0,1],[0,2],[0,3]], w:4,h:1, color:0},
+  // I-V: 4×1
+  {name:'I-V', cells:[[0,0],[1,0],[2,0],[3,0]], w:1,h:4, color:0},
+  // O: 2×2
+  {name:'O',   cells:[[0,0],[0,1],[1,0],[1,1]], w:2,h:2, color:1},
+  // S
+  {name:'S',   cells:[[0,1],[0,2],[1,0],[1,1]], w:3,h:2, color:2},
+  // Z
+  {name:'Z',   cells:[[0,0],[0,1],[1,1],[1,2]], w:3,h:2, color:3},
+  // L
+  {name:'L',   cells:[[0,0],[1,0],[2,0],[2,1]], w:2,h:3, color:4},
+  // J
+  {name:'J',   cells:[[0,1],[1,1],[2,1],[2,0]], w:2,h:3, color:5},
+  // T
+  {name:'T',   cells:[[0,0],[0,1],[0,2],[1,1]], w:3,h:2, color:6},
+  // Rect 2×3
+  {name:'2x3', cells:[[0,0],[0,1],[1,0],[1,1],[2,0],[2,1]], w:2,h:3, color:1},
+  // Rect 3×2
+  {name:'3x2', cells:[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]], w:3,h:2, color:0},
+];
+
+// Per-level config
+const LEVEL_CONFIG={
+  1:{label:'Warm-up',     desc:'Simple shapes, small numbers. Pieces fall slowly. Plenty of time!',   pieceSets:[0,1,2,8,9], numPieces:8,  fallMs:3000, questionMs:8000, pts:10, decoy:'near'},
+  2:{label:'Getting Going',desc:'Slightly bigger shapes. More options to choose from.',                 pieceSets:[0,1,2,3,8,9],numPieces:9, fallMs:2500, questionMs:7000, pts:12, decoy:'near'},
+  3:{label:'Building Up', desc:'Mix of shapes including squares and L-shapes.',                        pieceSets:[0,1,2,3,4,5,6,8,9],numPieces:10,fallMs:2000,questionMs:6000,pts:15,decoy:'tricky'},
+  4:{label:'Challenge',   desc:'Larger dimensions, faster drops. Two of the wrong answers look close!',pieceSets:[0,1,2,3,4,5,6,7,8,9],numPieces:12,fallMs:1500,questionMs:5000,pts:18,decoy:'tricky'},
+  5:{label:'Expert!',     desc:'Everything at once — fast drops, tricky options, all shapes.',         pieceSets:[0,1,2,3,4,5,6,7,8,9],numPieces:14,fallMs:1000,questionMs:4000,pts:22,decoy:'expert'},
+};
+
+// Game state
+let gameLevel=1,gameScore=0,gamePiecesPlayed=0,gameStreak=0;
+let grid=[],fallingPiece=null,nextPieceType=null;
+let fallY=0,fallX=0; // top-left of bounding box in grid coords
+let fallStart=0,fallAnim=null;
+let gameRunning=false,gamePaused=false,waitingForAnswer=false;
+let gameCanvas,gameCtx,npCanvas,npCtx;
+let piecesLeftThisLevel=0;
+
+const LEVEL_DESCS={
+  1:'Simple shapes, small numbers. Pieces fall slowly. Plenty of time!',
+  2:'Slightly bigger shapes. More answer choices.',
+  3:'Mix of shapes including squares and L-shapes.',
+  4:'Larger dimensions, faster drops. Tricky wrong answers!',
+  5:'Everything at once — fast drops, all shapes. Can you keep up?'
+};
+const LEVEL_LABELS={1:'Level 1 — Warm-up',2:'Level 2 — Getting Going',3:'Level 3 — Building Up',4:'Level 4 — Challenge',5:'Level 5 — Expert!'};
+
+function initGameStep(){
+  gameCanvas=document.getElementById('tetris-canvas');
+  gameCtx=gameCanvas.getContext('2d');
+  npCanvas=document.getElementById('np-canvas');
+  npCtx=npCanvas.getContext('2d');
+  initGrid();
+  drawGrid();
+  drawNextPiece();
+  updateGameUI();
+}
+
+function initGrid(){
+  grid=Array.from({length:ROWS},()=>Array(COLS).fill(null));
+}
+
+function selectLevel(n){
+  gameLevel=n;
+  document.querySelectorAll('.lvl-btn').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+  document.getElementById('lib-title').textContent=LEVEL_LABELS[n];
+  document.getElementById('lib-desc').textContent=LEVEL_DESCS[n];
+  document.getElementById('gcb-start').textContent=`▶ Start Level ${n}`;
+  document.getElementById('gp-level').textContent=n;
+}
+
+function startGame(){
+  if(gameCanvas===undefined||gameCanvas===null){initGameStep()}
+  hideOverlays();
+  initGrid();
+  gameScore=0;gamePiecesPlayed=0;gameStreak=0;waitingForAnswer=false;
+  piecesLeftThisLevel=LEVEL_CONFIG[gameLevel].numPieces;
+  gameRunning=true;gamePaused=false;
+  document.getElementById('gcb-start').style.display='none';
+  document.getElementById('gcb-pause').style.display='inline-flex';
+  updateGameUI();
+  clearQuestion();
+  spawnPiece();
+}
+
+function pauseGame(){
+  gamePaused=!gamePaused;
+  document.getElementById('gcb-pause').textContent=gamePaused?'▶ Resume':'⏸ Pause';
+  if(!gamePaused&&gameRunning&&!waitingForAnswer)animateFall();
+}
+
+function hideOverlays(){
+  document.getElementById('level-complete-overlay').classList.remove('show');
+  document.getElementById('game-over-overlay').classList.remove('show');
+}
+
+// ─── Piece spawning ──────────────────────────────────
+function pickPieceType(){
+  const cfg=LEVEL_CONFIG[gameLevel];
+  const idx=cfg.pieceSets[Math.floor(Math.random()*cfg.pieceSets.length)];
+  return PIECES[idx];
+}
+
+function spawnPiece(){
+  if(!gameRunning||waitingForAnswer)return;
+  if(piecesLeftThisLevel<=0){levelComplete();return}
+  fallingPiece=nextPieceType||pickPieceType();
+  nextPieceType=pickPieceType();
+  drawNextPiece();
+  fallX=Math.floor((COLS-fallingPiece.w)/2);
+  fallY=0;
+  // check if spawn is blocked (game over)
+  if(collides(fallingPiece,fallX,fallY)){gameOver();return}
+  fallStart=performance.now();
+  animateFall();
+}
+
+function animateFall(){
+  if(!gameRunning||gamePaused||waitingForAnswer)return;
+  const cfg=LEVEL_CONFIG[gameLevel];
+  const now=performance.now();
+  const elapsed=now-fallStart;
+  const pct=elapsed/cfg.fallMs;
+  const maxDrop=ROWS-fallingPiece.h;
+  const newY=Math.min(Math.floor(pct*maxDrop),maxDrop);
+  // check if we'd collide before newY
+  let finalY=fallY;
+  for(let ty=fallY+1;ty<=newY;ty++){
+    if(collides(fallingPiece,fallX,ty)){finalY=ty-1;break}
+    finalY=ty;
+  }
+  if(finalY>fallY||pct>=1){
+    fallY=finalY;
+    // check landing
+    if(collides(fallingPiece,fallX,fallY+1)||fallY>=maxDrop){
+      landPiece();return;
+    }
+  }
+  drawGrid();
+  fallAnim=requestAnimationFrame(animateFall);
+}
+
+function collides(piece,x,y){
+  for(const[r,c]of piece.cells){
+    const nr=y+r,nc=x+c;
+    if(nc<0||nc>=COLS||nr>=ROWS)return true;
+    if(nr>=0&&grid[nr][nc]!==null)return true;
+  }
+  return false;
+}
+
+function landPiece(){
+  if(fallAnim){cancelAnimationFrame(fallAnim);fallAnim=null}
+  // lock into grid
+  const col=COLORS[fallingPiece.color];
+  for(const[r,c]of fallingPiece.cells){
+    const nr=fallY+r,nc=fallX+c;
+    if(nr>=0)grid[nr][nc]=col;
+  }
+  // clear complete rows
+  clearLines();
+  drawGrid();
+  piecesLeftThisLevel--;
+  gamePiecesPlayed++;
+  // ask area question
+  waitingForAnswer=true;
+  askAreaQuestion();
+}
+
+function clearLines(){
+  for(let r=ROWS-1;r>=0;r--){
+    if(grid[r].every(c=>c!==null)){
+      grid.splice(r,1);grid.unshift(Array(COLS).fill(null));r++;
+    }
+  }
+}
+
+// ─── Area question ───────────────────────────────────
+function askAreaQuestion(){
+  const cfg=LEVEL_CONFIG[gameLevel];
+  const w=fallingPiece.w, h=fallingPiece.h;
+  const area=w*h;
+  // Generate distractors
+  const opts=generateOptions(area,w,h,cfg.decoy);
+  document.getElementById('q-shape-info').textContent=`The piece was ${w} cm × ${h} cm.\nWhat is its area?`;
+  const grid2=document.getElementById('ans-grid');
+  grid2.innerHTML='';
+  document.getElementById('game-msg').textContent='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='ans-btn';
+    btn.textContent=opt+' cm²';
+    btn.onclick=()=>answerQ(opt===area,btn,area,cfg);
+    grid2.appendChild(btn);
+  });
+}
+
+function generateOptions(area,w,h,mode){
+  const opts=new Set([area]);
+  const add=(v)=>{if(v>0)opts.add(v)};
+  if(mode==='near'){
+    add(area+w);add(area-w);add(area+h);add(area-h);
+    add(w+h);add(w*2);add(h*2);
+  } else if(mode==='tricky'){
+    add(area+w);add(area-w);add(w+h);add((w+1)*(h+1));add((w-1)*h);add(w*(h-1));
+  } else {
+    add(area+1);add(area-1);add(w+h);add((w+1)*h);add(w*(h+1));add(area+w+h);
+  }
+  const arr=shuffle([...opts]).slice(0,4);
+  if(!arr.includes(area)){arr[Math.floor(Math.random()*4)]=area}
+  return shuffle(arr);
+}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function answerQ(correct,btn,area,cfg){
+  document.querySelectorAll('.ans-btn').forEach(b=>{b.disabled=true;if(parseInt(b.textContent)===area)b.classList.add('correct-ans')});
+  if(correct){
+    btn.classList.add('correct-ans');
+    gameStreak++;
+    const streakBonus=gameStreak>=3?Math.floor(gameStreak/3)*2:0;
+    const earned=cfg.pts+streakBonus;
+    gameScore+=earned;points+=Math.ceil(earned/3);
+    updatePointsBadge();
+    const msg=gameStreak>=3?`🔥 Streak ×${gameStreak}! +${earned} pts`:`✅ Correct! +${earned} pts`;
+    document.getElementById('game-msg').textContent=msg;
+    showToast(`⭐ +${earned} pts`);
+    flashCanvas('rgba(80,220,100,.25)');
+  } else {
+    btn.classList.add('wrong-ans');
+    gameStreak=0;
+    document.getElementById('game-msg').textContent=`It was ${area} cm² — ${fallingPiece.w}×${fallingPiece.h}`;
+    flashCanvas('rgba(220,80,80,.25)');
+  }
+  document.getElementById('gp-streak').textContent=gameStreak;
+  updateGameUI();
+  saveGameResp();
+  waitingForAnswer=false;
+  if(piecesLeftThisLevel<=0){
+    setTimeout(levelComplete,1000);
+  } else {
+    setTimeout(spawnPiece,1000);
+  }
+}
+
+function clearQuestion(){
+  document.getElementById('q-shape-info').textContent='–';
+  document.getElementById('ans-grid').innerHTML='';
+  document.getElementById('game-msg').textContent='';
+}
+
+// ─── Rendering ───────────────────────────────────────
+function drawGrid(){
+  const ctx=gameCtx,W=COLS*CELL,H=ROWS*CELL;
+  // background
+  ctx.fillStyle='#0c1018';ctx.fillRect(0,0,W,H);
+  // grid lines
+  ctx.strokeStyle='#1e2a3a';ctx.lineWidth=0.5;
+  for(let r=0;r<=ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*CELL);ctx.lineTo(W,r*CELL);ctx.stroke()}
+  for(let c=0;c<=COLS;c++){ctx.beginPath();ctx.moveTo(c*CELL,0);ctx.lineTo(c*CELL,H);ctx.stroke()}
+  // placed cells
+  for(let r=0;r<ROWS;r++){for(let c=0;c<COLS;c++){if(grid[r][c]){drawCell(ctx,c,r,grid[r][c])}}}
+  // falling piece
+  if(fallingPiece&&!waitingForAnswer){
+    const col=COLORS[fallingPiece.color];
+    // ghost
+    let gy=fallY;
+    while(!collides(fallingPiece,fallX,gy+1)&&gy<ROWS-fallingPiece.h)gy++;
+    for(const[dr,dc]of fallingPiece.cells){
+      const r=gy+dr,c=fallX+dc;
+      if(r>=0){ctx.fillStyle='rgba(255,255,255,.08)';ctx.fillRect(c*CELL,r*CELL,CELL,CELL)}
+    }
+    // actual
+    for(const[dr,dc]of fallingPiece.cells){
+      const r=fallY+dr,c=fallX+dc;
+      if(r>=0)drawCell(ctx,c,r,col);
+    }
+    // bounding box outline to help visualise the rectangle
+    ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;ctx.setLineDash([3,3]);
+    ctx.strokeRect(fallX*CELL,fallY*CELL,fallingPiece.w*CELL,fallingPiece.h*CELL);
+    ctx.setLineDash([]);
+    // labels
+    ctx.fillStyle='rgba(255,255,255,.8)';ctx.font='bold 9px Lexend,sans-serif';ctx.textAlign='center';
+    ctx.fillText(fallingPiece.w+' cm',(fallX+fallingPiece.w/2)*CELL,(fallY+fallingPiece.h)*CELL+12);
+    ctx.save();ctx.translate((fallX+fallingPiece.w)*CELL+12,(fallY+fallingPiece.h/2)*CELL);ctx.rotate(Math.PI/2);ctx.fillText(fallingPiece.h+' cm',0,0);ctx.restore();
+  }
+}
+
+function drawCell(ctx,c,r,color){
+  ctx.fillStyle=color;ctx.fillRect(c*CELL+1,r*CELL+1,CELL-2,CELL-2);
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillRect(c*CELL+1,r*CELL+1,CELL-2,4);
+  ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(c*CELL+1,r*CELL+CELL-5,CELL-2,4);
+}
+
+function drawNextPiece(){
+  if(!npCtx)return;
+  npCtx.fillStyle='#12182a';npCtx.fillRect(0,0,80,80);
+  if(!nextPieceType)return;
+  const p=nextPieceType,col=COLORS[p.color];
+  const cs=12,ox=Math.floor((80-p.w*cs)/2),oy=Math.floor((80-p.h*cs)/2);
+  for(const[r,c]of p.cells){
+    npCtx.fillStyle=col;npCtx.fillRect(ox+c*cs+1,oy+r*cs+1,cs-2,cs-2);
+    npCtx.fillStyle='rgba(255,255,255,.2)';npCtx.fillRect(ox+c*cs+1,oy+r*cs+1,cs-2,3);
+  }
+}
+
+function flashCanvas(color){
+  const ctx=gameCtx;
+  ctx.fillStyle=color;ctx.fillRect(0,0,COLS*CELL,ROWS*CELL);
+  setTimeout(()=>drawGrid(),120);
+}
+
+function updateGameUI(){
+  document.getElementById('gp-score').textContent=gameScore;
+  document.getElementById('gp-level').textContent=gameLevel;
+  document.getElementById('gp-pieces').textContent=gamePiecesPlayed;
+  document.getElementById('gp-streak').textContent=gameStreak;
+}
+
+// ─── Level complete / game over ──────────────────────
+function levelComplete(){
+  gameRunning=false;
+  if(fallAnim){cancelAnimationFrame(fallAnim);fallAnim=null}
+  clearQuestion();
+  drawGrid();
+  const ov=document.getElementById('level-complete-overlay');
+  document.getElementById('ov-title').textContent=`Level ${gameLevel} done! 🎉`;
+  document.getElementById('ov-score').textContent=`You scored ${gameScore} pts so far!`;
+  const nb=document.getElementById('ov-next-btn');
+  if(gameLevel<5){nb.textContent=`Level ${gameLevel+1} →`;nb.style.display='inline-flex'}
+  else{nb.textContent='Play Level 1 again ↺';nb.style.display='inline-flex';nb.onclick=()=>{selectLevel(1);startGame()}}
+  ov.classList.add('show');
+  document.getElementById('gcb-start').style.display='inline-flex';
+  document.getElementById('gcb-pause').style.display='none';
+  const lvlBonus=gameLevel*8;points+=lvlBonus;updatePointsBadge();
+  showToast(`🏅 Level ${gameLevel} done! +${lvlBonus} pts`);
+  saveGameResp();
+}
+
+function advanceLevel(){
+  if(gameLevel<5){selectLevel(gameLevel+1);startGame()}
+}
+
+function gameOver(){
+  gameRunning=false;
+  if(fallAnim){cancelAnimationFrame(fallAnim);fallAnim=null}
+  document.getElementById('go-score').textContent=`Score: ${gameScore} pts`;
+  document.getElementById('game-over-overlay').classList.add('show');
+  document.getElementById('gcb-start').style.display='inline-flex';
+  document.getElementById('gcb-pause').style.display='none';
+}
+
+function saveGameResp(){
+  if(!responses.game||gameScore>responses.game.score){
+    responses.game={score:gameScore,level:gameLevel,pieces:gamePiecesPlayed};
+    saveState();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+loadState();
+applyFontSize();
+updatePointsBadge();
+showStep(currentStep);
+if(responses.checklist){
+  const items=document.querySelectorAll('.check-item');
+  items.forEach(item=>{
+    const label=item.querySelector('strong').textContent;
+    if(responses.checklist.includes(label))item.classList.add('ticked');
+  });
+}
+</script>
+</body>
+</html>
