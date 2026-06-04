@@ -17,8 +17,9 @@
   .week-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; margin-bottom: 0.75rem; }
   .week-hero p { font-size: 1rem; color: #c8e8f0; max-width: 580px; margin: 0 auto; line-height: 1.6; }
   .wotw-banner { background-color: #ef7724; padding: 0.9rem 2rem; text-align: center; }
-  .wotw-banner p { color: #fef8f4; font-size: 0.9rem; font-weight: 700; }
-  .wotw-banner span { font-size: 1.1rem; letter-spacing: 0.04em; }
+  .wotw-link { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .wotw-link:hover { text-decoration: underline; }
+  .wotw-link .wotw-label { font-size: 0.8rem; opacity: 0.85; margin-right: 0.25rem; }
   .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
   .subjects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
@@ -52,7 +53,9 @@
 </div>
 
 <div class="wotw-banner">
-  <p>Word of the Week — <span>Trajectory</span></p>
+  <a class="wotw-link" href="trajectory-explorer.html">
+    <span class="wotw-label">Word of the Week —</span> Trajectory →
+  </a>
 </div>
 
 <main class="main">
