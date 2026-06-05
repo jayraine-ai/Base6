@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Weekly Weather: Emotional Explorer</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons for visual learners -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Lexend (optimized for dyslexia readability) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- jsPDF Library for robust client-side PDF compilation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Interactive animated elements to maintain ADHD engagement without overstimulating */
+        .weather-spin {
+            animation: spin 20s linear infinite;
+        }
+        .cloud-drift {
+            animation: drift 6s ease-in-out infinite alternate;
+        }
+        .rain-drizzle {
+            background: linear-gradient(transparent, rgba(59, 130, 246, 0.4));
+            animation: fall 1.2s linear infinite;
+        }
+        .lightning-flash {
+            animation: flash 4s infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes drift {
+            0% { transform: translateX(-5px); }
+            100% { transform: translateX(5px); }
+        }
+        @keyframes fall {
+            0% { transform: translateY(-20px); }
+            100% { transform: translateY(120px); }
+        }
+        @keyframes flash {
+            0%, 95%, 98%, 100% { opacity: 0; }
+            96%, 97% { opacity: 0.85; }
+        }
+
+        /* Customizable accessibility overrides */
+        .dyslexia-spacing-wide {
+            letter-spacing: 0.15em !important;
+            word-spacing: 0.3em !important;
+        }
+        
+        /* Print styling for teachers to generate easy physical worksheets */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 12pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .print-card {
+                border: 2px solid #000 !important;
+                border-radius: 8px !important;
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+                padding: 15px !important;
+                background: transparent !important;
+                color: black !important;
+            }
+        }
+        
+        .print-only {
+            display: none;
+        }
+
+        /* Focus modes to help ADHD minds direct focus */
+        .focus-highlight {
+            outline: 4px solid #F59E0B !important;
+            outline-offset: 4px;
+        }
+
+        /* Memory game custom classes */
+        .card-perspective {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-12 antialiased selection:bg-amber-200 selection:text-slate-900">
+
+    <!-- Custom overlay canvas for lightweight, sandbox-safe confetti -->
+    <canvas id="global-confetti-canvas" class="fixed inset-0 pointer-events-none z-[9999] w-full h-full hidden"></canvas>
+
+    <div class="no-print bg-slate-900 text-slate-100 py-3 px-4 shadow-md">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-sliders text-amber-400 text-lg"></i>
+                <span class="font-bold text-sm tracking-wide">CHOOSE HOW YOU LEARN:</span>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3 text-xs">
+                <!-- Font size toggles -->
+                <div class="bg-slate-800 rounded-lg p-1 flex items-center border border-slate-700">
+                    <span class="px-2 text-slate-400">Size:</span>
+                    <button onclick="adjustFontSize('small')" class="px-2 py-1 hover:bg-slate-700 rounded text-slate-200">A</button>
+                    <button onclick="adjustFontSize('medium')" class="px-2 py-1 bg-amber-500 hover:bg-amber-400 rounded text-slate-950 font-bold mx-1">A+</button>
+                    <button onclick="adjustFontSize('large')" class="px-2 py-1 hover:bg-slate-700 rounded text-slate-200">A++</button>
+                </div>
+
+                <!-- Text Spacing (Dyslexia-friendly toggle) -->
+                <button onclick="toggleDyslexiaSpacing()" id="dyslexiaBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1">
+                    <i class="fa-solid fa-text-width"></i> Extra Spacing: <span id="spacingStatus" class="font-bold text-rose-400">Off</span>
+                </button>
+
+                <!-- Color Contrast Settings -->
+                <div class="bg-slate-800 rounded-lg p-1 flex items-center border border-slate-700">
+                    <span class="px-2 text-slate-400">Theme:</span>
+                    <button onclick="changeContrast('cream')" class="w-5 h-5 rounded-full bg-[#fcf8f2] border border-slate-600 mx-1" title="Warm Cream"></button>
+                    <button onclick="changeContrast('pastel')" class="w-5 h-5 rounded-full bg-[#eef6f9] border border-slate-600 mx-1" title="Soft Air Blue"></button>
+                    <button onclick="changeContrast('dark')" class="w-5 h-5 rounded-full bg-[#1e293b] border border-slate-400 mx-1" title="Midnight Calm"></button>
+                </div>
+
+                <!-- Speech Assist -->
+                <button onclick="toggleSpeechHelp()" id="speechBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5">
+                    <i id="speechIcon" class="fa-solid fa-volume-high"></i> Voice Help: <span id="speechStatus">Ready</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Outer Container -->
+    <div class="max-w-6xl mx-auto px-4 mt-6">
+        
+        <header class="no-print bg-white rounded-2xl p-6 shadow-sm mb-6 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6" id="welcomeHeader">
+            <div class="flex items-center space-x-4">
+                <div class="p-4 bg-amber-100 rounded-2xl text-amber-600 text-3xl animate-bounce">
+                    <i class="fa-solid fa-cloud-sun-rain"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black text-slate-900 leading-tight">The Weekly Weather</h1>
+                    <p class="text-slate-500 mt-1 max-w-md text-sm md:text-base">If your feelings this week were a weather pattern, what would they look like? Let's explore together.</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Neutral, low-demand central level selector panel (PDA compliant) -->
+        <section class="no-print bg-amber-50/60 border border-amber-200 rounded-2xl p-4 mb-8">
+            <div class="max-w-4xl mx-auto flex flex-col items-center text-center gap-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-amber-600 text-lg"></i>
+                    <h2 class="text-sm font-black text-amber-900 tracking-wide uppercase">Select Your Exploration Mode</h2>
+                </div>
+                <p class="text-xs text-amber-800 max-w-xl">
+                    Feel free to explore at your own pace! Choose the vocabulary depth and game styles that match your comfortable energy zone right now. No pressure, you can change this anytime.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-2xl mt-2">
+                    <button onclick="setDifficulty('easy')" id="diff-easy" class="p-3 rounded-xl font-bold transition-all bg-amber-500 text-slate-950 shadow-md transform hover:scale-105">
+                        <span class="block text-sm">🌸 Simple Words</span>
+                        <span class="text-[10px] opacity-90 font-normal">Interactive & Fun (Ages 6-10)</span>
+                    </button>
+                    <button onclick="setDifficulty('medium')" id="diff-medium" class="p-3 rounded-xl font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">
+                        <span class="block text-sm">🌱 Moderate Depth</span>
+                        <span class="text-[10px] opacity-75 font-normal">Insightful & Flowy (Ages 10-15)</span>
+                    </button>
+                    <button onclick="setDifficulty('hard')" id="diff-hard" class="p-3 rounded-xl font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">
+                        <span class="block text-sm">⚡ Deep Reflection</span>
+                        <span class="text-[10px] opacity-75 font-normal">Complex & Neurological (Ages 15-19)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Activity Tabs -->
+        <nav class="no-print flex flex-wrap gap-2 mb-6" aria-label="Activities">
+            <button onclick="switchTab('explorer')" id="tab-explorer" class="tab-btn bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2 hover:bg-slate-50 border-amber-500 ring-2 ring-amber-200">
+                <i class="fa-solid fa-magnifying-glass-chart text-amber-500"></i>
+                <span>1. Weather Explorer</span>
+            </button>
+            <button onclick="switchTab('forecast')" id="tab-forecast" class="tab-btn bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2 hover:bg-slate-50">
+                <i class="fa-solid fa-calendar-week text-sky-500"></i>
+                <span>2. Weekly Chart</span>
+            </button>
+            <button onclick="switchTab('mixer')" id="tab-mixer" class="tab-btn bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2 hover:bg-slate-50">
+                <i class="fa-solid fa-flask text-emerald-500"></i>
+                <span>3. Emotion Mixer</span>
+            </button>
+            <button onclick="switchTab('puzzles')" id="tab-puzzles" class="tab-btn bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2 hover:bg-slate-50">
+                <i class="fa-solid fa-gamepad text-rose-500"></i>
+                <span>4. Play & Game Zone</span>
+            </button>
+            <button onclick="switchTab('worksheets')" id="tab-worksheets" class="tab-btn bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2 hover:bg-slate-50 ml-auto bg-amber-50 border-amber-200">
+                <i class="fa-solid fa-print text-amber-600 animate-pulse"></i>
+                <span class="text-amber-900">Teacher Materials</span>
+            </button>
+        </nav>
+
+        <!-- ACTIVITY SECTION 1: Weather Explorer Station -->
+        <section id="section-explorer" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Weather Option Selector Card -->
+                <div class="lg:col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-cloud-sun text-amber-500"></i> Feel Free to Choose:
+                            </h2>
+                            <button onclick="speakText('Select a weather pattern below to see how it can explain your inside moods.')" class="text-slate-400 hover:text-slate-600" title="Listen to instructions">
+                                <i class="fa-solid fa-circle-play text-xl"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-4" id="explorer-prompt-desc">Select any weather icon below to find out how its qualities resemble feelings inside our minds and bodies.</p>
+                        
+                        <!-- Weather Grid selector with icons -->
+                        <div class="grid grid-cols-2 gap-3" id="weather-grid">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-100 bg-amber-50/50 p-3 rounded-xl">
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                            💡 <span class="font-bold">No demands here:</span> Just pick whatever weather calls your name today, or change the level settings at the top to see different ways of describing moods!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interactive Emotional Weather Station Dashboard Screen -->
+                <div class="lg:col-span-2 bg-gradient-to-b from-sky-400 to-sky-100 rounded-3xl p-8 text-white shadow-md relative overflow-hidden min-h-[450px] flex flex-col justify-between" id="station-screen">
+                    
+                    <!-- Weather FX Overlay -->
+                    <div class="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl">
+                        <div id="fx-rain" class="absolute inset-0 hidden">
+                            <div class="rain-drizzle absolute w-0.5 h-12 left-[10%] top-[-50px]"></div>
+                            <div class="rain-drizzle absolute w-0.5 h-12 left-[30%] top-[-80px]"></div>
+                            <div class="rain-drizzle absolute w-0.5 h-12 left-[50%] top-[-30px]"></div>
+                            <div class="rain-drizzle absolute w-0.5 h-12 left-[70%] top-[-70px]"></div>
+                            <div class="rain-drizzle absolute w-0.5 h-12 left-[90%] top-[-40px]"></div>
+                        </div>
+                        <div id="fx-lightning" class="absolute inset-0 bg-white opacity-0 lightning-flash hidden"></div>
+                        <div id="fx-clouds" class="absolute inset-0 flex justify-around items-start pt-6 opacity-30 cloud-drift hidden">
+                            <i class="fa-solid fa-cloud text-6xl"></i>
+                            <i class="fa-solid fa-cloud text-8xl"></i>
+                        </div>
+                        <div id="fx-sun" class="absolute right-6 top-6 text-7xl text-amber-200 weather-spin opacity-40 hidden">
+                            <i class="fa-solid fa-sun"></i>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Details Panel -->
+                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-start gap-6">
+                        <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-white/20 max-w-lg">
+                            <div class="flex items-center gap-3">
+                                <span id="station-icon" class="text-4xl text-amber-300"><i class="fa-solid fa-sun animate-pulse"></i></span>
+                                <h3 id="station-title" class="text-2xl font-black">Sunny Day Skies</h3>
+                            </div>
+                            <p id="station-sub" class="text-amber-200 text-xs font-bold tracking-widest uppercase mt-1">EMOTIONAL MEANING</p>
+                            <p id="station-desc" class="text-slate-100 text-sm mt-3 leading-relaxed">Everything feels radiant and warm inside you. It feels easier to smile, connect, and enjoy things. Your energy levels are high, positive, and full of forward movement.</p>
+                            
+                            <!-- ADHD Dynamic Interactive Slider Adjustment Area -->
+                            <div class="mt-4 pt-4 border-t border-white/10 text-xs" id="customizer-widget">
+                                <span class="font-bold text-amber-200 block mb-2"><i class="fa-solid fa-sliders"></i> Customize your weather feeling:</span>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span>Intensity / Size:</span>
+                                        <input type="range" min="1" max="10" value="5" oninput="adjustWeatherIntensity(this.value)" class="w-2/3 accent-amber-300">
+                                    </div>
+                                    <p class="text-[10px] text-slate-300" id="intensity-feedback">Your inner weather is balanced and calm.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mini Voice Tool for Dyslexia reading comfort -->
+                        <button onclick="readStationDetails()" class="bg-slate-900/60 hover:bg-slate-900/80 p-3 rounded-full text-white transition shadow-lg self-start" title="Listen to this card description">
+                            <i class="fa-solid fa-volume-high text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Bodily Sensations Indicator -->
+                    <div class="relative z-10 mt-6 bg-slate-900/40 backdrop-blur-md p-4 rounded-xl border border-white/20">
+                        <p class="text-xs text-amber-200 font-bold uppercase tracking-wider mb-2"><i class="fa-solid fa-child"></i> How this feels inside your physical body:</p>
+                        <ul class="text-xs text-slate-100 grid grid-cols-1 md:grid-cols-2 gap-2" id="station-sensations">
+                            <!-- Populated dynamically via JS -->
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVITY SECTION 2: Weekly Mood Chart Tracker -->
+        <section id="section-forecast" class="tab-content hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-sky-500"></i> My Weekly Mood Forecast
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">Reflect on the days of the week. There are no rules—each day can have its own emotional microclimate!</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="clearForecast()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                            <i class="fa-solid fa-eraser"></i> Start Over
+                        </button>
+                        <button onclick="openSaveModal()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-xl text-xs font-black transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-floppy-disk"></i> Save / Email My Chart!
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Selection Dock of Emotional Weathers for Quick Click/Tap to Add -->
+                <div class="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <span class="text-xs font-bold text-slate-500 block mb-2"><i class="fa-solid fa-wand-magic-sparkles"></i> 1. Choose a weather sticker to assign:</span>
+                    <div class="flex flex-wrap gap-2" id="sticker-dock">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- 7 Day Layout System -->
+                <div class="grid grid-cols-1 md:grid-cols-7 gap-4" id="weekly-days-grid">
+                    <!-- Dynamic Days Monday - Sunday structured for touch and keyboard compatibility -->
+                </div>
+
+                <div class="mt-6 bg-amber-50 rounded-xl p-4 border border-amber-200">
+                    <h4 class="text-sm font-bold text-amber-900 flex items-center gap-1.5 mb-1">
+                        <i class="fa-solid fa-compass"></i> Reflection Guidance:
+                    </h4>
+                    <p class="text-xs text-amber-800 leading-relaxed" id="forecast-reflection-prompt">
+                        Look at your completed sky grid. Did your feelings jump around easily, or did you have a pattern? Remember: weather is always shifting. A thunderstorm never lasts forever.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVITY SECTION 3: The Inner Atmosphere Mixer -->
+        <section id="section-mixer" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Recipe & Control Desk -->
+                <div class="lg:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <h2 class="text-xl font-black text-slate-900 flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-flask-vial text-emerald-500"></i> The Inner Atmosphere Mixer
+                    </h2>
+                    <p class="text-xs text-slate-500 mb-6">What happens when distinct emotional pressures meet? Pick any two different weathers below to mix them up and see what new climate forms.</p>
+
+                    <div class="space-y-6">
+                        <!-- Select Mood 1 -->
+                        <div>
+                            <span class="text-xs font-bold text-slate-500 block mb-2">🎈 FIRST MOOD IN THE MIX:</span>
+                            <select id="mix-select-1" onchange="performAtmosphereMix()" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-300 outline-none">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <!-- Icon visual spacer -->
+                        <div class="flex justify-center my-2 text-slate-300">
+                            <i class="fa-solid fa-circle-plus text-2xl animate-spin"></i>
+                        </div>
+
+                        <!-- Select Mood 2 -->
+                        <div>
+                            <span class="text-xs font-bold text-slate-500 block mb-2">⚡ SECOND MOOD IN THE MIX:</span>
+                            <select id="mix-select-2" onchange="performAtmosphereMix()" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-300 outline-none">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- PDA low demand reminder -->
+                    <div class="mt-6 p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-800 leading-relaxed">
+                        🌱 <span class="font-bold">Play at your pace:</span> Mixing different emotional weather models can reveal compound feelings, such as finding hope right in the middle of a foggy confusion!
+                    </div>
+                </div>
+
+                <!-- Simulation Visual Board -->
+                <div class="lg:col-span-7 bg-[#0f172a] text-slate-100 rounded-2xl p-8 shadow-md relative overflow-hidden flex flex-col justify-between min-h-[400px]">
+                    <div class="absolute inset-0 bg-radial-gradient opacity-10 pointer-events-none"></div>
+
+                    <!-- Animation Mix Arena representing internal brain climate -->
+                    <div class="flex items-center justify-center space-x-8 py-6 relative z-10">
+                        <div class="text-center">
+                            <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-3xl" id="mix-icon-visual-1">
+                                <i class="fa-solid fa-question text-slate-500"></i>
+                            </div>
+                            <span class="text-xs mt-2 block text-slate-400 font-bold" id="mix-lbl-1">Ingredient 1</span>
+                        </div>
+                        <div class="text-slate-500 text-2xl font-black">⚡</div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-3xl" id="mix-icon-visual-2">
+                                <i class="fa-solid fa-question text-slate-500"></i>
+                            </div>
+                            <span class="text-xs mt-2 block text-slate-400 font-bold" id="mix-lbl-2">Ingredient 2</span>
+                        </div>
+                        <div class="text-slate-500 text-2xl font-black">➔</div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 rounded-full bg-emerald-950/50 flex items-center justify-center border-2 border-emerald-400 text-4xl text-emerald-300 shadow-lg shadow-emerald-500/20 animate-pulse" id="mix-result-icon">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <span class="text-xs mt-2 block text-emerald-400 font-bold" id="mix-result-lbl">The Compound</span>
+                        </div>
+                    </div>
+
+                    <!-- Mixed Climate Explanation Board -->
+                    <div class="bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl p-5 relative z-10">
+                        <span class="text-emerald-400 text-xs font-black tracking-widest uppercase block mb-1">ATMOSPHERIC REVELATION</span>
+                        <h3 class="text-xl font-bold text-white mb-2" id="mix-headline">Pick Your Ingredients</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed" id="mix-explanation">
+                            When two physical layers of weather collide, custom fronts and weather systems occur. Click any selection on the left sidebar to discover what this psychological weather blend says about complex feelings!
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ACTIVITY SECTION 4: Play & Game Zone -->
+        <section id="section-puzzles" class="tab-content hidden">
+            <!-- Game Selector Tabs inside the Game Zone -->
+            <div class="flex border-b border-slate-200 mb-6 gap-2">
+                <button onclick="switchGameTab('catcher')" id="gt-catcher" class="px-4 py-2 font-bold text-xs bg-slate-100 text-slate-700 rounded-t-xl transition-all border-t border-x border-slate-300">
+                    🎮 Game 1: Sky Catcher
+                </button>
+                <button onclick="switchGameTab('memory')" id="gt-memory" class="px-4 py-2 font-bold text-xs bg-white text-slate-400 rounded-t-xl transition-all">
+                    🎴 Game 2: Memory Sky Match
+                </button>
+                <button onclick="switchGameTab('breather')" id="gt-breather" class="px-4 py-2 font-bold text-xs bg-white text-slate-400 rounded-t-xl transition-all">
+                    🌬️ Grounding: Barometric Breather
+                </button>
+            </div>
+
+            <!-- SUB-TAB 1: SKY CATCHER GAME -->
+            <div id="game-catcher" class="g-tab-content block">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-4 bg-white rounded-2xl p-5 border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-cloud-sun-rain text-sky-500 animate-bounce"></i> Sky Catcher Arcade
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                                Move your weather basket to catch only the items matching your <strong>Target Feeling</strong>!
+                            </p>
+                            
+                            <div class="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
+                                <span class="text-[10px] uppercase font-bold text-amber-800 block">CURRENT MISSION</span>
+                                <span class="text-base font-bold text-amber-900" id="catcher-mission-label">Catch Happy Suns!</span>
+                            </div>
+
+                            <div class="mt-4 text-xs space-y-2">
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-slate-500">Discovery Streak:</span>
+                                    <span class="font-bold text-emerald-600" id="catcher-score">0</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-slate-500">Controlling with:</span>
+                                    <span class="font-bold text-slate-700">Keys / Touch Buttons</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Touch Controls for iPad/Mobile/Tablet compatibility -->
+                        <div class="mt-6 space-y-2">
+                            <span class="text-[10px] text-slate-400 font-bold block text-center uppercase">Mobile Controls</span>
+                            <div class="flex gap-2 justify-center">
+                                <button onmousedown="moveCatcherLeft()" ontouchstart="moveCatcherLeft(); event.preventDefault();" class="flex-1 bg-slate-800 active:bg-slate-900 text-white font-black py-4 rounded-xl text-center select-none active:scale-95 transition-transform">
+                                    <i class="fa-solid fa-arrow-left"></i> Left
+                                </button>
+                                <button onmousedown="moveCatcherRight()" ontouchstart="moveCatcherRight(); event.preventDefault();" class="flex-1 bg-slate-800 active:bg-slate-900 text-white font-black py-4 rounded-xl text-center select-none active:scale-95 transition-transform">
+                                    Right <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <button onclick="initCatcherGame()" class="w-full mt-4 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition">
+                                <i class="fa-solid fa-rotate-left"></i> Restart Game
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Gameplay Container -->
+                    <div class="lg:col-span-8 bg-[#0b1329] rounded-2xl p-4 shadow-inner flex flex-col justify-between items-center relative min-h-[400px]">
+                        <canvas id="catcher-canvas" class="bg-[#111c3a] rounded-xl w-full max-h-[350px] shadow-md border border-slate-800" width="600" height="350"></canvas>
+                        <p class="text-[11px] text-slate-400 italic mt-2 text-center">
+                            Press <kbd class="px-1.5 py-0.5 bg-slate-700 text-white rounded text-[10px]">←</kbd> and <kbd class="px-1.5 py-0.5 bg-slate-700 text-white rounded text-[10px]">→</kbd> on your keyboard or tap the buttons on the left. Catch items matching your Target Feeling!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 2: MEMORY SKY MATCH -->
+            <div id="game-memory" class="g-tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-100">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-brain text-rose-500"></i> Memory Sky Match
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-1">
+                                Flip cards to match the environmental weather type to its corresponding internal feeling state. Great way to practice emotional vocabulary!
+                            </p>
+                        </div>
+                        <button onclick="resetMemoryGame()" class="mt-3 md:mt-0 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                            <i class="fa-solid fa-rotate"></i> Reset Board
+                        </button>
+                    </div>
+
+                    <!-- Card grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto" id="memory-grid">
+                        <!-- Populated dynamically -->
+                    </div>
+                    
+                    <div id="memory-feedback" class="mt-6 p-3 rounded-xl bg-slate-50 text-xs text-slate-600 font-bold text-center">
+                        Select two cards to start scanning for patterns.
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 3: THE BREATHING SENSORY REGULATOR -->
+            <div id="game-breather" class="g-tab-content hidden">
+                <div class="bg-gradient-to-tr from-sky-900 via-indigo-950 to-slate-900 text-slate-100 rounded-2xl p-8 shadow-sm flex flex-col justify-between min-h-[400px]">
+                    <div>
+                        <h2 class="text-lg font-black text-amber-300 flex items-center gap-2">
+                            <i class="fa-solid fa-wind"></i> The Barometric Breather
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-1">If your weather is feeling too loud, use this gentle, self-paced breathing tool to balance your environment.</p>
+                    </div>
+
+                    <!-- Expanding and contracting breathing ring -->
+                    <div class="flex flex-col items-center justify-center my-8">
+                        <div id="breathing-ring" class="w-24 h-24 rounded-full border-4 border-sky-400 bg-sky-400/20 flex items-center justify-center transition-all duration-[4000ms] ease-in-out">
+                            <span class="text-xs font-bold text-sky-200" id="breathing-txt">Steady</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 mt-6 italic">No rules, no scores. Just watch the ring pulse when you want to rest.</span>
+                    </div>
+
+                    <div class="flex gap-2 justify-center">
+                        <button onclick="startBreathingCycle()" class="px-5 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold rounded-xl transition">
+                            <i class="fa-solid fa-play"></i> Start Breathing Guide
+                        </button>
+                        <button onclick="stopBreathingCycle()" class="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition">
+                            <i class="fa-solid fa-stop"></i> Calm Station
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVITY SECTION 5: Printable Worksheets System -->
+        <section id="section-worksheets" class="tab-content hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf text-rose-500"></i> Print-and-Go Student Worksheets
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">This module creates custom printable sheets tailored to the selected difficulty level. Fully offline capable.</p>
+                    </div>
+                    
+                    <button onclick="window.print()" class="bg-slate-950 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl shadow-md flex items-center gap-2 transition w-full md:w-auto justify-center">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Click to Print PDF Now</span>
+                    </button>
+                </div>
+
+                <div class="mt-6 bg-amber-50 rounded-xl p-4 border border-amber-200 text-xs text-amber-900 leading-relaxed">
+                    🍎 <span class="font-bold">Dyslexia-friendly details:</span> These worksheets feature wide lines, space for emoji stamps, and visual cutouts. Use them as a screen-free tool to aid Emotional Regulation (SEL) in the classroom.
+                </div>
+            </div>
+
+            <!-- Printable Worksheet Area (Styled dynamic preview) -->
+            <div class="bg-white rounded-2xl p-8 border-2 border-dashed border-slate-300 shadow-inner max-w-4xl mx-auto" id="printable-worksheet-preview">
+                <!-- Preview elements will render dynamically here -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- SAVE & EMAIL DIALOG MODAL (PDA Compliant & Accessible) -->
+    <div id="save-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-amber-400 to-amber-500 p-5 text-slate-950 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
+                    <h3 class="font-black text-base tracking-wide">Save or Share Your Forecast Map</h3>
+                </div>
+                <button onclick="closeSaveModal()" class="text-slate-950/70 hover:text-slate-950 transition text-lg font-bold">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content Form -->
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    Would you like to keep a copy of your emotional sky map? You can save it as a readable PDF file, email it to your teacher, or copy a quick text summary. Choose whichever feels easiest right now!
+                </p>
+
+                <!-- Input fields (Optional) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Your Name (Optional)</label>
+                        <input type="text" id="student-name-input" placeholder="e.g. Charlie" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-amber-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Teacher's Email (Optional)</label>
+                        <input type="email" id="teacher-email-input" placeholder="e.g. teacher@school.edu" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-amber-400 outline-none">
+                    </div>
+                </div>
+
+                <!-- Feedback Area (e.g. copied successfully notification) -->
+                <div id="modal-feedback" class="p-2.5 rounded-lg text-xs font-semibold text-center hidden"></div>
+
+                <!-- Action Button Grid -->
+                <div class="space-y-2 pt-2">
+                    <button onclick="generatePDF()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-file-pdf text-rose-400"></i>
+                        <span>Download Beautiful PDF Report</span>
+                    </button>
+                    
+                    <button onclick="sendEmailReport()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Email directly to Teacher</span>
+                    </button>
+
+                    <button onclick="copyEmailToClipboard()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Copy Summary Text (Easy Clipboard Copy)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 p-4 border-t border-slate-100 text-center">
+                <span class="text-[10px] text-slate-400 italic">No account or login required. All processing remains private inside this browser.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Worksheets Container specifically triggered by @media print styles -->
+    <div id="print-sheet-wrapper" class="print-only">
+        <!-- Generates content tailored cleanly to monochrome print patterns -->
+    </div>
+
+    <script>
+        const weatherDatabase = {
+            easy: {
+                prompt: "Select a weather option below to find out how its qualities resemble feelings inside your body and mind.",
+                refPrompt: "Look at your finished daily weather map. Did you have mostly happy-sunny skies, or did a rainy cloud drift by? Remember: all clouds eventually pass!",
+                weathers: [
+                    {
+                        id: 'sunny',
+                        title: 'Sunny Sky',
+                        metaphor: 'Happy / Excited',
+                        icon: 'fa-sun text-amber-500',
+                        colorTheme: 'from-amber-400 to-amber-100',
+                        description: 'Your energy levels are full of cheer! You feel ready to play, share your stories, and enjoy learning. It feels warm and fuzzy inside.',
+                        sensations: ['Lightness in your chest', 'Energetic bouncy feet', 'Lots of easy smiles', 'Feeling like singing'],
+                        intensityPrompt: 'How bright is your sun shining today?'
+                    },
+                    {
+                        id: 'rainy',
+                        title: 'Rainy Day',
+                        metaphor: 'Sad / Tired',
+                        icon: 'fa-cloud-rain text-sky-500',
+                        colorTheme: 'from-sky-400 to-sky-100',
+                        description: 'A raincloud is sitting nearby. Your body might feel heavy or sleepy. It feels okay to cry or just take a nice, slow quiet break.',
+                        sensations: ['Heavy teary eyes', 'Quiet softly spoken voice', 'Needing a warm blanket cuddle', 'Feeling very slow'],
+                        intensityPrompt: 'Is it a light drizzle or a steady rainfall?'
+                    },
+                    {
+                        id: 'stormy',
+                        title: 'Thunderstorm',
+                        metaphor: 'Mad / Frustrated',
+                        icon: 'fa-cloud-bolt text-rose-500',
+                        colorTheme: 'from-rose-500 to-rose-200',
+                        description: 'A storm is rolling in! You might feel angry, hot, or like you want to shout. This lightning represents high electric feelings that want to come out.',
+                        sensations: ['Clenched tight fists', 'Feeling very hot in your head', 'Heart beating quick and loud', 'Hard to sit still'],
+                        intensityPrompt: 'Is your storm mostly thunder noise or lightning flashes?'
+                    },
+                    {
+                        id: 'cloudy',
+                        title: 'Calm Cloud',
+                        metaphor: 'Quiet / Peaceful',
+                        icon: 'fa-cloud text-slate-400',
+                        colorTheme: 'from-slate-300 to-slate-100',
+                        description: 'Soft, floating gray clouds. You don\'t feel happy but you don\'t feel sad either. Everything is calm, balanced, and ready for a cozy rest.',
+                        sensations: ['Relaxed soft hands', 'Quiet even breathing', 'Slowing down to daydream', 'Heavy comfortable legs'],
+                        intensityPrompt: 'Are your clouds high up or low down?'
+                    }
+                ],
+                mixes: {
+                    'sunny+rainy': { title: 'Emotional Rainbow', desc: 'When you are sunny-excited but a little sad about change, you create a gorgeous rainbow! You can feel multiple feelings at the exact same time.' },
+                    'sunny+stormy': { title: 'Steam Geyser', desc: 'Your intense anger melts into laughter. You feel extremely giggly and hyperactive!' },
+                    'rainy+stormy': { title: 'Heavy Monsoon', desc: 'Sadness and anger mix together. It is completely natural to feel overwhelmed and need to cry hard to clear the skies.' },
+                    'sunny+cloudy': { title: 'Soft Sun Rays', desc: 'A peaceful, serene happiness. You are feeling secure and fully content.' },
+                    'rainy+cloudy': { title: 'Grizzly Drizzle', desc: 'A gentle sluggish mood where you just want to sleep, doodle, or rest quietly.' },
+                    'stormy+cloudy': { title: 'Misty Rumblings', desc: 'Feeling slightly annoyed or cranky but not wanting to make a big deal out of it.' }
+                }
+            },
+            medium: {
+                prompt: "Click any microclimate icon to explore how environmental shifts describe your inner state.",
+                refPrompt: "Look over your barometer for this week. Did your weather feel volatile, or did it settle into a gentle front? All emotional systems are temporary.",
+                weathers: [
+                    {
+                        id: 'sunny',
+                        title: 'Sunny Calm',
+                        metaphor: 'Content & Balanced',
+                        icon: 'fa-circle-check text-emerald-500',
+                        colorTheme: 'from-emerald-400 to-emerald-500/10',
+                        description: 'Your internal sky is clear and blue. You are feeling secure, confident, and highly motivated. It feels safe to interact and take on tasks.',
+                        sensations: ['Steady slow heartbeat', 'Relaxed, natural shoulder drop', 'Curious and open mindset', 'Clear thinking'],
+                        intensityPrompt: 'How secure and grounded is your sun feeling?'
+                    },
+                    {
+                        id: 'rainy',
+                        title: 'Gloomy Overcast',
+                        metaphor: 'Low Mood / Loneliness',
+                        icon: 'fa-cloud-sun-rain text-indigo-500',
+                        colorTheme: 'from-indigo-400 to-indigo-100',
+                        description: 'An overcast gray sky blocks out the sun. You feel isolated, unmotivated, and lonely. Things look a bit dull, and it is hard to find joy.',
+                        sensations: ['Slight ache in the belly', 'Eyes feeling heavy and dull', 'Low physical stamina', 'Desire to retreat from noise'],
+                        intensityPrompt: 'How dense and thick is the cloud coverage?'
+                    },
+                    {
+                        id: 'stormy',
+                        title: 'Squall Line',
+                        metaphor: 'Anxiety & High Tension',
+                        icon: 'fa-cloud-showers-water text-orange-500',
+                        colorTheme: 'from-orange-400 to-orange-100',
+                        description: 'A sudden, fast-moving wind squall. You feel high-strung, nervous, or easily frightened. Your internal threat response is highly active.',
+                        sensations: ['Fluttery butterfly feelings in belly', 'Fast shallow breathing', 'Clenched jaw', 'Restless hands and legs'],
+                        intensityPrompt: 'Are the winds gusting highly, or is it calming?'
+                    },
+                    {
+                        id: 'foggy',
+                        title: 'Dense Fog',
+                        metaphor: 'Confusion & Brain Fog',
+                        icon: 'fa-smog text-teal-500',
+                        colorTheme: 'from-teal-400 to-teal-100',
+                        description: 'A thick fog rolls in, making it hard to think, see clearly, or make easy decisions. Everything feels blurry, muffled, and slow.',
+                        sensations: ['Heavy forehead pressure', 'Staring blankly at things', 'Difficulty finding the right words', 'Sleepy disconnect'],
+                        intensityPrompt: 'How close is your visibility inside?'
+                    }
+                ],
+                mixes: {
+                    'sunny+rainy': { title: 'Clearing Autumn Breeze', desc: 'You are noticing some quiet sadness but finding a silver lining of hope at the exact same time.' },
+                    'sunny+stormy': { title: 'Electric Heatwave', desc: 'Highly creative but jittery. You have vast amounts of energy that need a healthy outlet like art or exercise.' },
+                    'sunny+foggy': { title: 'Misty Dawn', desc: 'You feel quiet and unsure of what comes next, but you have a peaceful sense of confidence that it will turn out okay.' },
+                    'rainy+stormy': { title: 'Heavy Thunderstorm', desc: 'A mix of deep sadness and active frustration. This is a very heavy, turbulent emotional zone where self-compassion is needed.' },
+                    'rainy+foggy': { title: 'Sinking Cold Drizzle', desc: 'Exhausted, shut down, and unable to think. A classic sign of ADHD burnout. Give yourself permission to do absolutely nothing.' },
+                    'stormy+foggy': { title: 'Blinding Blizzard', desc: 'High anxiety mixed with total confusion. You feel lost and frozen in place. Take small, single steps.' }
+                }
+            },
+            hard: {
+                prompt: "Explore the subtle emotional dynamics and barometric pressure patterns inside your psyche.",
+                refPrompt: "Study your weekly emotional barology chart. How did different psychological air fronts interact? Recognize that weather systems must cycle to stay healthy.",
+                weathers: [
+                    {
+                        id: 'sunny',
+                        title: 'Anticyclone / Peak Flow',
+                        metaphor: 'Hyperfocus & High Alignment',
+                        icon: 'fa-snowflake text-cyan-500',
+                        colorTheme: 'from-cyan-400 to-cyan-100',
+                        description: 'A stable high-pressure system. Your thoughts are aligned, and you feel capable of profound focus. You are deeply connected to your values and goals.',
+                        sensations: ['Immersive sense of task absorption', 'Warm core stability', 'Deep, natural cognitive clarity', 'Lowered emotional friction'],
+                        intensityPrompt: 'How aligned with your tasks are you today?'
+                    },
+                    {
+                        id: 'rainy',
+                        title: 'Persistent Low Depression',
+                        metaphor: 'Apathy & Burnout',
+                        icon: 'fa-temperature-arrow-down text-blue-500',
+                        colorTheme: 'from-blue-400 to-blue-100',
+                        description: 'A prolonged low-pressure trough. Energy is fully drained. You experience heavy apathy, flat affect, or a deep weariness that sleep doesn\'t cure.',
+                        sensations: ['Profound limb heaviness', 'Cognitive sluggishness', 'Reduced sensitivity to positive cues', 'Slowing of motor functions'],
+                        intensityPrompt: 'Are you experiencing a temporary dip, or deep baseline fatigue?'
+                    },
+                    {
+                        id: 'stormy',
+                        title: 'Supercell Cyclone',
+                        metaphor: 'Sensory Overload & Meltdown',
+                        icon: 'fa-wind text-purple-500',
+                        colorTheme: 'from-purple-400 to-purple-100',
+                        description: 'Atmospheric pressure is collapsing. Your sensory gates are overwhelmed. Sounds, demands, or expectations feel physically painful. You feel close to a fight-or-flight burst.',
+                        sensations: ['Extreme sensitivity to noises and light', 'Elevated shallow pulse', 'Buzzing skin tension', 'Urge to run away and hide'],
+                        intensityPrompt: 'How close are your sensory thresholds to overflow?'
+                    },
+                    {
+                        id: 'foggy',
+                        title: 'Dissociative Mist',
+                        metaphor: 'Depersonalization & Dissociation',
+                        icon: 'fa-cloud-sun text-slate-500',
+                        colorTheme: 'from-slate-400 to-slate-100',
+                        description: 'A thick, protective insulation layer. To shield from high sensory overload, your nervous system has tuned out the world. You feel distant, floating, or surreal.',
+                        sensations: ['Feeling separate from your physical body', 'Muffled auditory experiences', 'Numbness in hands and fingers', 'Distant dreamlike state'],
+                        intensityPrompt: 'How thick is the protective buffer layer?'
+                    }
+                ],
+                mixes: {
+                    'sunny+rainy': { title: 'Nostalgic Equinox', desc: 'Feeling a deep, bittersweet combination of creative energy paired with awareness of temporary decay or loss.' },
+                    'sunny+stormy': { title: 'Charged Plasma Field', desc: 'Intense hyper-arousal. Extremely high drive coupled with an unstable fuse. Needs careful pacing to prevent crash.' },
+                    'sunny+foggy': { title: 'Astral Nebula', desc: 'Floating and detached, yet deeply content. You are exploring creative fantasy realms in your mind.' },
+                    'rainy+stormy': { title: 'Internal Hurricane', desc: 'A major cycle of heavy emotional processing. High-tension anxiety collapses directly into massive tearful relief.' },
+                    'rainy+foggy': { title: 'Sub-Zero Freeze State', desc: 'A total neurodivergent shutdown. Your body has shut down power to all auxiliary systems to preserve safety. Rest is mandatory.' },
+                    'stormy+foggy': { title: 'Trapped Pressure Cooker', desc: 'Underneath a blank, calm mask (masking), your sensory system is boiling with electric storm. Extremely dangerous territory for PDA/ADHD burnout.' }
+                }
+            }
+        };
+
+        let currentDifficulty = 'medium';
+        let selectedExplorerWeather = 'sunny';
+        let speechHelpEnabled = true;
+        let selectedSticker = null;
+        let forecastData = {
+            Monday: { weather: null, reason: "" },
+            Tuesday: { weather: null, reason: "" },
+            Wednesday: { weather: null, reason: "" },
+            Thursday: { weather: null, reason: "" },
+            Friday: { weather: null, reason: "" },
+            Saturday: { weather: null, reason: "" },
+            Sunday: { weather: null, reason: "" }
+        };
+        let breathingTimer = null;
+
+        // Catcher Game Engine Variables
+        let canvas, ctx;
+        let animationFrameId;
+        let catcherX = 260;
+        const catcherWidth = 80;
+        const catcherHeight = 20;
+        let items = [];
+        let catcherScore = 0;
+        let targetFeelingType = 'sunny'; 
+        let gameLoopRunning = false;
+        
+        // Memory Game Variables
+        let memoryCards = [];
+        let selectedMemoryCards = [];
+        let matchedMemoryCount = 0;
+
+        // Custom Safe Confetti Variables
+        let confettiCanvas, confettiCtx;
+        let confettiParticles = [];
+        let confettiAnimationId = null;
+
+        function initConfetti() {
+            confettiCanvas = document.getElementById('global-confetti-canvas');
+            if (!confettiCanvas) return;
+            confettiCtx = confettiCanvas.getContext('2d');
+            resizeConfettiCanvas();
+            window.addEventListener('resize', resizeConfettiCanvas);
+        }
+
+        function resizeConfettiCanvas() {
+            if (confettiCanvas) {
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+            }
+        }
+
+        function triggerDopamineConfetti(sound = true) {
+            if (!confettiCanvas) initConfetti();
+            if (!confettiCanvas) return;
+
+            confettiCanvas.classList.remove('hidden');
+            const colors = ['#F59E0B', '#10B981', '#3B82F6', '#EC4899', '#8B5CF6'];
+            
+            // Spawn confetti particles centered from the bottom area
+            for (let i = 0; i < 80; i++) {
+                confettiParticles.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight * 0.8,
+                    vx: (Math.random() - 0.5) * 16,
+                    vy: -12 - Math.random() * 12,
+                    radius: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 8,
+                    opacity: 1
+                });
+            }
+            
+            if (!confettiAnimationId) {
+                animateConfetti();
+            }
+
+            if (sound) {
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } catch (e) {
+                    // Audio blocked silently by browser context
+                }
+            }
+        }
+
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            
+            for (let i = confettiParticles.length - 1; i >= 0; i--) {
+                const p = confettiParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.45; // Gravity acceleration
+                p.vx *= 0.98; // Friction drag
+                p.rotation += p.rotationSpeed;
+                p.opacity -= 0.015;
+                
+                if (p.opacity <= 0 || p.y > window.innerHeight) {
+                    confettiParticles.splice(i, 1);
+                    continue;
+                }
+                
+                confettiCtx.save();
+                confettiCtx.translate(p.x, p.y);
+                confettiCtx.rotate(p.rotation * Math.PI / 180);
+                confettiCtx.fillStyle = p.color;
+                confettiCtx.globalAlpha = p.opacity;
+                
+                // Render square confetti pieces
+                confettiCtx.fillRect(-p.radius, -p.radius, p.radius * 2, p.radius * 2);
+                confettiCtx.restore();
+            }
+            
+            if (confettiParticles.length > 0) {
+                confettiAnimationId = requestAnimationFrame(animateConfetti);
+            } else {
+                confettiAnimationId = null;
+                confettiCanvas.classList.add('hidden');
+            }
+        }
+
+        function speakText(text) {
+            if (!speechHelpEnabled) return;
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => v.lang.includes('en-GB') || v.lang.includes('en-US'));
+            if (preferredVoice) utterance.voice = preferredVoice;
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleSpeechHelp() {
+            speechHelpEnabled = !speechHelpEnabled;
+            const btn = document.getElementById('speechBtn');
+            const icon = document.getElementById('speechIcon');
+            const status = document.getElementById('speechStatus');
+            
+            if (speechHelpEnabled) {
+                btn.className = "bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5";
+                icon.className = "fa-solid fa-volume-high";
+                status.innerText = "Active";
+                speakText("Voice narrator is now on. Tap any play button to hear descriptions read aloud.");
+            } else {
+                btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5";
+                icon.className = "fa-solid fa-volume-xmark";
+                status.innerText = "Muted";
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function adjustFontSize(size) {
+            const body = document.body;
+            body.classList.remove('text-sm', 'text-base', 'text-lg', 'text-xl');
+            if (size === 'small') {
+                body.classList.add('text-sm');
+            } else if (size === 'medium') {
+                body.classList.add('text-base');
+            } else {
+                body.classList.add('text-lg');
+            }
+            triggerDopamineConfetti(false);
+        }
+
+        function toggleDyslexiaSpacing() {
+            const body = document.body;
+            const status = document.getElementById('spacingStatus');
+            const btn = document.getElementById('dyslexiaBtn');
+            
+            if (body.classList.contains('dyslexia-spacing-wide')) {
+                body.classList.remove('dyslexia-spacing-wide');
+                status.innerText = "Off";
+                status.className = "font-bold text-rose-400";
+                btn.classList.remove('border-amber-400');
+            } else {
+                body.classList.add('dyslexia-spacing-wide');
+                status.innerText = "On";
+                status.className = "font-bold text-emerald-400";
+                btn.classList.add('border-amber-400');
+            }
+        }
+
+        function changeContrast(theme) {
+            const body = document.body;
+            body.className = "min-h-screen pb-12 antialiased selection:bg-amber-200 selection:text-slate-900";
+            
+            if (theme === 'cream') {
+                body.classList.add('bg-[#fcf8f2]', 'text-[#2e261f]');
+            } else if (theme === 'pastel') {
+                body.classList.add('bg-[#f3f8fa]', 'text-[#1e2e38]');
+            } else if (theme === 'dark') {
+                body.classList.add('bg-[#0f172a]', 'text-[#f1f5f9]');
+            } else {
+                body.classList.add('bg-slate-50', 'text-slate-800');
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.className = "tab-btn bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2 hover:bg-slate-50";
+            });
+
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (tabId === 'worksheets') {
+                activeBtn.className = "tab-btn bg-amber-500 border border-amber-600 text-slate-950 px-5 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2";
+            } else {
+                activeBtn.className = "tab-btn bg-white border-2 border-amber-500 ring-2 ring-amber-200 text-slate-900 px-5 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2";
+            }
+
+            // Pause game loops if navigating away from game tab
+            if (tabId !== 'puzzles') {
+                gameLoopRunning = false;
+                cancelAnimationFrame(animationFrameId);
+                stopBreathingCycle();
+            } else {
+                setTimeout(initCatcherGame, 50);
+            }
+
+            if (tabId === 'explorer') {
+                speakText("Welcome to the weather explorer station.");
+            } else if (tabId === 'forecast') {
+                speakText("Let's plan your weekly weather map.");
+            } else if (tabId === 'mixer') {
+                speakText("Welcome to the inner atmosphere mixer.");
+            } else if (tabId === 'puzzles') {
+                speakText("Let's head into the arcade zone for some games.");
+            } else if (tabId === 'worksheets') {
+                speakText("Teacher Materials. Ready to print offline worksheets.");
+            }
+        }
+
+        function switchGameTab(gameId) {
+            document.querySelectorAll('.g-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`game-${gameId}`).classList.remove('hidden');
+
+            document.querySelectorAll('[id^="gt-"]').forEach(el => {
+                el.className = "px-4 py-2 font-bold text-xs bg-white text-slate-400 rounded-t-xl transition-all";
+            });
+
+            document.getElementById(`gt-${gameId}`).className = "px-4 py-2 font-bold text-xs bg-slate-100 text-slate-700 rounded-t-xl transition-all border-t border-x border-slate-300";
+
+            if (gameId === 'catcher') {
+                initCatcherGame();
+            } else {
+                gameLoopRunning = false;
+                cancelAnimationFrame(animationFrameId);
+            }
+
+            if (gameId === 'memory') {
+                resetMemoryGame();
+            }
+            if (gameId !== 'breather') {
+                stopBreathingCycle();
+            }
+        }
+
+        function setDifficulty(level) {
+            currentDifficulty = level;
+            
+            ['easy', 'medium', 'hard'].forEach(l => {
+                const b = document.getElementById(`diff-${l}`);
+                if (l === level) {
+                    b.className = "p-3 rounded-xl font-bold transition-all bg-amber-500 text-slate-950 shadow-md transform scale-105";
+                } else {
+                    b.className = "p-3 rounded-xl font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-100";
+                }
+            });
+
+            renderWeatherExplorer();
+            renderWeeklyPlanner();
+            renderMixerIngredients();
+            resetMemoryGame();
+            renderPrintableWorksheets();
+
+            speakText(`Exploration mode adjusted to ${level === 'easy' ? 'Simple Words' : level === 'medium' ? 'Moderate Depth' : 'Deep Reflection'}.`);
+            triggerDopamineConfetti(false);
+        }
+
+        function renderWeatherExplorer() {
+            const db = weatherDatabase[currentDifficulty];
+            document.getElementById('explorer-prompt-desc').innerText = db.prompt;
+            
+            const grid = document.getElementById('weather-grid');
+            grid.innerHTML = '';
+
+            db.weathers.forEach(w => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectExplorerWeather(w.id);
+                btn.id = `btn-exp-${w.id}`;
+                const borderStyle = w.id === selectedExplorerWeather ? 'border-amber-500 ring-2 ring-amber-300' : 'border-slate-200';
+                
+                btn.className = `flex flex-col items-center bg-slate-50 hover:bg-slate-100 p-4 rounded-xl border-2 ${borderStyle} transition-all text-center group`;
+                btn.innerHTML = `
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform"><i class="fa-solid ${w.icon}"></i></div>
+                    <span class="text-xs font-bold text-slate-800">${w.title}</span>
+                    <span class="text-[10px] text-slate-500 italic mt-0.5">${w.metaphor}</span>
+                `;
+                grid.appendChild(btn);
+            });
+
+            selectExplorerWeather(selectedExplorerWeather);
+        }
+
+        function selectExplorerWeather(weatherId) {
+            selectedExplorerWeather = weatherId;
+            const db = weatherDatabase[currentDifficulty];
+            const w = db.weathers.find(item => item.id === weatherId) || db.weathers[0];
+
+            db.weathers.forEach(item => {
+                const btn = document.getElementById(`btn-exp-${item.id}`);
+                if (btn) {
+                    if (item.id === weatherId) {
+                        btn.className = "flex flex-col items-center bg-white p-4 rounded-xl border-2 border-amber-500 ring-2 ring-amber-200 transition-all text-center group scale-[1.03]";
+                    } else {
+                        btn.className = "flex flex-col items-center bg-slate-50 hover:bg-slate-100 p-4 rounded-xl border-2 border-slate-200 transition-all text-center group";
+                    }
+                }
+            });
+
+            const screen = document.getElementById('station-screen');
+            screen.className = `lg:col-span-2 bg-gradient-to-b ${w.colorTheme} rounded-3xl p-8 text-white shadow-md relative overflow-hidden min-h-[450px] flex flex-col justify-between`;
+            
+            document.getElementById('station-title').innerText = w.title;
+            document.getElementById('station-icon').innerHTML = `<i class="fa-solid ${w.icon.split(' ')[0]} animate-pulse"></i>`;
+            document.getElementById('station-desc').innerText = w.description;
+            document.getElementById('station-sub').innerText = `EMOTIONAL ANALOGY: ${w.metaphor.toUpperCase()}`;
+
+            document.getElementById('customizer-widget').querySelector('span').innerHTML = `<i class="fa-solid fa-sliders"></i> ${w.intensityPrompt}`;
+
+            const list = document.getElementById('station-sensations');
+            list.innerHTML = '';
+            w.sensations.forEach(s => {
+                list.innerHTML += `<li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-white/60"></i> ${s}</li>`;
+            });
+
+            document.getElementById('fx-rain').classList.add('hidden');
+            document.getElementById('fx-lightning').classList.add('hidden');
+            document.getElementById('fx-clouds').classList.add('hidden');
+            document.getElementById('fx-sun').classList.add('hidden');
+
+            if (weatherId === 'sunny') {
+                document.getElementById('fx-sun').classList.remove('hidden');
+            } else if (weatherId === 'rainy') {
+                document.getElementById('fx-rain').classList.remove('hidden');
+            } else if (weatherId === 'stormy') {
+                document.getElementById('fx-rain').classList.remove('hidden');
+                document.getElementById('fx-lightning').classList.remove('hidden');
+            } else if (weatherId === 'cloudy' || weatherId === 'foggy') {
+                document.getElementById('fx-clouds').classList.remove('hidden');
+            }
+        }
+
+        function adjustWeatherIntensity(val) {
+            const label = document.getElementById('intensity-feedback');
+            if (val <= 3) {
+                label.innerText = "Feeling a mild, gentle presence of this state.";
+            } else if (val <= 7) {
+                label.innerText = "The inner emotional weather system is moderately active.";
+            } else {
+                label.innerText = "High concentration. Give yourself plenty of self-regulation space!";
+                triggerDopamineConfetti(false);
+            }
+        }
+
+        function readStationDetails() {
+            const title = document.getElementById('station-title').innerText;
+            const sub = document.getElementById('station-sub').innerText;
+            const desc = document.getElementById('station-desc').innerText;
+            speakText(`${title}. ${sub}. ${desc}`);
+        }
+
+        function renderWeeklyPlanner() {
+            const db = weatherDatabase[currentDifficulty];
+            document.getElementById('forecast-reflection-prompt').innerText = db.refPrompt;
+
+            const dock = document.getElementById('sticker-dock');
+            dock.innerHTML = '';
+            db.weathers.forEach(w => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectSticker(w.id);
+                btn.id = `sticker-${w.id}`;
+                btn.className = `bg-white hover:bg-slate-100 border-2 border-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition`;
+                btn.innerHTML = `<i class="fa-solid ${w.icon}"></i> ${w.title}`;
+                dock.appendChild(btn);
+            });
+
+            const grid = document.getElementById('weekly-days-grid');
+            grid.innerHTML = '';
+            
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            days.forEach(day => {
+                const dayData = forecastData[day];
+                const matchedWeather = dayData.weather ? db.weathers.find(x => x.id === dayData.weather) : null;
+                
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between items-center text-center min-h-[160px] relative hover:border-slate-300 transition-all cursor-pointer";
+                card.onclick = () => applyStickerToDay(day);
+                
+                let iconBlock = `<div class="w-10 h-10 rounded-full border border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-xs hover:bg-white transition" title="Tap to stick current weather selection">
+                    <i class="fa-solid fa-plus animate-pulse"></i>
+                </div>`;
+                
+                if (matchedWeather) {
+                    iconBlock = `<div class="w-12 h-12 rounded-full bg-amber-100 border border-amber-300 flex flex-col items-center justify-center text-slate-900 shadow-sm animate-bounce">
+                        <i class="fa-solid ${matchedWeather.icon.split(' ')[0]} text-lg"></i>
+                        <span class="text-[8px] font-black">${matchedWeather.title.split(' ')[0]}</span>
+                    </div>`;
+                }
+
+                card.innerHTML = `
+                    <span class="text-xs font-black text-slate-800">${day}</span>
+                    <div class="my-2">${iconBlock}</div>
+                    <textarea 
+                        onclick="event.stopPropagation()" 
+                        oninput="saveForecastReason('${day}', this.value)"
+                        placeholder="Why? (Optional)" 
+                        class="w-full text-[10px] p-1.5 border border-slate-200 rounded bg-white text-slate-700 h-10 resize-none outline-none focus:ring-1 focus:ring-sky-300"
+                    >${dayData.reason}</textarea>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectSticker(weatherId) {
+            selectedSticker = weatherId;
+            const db = weatherDatabase[currentDifficulty];
+            
+            db.weathers.forEach(w => {
+                const el = document.getElementById(`sticker-${w.id}`);
+                if (el) {
+                    if (w.id === weatherId) {
+                        el.className = "bg-amber-100 border-2 border-amber-500 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition scale-105 shadow-sm";
+                    } else {
+                        el.className = "bg-white hover:bg-slate-100 border-2 border-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition";
+                    }
+                }
+            });
+
+            speakText(`Sticker ${weatherId} selected. Tap on any day card below to stick it!`);
+        }
+
+        function applyStickerToDay(day) {
+            if (!selectedSticker) {
+                speakText("First click on a weather sticker from the dock above, then click the day.");
+                return;
+            }
+            forecastData[day].weather = selectedSticker;
+            renderWeeklyPlanner();
+            triggerDopamineConfetti(false);
+        }
+
+        function saveForecastReason(day, val) {
+            forecastData[day].reason = val;
+        }
+
+        function clearForecast() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            days.forEach(d => {
+                forecastData[d].weather = null;
+                forecastData[d].reason = "";
+            });
+            renderWeeklyPlanner();
+            speakText("Weather chart restarted.");
+        }
+
+        function renderMixerIngredients() {
+            const db = weatherDatabase[currentDifficulty];
+            const select1 = document.getElementById('mix-select-1');
+            const select2 = document.getElementById('mix-select-2');
+            
+            select1.innerHTML = '';
+            select2.innerHTML = '';
+
+            db.weathers.forEach((w, index) => {
+                select1.innerHTML += `<option value="${w.id}" ${index === 0 ? 'selected' : ''}>${w.title} (${w.metaphor})</option>`;
+                select2.innerHTML += `<option value="${w.id}" ${index === 1 ? 'selected' : ''}>${w.title} (${w.metaphor})</option>`;
+            });
+
+            performAtmosphereMix();
+        }
+
+        function performAtmosphereMix() {
+            const db = weatherDatabase[currentDifficulty];
+            const id1 = document.getElementById('mix-select-1').value;
+            const id2 = document.getElementById('mix-select-2').value;
+
+            const m1 = db.weathers.find(x => x.id === id1);
+            const m2 = db.weathers.find(x => x.id === id2);
+
+            document.getElementById('mix-icon-visual-1').innerHTML = `<i class="fa-solid ${m1.icon}"></i>`;
+            document.getElementById('mix-lbl-1').innerText = m1.title;
+            
+            document.getElementById('mix-icon-visual-2').innerHTML = `<i class="fa-solid ${m2.icon}"></i>`;
+            document.getElementById('mix-lbl-2').innerText = m2.title;
+
+            const resIcon = document.getElementById('mix-result-icon');
+            const headline = document.getElementById('mix-headline');
+            const explanation = document.getElementById('mix-explanation');
+            const label = document.getElementById('mix-result-lbl');
+
+            if (id1 === id2) {
+                resIcon.innerHTML = `<i class="fa-solid ${m1.icon.split(' ')[0]}"></i>`;
+                headline.innerText = `Intense ${m1.title}`;
+                explanation.innerText = `Mixing identical emotional climates simply doubles down on that state. Try choosing two distinct emotional atmospheres to see what compound feeling develops.`;
+                label.innerText = "Saturated Front";
+                return;
+            }
+
+            const mixKey = `${id1}+${id2}`;
+            const altMixKey = `${id2}+${id1}`;
+            const recipe = db.mixes[mixKey] || db.mixes[altMixKey];
+
+            if (recipe) {
+                resIcon.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i>`;
+                headline.innerText = recipe.title;
+                explanation.innerText = recipe.desc;
+                label.innerText = "Unique Synergy";
+                triggerDopamineConfetti(true);
+                speakText(`Colliding atmospheric fronts created ${recipe.title}. ${recipe.desc}`);
+            } else {
+                resIcon.innerHTML = `<i class="fa-solid fa-wind animate-spin"></i>`;
+                headline.innerText = "Undefined Climate";
+                explanation.innerText = "This custom mental mixture is unique. How would you describe this mood combination to a teacher or trusted buddy?";
+                label.innerText = "Vast Unknown";
+            }
+        }
+
+        function initCatcherGame() {
+            canvas = document.getElementById('catcher-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            
+            // Register movement commands
+            window.addEventListener('keydown', handleCatcherKeys);
+            
+            catcherX = (canvas.width - catcherWidth) / 2;
+            items = [];
+            catcherScore = 0;
+            document.getElementById('catcher-score').innerText = catcherScore;
+
+            // Select objective target feeling
+            const db = weatherDatabase[currentDifficulty];
+            const randomWeather = db.weathers[Math.floor(Math.random() * db.weathers.length)];
+            targetFeelingType = randomWeather.id;
+            document.getElementById('catcher-mission-label').innerText = `Catch only: ${randomWeather.title}!`;
+            
+            if (gameLoopRunning) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            gameLoopRunning = true;
+            catcherGameLoop();
+        }
+
+        function handleCatcherKeys(e) {
+            if (!gameLoopRunning) return;
+            if (e.key === 'ArrowLeft' || e.key === 'a') {
+                moveCatcherLeft();
+            } else if (e.key === 'ArrowRight' || e.key === 'd') {
+                moveCatcherRight();
+            }
+        }
+
+        function moveCatcherLeft() {
+            catcherX -= 30;
+            if (catcherX < 0) catcherX = 0;
+        }
+
+        function moveCatcherRight() {
+            catcherX += 30;
+            if (catcherX > canvas.width - catcherWidth) catcherX = canvas.width - catcherWidth;
+        }
+
+        function spawnCatcherItem() {
+            if (Math.random() < 0.03) {
+                const db = weatherDatabase[currentDifficulty];
+                const types = db.weathers.map(w => w.id);
+                const randomType = types[Math.floor(Math.random() * types.length)];
+                
+                items.push({
+                    x: Math.random() * (canvas.width - 24) + 12,
+                    y: -20,
+                    type: randomType,
+                    speed: 1.5 + Math.random() * 1.5,
+                    radius: 12
+                });
+            }
+        }
+
+        function catcherGameLoop() {
+            if (!gameLoopRunning) return;
+
+            spawnCatcherItem();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Basket element
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.roundRect(catcherX, canvas.height - catcherHeight - 10, catcherWidth, catcherHeight, 8);
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.fillText("WEATHER", catcherX + 16, canvas.height - 15);
+
+            // Redraw drop elements
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                item.y += item.speed;
+
+                ctx.beginPath();
+                ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+                
+                if (item.type === 'sunny') {
+                    ctx.fillStyle = '#fbbf24';
+                } else if (item.type === 'rainy') {
+                    ctx.fillStyle = '#60a5fa';
+                } else if (item.type === 'stormy') {
+                    ctx.fillStyle = '#f87171';
+                } else {
+                    ctx.fillStyle = '#94a3b8';
+                }
+                ctx.fill();
+
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 10px sans-serif';
+                const labelChar = item.type.charAt(0).toUpperCase();
+                ctx.fillText(labelChar, item.x - 4, item.y + 4);
+
+                // Check collision logic
+                const basketY = canvas.height - catcherHeight - 10;
+                if (item.y + item.radius >= basketY && 
+                    item.x >= catcherX && 
+                    item.x <= catcherX + catcherWidth) {
+                    
+                    if (item.type === targetFeelingType) {
+                        catcherScore += 10;
+                        document.getElementById('catcher-score').innerText = catcherScore;
+                        triggerDopamineConfetti(true);
+                    } else {
+                        catcherScore = Math.max(0, catcherScore - 2);
+                        document.getElementById('catcher-score').innerText = catcherScore;
+                    }
+                    items.splice(i, 1);
+                    continue;
+                }
+
+                if (item.y - item.radius > canvas.height) {
+                    items.splice(i, 1);
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(catcherGameLoop);
+        }
+
+        function resetMemoryGame() {
+            const db = weatherDatabase[currentDifficulty];
+            matchedMemoryCount = 0;
+            selectedMemoryCards = [];
+            document.getElementById('memory-feedback').innerText = "Scanning skies for patterns... Select your first card.";
+            
+            let rawCards = [];
+            db.weathers.forEach(w => {
+                rawCards.push({
+                    id: `${w.id}-weather`,
+                    matchId: w.id,
+                    type: 'visual',
+                    content: `<i class="fa-solid ${w.icon} text-2xl"></i><div class="text-[10px] font-bold mt-1">${w.title}</div>`
+                });
+                rawCards.push({
+                    id: `${w.id}-meaning`,
+                    matchId: w.id,
+                    type: 'verbal',
+                    content: `<div class="text-[10px] font-bold text-center px-1">${w.metaphor}</div>`
+                });
+            });
+
+            // Random deck shuffle
+            for (let i = rawCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [rawCards[i], rawCards[j]] = [rawCards[j], rawCards[i]];
+            }
+
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+
+            rawCards.forEach((c, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = "card-perspective h-28 cursor-pointer";
+                cardEl.onclick = () => handleMemoryFlip(index, cardEl);
+                cardEl.id = `mem-card-${index}`;
+
+                cardEl.innerHTML = `
+                    <div class="card-inner w-full h-full relative rounded-xl border border-slate-200 bg-slate-50 shadow-sm flex items-center justify-center p-2 text-center">
+                        <div class="card-front absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-amber-400 rounded-xl">
+                            <i class="fa-solid fa-question text-xl"></i>
+                            <span class="text-[9px] uppercase font-bold tracking-widest mt-1">Reveal</span>
+                        </div>
+                        <div class="card-back absolute inset-0 flex flex-col items-center justify-center bg-white text-slate-800 rounded-xl p-2">
+                            ${c.content}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(cardEl);
+                cardEl.dataset.matchId = c.matchId;
+                cardEl.dataset.uniqueId = c.id;
+            });
+        }
+
+        function handleMemoryFlip(index, cardEl) {
+            const inner = cardEl.querySelector('.card-inner');
+            if (inner.classList.contains('card-flipped') || selectedMemoryCards.length >= 2) return;
+
+            inner.classList.add('card-flipped');
+            selectedMemoryCards.push({ index, cardEl, inner });
+
+            if (selectedMemoryCards.length === 2) {
+                const [c1, c2] = selectedMemoryCards;
+                const feedback = document.getElementById('memory-feedback');
+
+                if (c1.cardEl.dataset.matchId === c2.cardEl.dataset.matchId && c1.cardEl.dataset.uniqueId !== c2.cardEl.dataset.uniqueId) {
+                    feedback.innerText = "🌟 Fantastic observation! That matches beautifully!";
+                    feedback.className = "mt-6 p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold text-center animate-bounce";
+                    triggerDopamineConfetti(true);
+                    
+                    c1.cardEl.style.pointerEvents = 'none';
+                    c2.cardEl.style.pointerEvents = 'none';
+                    selectedMemoryCards = [];
+                    matchedMemoryCount += 2;
+
+                    if (matchedMemoryCount === weatherDatabase[currentDifficulty].weathers.length * 2) {
+                        feedback.innerText = "🎉 Brilliant Sky Searcher! You matched all atmospheric patterns!";
+                        triggerDopamineConfetti(true);
+                    }
+                } else {
+                    feedback.innerText = "No pressure! The fronts will shift again shortly.";
+                    feedback.className = "mt-6 p-3 rounded-xl bg-slate-50 text-xs text-slate-600 font-bold text-center";
+                    setTimeout(() => {
+                        c1.inner.classList.remove('card-flipped');
+                        c2.inner.classList.remove('card-flipped');
+                        selectedMemoryCards = [];
+                    }, 1400);
+                }
+            }
+        }
+
+        function startBreathingCycle() {
+            stopBreathingCycle();
+            const ring = document.getElementById('breathing-ring');
+            const txt = document.getElementById('breathing-txt');
+            
+            let phase = 0; 
+            
+            const runCycle = () => {
+                if (phase === 0) {
+                    ring.style.transform = "scale(1.8)";
+                    ring.className = "w-24 h-24 rounded-full border-4 border-emerald-400 bg-emerald-400/30 flex items-center justify-center transition-all duration-[4000ms] ease-in-out";
+                    txt.innerText = "Breathe In";
+                    phase = 1;
+                } else {
+                    ring.style.transform = "scale(1.0)";
+                    ring.className = "w-24 h-24 rounded-full border-4 border-sky-400 bg-sky-400/20 flex items-center justify-center transition-all duration-[4000ms] ease-in-out";
+                    txt.innerText = "Breathe Out";
+                    phase = 0;
+                }
+            };
+
+            runCycle();
+            breathingTimer = setInterval(runCycle, 4000);
+            speakText("Starting gentle breathing cycles. Relax your shoulders and watch the circle expand and contract.");
+        }
+
+        function stopBreathingCycle() {
+            if (breathingTimer) {
+                clearInterval(breathingTimer);
+                breathingTimer = null;
+            }
+            const ring = document.getElementById('breathing-ring');
+            if (ring) {
+                ring.style.transform = "scale(1.0)";
+                ring.className = "w-24 h-24 rounded-full border-4 border-sky-400 bg-sky-400/20 flex items-center justify-center transition-all";
+            }
+            const txt = document.getElementById('breathing-txt');
+            if (txt) txt.innerText = "Steady";
+        }
+
+        function renderPrintableWorksheets() {
+            const db = weatherDatabase[currentDifficulty];
+            const preview = document.getElementById('printable-worksheet-preview');
+            const printWrapper = document.getElementById('print-sheet-wrapper');
+
+            let sheetContent = '';
+            
+            if (currentDifficulty === 'easy') {
+                sheetContent = `
+                    <div class="print-card">
+                        <div class="flex justify-between items-center pb-4 border-b border-black mb-6">
+                            <div>
+                                <h1 class="text-xl font-bold uppercase tracking-wider">The Weather Inside: My Feelings Book</h1>
+                                <p class="text-xs">Complimentary SEL Practice Worksheet (Ages 6-10)</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs block">Student Name: _____________________</span>
+                                <span class="text-xs block">Date: _____________________</span>
+                            </div>
+                        </div>
+
+                        <h2 class="font-bold text-sm mb-2">Activity 1: Let's Draw Our Sky!</h2>
+                        <p class="text-xs mb-4">In the box below, draw what your heart looks like today. Is it sunny? Is it rainy? Add trees, lightning, or a beautiful rainbow!</p>
+                        
+                        <div class="w-full h-48 border-2 border-black rounded-lg mb-6 flex items-center justify-center text-slate-300 italic">
+                            [Drawing Space: Use crayons or felt-tip markers]
+                        </div>
+
+                        <h2 class="font-bold text-sm mb-2">Activity 2: Fill in the Blanks</h2>
+                        <div class="space-y-4 text-xs">
+                            <p class="leading-loose">Today, my inner body feels like a ________________________ day because __________________________________________________________________.</p>
+                            <p class="leading-loose">When I feel stormy, I can help myself feel safe by __________________________________________________________________.</p>
+                        </div>
+                    </div>
+                `;
+            } else if (currentDifficulty === 'medium') {
+                sheetContent = `
+                    <div class="print-card">
+                        <div class="flex justify-between items-center pb-4 border-b border-black mb-6">
+                            <div>
+                                <h1 class="text-xl font-bold uppercase tracking-wider">Atmospheric Analysis: Daily Weather Record</h1>
+                                <p class="text-xs">Middle School Regulation Resource (Ages 10-15)</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs block">Student Name: _____________________</span>
+                                <span class="text-xs block">Date: _____________________</span>
+                            </div>
+                        </div>
+
+                        <h2 class="font-bold text-sm mb-2">Part A: The Weekly Pressure Map</h2>
+                        <p class="text-xs mb-4">Complete your offline mental weather report. Rate your energy pressure from 1 (lowest) to 10 (highest), and explain why.</p>
+                        
+                        <table class="w-full border-collapse border border-black text-xs mb-6">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="border border-black p-2">Day</th>
+                                    <th class="border border-black p-2">Internal Weather Symbol</th>
+                                    <th class="border border-black p-2">Energy (1-10)</th>
+                                    <th class="border border-black p-2">Contributing Factors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="border border-black p-4 font-bold">Monday</td><td class="border border-black p-4"></td><td class="border border-black p-4"></td><td class="border border-black p-4"></td></tr>
+                                <tr><td class="border border-black p-4 font-bold">Wednesday</td><td class="border border-black p-4"></td><td class="border border-black p-4"></td><td class="border border-black p-4"></td></tr>
+                                <tr><td class="border border-black p-4 font-bold">Friday</td><td class="border border-black p-4"></td><td class="border border-black p-4"></td><td class="border border-black p-4"></td></tr>
+                            </tbody>
+                        </table>
+
+                        <h2 class="font-bold text-sm mb-2">Part B: Reflection Prompt</h2>
+                        <p class="text-xs mb-4">How does realizing that "feelings are just weather patterns" help us when we are experiencing a heavy emotional storm?</p>
+                        <div class="w-full h-24 border border-black rounded p-2 text-slate-300 text-xs">
+                            Write your reflective notes here...
+                        </div>
+                    </div>
+                `;
+            } else {
+                sheetContent = `
+                    <div class="print-card">
+                        <div class="flex justify-between items-center pb-4 border-b border-black mb-6">
+                            <div>
+                                <h1 class="text-xl font-bold uppercase tracking-wider">Psychological Barometrics: Microclimates & Regulation</h1>
+                                <p class="text-xs">High School Self-Regulation & Neurology Guide (Ages 15-19)</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs block">Student: _____________________</span>
+                                <span class="text-xs block">Date: _____________________</span>
+                            </div>
+                        </div>
+
+                        <h2 class="font-bold text-sm mb-1">Section 1: Interactive Analysis</h2>
+                        <p class="text-xs mb-4">Map how your nervous system transitions across states. Draw lines linking states to physiological safety cues.</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 text-xs mb-6">
+                            <div class="border border-black p-3 rounded">
+                                <h3 class="font-bold mb-2">Nervous System States</h3>
+                                <ul class="space-y-2">
+                                    <li>⚡ Cyclone (Sensory Overload)</li>
+                                    <li>❄️ Anticyclone (Flow/Alignment)</li>
+                                    <li>☁️ Dissociative Mist (Shielding)</li>
+                                    <li>🌧️ Persistent Low (Depression)</li>
+                                </ul>
+                            </div>
+                            <div class="border border-black p-3 rounded">
+                                <h3 class="font-bold mb-2">Adaptive Regulation Interventions</h3>
+                                <ul class="space-y-2">
+                                    <li>→ Somatosensory grounding (low lighting/deep pressure)</li>
+                                    <li>→ Cognitive micro-chunking & step reduction</li>
+                                    <li>→ Direct demand removal & sensory rest</li>
+                                    <li>→ Dynamic tactile engagement & hyperfocus support</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 class="font-bold text-sm mb-2">Section 2: Introspective Log</h2>
+                        <p class="text-xs mb-4">Analyze a recent "high-friction pressure front" (e.g., sensory overload, PDA triggers). Describe the early indicators in your body, and formulate a low-demand mitigation plan.</p>
+                        <div class="w-full h-32 border border-black rounded p-2 text-slate-300 text-xs leading-loose">
+                            Early physiological warnings: __________________________________________________________________<br><br>
+                            My personal boundary plan: __________________________________________________________________
+                        </div>
+                    </div>
+                `;
+            }
+
+            preview.innerHTML = sheetContent;
+            printWrapper.innerHTML = sheetContent;
+        }
+
+        function openSaveModal() {
+            document.getElementById('save-modal').classList.remove('hidden');
+            hideModalFeedback();
+            speakText("Would you like to keep a copy of your emotional sky map? Let's choose how you want to save or email it.");
+        }
+
+        function closeSaveModal() {
+            document.getElementById('save-modal').classList.add('hidden');
+        }
+
+        function showModalFeedback(text, isError = false) {
+            const fb = document.getElementById('modal-feedback');
+            fb.innerText = text;
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+            if (isError) {
+                fb.classList.add('bg-rose-100', 'text-rose-800');
+            } else {
+                fb.classList.add('bg-emerald-100', 'text-emerald-800');
+            }
+        }
+
+        function hideModalFeedback() {
+            document.getElementById('modal-feedback').classList.add('hidden');
+        }
+
+        // Dynamic Text Report Compiler (Used for Email & Clipboard fallbacks)
+        function compileTextReport(studentName) {
+            const db = weatherDatabase[currentDifficulty];
+            const name = studentName || "A student";
+            let report = `Weekly Weather Emotional Forecast Report\n`;
+            report += `========================================\n`;
+            report += `Compiled by: ${name}\n`;
+            report += `Target Group / Level: ${currentDifficulty.toUpperCase()}\n`;
+            report += `Date Compiled: ${new Date().toLocaleDateString()}\n\n`;
+            report += `DAILY MICROCLIMATE DATA:\n`;
+            report += `------------------------\n`;
+
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            days.forEach(day => {
+                const dayData = forecastData[day];
+                const matchedWeather = dayData.weather ? db.weathers.find(x => x.id === dayData.weather) : null;
+                const weatherTitle = matchedWeather ? `${matchedWeather.title} (${matchedWeather.metaphor})` : "Uncharted/Blank Sky";
+                const noteText = dayData.reason.trim() ? dayData.reason : "(No additional notes provided)";
+                report += `* ${day}: ${weatherTitle}\n  Notes: "${noteText}"\n\n`;
+            });
+
+            report += `------------------------\n`;
+            report += `Reflection Guidance: "${db.refPrompt}"\n\n`;
+            report += `* Remember: Skies are always changing. A storm never stays forever. Keep breathing! *\n`;
+            return report;
+        }
+
+        // Direct Native Email Generator (mailto:)
+        function sendEmailReport() {
+            const teacherEmail = document.getElementById('teacher-email-input').value.trim();
+            const studentName = document.getElementById('student-name-input').value.trim();
+            
+            const subjectLine = encodeURIComponent(`Weekly Emotional Weather Report from ${studentName || 'Student'}`);
+            const reportBody = encodeURIComponent(compileTextReport(studentName));
+            
+            // Generate link
+            const mailtoUrl = `mailto:${teacherEmail}?subject=${subjectLine}&body=${reportBody}`;
+            
+            try {
+                window.open(mailtoUrl, '_self');
+                showModalFeedback("Attempting to open your system's email client! If nothing popped up, you can click the Copy button below instead.");
+            } catch (err) {
+                showModalFeedback("Could not trigger email app automatically. Feel free to copy the text summary below instead!", true);
+            }
+        }
+
+        // Sandbox-Resilient Clipboard Copying Tool
+        function copyEmailToClipboard() {
+            const studentName = document.getElementById('student-name-input').value.trim();
+            const reportText = compileTextReport(studentName);
+
+            // Resilient text input creation to bypass standard iframe sandbox navigator.clipboard blockage
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = reportText;
+            tempTextArea.style.position = "fixed";  // Avoid scrolling page to bottom
+            document.body.appendChild(tempTextArea);
+            tempTextArea.focus();
+            tempTextArea.select();
+
+            try {
+                const success = document.execCommand('copy');
+                if (success) {
+                    showModalFeedback("📋 Text report copied straight to clipboard! You can now paste it into any Email, Teams, or Google Classroom window.");
+                    triggerDopamineConfetti(true);
+                } else {
+                    showModalFeedback("Ah, copying failed. Please select and copy text from the fields manually.", true);
+                }
+            } catch (err) {
+                showModalFeedback("Sandbox limits prevented automatic clipboard write. Please type manually or print PDF instead.", true);
+            }
+
+            document.body.removeChild(tempTextArea);
+        }
+
+        // Dynamic High-Performance Client-Side PDF Compiler
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const db = weatherDatabase[currentDifficulty];
+            const studentName = document.getElementById('student-name-input').value.trim() || "Unspecified Explorer";
+            
+            // Design Layout Coordinates & Assets
+            doc.setFillColor(245, 158, 11); // Amber accent color
+            doc.rect(0, 0, 210, 16, 'F');
+            
+            // Header Text Block
+            doc.setTextColor(15, 23, 42); // Dark slate
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("MY WEEKLY WEATHER & EMOTIONAL FORECAST", 15, 10);
+            
+            // Secondary Information Grid
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(10);
+            doc.setTextColor(100, 116, 139); // Slate-500
+            doc.text(`EXPLORER: ${studentName.toUpperCase()}`, 15, 25);
+            doc.text(`DIFFICULTY LEVEL: ${currentDifficulty.toUpperCase()}`, 15, 30);
+            doc.text(`DATE GENERATED: ${new Date().toLocaleDateString()}`, 15, 35);
+            
+            // Draw visual divider
+            doc.setDrawColor(226, 232, 240); // slate-200
+            doc.setLineWidth(0.5);
+            doc.line(15, 40, 195, 40);
+
+            // Iterating over days and rendering reports
+            let cursorY = 50;
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            
+            days.forEach(day => {
+                const dayData = forecastData[day];
+                const matchedWeather = dayData.weather ? db.weathers.find(x => x.id === dayData.weather) : null;
+                const weatherTitle = matchedWeather ? `${matchedWeather.title} (${matchedWeather.metaphor})` : "Unexplored / Blank Sky Day";
+                const notes = dayData.reason.trim() ? dayData.reason : "No notes logged for this day.";
+                
+                // Draw dynamic light background cards for readability
+                doc.setFillColor(248, 250, 252); // slate-50
+                doc.rect(15, cursorY - 5, 180, 20, 'F');
+                
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(10);
+                doc.setTextColor(30, 41, 59); // slate-800
+                doc.text(day, 20, cursorY + 1);
+
+                doc.setFont("Helvetica", "normal");
+                doc.setFontSize(9);
+                doc.setTextColor(71, 85, 105); // slate-600
+                doc.text(`Inner Climate: ${weatherTitle}`, 50, cursorY + 1);
+                
+                // Wrap text if notes are extra long
+                const splitNotes = doc.splitTextToSize(`Notes: "${notes}"`, 130);
+                doc.text(splitNotes, 50, cursorY + 6);
+                
+                cursorY += 24;
+
+                // Create a clean new page if cursor drifts too low
+                if (cursorY > 270) {
+                    doc.addPage();
+                    cursorY = 20;
+                }
+            });
+
+            // Footer layout
+            doc.setDrawColor(226, 232, 240);
+            doc.line(15, cursorY, 195, cursorY);
+            
+            doc.setFont("Helvetica", "italic");
+            doc.setFontSize(8);
+            doc.setTextColor(148, 163, 184); // slate-400
+            
+            const wrappedFooterText = doc.splitTextToSize(`Guidance: ${db.refPrompt}`, 175);
+            doc.text(wrappedFooterText, 15, cursorY + 8);
+            
+            doc.setFont("Helvetica", "bold");
+            doc.text("Remember: All skies eventually clear. Storms never last forever.", 15, cursorY + 18);
+
+            // Execute client-side download sequence
+            const cleanFileName = studentName.toLowerCase().replace(/[^a-z0-9]/g, "_");
+            doc.save(`weather_report_${cleanFileName || 'student'}.pdf`);
+            showModalFeedback("🎉 Custom PDF compiled and downloaded successfully!");
+            triggerDopamineConfetti(true);
+        }
+
+        window.onload = function() {
+            setDifficulty('medium');
+            initConfetti();
+            triggerDopamineConfetti(true);
+        };
+    </script>
+</body>
+</html>
+```
+eof
