@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50 transition-colors duration-300">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Slang Sandbox - A Neurodivergent-Friendly Translator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Atkinson Hyperlegible & Comic Neue -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Comic+Neue:wght@400;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js library for client-side PDF downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Atkinson Hyperlegible', 'Inter', 'sans-serif'],
+                        comic: ['Comic Neue', 'cursive'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        friendly: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            500: '#d97706', // Warm Amber
+                            600: '#b45309',
+                            700: '#78350f',
+                        },
+                        calm: {
+                            bg: '#fbfbf8',
+                            text: '#2d2d2a',
+                            accent: '#6b705c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth custom transitions */
+        .transition-all-300 {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Dyslexia Reader Helper Layout */
+        .dyslexia-font {
+            font-family: 'Atkinson Hyperlegible', sans-serif !important;
+            letter-spacing: 0.08em !important;
+            word-spacing: 0.18em !important;
+            line-height: 1.8 !important;
+        }
+
+        .dyslexia-font p, .dyslexia-font span, .dyslexia-font div, .dyslexia-font li, .dyslexia-font button, .dyslexia-font textarea {
+            font-family: 'Atkinson Hyperlegible', sans-serif !important;
+            letter-spacing: 0.06em !important;
+            word-spacing: 0.15em !important;
+            line-height: 1.7 !important;
+        }
+
+        /* Calm Sensory State */
+        .sensory-calm {
+            animation: none !important;
+            text-shadow: none !important;
+            transition: none !important;
+        }
+        .sensory-calm .neon-glow {
+            text-shadow: none !important;
+        }
+        .sensory-calm .animate-bounce, .sensory-calm .animate-pulse {
+            animation: none !important;
+        }
+
+        /* Custom fun pulse */
+        .gentle-pulse {
+            animation: softPulse 3s infinite ease-in-out;
+        }
+        @keyframes softPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.95; }
+        }
+
+        /* Customize scrollbars for distraction-free view */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 6px;
+            border: 2px solid #f5f5f4;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #worksheet-print-area, #worksheet-print-area * {
+                visibility: visible;
+            }
+            #worksheet-print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body id="main-body" class="h-full font-sans text-slate-800 antialiased flex flex-col transition-colors duration-300">
+
+    <script>
+        // Neurodivergent-friendly playful database
+        // PDA considerations: Low demands, cooperative phrases, high visual context, funny logic
+        const slangDatabase = {
+            easy: {
+                title: "Level 1: The Curious Cat (Ages 6–10)",
+                description: "Cool vocabulary words that have changed their meanings. Think of it as a secret decoder ring for playing with human language!",
+                slangs: [
+                    { term: "No cap", standard: "Honestly / I'm telling the truth!", origin: "People used to say 'cap' to mean bragging or telling a tall tale. Saying 'no cap' is like saying 'Cross my heart and hope to fly!'", example: "I built a Lego fortress taller than my dog, no cap!", category: "Honesty Alert" },
+                    { term: "Sus", standard: "Suspicious / Acting a bit weird", origin: "Short for suspicious. Imagine a squirrel wearing sunglasses and pretending to be a bird—that is super sus.", example: "That box is moving on its own... highly sus.", category: "Mystery Vibes" },
+                    { term: "Bet", standard: "Sure! Let's do it!", origin: "Instead of saying 'I agree to this deal,' humans got lazy and just shouted 'Bet!' It means you are ready for action.", example: "Want to see who can make the funniest face? - Bet!", category: "Count Me In" },
+                    { term: "Flex", standard: "To proudly show off your awesome skills", origin: "Comes from flexing your muscles in the mirror, but now it means showing off something cool like a shiny rock or a high score.", example: "Don't flex your sparkly sticker collection too much!", category: "Happy Boasting" },
+                    { term: "Yeet", standard: "To throw something with lots of energy", origin: "An exclamation you shout when launching an object into space (or just into the laundry basket).", example: "Watch me yeet this crumpled paper ball into the bin!", category: "Launching Things" },
+                    { term: "Glow up", standard: "Becoming more confident, happy, or stylish", origin: "A cute upgrade! Like when a caterpillar takes a nap and emerges as a cool butterfly.", example: "My desk had a total glow up after I sorted my coloring pens.", category: "Super Upgrades" },
+                    { term: "Extra", standard: "Doing way too much or being very dramatic", origin: "When someone acts like they're in a movie about a minor event. Like crying because a strawberry fell on the floor.", example: "The teacher was being a bit extra with four sparkly gold stars!", category: "Drama Zone" }
+                ],
+                matchingPairs: [
+                    { slang: "No cap", standard: "Honestly / No lie" },
+                    { slang: "Sus", standard: "Acting a bit weird" },
+                    { slang: "Bet", standard: "Sure, let's do it" },
+                    { slang: "Yeet", standard: "To throw enthusiastically" }
+                ],
+                quiz: [
+                    {
+                        question: "If your friend says 'This sandwich is the best thing ever, no cap!', they want you to know:",
+                        options: [
+                            "They forgot their hat today.",
+                            "They are completely serious and really love that sandwich.",
+                            "They want to throw the sandwich away.",
+                            "The sandwich has a lid on it."
+                        ],
+                        correct: 1,
+                        explanation: "'No cap' means they are telling the absolute truth. No tricks!"
+                    },
+                    {
+                        question: "You see a dog attempting to ride a skateboard while wearing a tiny hat. This behavior is:",
+                        options: ["Very normal and expected", "Highly Sus", "Extremely boring", "A math problem"],
+                        correct: 1,
+                        explanation: "A skateboarding dog in a hat is hilarious, but definitely a bit suspicious ('sus')!"
+                    },
+                    {
+                        question: "When someone shouts 'YEET!' and tosses a soft toy, they are:",
+                        options: [
+                            "Falling asleep.",
+                            "Politely asking for a cup of tea.",
+                            "Throwing that toy with high-energy excitement.",
+                            "Doing homework."
+                        ],
+                        correct: 2,
+                        explanation: "'Yeet' is all about energy, launching, and having fun!"
+                    }
+                ],
+                worksheetTitle: "Secret Decoder Activity (Level 1)",
+                worksheetIntro: "Greetings, language detective! Have fun tracking down how words wiggle and change. Draw lines, solve riddles, and try out these words with your friends or family."
+            },
+            medium: {
+                title: "Level 2: The Vibe Checkers (Ages 10–15)",
+                description: "Decoding how internet trends fly across the digital universe. How ideas mutate inside TikTok, YouTube, and gaming chats.",
+                slangs: [
+                    { term: "Rizz", standard: "Great charm or the ability to make friends easily", origin: "A lazy shortening of 'cha-rizz-ma' (charisma). It's the magical vibe that makes people want to hang out with you.", example: "They used their silly humor rizz to get a free biscuit.", category: "Social Charm" },
+                    { term: "Bussin", standard: "Extremely delicious or wonderful", origin: "Originally from African American Vernacular English (AAVE) to praise fantastic home-cooked food. Now used for anything amazing.", example: "This warm garlic bread is straight-up bussin!", category: "Yummy Scale" },
+                    { term: "Delulu", standard: "Delightfully daydreaming or holding silly, unrealistic hopes", origin: "A funny way of saying 'delusional.' It's like believing you'll become a millionaire tomorrow by finding a coin under the couch.", example: "Hoping my homework will write itself is pure delulu.", category: "Brain Magic" },
+                    { term: "Ate and left no crumbs", standard: "Did an absolutely perfect job with zero mistakes", origin: "A metaphor from ballroom cultures. It means you performed so well that there is nothing left for anyone else to improve upon.", example: "Her drum solo ate and left no crumbs!", category: "Maximum Praise" },
+                    { term: "Tea", standard: "Juicy stories, news, or friendly gossip", origin: "Started in Black drag cultures, where 'spilling the tea' meant sharing hidden truths. Now it just means 'tell me the gossip!'", example: "Sit down and spill the tea about the science project disaster!", category: "Inside Scoop" },
+                    { term: "Slay", standard: "To do something amazingly well or look brilliant", origin: "Another ballroom classic! Doing something with so much style and power that you dominate the room.", example: "You are going to absolutely slay your presentation!", category: "Winning Vibes" },
+                    { term: "Main Character Energy", standard: "Feeling confident and behaving like the hero of your own life", origin: "Imagine background music starts playing when you walk down the street. That is peak main character energy.", example: "Wearing bright yellow boots on a rainy day gives off major main character energy.", category: "Cool Attitude" },
+                    { term: "Rent-free", standard: "When you can't stop thinking about something", origin: "From 'living in your head rent-free'. Usually a catchy song or a funny video you can't push out of your brain.", example: "That video of the sneezing panda is living rent-free in my head.", category: "Brain Loops" }
+                ],
+                matchingPairs: [
+                    { slang: "Rizz", standard: "Effortless charm" },
+                    { slang: "Bussin", standard: "Very tasty or awesome" },
+                    { slang: "Tea", standard: "Interesting gossip" },
+                    { slang: "Delulu", standard: "Fancifully dreaming" }
+                ],
+                quiz: [
+                    {
+                        question: "If a musician 'ate and left no crumbs' during their concert, what did they do?",
+                        options: [
+                            "They swept the stage clean.",
+                            "They ate snacks during the guitar solo.",
+                            "They played so beautifully that it was absolutely flawless.",
+                            "They forgot to invite their friends."
+                        ],
+                        correct: 2,
+                        explanation: "'Eating and leaving no crumbs' is high-tier praise for flawless execution!"
+                    },
+                    {
+                        question: "Your favorite video-game background music has been playing in your brain for three days straight. This means the song is:",
+                        options: [
+                            "A legal tenant paying rent.",
+                            "Living rent-free in your mind.",
+                            "Broken and needs a reboot.",
+                            "Too loud to hear yourself think."
+                        ],
+                        correct: 1,
+                        explanation: "When you can't get a thought or sound out of your mind, it's living 'rent-free'!"
+                    },
+                    {
+                        question: "Which option best describes being 'delulu'?",
+                        options: [
+                            "Carefully studying for a test with flashcards.",
+                            "Thinking your cat is planning to build a rocket to the moon.",
+                            "Going to bed on time.",
+                            "Eating a healthy snack."
+                        ],
+                        correct: 1,
+                        explanation: "Being 'delulu' is having highly unrealistic, funny, or hopeful daydreams that are far from actual reality."
+                    }
+                ],
+                worksheetTitle: "Culture Decoders Study Activity (Level 2)",
+                worksheetIntro: "Time to explore how thoughts travel through the digital space! This activity sheet is a relaxed way to look at how slang connects communities."
+            },
+            hard: {
+                title: "Level 3: The Language Wizards (Ages 15–19)",
+                description: "Diving into how words morph, where they come from (AAVE, Ballroom culture, and gaming rooms), and how we use them ironically.",
+                slangs: [
+                    { term: "Demure", standard: "Reserved, polite, and mindful (used with a cheeky wink)", origin: "Emerged as a joke trend in 2024. It means pretending to be extremely modest and gentle, even when doing normal tasks.", example: "See how I eat my crisps? Very quiet, very mindful, very demure.", category: "Playful Mockery" },
+                    { term: "Mother", standard: "An iconic, inspiring person who leads the way", origin: "Rooted in LGBTQ+ Ballroom cultures. A title of honor for founders, leaders, and legendary performers who look after others.", example: "That author's writing is incredible—she is truly mother.", category: "Ultimate Icon" },
+                    { term: "Era", standard: "A chapter of your life defined by what you love doing", origin: "We used to talk about geological eras (like the Jurassic Era). Now, if you suddenly start reading 20 books, you are in your 'book era'.", example: "I am entering my organized-desk era this week.", category: "Life Chapters" },
+                    { term: "Coded", standard: "Having the secret vibe of a specific group or style", origin: "From coding and semiotics. It means something has hidden patterns that remind you of another culture.", example: "This bedroom design is very retro-futuristic arcade coded.", category: "Vibe Coding" },
+                    { term: "Gagged", standard: "So completely shocked and amazed that you cannot speak", origin: "From drag and ballroom shows. It means a performance was so stunning it metaphorically took your breath away.", example: "When he revealed his painting, the entire classroom was gagged.", category: "Total Awe" },
+                    { term: "Touch grass", standard: "Step away from the screen and reconnect with the real world", origin: "An internet joke used to tell people who argue on forums for hours that they need to go outside and remember reality.", example: "If you are upset about a pixelated block, it is time to go touch grass.", category: "Reality Check" },
+                    { term: "Yap", standard: "To talk on and on without saying much of anything", origin: "Onomatopoeia for a puppy barking. Now used lovingly or mockingly when someone goes on a massive talking journey.", example: "I will stop yapping now so we can play the game.", category: "Chatterbox" },
+                    { term: "Let them cook", standard: "Give someone space to finish their creative plan without interfering", origin: "Started in sports and music circles. It means: 'Hey, their idea sounds weird right now, but give them a minute to finish! Check the result.'", example: "Don't judge her draft yet; let her cook!", category: "Give 'em Space" }
+                ],
+                matchingPairs: [
+                    { slang: "Demure", standard: "Mindful and polite (often ironic)" },
+                    { slang: "Gagged", standard: "Awestruck and speechless" },
+                    { slang: "Coded", standard: "Carrying specific vibes" },
+                    { slang: "Touch grass", standard: "Get offline and go outside" }
+                ],
+                quiz: [
+                    {
+                        question: "Why do we call someone 'mother' in modern slang, and where did this start?",
+                        options: [
+                            "Because they literally adopted twenty children.",
+                            "It comes from LGBTQ+ ballroom cultures to honor inspiring figures and mentors.",
+                            "Because they enjoy doing laundry and washing dishes.",
+                            "It is a secret military code name."
+                        ],
+                        correct: 1,
+                        explanation: "Ballroom culture used 'Mother' and 'Father' to represent family structures and leaders of creative 'Houses'."
+                    },
+                    {
+                        question: "If someone tells you to 'touch grass', what are they suggesting?",
+                        options: [
+                            "You need to start a career in landscaping.",
+                            "You are spending too much time online and should connect with physical reality.",
+                            "You have low levels of vitamins.",
+                            "You should go camping in the forest."
+                        ],
+                        correct: 1,
+                        explanation: "'Touch grass' is a friendly or cheeky reminder that the digital world isn't everything!"
+                    },
+                    {
+                        question: "Using the word 'demure' to describe drinking a juice box with pinky fingers up is an example of:",
+                        options: [
+                            "A highly serious grammar rule.",
+                            "Playful, self-aware irony.",
+                            "A dictionary error.",
+                            "Scientific classification."
+                        ],
+                        correct: 1,
+                        explanation: "'Demure' is widely used to make fun of overly-polite, gentle behaviors in hilarious, daily scenarios."
+                    }
+                ],
+                worksheetTitle: "Advanced Sociolinguistics Map (Level 3)",
+                worksheetIntro: "Welcome, linguist! Explore the mechanics of irony, semantic shifts, and subcultural dialects. Have a look at these tasks at your own comfortable pace."
+            }
+        };
+    </script>
+
+    <!-- Top Decorative Soft Gradient Header -->
+    <div class="h-2 bg-gradient-to-r from-amber-400 via-rose-300 to-emerald-400"></div>
+
+    <!-- Navigation Bar -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50 no-print shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center py-3 gap-3 md:h-20">
+                <!-- Logo & Brand Description -->
+                <div class="flex items-center space-x-3 self-start md:self-auto">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-emerald-400 flex items-center justify-center text-stone-900 shadow-md">
+                        <i class="fa-solid fa-face-laugh-beam text-2xl animate-pulse"></i>
+                    </div>
+                    <div>
+                        <span class="font-outfit font-extrabold text-2xl tracking-tight text-amber-600 block">
+                            THE SLANG SANDBOX
+                        </span>
+                        <p class="text-xs text-stone-500 font-medium leading-none">A friendly, pressure-free translation station</p>
+                    </div>
+                </div>
+
+                <!-- Accessibility Controls (ADHD, Autism, Dyslexia, PDA friendly) -->
+                <div class="flex flex-wrap items-center gap-2 bg-stone-100 p-1.5 rounded-2xl border border-stone-200">
+                    <!-- Dyslexia Toggle -->
+                    <button id="toggle-dyslexia" onclick="toggleDyslexiaMode()" class="px-3 py-2 text-xs font-bold rounded-xl transition-all-300 bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 flex items-center gap-1.5 focus:outline-none" title="Switch to a friendly spaced font layout">
+                        <i class="fa-solid fa-eye text-sky-500"></i>
+                        <span>Dyslexia Font</span>
+                    </button>
+
+                    <!-- Sensory Calm Toggle -->
+                    <button id="toggle-calm" onclick="toggleCalmMode()" class="px-3 py-2 text-xs font-bold rounded-xl transition-all-300 bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 flex items-center gap-1.5 focus:outline-none" title="Turn off fast moving parts and flashing effects">
+                        <i class="fa-solid fa-cloud-sun text-amber-500"></i>
+                        <span>Sensory Calm</span>
+                    </button>
+
+                    <!-- Audio Mute Toggle -->
+                    <button id="toggle-mute" onclick="toggleMute()" class="px-3 py-2 text-xs font-bold rounded-xl transition-all-300 bg-emerald-100 border border-emerald-200 text-emerald-800 hover:bg-emerald-200 flex items-center gap-1.5 focus:outline-none" title="Mute reward sounds">
+                        <i id="mute-icon" class="fa-solid fa-volume-high"></i>
+                        <span id="mute-text">Sounds On</span>
+                    </button>
+                </div>
+
+                <!-- Print Worksheets Quick Link -->
+                <div class="self-end md:self-auto flex gap-2">
+                    <a href="#worksheets-section" class="inline-flex items-center gap-2 bg-stone-900 hover:bg-stone-800 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl transition-all-300 shadow">
+                        <i class="fa-solid fa-print text-amber-300"></i>
+                        <span>My Offline Sheets</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8 no-print">
+        
+        <!-- Interactive Welcome Banner -->
+        <section class="relative bg-gradient-to-br from-stone-900 via-stone-800 to-emerald-950 rounded-3xl p-6 sm:p-10 text-white overflow-hidden shadow-xl">
+            <!-- Background Elements -->
+            <div class="absolute right-0 top-0 w-80 h-80 bg-amber-400/10 rounded-full filter blur-3xl pointer-events-none"></div>
+            <div class="absolute left-1/3 bottom-0 w-80 h-80 bg-emerald-400/10 rounded-full filter blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-3xl space-y-4">
+                <span id="level-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-amber-400/20 text-amber-200 border border-amber-400/30">
+                    Friendly Exploration Hub
+                </span>
+                <h1 id="hero-title" class="text-3xl sm:text-5xl font-outfit font-extrabold tracking-tight leading-tight">
+                    Let's explore the wild world of modern words!
+                </h1>
+                <p id="hero-description" class="text-stone-300 text-sm sm:text-lg max-w-2xl font-light">
+                    Human languages change all the time. It is like a game of telephone that never stops! Explore what words mean at your own speed with zero pressure.
+                </p>
+
+                <!-- Vibe Level Selector (PDA-Friendly: No "Choose difficulty" demands) -->
+                <div class="pt-4 space-y-2">
+                    <span class="block text-xs font-bold uppercase tracking-wider text-amber-300">Pick a comfortable vibe level:</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setDifficulty('easy')" id="btn-diff-easy" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all-300 flex items-center gap-2 border" tabindex="0">
+                            <span class="w-3 h-3 rounded-full bg-emerald-400"></span> Level 1: Chill (6-10)
+                        </button>
+                        <button onclick="setDifficulty('medium')" id="btn-diff-medium" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all-300 flex items-center gap-2 border" tabindex="0">
+                            <span class="w-3 h-3 rounded-full bg-amber-400"></span> Level 2: Adventurous (10-15)
+                        </button>
+                        <button onclick="setDifficulty('hard')" id="btn-diff-hard" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all-300 flex items-center gap-2 border" tabindex="0">
+                            <span class="w-3 h-3 rounded-full bg-rose-400"></span> Level 3: Wizard (15-19)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-4 pt-4 border-t border-stone-700/50">
+                    <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs sm:text-sm text-stone-300">
+                        <i class="fa-solid fa-brain text-amber-300"></i>
+                        <span id="target-age">Age group: Level 1 (Casual Explorer)</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs sm:text-sm text-stone-300">
+                        <i class="fa-solid fa-feather-pointed text-emerald-300"></i>
+                        <span id="vocabulary-count">7 Fun Words Loaded</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slang Dictionary & Translation Box (The Core Interaction) -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Live Translation Desk (Left/Top) -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-stone-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                                <i class="fa-solid fa-hat-wizard text-lg"></i>
+                            </span>
+                            <h2 class="font-outfit font-bold text-lg sm:text-xl text-stone-900">The Magic Word Swapper</h2>
+                        </div>
+                        <span class="text-xs text-stone-400 bg-stone-100 px-2.5 py-1 rounded-lg font-mono">Input sandbox</span>
+                    </div>
+                    
+                    <p class="text-stone-600 text-xs sm:text-sm mb-4">
+                        Type some modern words into the left box, or tap any preset button below. Watch how they magically transform into clear Standard English in the right box!
+                    </p>
+
+                    <!-- Presets -->
+                    <div class="mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-stone-400 block mb-2">Cool sentences to try:</span>
+                        <div id="translator-presets" class="flex flex-wrap gap-2">
+                            <!-- Preset buttons populate here -->
+                        </div>
+                    </div>
+
+                    <!-- Translation Input / Output Area -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Left: Input -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider">Your slang phrase:</label>
+                            <textarea id="slang-input" class="w-full h-36 p-3 bg-stone-50 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm placeholder-stone-400 font-sans resize-none" placeholder="Type here... (e.g. 'no cap' or select a button above!)"></textarea>
+                        </div>
+                        <!-- Right: Output -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider">What it actually means:</label>
+                            <div id="translation-output" class="w-full h-36 p-3 bg-amber-50/30 border border-amber-100 rounded-2xl text-sm text-stone-700 overflow-y-auto font-sans">
+                                <span class="text-stone-400 italic">Watch your translation pop up right here...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-stone-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div class="flex items-center gap-1.5 text-xs text-stone-400">
+                        <i class="fa-solid fa-sparkles text-amber-500"></i>
+                        <span>Translates instantly as you type!</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="openEmailModal('translation')" class="inline-flex items-center gap-1.5 text-xs text-emerald-700 hover:text-emerald-950 font-bold bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2 rounded-xl border border-emerald-200 transition-all-300" title="Email these results to yourself or a classmate">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Email Results</span>
+                        </button>
+                        <button onclick="clearTranslator()" class="text-xs text-stone-600 hover:text-stone-900 font-bold bg-stone-100 hover:bg-stone-200 px-3.5 py-2 rounded-xl transition-all-300">
+                            Clear This Space
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Explorer Dictionary (Right/Bottom) -->
+            <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-stone-200 shadow-sm flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                            <i class="fa-solid fa-folder-open text-lg"></i>
+                        </span>
+                        <h2 class="font-outfit font-bold text-lg sm:text-xl text-stone-900">Secret Word Book</h2>
+                    </div>
+                    <span id="slang-count-badge" class="bg-emerald-100 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold">7 Words loaded</span>
+                </div>
+
+                <!-- Glossary Search bar -->
+                <div class="relative mb-3">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="glossary-search" oninput="filterGlossary()" placeholder="Type a word or category to search..." class="w-full pl-9 pr-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-xs text-stone-700">
+                </div>
+
+                <!-- Slang List Box -->
+                <div id="glossary-list" class="flex-1 overflow-y-auto max-h-[300px] space-y-2.5 pr-1">
+                    <!-- Cards are built here dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Game: Slang Term Connector -->
+        <section id="matching-game-section" class="bg-stone-100 rounded-3xl p-6 border border-stone-200 shadow-sm">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <span class="text-xs font-bold text-amber-700 tracking-wider uppercase bg-amber-100 px-3 py-1 rounded-full">Fun Play Area</span>
+                    <h2 class="font-outfit font-extrabold text-2xl text-stone-900 mt-2">The Connection Sandbox</h2>
+                    <p class="text-stone-600 text-sm mt-1">Wanna connect the cards? Match a modern word on the left with its standard meaning on the right!</p>
+                </div>
+                <!-- Controls and score -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-white border border-stone-200 px-4 py-2 rounded-2xl shadow-sm text-center">
+                        <span class="block text-[10px] font-bold text-stone-400 uppercase">Matches Found</span>
+                        <span id="matching-score" class="text-lg font-black text-amber-600">0 / 4</span>
+                    </div>
+                    <button onclick="resetMatchingGame()" class="bg-white hover:bg-stone-50 border border-stone-200 p-3 rounded-2xl text-stone-600 hover:text-stone-950 transition-all-300 shadow-sm" title="Start fresh">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Matching Board Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                <!-- Column Left: Slang -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Modern Words</h3>
+                    <div id="matching-left-col" class="space-y-2.5">
+                        <!-- Slang cards go here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Column Right: Standard Definition -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Traditional Meanings</h3>
+                    <div id="matching-right-col" class="space-y-2.5">
+                        <!-- Meaning cards go here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complete Celebration Popup Alert container inside UI (No alert() calls) -->
+            <div id="match-celebration" class="hidden mt-6 bg-emerald-100 border border-emerald-200 text-emerald-900 p-4 rounded-2xl flex items-center justify-between animate-bounce">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center text-lg"><i class="fa-solid fa-party-horn"></i></span>
+                    <div>
+                        <h4 class="font-bold text-sm">Amazing discovery! 🎉</h4>
+                        <p class="text-xs text-emerald-700">You linked all of these modern codes with their meanings perfectly.</p>
+                    </div>
+                </div>
+                <button onclick="resetMatchingGame()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all-300 shadow-sm">Play another round!</button>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section class="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm">
+            <div class="border-b border-stone-100 pb-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="font-outfit font-bold text-xl text-stone-900 flex items-center gap-2">
+                        <span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </span>
+                        The Riddle Arena (Totally Optional)
+                    </h2>
+                    <p class="text-stone-600 text-sm mt-1">Take a look at these short scenarios and choose whichever explanation sounds right to you.</p>
+                </div>
+                <div class="bg-stone-50 rounded-xl px-3 py-1.5 border border-stone-200 text-xs font-bold text-stone-600">
+                    Difficulty: <span id="quiz-level-indicator" class="font-bold text-amber-600">Chill</span>
+                </div>
+            </div>
+
+            <div id="quiz-wrapper" class="space-y-8">
+                <!-- Live quiz cards populate dynamically -->
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div id="quiz-feedback-text" class="text-sm font-semibold text-stone-500 text-center sm:text-left">
+                    No rush! Explore the choices and click the button to see how you did.
+                </div>
+                <button id="quiz-submit-btn" onclick="gradeQuiz()" class="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-sm px-6 py-3 rounded-2xl transition-all-300 shadow-md w-full sm:w-auto">
+                    Let's check the score! ✨
+                </button>
+            </div>
+        </section>
+
+        <!-- Educational Context explanation section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-stone-900 text-white rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+            <div class="space-y-4">
+                <span class="text-amber-300 text-xs font-bold uppercase tracking-wider block">Interesting Mind Facts</span>
+                <h2 class="font-outfit font-bold text-2xl sm:text-3xl text-white">Why are we talking about slang?</h2>
+                <p class="text-stone-300 text-sm leading-relaxed">
+                    Slang isn't wrong or broken grammar—it is actually your brain playing game tag with words! It helps people connect and express complicated feelings with tiny shortcuts.
+                </p>
+                <div class="pt-2 space-y-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center mt-0.5"><i class="fa-solid fa-comments text-xs"></i></div>
+                        <p class="text-xs text-stone-300"><span class="font-bold text-white">Mind Jumps:</span> Words are modified to match funny memes, feelings, or new activities.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center mt-0.5"><i class="fa-solid fa-network-wired text-xs"></i></div>
+                        <p class="text-xs text-stone-300"><span class="font-bold text-white">Vibe-Checking Communities:</span> Many slang words are developed in creative internet circles before spreading globally.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white/5 border border-white/10 p-6 rounded-2xl flex flex-col justify-between">
+                <div>
+                    <h3 class="font-outfit font-bold text-lg text-white mb-2">Tips for Slang Explorers 🕵️‍♂️</h3>
+                    <p class="text-stone-300 text-xs sm:text-sm leading-relaxed mb-4">
+                        There are no wrong answers in this sandbox. Language is an open-world playground! Have fun mixing and matching terms at your own pace to see how slang can build awesome mental connections.
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <p class="text-xs text-stone-400 italic">"Language is an open world game. There is no game over screen; we are just inventing new moves together!"</p>
+                    <a href="#worksheets-section" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all-300 shadow">
+                        <i class="fa-solid fa-rocket text-amber-300 animate-bounce"></i> Jump to My Offline Sheets
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PRINTABLE WORKSHEETS SECTION -->
+    <section id="worksheets-section" class="bg-stone-200 border-t border-stone-300 py-12 px-4 sm:px-6 lg:px-8 mt-12 no-print">
+        <div class="max-w-4xl mx-auto space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-stone-300 pb-6">
+                <div>
+                    <span class="text-xs font-bold text-emerald-800 tracking-wider uppercase bg-emerald-100 px-3 py-1 rounded-full">Offline Adventures</span>
+                    <h2 class="font-outfit font-extrabold text-3xl text-stone-900 mt-2">My Offline Adventure Sheets</h2>
+                    <p class="text-stone-600 text-sm mt-1">
+                        Here is a custom printable sheet matched to your chosen level: (<span id="active-worksheet-level" class="font-bold text-amber-700">Level 1: Chill</span>).
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2.5">
+                    <button onclick="downloadWorksheetPDF()" class="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-3 rounded-2xl shadow-md hover:shadow-rose-100 transition-all-300">
+                        <i class="fa-solid fa-file-pdf"></i> Save as PDF
+                    </button>
+                    <button onclick="openEmailModal('worksheet')" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-3 rounded-2xl shadow-md hover:shadow-blue-100 transition-all-300">
+                        <i class="fa-solid fa-envelope"></i> Email Me
+                    </button>
+                    <button onclick="printActiveWorksheet()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-3 rounded-2xl shadow-lg hover:shadow-emerald-100 transition-all-300">
+                        <i class="fa-solid fa-print"></i> Print This Page
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Panel Box -->
+            <div class="bg-stone-50 border border-stone-300 rounded-3xl p-1 shadow-inner relative">
+                <span class="absolute top-4 right-4 bg-stone-200 text-stone-700 text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded-md">Page Preview</span>
+                <div class="bg-white border border-stone-200 shadow-md rounded-2xl p-8 max-h-[600px] overflow-y-auto" id="worksheet-preview-container">
+                    <div id="worksheet-live-template" class="space-y-6 text-stone-800">
+                        <!-- Filled in dynamically by JS compileWorksheet() -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EMAIL TRANSMISSION / SEND DIALOGUE MODAL -->
+    <div id="email-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 hidden no-print" onclick="closeEmailModal()">
+        <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border border-stone-200 flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-tr from-amber-500 to-rose-400 p-6 text-white relative">
+                <button onclick="closeEmailModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/15 text-white hover:bg-black/35 flex items-center justify-center transition-all-300 focus:outline-none">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-paper-plane animate-bounce"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-outfit font-extrabold text-xl">Send This Vibe!</h3>
+                        <p class="text-xs text-white/80">Simulate sending your active translator results or adventure sheets.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Content Panels -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-4">
+                <!-- Input State -->
+                <div id="email-form-state" class="space-y-4">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider">Your Email Address</label>
+                        <input id="email-target-input" type="email" placeholder="explorer@school.com" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm placeholder-stone-400 font-sans">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider">Email Subject</label>
+                        <input id="email-subject-input" type="text" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm font-sans" readonly>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider">Live Preview Content</label>
+                        <textarea id="email-body-preview" class="w-full h-32 p-3 bg-stone-100 border border-stone-200 rounded-xl text-xs text-stone-600 font-mono resize-none focus:outline-none" readonly></textarea>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2.5 pt-2">
+                        <button onclick="sendSimulatedEmail()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold py-3 px-4 rounded-xl transition-all-300 text-sm flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-shuttle-space"></i>
+                            <span>Simulate Transmission</span>
+                        </button>
+                        <a id="email-direct-mailto" href="#" onclick="triggerMailto()" class="flex-1 bg-sky-100 hover:bg-sky-200 text-sky-900 border border-sky-300 font-bold py-3 px-4 rounded-xl transition-all-300 text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                            <span>Open Mail App</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sending/Loading State -->
+                <div id="email-sending-state" class="hidden py-8 flex flex-col items-center justify-center text-center space-y-4">
+                    <div class="relative w-24 h-24 flex items-center justify-center">
+                        <div class="absolute inset-0 border-4 border-amber-200 rounded-full animate-pulse"></div>
+                        <div class="absolute inset-2 border-4 border-t-amber-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                        <i class="fa-solid fa-dove text-3xl text-amber-500"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-outfit font-extrabold text-stone-800">Dispatching Carrier Pigeon...</h4>
+                        <p id="sending-progress-text" class="text-xs text-stone-500 mt-1">Saddling up the bird...</p>
+                    </div>
+                    <!-- Custom progress bar -->
+                    <div class="w-full max-w-xs bg-stone-100 rounded-full h-2 overflow-hidden border border-stone-200">
+                        <div id="sending-progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- Success State -->
+                <div id="email-success-state" class="hidden py-6 flex flex-col items-center justify-center text-center space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl animate-bounce">
+                        <i class="fa-solid fa-paper-plane-claim">🚀</i>
+                    </div>
+                    <div>
+                        <h4 class="font-outfit font-extrabold text-stone-800 text-lg">Pigeon Landed Safely!</h4>
+                        <p class="text-xs text-stone-500 max-w-sm mx-auto mt-1">
+                            Your linguistic research has been simulated and finalized! It's prepped to be shared with friends or your teachers!
+                        </p>
+                    </div>
+                    <button onclick="closeEmailModal()" class="bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 px-6 rounded-xl transition-all-300 text-xs">
+                        Back to the Sandbox
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN CONTAINER FOR TRUE RESOLVED PRINT OPERATION -->
+    <div id="worksheet-print-area" class="hidden">
+        <!-- This container is visible only during @media print execution. JS copies computed preview HTML here right before print. -->
+    </div>
+
+    <!-- Simple footer -->
+    <footer class="bg-stone-900 border-t border-stone-800 py-8 px-4 text-center text-stone-500 text-xs no-print">
+        <div class="max-w-7xl mx-auto space-y-3">
+            <p>© 2026 The Slang Sandbox. Built for neurodiverse, bright brains who love exploring.</p>
+            <p>Dyslexia-friendly spacing, Sensory Calm visual toggles, and Sound Synthesizer toggles included.</p>
+        </div>
+    </footer>
+
+    <!-- STATE NOTIFICATION TOAST (Replaces alert() calls) -->
+    <div id="notification-toast" class="fixed bottom-5 right-5 z-[9999] transform translate-y-20 opacity-0 transition-all-300 bg-stone-900 text-white px-5 py-4 rounded-2xl shadow-2xl border border-stone-800 flex items-center gap-3 max-w-sm pointer-events-none">
+        <span id="toast-icon" class="w-8 h-8 rounded-full flex items-center justify-center text-xs shrink-0"></span>
+        <div>
+            <h5 id="toast-title" class="font-bold text-xs text-amber-300">Tip</h5>
+            <p id="toast-body" class="text-[11px] text-stone-300 leading-snug"></p>
+        </div>
+    </div>
+
+    <script>
+        // Core application state variables
+        let currentDifficulty = 'easy';
+        let selectedSlangCard = null;
+        let selectedMeaningCard = null;
+        let activePairsCount = 0;
+        let completedMatchingCount = 0;
+        let isMuted = false;
+        let studentAnswers = {};
+        let activeMailType = 'worksheet'; // 'worksheet' or 'translation'
+
+        // Audio synthesizer helper for sensory feedback
+        let audioCtx = null;
+        function playTone(type) {
+            if (isMuted) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    // Quick gentle click
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(261.63, audioCtx.currentTime); // C4
+                    osc.frequency.exponentialRampToValueAtTime(392.00, audioCtx.currentTime + 0.1); // G4
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.12);
+                } else if (type === 'match') {
+                    // Happy upward chime
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(329.63, audioCtx.currentTime); // E4
+                    osc.frequency.setValueAtTime(392.00, audioCtx.currentTime + 0.08); // G4
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime + 0.16); // C5
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'miss') {
+                    // Playful sliding sad trombone sound
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220.00, audioCtx.currentTime); // A3
+                    osc.frequency.linearRampToValueAtTime(146.83, audioCtx.currentTime + 0.35); // D3
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.45);
+                } else if (type === 'victory') {
+                    // Fun retro celebratory arpeggio!
+                    const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, index) => {
+                        const individualOsc = audioCtx.createOscillator();
+                        const individualGain = audioCtx.createGain();
+                        individualOsc.connect(individualGain);
+                        individualGain.connect(audioCtx.destination);
+                        
+                        individualOsc.type = 'sine';
+                        individualOsc.frequency.setValueAtTime(freq, audioCtx.currentTime + (index * 0.08));
+                        individualGain.gain.setValueAtTime(0.15, audioCtx.currentTime + (index * 0.08));
+                        individualGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (index * 0.08) + 0.2);
+                        
+                        individualOsc.start(audioCtx.currentTime + (index * 0.08));
+                        individualOsc.stop(audioCtx.currentTime + (index * 0.08) + 0.22);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio not allowed yet by user interaction context.");
+            }
+        }
+
+        // On window load execution
+        window.onload = function() {
+            setDifficulty('easy');
+            
+            // Set up search trigger
+            document.getElementById('glossary-search').addEventListener('input', filterGlossary);
+            
+            // Set up live translation input typing action
+            document.getElementById('slang-input').addEventListener('input', runLiveTranslation);
+        }
+
+        // Toggle Sound Settings
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('toggle-mute');
+            const icon = document.getElementById('mute-icon');
+            const text = document.getElementById('mute-text');
+            
+            if (isMuted) {
+                btn.className = "px-3 py-2 text-xs font-bold rounded-xl transition-all-300 bg-stone-200 border border-stone-300 text-stone-600 hover:bg-stone-300 flex items-center gap-1.5 focus:outline-none";
+                icon.className = "fa-solid fa-volume-xmark";
+                text.innerText = "Quiet Mode";
+            } else {
+                btn.className = "px-3 py-2 text-xs font-bold rounded-xl transition-all-300 bg-emerald-100 border border-emerald-200 text-emerald-800 hover:bg-emerald-200 flex items-center gap-1.5 focus:outline-none";
+                icon.className = "fa-solid fa-volume-high";
+                text.innerText = "Sounds On";
+                playTone('click');
+            }
+        }
+
+        // Toggle Dyslexia Atkinson Mode
+        function toggleDyslexiaMode() {
+            const body = document.getElementById('main-body');
+            const btn = document.getElementById('toggle-dyslexia');
+            body.classList.toggle('dyslexia-font');
+            playTone('click');
+
+            if (body.classList.contains('dyslexia-font')) {
+                btn.classList.add('bg-sky-100', 'border-sky-300', 'text-sky-900');
+                triggerToast("Dyslexia Font Active", "Text shifted to Atkinson Hyperlegible with wider spacing.", 'info');
+            } else {
+                btn.classList.remove('bg-sky-100', 'border-sky-300', 'text-sky-900');
+            }
+        }
+
+        // Toggle Calm Sensory State
+        function toggleCalmMode() {
+            const body = document.getElementById('main-body');
+            const btn = document.getElementById('toggle-calm');
+            body.classList.toggle('sensory-calm');
+            playTone('click');
+
+            if (body.classList.contains('sensory-calm')) {
+                btn.classList.add('bg-amber-100', 'border-amber-300', 'text-amber-900');
+                triggerToast("Calm Mode Active", "Pulsing animations paused for clear attention.", 'info');
+            } else {
+                btn.classList.remove('bg-amber-100', 'border-amber-300', 'text-amber-900');
+            }
+        }
+
+        // Display customized in-app toast notification
+        function triggerToast(title, body, type = 'success') {
+            const toast = document.getElementById('notification-toast');
+            const icon = document.getElementById('toast-icon');
+            
+            if (type === 'success') {
+                icon.className = "w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs shrink-0";
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else if (type === 'error') {
+                icon.className = "w-8 h-8 rounded-full bg-amber-500 text-stone-900 flex items-center justify-center text-xs shrink-0";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                icon.className = "w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs shrink-0";
+                icon.innerHTML = '<i class="fa-solid fa-info"></i>';
+            }
+
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-body').innerText = body;
+
+            // Trigger Animation Slide-Up
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Change global difficulty, update data structures
+        function setDifficulty(level) {
+            currentDifficulty = level;
+            playTone('click');
+            
+            // Highlight matching Tab layout (PDA friendly styled button selection)
+            ['easy', 'medium', 'hard'].forEach(l => {
+                const btn = document.getElementById(`btn-diff-${l}`);
+                if (l === level) {
+                    btn.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all-300 flex items-center gap-2 border-2 border-stone-800 bg-stone-100 text-stone-900 shadow-inner";
+                } else {
+                    btn.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all-300 flex items-center gap-2 border border-stone-300 bg-white text-stone-600 hover:bg-stone-50";
+                }
+            });
+
+            // Update details
+            const data = slangDatabase[level];
+            document.getElementById('hero-title').innerText = `Vibe: ${data.title}`;
+            document.getElementById('hero-description').innerText = data.description;
+            
+            // Map the print preview title indicator
+            const printablePill = level === 'easy' ? 'Level 1: Chill' : level === 'medium' ? 'Level 2: Adventurous' : 'Level 3: Wizard';
+            document.getElementById('active-worksheet-level').innerText = printablePill;
+            
+            // Level indicator text
+            const ageMap = { 
+                easy: "Level 1: Chill (Best for ages 6–10, or anyone who wants clear and simple words)", 
+                medium: "Level 2: Adventurous (Best for ages 10–15, explore gaming & digital jokes)", 
+                hard: "Level 3: Wizard (Best for ages 15–19, unpack history & subcultures)" 
+            };
+            document.getElementById('target-age').innerText = `${ageMap[level]}`;
+            document.getElementById('vocabulary-count').innerText = `${data.slangs.length} Fun Words Available`;
+            document.getElementById('slang-count-badge').innerText = `${data.slangs.length} Loaded`;
+
+            // Reset components
+            buildGlossary(data.slangs);
+            buildPresets(level);
+            clearTranslator();
+            buildMatchingGame(data.matchingPairs);
+            buildQuiz(data.quiz);
+            buildWorksheet(level);
+        }
+
+        // Build Dynamic Glossary cards
+        function buildGlossary(terms) {
+            const listContainer = document.getElementById('glossary-list');
+            listContainer.innerHTML = '';
+
+            terms.forEach(term => {
+                const card = document.createElement('div');
+                card.className = "p-3.5 bg-stone-50 hover:bg-stone-100 border border-stone-200/80 rounded-2xl transition-all-300 cursor-pointer text-left focus:ring-2 focus:ring-amber-400";
+                card.setAttribute('tabindex', '0');
+                
+                // Keyboard trigger support
+                card.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                };
+
+                card.onclick = () => {
+                    document.getElementById('slang-input').value = term.term;
+                    runLiveTranslation();
+                    playTone('click');
+                    triggerToast("Magic Swapped!", `Copied "${term.term}" to the swatting station!`, 'info');
+                };
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-outfit font-extrabold text-sm text-stone-900">${term.term}</span>
+                        <span class="text-[9px] font-bold text-stone-500 bg-stone-200 px-2 py-0.5 rounded-md uppercase tracking-wider">${term.category}</span>
+                    </div>
+                    <p class="text-xs text-stone-600 font-medium mb-1"><span class="text-[10px] text-stone-400">Translation:</span> ${term.standard}</p>
+                    <p class="text-[11px] text-stone-500 italic font-light">${term.origin}</p>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        // Filter Glossary lists based on search parameter
+        function filterGlossary() {
+            const query = document.getElementById('glossary-search').value.toLowerCase();
+            const terms = slangDatabase[currentDifficulty].slangs;
+            const filtered = terms.filter(t => 
+                t.term.toLowerCase().includes(query) || 
+                t.standard.toLowerCase().includes(query) ||
+                t.category.toLowerCase().includes(query)
+            );
+            buildGlossary(filtered);
+        }
+
+        // Build dynamic phrases translator playground presets
+        function buildPresets(level) {
+            const presetContainer = document.getElementById('translator-presets');
+            presetContainer.innerHTML = '';
+
+            const presets = {
+                easy: [
+                    "No cap, this video is sus!",
+                    "Bet! Let's yeet this cardboard box.",
+                    "Check out my glowing up room!"
+                ],
+                medium: [
+                    "They had zero rizz, but they were pure delulu.",
+                    "The dessert was bussin, she ate and left no crumbs!",
+                    "That catchy sound is living rent-free in my head."
+                ],
+                hard: [
+                    "Their review was so funny, very mindful, very demure.",
+                    "They were yapping for an hour, I told them to touch grass.",
+                    "She is absolutely mother! Let her cook."
+                ]
+            };
+
+            presets[level].forEach(preset => {
+                const btn = document.createElement('button');
+                btn.className = "text-xs bg-stone-50 hover:bg-stone-100 text-stone-700 px-3 py-2 rounded-xl border border-stone-200 font-semibold transition-all-300 text-left focus:ring-2 focus:ring-amber-500";
+                btn.innerText = `"${preset}"`;
+                btn.onclick = () => {
+                    document.getElementById('slang-input').value = preset;
+                    runLiveTranslation();
+                    playTone('click');
+                };
+                presetContainer.appendChild(btn);
+            });
+        }
+
+        // Live Translator Sandbox Engine
+        function runLiveTranslation() {
+            const text = document.getElementById('slang-input').value;
+            const output = document.getElementById('translation-output');
+            
+            if (!text.trim()) {
+                output.innerHTML = `<span class="text-stone-400 italic">Watch your translation pop up right here...</span>`;
+                return;
+            }
+
+            let translated = text;
+
+            // Sort all terms by length descending to avoid short terms breaking longer terms
+            const allTerms = [
+                ...slangDatabase.hard.slangs,
+                ...slangDatabase.medium.slangs,
+                ...slangDatabase.easy.slangs
+            ].sort((a, b) => b.term.length - a.term.length);
+
+            // Replacement sequence
+            allTerms.forEach(item => {
+                const escapedTerm = item.term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(`\\b${escapedTerm}\\b`, 'gi');
+                
+                translated = translated.replace(regex, `<span class="text-amber-700 bg-amber-50 px-1 py-0.5 rounded font-bold border-b-2 border-dashed border-amber-300 cursor-help" title="${item.origin}">${item.standard}</span>`);
+            });
+
+            output.innerHTML = translated;
+        }
+
+        // Clear the translation tool
+        function clearTranslator() {
+            document.getElementById('slang-input').value = '';
+            runLiveTranslation();
+        }
+
+        // Build Slang Matching interactive game board
+        function buildMatchingGame(pairs) {
+            const leftCol = document.getElementById('matching-left-col');
+            const rightCol = document.getElementById('matching-right-col');
+            
+            leftCol.innerHTML = '';
+            rightCol.innerHTML = '';
+            
+            activePairsCount = pairs.length;
+            completedMatchingCount = 0;
+            selectedSlangCard = null;
+            selectedMeaningCard = null;
+            
+            document.getElementById('matching-score').innerText = `0 / ${activePairsCount}`;
+            document.getElementById('match-celebration').classList.add('hidden');
+
+            const shuffledSlang = [...pairs].sort(() => Math.random() - 0.5);
+            const shuffledMeaning = [...pairs].sort(() => Math.random() - 0.5);
+
+            // Populate Slang Side
+            shuffledSlang.forEach(pair => {
+                const card = document.createElement('button');
+                card.className = "w-full text-left p-4 bg-white hover:bg-amber-50/50 border-2 border-stone-200 hover:border-amber-400 rounded-2xl font-outfit font-extrabold text-stone-800 transition-all-300 flex items-center justify-between group cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm";
+                card.dataset.id = pair.slang;
+                card.innerHTML = `
+                    <span>${pair.slang}</span>
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity text-amber-500 text-xs font-bold">Pick Me! <i class="fa-solid fa-hand-pointer"></i></span>
+                `;
+                card.onclick = () => selectCard(card, 'slang');
+                leftCol.appendChild(card);
+            });
+
+            // Populate Meaning Side
+            shuffledMeaning.forEach(pair => {
+                const card = document.createElement('button');
+                card.className = "w-full text-left p-4 bg-white hover:bg-emerald-50/50 border-2 border-stone-200 hover:border-emerald-400 rounded-2xl text-xs sm:text-sm font-semibold text-stone-700 transition-all-300 flex items-center justify-between group cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm";
+                card.dataset.id = pair.slang; // linked by original slang key
+                card.innerHTML = `
+                    <span>${pair.standard}</span>
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity text-emerald-600 text-xs font-bold"><i class="fa-solid fa-hand-pointer"></i> Connect</span>
+                `;
+                card.onclick = () => selectCard(card, 'meaning');
+                rightCol.appendChild(card);
+            });
+        }
+
+        // Handle Card Selections in Matching Game
+        function selectCard(cardElement, side) {
+            // Check if card is already matched
+            if (cardElement.classList.contains('bg-stone-100') || cardElement.disabled) return;
+            playTone('click');
+
+            if (side === 'slang') {
+                if (selectedSlangCard) {
+                    selectedSlangCard.className = "w-full text-left p-4 bg-white hover:bg-amber-50/50 border-2 border-stone-200 hover:border-amber-400 rounded-2xl font-outfit font-extrabold text-stone-800 transition-all-300 flex items-center justify-between group cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm";
+                }
+                selectedSlangCard = cardElement;
+                cardElement.className = "w-full text-left p-4 bg-amber-100 border-2 border-amber-500 rounded-2xl font-outfit font-extrabold text-stone-900 transition-all-300 flex items-center justify-between shadow-md";
+            } else {
+                if (selectedMeaningCard) {
+                    selectedMeaningCard.className = "w-full text-left p-4 bg-white hover:bg-emerald-50/50 border-2 border-stone-200 hover:border-emerald-400 rounded-2xl text-xs sm:text-sm font-semibold text-stone-700 transition-all-300 flex items-center justify-between group cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm";
+                }
+                selectedMeaningCard = cardElement;
+                cardElement.className = "w-full text-left p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl text-xs sm:text-sm font-bold text-stone-900 transition-all-300 flex items-center justify-between shadow-md";
+            }
+
+            // Check if match is made
+            if (selectedSlangCard && selectedMeaningCard) {
+                const slangVal = selectedSlangCard.dataset.id;
+                const meaningVal = selectedMeaningCard.dataset.id;
+
+                if (slangVal === meaningVal) {
+                    // Success Match
+                    completedMatchingCount++;
+                    document.getElementById('matching-score').innerText = `${completedMatchingCount} / ${activePairsCount}`;
+                    playTone('match');
+                    
+                    // Style them as complete and disable interaction
+                    selectedSlangCard.className = "w-full text-left p-4 bg-emerald-100 border-2 border-emerald-300 text-emerald-900 rounded-2xl font-outfit font-extrabold transition-all-300 flex items-center justify-between opacity-70";
+                    selectedSlangCard.disabled = true;
+                    selectedSlangCard.innerHTML = `<span>${selectedSlangCard.innerText.replace('Pick Me!', '')}</span> <i class="fa-solid fa-face-smile text-emerald-600"></i>`;
+
+                    selectedMeaningCard.className = "w-full text-left p-4 bg-emerald-100 border-2 border-emerald-300 text-emerald-900 rounded-2xl text-xs sm:text-sm font-bold transition-all-300 flex items-center justify-between opacity-70";
+                    selectedMeaningCard.disabled = true;
+                    selectedMeaningCard.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>` + selectedMeaningCard.innerText.replace('Connect', '');
+
+                    selectedSlangCard = null;
+                    selectedMeaningCard = null;
+
+                    triggerToast("Matched! ✨", "Nice work connecting those ideas!", "success");
+
+                    if (completedMatchingCount === activePairsCount) {
+                        playTone('victory');
+                        document.getElementById('match-celebration').classList.remove('hidden');
+                        triggerToast("Hooray! 🎉", "You linked every single card perfectly!", "success");
+                    }
+                } else {
+                    // Fail Match animations
+                    const errSlang = selectedSlangCard;
+                    const errMeaning = selectedMeaningCard;
+                    playTone('miss');
+
+                    errSlang.className = "w-full text-left p-4 bg-rose-100 border-2 border-rose-400 rounded-2xl font-outfit font-extrabold text-stone-900 transition-all-300 flex items-center justify-between shadow-md";
+                    errMeaning.className = "w-full text-left p-4 bg-rose-100 border-2 border-rose-400 rounded-2xl text-xs sm:text-sm font-bold text-stone-900 transition-all-300 flex items-center justify-between shadow-md";
+
+                    triggerToast("Not quite!", "Those two don't match up. Give it another try!", "error");
+
+                    setTimeout(() => {
+                        errSlang.className = "w-full text-left p-4 bg-white hover:bg-amber-50/50 border-2 border-stone-200 hover:border-amber-400 rounded-2xl font-outfit font-extrabold text-stone-800 transition-all-300 flex items-center justify-between group cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm";
+                        errMeaning.className = "w-full text-left p-4 bg-white hover:bg-emerald-50/50 border-2 border-stone-200 hover:border-emerald-400 rounded-2xl text-xs sm:text-sm font-semibold text-stone-700 transition-all-300 flex items-center justify-between group cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm";
+                    }, 1200);
+
+                    selectedSlangCard = null;
+                    selectedMeaningCard = null;
+                }
+            }
+        }
+
+        // Reset matching board
+        function resetMatchingGame() {
+            playTone('click');
+            buildMatchingGame(slangDatabase[currentDifficulty].matchingPairs);
+        }
+
+        // Build Interactive Decoding Quiz Dynamic Elements
+        let activeQuizData = [];
+        function buildQuiz(questions) {
+            activeQuizData = questions;
+            studentAnswers = {};
+            const quizContainer = document.getElementById('quiz-wrapper');
+            
+            const difficultyLabelMap = { easy: "Chill", medium: "Adventurous", hard: "Wizard" };
+            document.getElementById('quiz-level-indicator').innerText = difficultyLabelMap[currentDifficulty];
+            
+            document.getElementById('quiz-feedback-text').innerText = "Have a look at the prompts and pick whatever feels right!";
+            document.getElementById('quiz-feedback-text').className = "text-sm font-semibold text-stone-500 text-center sm:text-left";
+            
+            quizContainer.innerHTML = '';
+
+            questions.forEach((item, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = "p-5 bg-stone-50 border border-stone-200 rounded-2xl space-y-3";
+                questionBlock.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="w-7 h-7 rounded-full bg-stone-900 text-white flex items-center justify-center text-xs font-bold shrink-0">${index + 1}</span>
+                        <h3 class="font-outfit font-bold text-stone-900 text-sm sm:text-base">${item.question}</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 pl-10" id="quiz-question-${index}-options">
+                        ${item.options.map((opt, optIdx) => `
+                            <button onclick="selectQuizOption(${index}, ${optIdx})" class="quiz-opt-btn w-full text-left p-3 border-2 border-stone-200 hover:bg-stone-200/50 rounded-xl transition-all-300 text-xs sm:text-sm font-semibold focus:outline-none" data-idx="${optIdx}">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="quiz-explanation-${index}" class="hidden pl-10 text-xs text-stone-500 italic mt-2">
+                    </div>
+                `;
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        // Option selections
+        function selectQuizOption(questionIdx, optionIdx) {
+            studentAnswers[questionIdx] = optionIdx;
+            playTone('click');
+            
+            const btnContainer = document.getElementById(`quiz-question-${questionIdx}-options`);
+            const buttons = btnContainer.querySelectorAll('.quiz-opt-btn');
+            
+            buttons.forEach(btn => {
+                const idx = parseInt(btn.dataset.idx);
+                if (idx === optionIdx) {
+                    btn.className = "quiz-opt-btn w-full text-left p-3 border-2 border-amber-500 bg-amber-50 rounded-xl transition-all-300 text-xs sm:text-sm font-bold text-amber-900 focus:outline-none";
+                } else {
+                    btn.className = "quiz-opt-btn w-full text-left p-3 border-2 border-stone-200 hover:bg-stone-100 rounded-xl transition-all-300 text-xs sm:text-sm font-semibold text-stone-600 focus:outline-none";
+                }
+            });
+        }
+
+        // Evaluate Quiz answers
+        function gradeQuiz() {
+            let correctCount = 0;
+            const total = activeQuizData.length;
+
+            activeQuizData.forEach((item, idx) => {
+                const studentSelection = studentAnswers[idx];
+                const btnContainer = document.getElementById(`quiz-question-${idx}-options`);
+                const buttons = btnContainer.querySelectorAll('.quiz-opt-btn');
+                const expBox = document.getElementById(`quiz-explanation-${idx}`);
+
+                expBox.innerHTML = `<span class="font-bold text-stone-700">Fun explanation:</span> ${item.explanation}`;
+                expBox.classList.remove('hidden');
+
+                buttons.forEach(btn => {
+                    const btnIdx = parseInt(btn.dataset.idx);
+                    
+                    if (btnIdx === item.correct) {
+                        btn.className = "quiz-opt-btn w-full text-left p-3 border-2 border-emerald-500 bg-emerald-50 text-emerald-900 rounded-xl font-bold text-xs sm:text-sm";
+                    } else if (btnIdx === studentSelection) {
+                        btn.className = "quiz-opt-btn w-full text-left p-3 border-2 border-amber-500 bg-amber-100 text-stone-800 rounded-xl text-xs sm:text-sm font-bold";
+                    } else {
+                        btn.className = "quiz-opt-btn w-full text-left p-3 border border-stone-100 opacity-50 rounded-xl text-xs sm:text-sm font-light";
+                    }
+                });
+
+                if (studentSelection === item.correct) {
+                    correctCount++;
+                }
+            });
+
+            // Feedback Display
+            const scoreText = document.getElementById('quiz-feedback-text');
+            if (correctCount === total) {
+                playTone('victory');
+                scoreText.innerText = `You decoded everything correctly! 🎉 (Score: ${correctCount}/${total})`;
+                scoreText.className = "text-sm font-bold text-emerald-600 text-center sm:text-left";
+                triggerToast("Splendid Job!", "You answered every question correctly!", "success");
+            } else if (correctCount > 0) {
+                playTone('match');
+                scoreText.innerText = `Great discovery progress! You solved ${correctCount} of ${total} riddles.`;
+                scoreText.className = "text-sm font-semibold text-amber-600 text-center sm:text-left";
+                triggerToast("Sandbox Evaluated", "Read the fun explanations to learn more!", "info");
+            } else {
+                playTone('miss');
+                scoreText.innerText = `Give it a try! Choose options on the questions above to check the results.`;
+                scoreText.className = "text-sm font-bold text-stone-500 text-center sm:text-left";
+                triggerToast("Choose an answer", "Tap on whichever options make sense to you!", "error");
+            }
+        }
+
+        // Construct printable worksheets based on current levels
+        function buildWorksheet(level) {
+            const container = document.getElementById('worksheet-live-template');
+            const data = slangDatabase[level];
+
+            // Render matching column arrays
+            const listLeft = data.slangs.slice(0, 5);
+            const listRight = [...listLeft].sort(() => Math.random() - 0.5);
+
+            let contentHTML = `
+                <!-- Document Header -->
+                <div class="border-b-4 border-stone-900 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3">
+                    <div>
+                        <h1 class="text-2xl font-black tracking-tight uppercase">${data.worksheetTitle}</h1>
+                        <p class="text-xs text-stone-500">The Slang Sandbox Offline Module — Play & Explore</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold border-2 border-stone-300 px-3 py-1 bg-stone-100 rounded-lg">LEVEL: ${level.toUpperCase()}</span>
+                    </div>
+                </div>
+
+                <!-- Personal Info Header blocks -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border-2 border-stone-200 p-4 bg-stone-50 rounded-2xl text-xs font-mono">
+                    <div><span class="font-bold">Adventurer's Name:</span> ___________________</div>
+                    <div><span class="font-bold">Time Orbit (Date):</span> ___________________</div>
+                    <div><span class="font-bold">Co-Explorer / Companion:</span> ________</div>
+                </div>
+
+                <!-- Intro Description -->
+                <div class="space-y-2">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-stone-900">What is this sheet about?</h3>
+                    <p class="text-xs text-stone-600 leading-relaxed">${data.worksheetIntro}</p>
+                </div>
+
+                <!-- Matching Exercise -->
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-widest border-b border-stone-200 pb-1">Exercise 1: Swap Matcher</h3>
+                    <p class="text-xs text-stone-500 italic">Draw a line connecting the modern slang concept on the left with its proper definition on the right. Try reading them aloud if it helps!</p>
+                    
+                    <div class="grid grid-cols-2 gap-8 pt-2 font-mono">
+                        <div class="space-y-4">
+                            ${listLeft.map((item, idx) => `
+                                <div class="flex items-center justify-between text-xs p-2 bg-stone-50 rounded border border-stone-200">
+                                    <span>[ &nbsp; ] &nbsp; ${idx + 1}. <strong>${item.term}</strong></span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="space-y-4">
+                            ${listRight.map((item, idx) => `
+                                <div class="flex items-center text-xs p-2 bg-stone-50 rounded border border-stone-200">
+                                    <span>[ &nbsp; ] &nbsp; ${String.fromCharCode(65 + idx)}. ${item.standard}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Custom levels tailored questions
+            if (level === 'easy') {
+                contentHTML += `
+                    <!-- Exercise 2: Playful sentence translation -->
+                    <div class="space-y-4 pt-4">
+                        <h3 class="text-xs font-bold uppercase tracking-widest border-b border-stone-200 pb-1">Exercise 2: Write a Fun Sentence</h3>
+                        <p class="text-xs text-stone-500 italic">How would you rewrite these silly sentences so a friendly alien visiting Earth could understand them?</p>
+                        
+                        <div class="space-y-4 pt-2">
+                            <div class="space-y-1">
+                                <p class="text-xs font-bold text-stone-700">1. "I saw a sus puppy hiding in the toy box, no cap!"</p>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-xs font-bold text-stone-700">2. "Bet! Let's yeet this shiny paper airplane into the sky."</p>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (level === 'medium') {
+                contentHTML += `
+                    <!-- Exercise 2: Context Analysis -->
+                    <div class="space-y-4 pt-4">
+                        <h3 class="text-xs font-bold uppercase tracking-widest border-b border-stone-200 pb-1">Exercise 2: Brain Vibe Parsing</h3>
+                        <p class="text-xs text-stone-500 italic">Read the question and jot down whatever fun, friendly thoughts jump into your head.</p>
+                        
+                        <div class="space-y-4 pt-2">
+                            <div class="space-y-2">
+                                <p class="text-xs font-bold text-stone-700">1. What is the difference between feeling like you have "Main Character Energy" versus acting a bit "delulu"? Share an example of each!</p>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-xs font-bold text-stone-700">2. Why does "spilling the tea" help human friends interact in school or gaming? Is it always a good thing?</p>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (level === 'hard') {
+                contentHTML += `
+                    <!-- Exercise 2: Historical analysis -->
+                    <div class="space-y-4 pt-4">
+                        <h3 class="text-xs font-bold uppercase tracking-widest border-b border-stone-200 pb-1">Exercise 2: Linguistics Essay Arena</h3>
+                        <p class="text-xs text-stone-500 leading-relaxed">
+                            Languages are open-source projects! Many terms we consider 'modern internet slang' originally sprouted from historical African American Vernacular English (AAVE) and global queer drag culture before moving into popular social apps.
+                        </p>
+                        
+                        <div class="space-y-2">
+                            <p class="text-xs font-bold text-stone-800">Your Turn to Analyze:</p>
+                            <p class="text-xs text-stone-600 leading-relaxed italic">
+                                Pick a term like "Mother" or "Gagged." Explain how it migrated from tight-knit communities celebrating support and safety into popular, everyday internet culture.
+                            </p>
+                            <div class="space-y-4 pt-2">
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                                <div class="border-b-2 border-stone-200 h-8"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            contentHTML += `
+                <div class="pt-8 text-center text-[10px] text-stone-400 border-t border-stone-100 flex justify-between">
+                    <span>Generated via The Slang Sandbox Interactive Page (2026)</span>
+                    <span>No pressure, enjoy the exploration!</span>
+                </div>
+            `;
+
+            container.innerHTML = contentHTML;
+        }
+
+        // Print function executing isolation sequence
+        function printActiveWorksheet() {
+            const previewHTML = document.getElementById('worksheet-preview-container').innerHTML;
+            const printArea = document.getElementById('worksheet-print-area');
+            
+            printArea.innerHTML = previewHTML;
+            window.print();
+        }
+
+        // Client-side PDF generation using html2pdf.js
+        function downloadWorksheetPDF() {
+            playTone('click');
+            triggerToast("Preparing PDF...", "Your custom worksheet is compiling to a beautiful PDF file.", "info");
+
+            const element = document.getElementById('worksheet-preview-container');
+            const opt = {
+                margin:       10,
+                filename:     `Slang_Sandbox_Worksheet_${currentDifficulty.toUpperCase()}_2026.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Run html2pdf package
+            html2pdf().set(opt).from(element).save().then(() => {
+                playTone('victory');
+                triggerToast("Download Complete! 📄", "Your offline worksheet was saved to your device.", "success");
+            }).catch(err => {
+                console.error(err);
+                triggerToast("Could not download", "Something went wrong creating the PDF file.", "error");
+            });
+        }
+
+        // Open Email Send Modal Dialog
+        function openEmailModal(type) {
+            playTone('click');
+            activeMailType = type;
+
+            const modal = document.getElementById('email-modal');
+            const formState = document.getElementById('email-form-state');
+            const sendingState = document.getElementById('email-sending-state');
+            const successState = document.getElementById('email-success-state');
+
+            // Reset view state panels
+            formState.classList.remove('hidden');
+            sendingState.classList.add('hidden');
+            successState.classList.add('hidden');
+
+            // Build dynamic text previews
+            const emailSubject = document.getElementById('email-subject-input');
+            const emailBody = document.getElementById('email-body-preview');
+            const inputVal = document.getElementById('slang-input').value;
+
+            if (type === 'translation') {
+                emailSubject.value = `Slang Translator Sandbox - My Sandbox Learnings!`;
+                
+                let rawSummary = `--- THE SLANG SANDBOX RECAP ---\n`;
+                if (inputVal.trim()) {
+                    rawSummary += `Original: "${inputVal}"\n`;
+                    // Parse simple text translations for email
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = document.getElementById('translation-output').innerHTML;
+                    rawSummary += `Translation: "${tempDiv.innerText}"\n`;
+                } else {
+                    rawSummary += `Explore the slang levels! Learn a bit more about modern human languages.\n`;
+                }
+                rawSummary += `\nLevel active: ${currentDifficulty.toUpperCase()}\nDate: ${new Date().toLocaleDateString()}\nKeep on exploring!`;
+                emailBody.value = rawSummary;
+            } else {
+                emailSubject.value = `My Slang Sandbox Worksheet - Level: ${currentDifficulty.toUpperCase()}`;
+                emailBody.value = `Hello there!\n\nAttached/Requested details of your language decoder worksheet!\nLevel: ${currentDifficulty.toUpperCase()}\nWorksheet Type: ${slangDatabase[currentDifficulty].worksheetTitle}\n\nYou can print this worksheet page dynamically on the dashboard at any time to complete offline.\n\nHappy exploring,\nYour Slang Sandbox companion`;
+            }
+
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+
+        // Close Email Modal
+        function closeEmailModal() {
+            playTone('click');
+            document.getElementById('email-modal').classList.add('hidden');
+        }
+
+        // Trigger native device email client with pre-filled parameters (Mailto)
+        function triggerMailto() {
+            playTone('click');
+            const targetEmail = document.getElementById('email-target-input').value || 'companion@sandbox.org';
+            const subject = encodeURIComponent(document.getElementById('email-subject-input').value);
+            const body = encodeURIComponent(document.getElementById('email-body-preview').value);
+
+            const mailtoLink = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
+            
+            // Set link href dynamically
+            document.getElementById('email-direct-mailto').href = mailtoLink;
+            triggerToast("Launching Mail App ✉️", "Redirecting you to your default mail provider.", "info");
+        }
+
+        // Start sensory simulated email sender loop animation
+        function sendSimulatedEmail() {
+            const targetEmail = document.getElementById('email-target-input').value;
+            if (!targetEmail.trim() || !targetEmail.includes('@')) {
+                playTone('miss');
+                triggerToast("Invalid Email!", "Please input a valid email address first.", "error");
+                return;
+            }
+
+            playTone('click');
+
+            const formState = document.getElementById('email-form-state');
+            const sendingState = document.getElementById('email-sending-state');
+            const successState = document.getElementById('email-success-state');
+            const progressText = document.getElementById('sending-progress-text');
+            const progressBar = document.getElementById('sending-progress-bar');
+
+            // Switch to loading animation
+            formState.classList.add('hidden');
+            sendingState.classList.remove('hidden');
+
+            const progressSteps = [
+                { percentage: 20, message: "Summoning healthy carrier pigeons..." },
+                { percentage: 50, message: "Compressing slang datasets into tidy envelopes..." },
+                { percentage: 80, message: "Launching across internet relays..." },
+                { percentage: 100, message: "Transmission successfully finalized!" }
+            ];
+
+            let stepIdx = 0;
+            const interval = setInterval(() => {
+                if (stepIdx < progressSteps.length) {
+                    const step = progressSteps[stepIdx];
+                    progressBar.style.width = `${step.percentage}%`;
+                    progressText.innerText = step.message;
+                    playTone('click');
+                    stepIdx++;
+                } else {
+                    clearInterval(interval);
+                    // Complete Sequence
+                    playTone('victory');
+                    sendingState.classList.add('hidden');
+                    successState.classList.remove('hidden');
+                    triggerToast("Sent! 🚀", "Simulated email transfer complete.", "success");
+                }
+            }, 850);
+        }
+    </script>
+</body>
+</html>
