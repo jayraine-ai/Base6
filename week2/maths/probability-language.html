@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language of Probability</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal: #007291; --orange: #ef7724; --cream: #fef8f4;
+    --dark: #1a1a1a; --muted: #555;
+    --teal-light: #e6f5f8; --orange-light: #fff3eb;
+    --green: #2e8b57; --green-light: #eaf7f0;
+    --red: #c0392b; --red-light: #fdecea;
+    --purple: #7a3fa8; --purple-light: #f5eeff;
+    --yellow: #e8a020; --yellow-light: #fdf5e0;
+    --pink: #c0407a; --pink-light: #fdeef5;
+  }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+
+  .site-header { background: linear-gradient(135deg, #7a3fa8, #5a2a88); padding: 1.5rem 2rem 1.25rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #d8b8f8; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .site-header p { font-size: 0.95rem; color: #e0c8ff; margin-top: 0.5rem; }
+
+  .name-bar { background: #5a2a88; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .name-bar label { font-size: 0.82rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .name-bar input { flex: 1; max-width: 280px; padding: 0.4rem 0.75rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: #fef8f4; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .name-bar input::placeholder { color: rgba(255,255,255,0.5); }
+
+  .progress-bar-wrap { background: #3a1a68; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 0.8rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .timer-label { font-size: 0.8rem; font-weight: 700; color: #d8b8f8; white-space: nowrap; }
+
+  .section-nav { display: flex; overflow-x: auto; gap: 0.5rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid #e0d8d0; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #ccc; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; color: #888; cursor: pointer; transition: all 0.2s; }
+  .nav-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--purple); margin-bottom: 1.25rem; }
+
+  .time-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--purple-light); border: 1.5px solid var(--purple); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; color: var(--purple); margin-bottom: 1rem; }
+
+  .info-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--purple-light); }
+  .info-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--purple); margin-bottom: 0.75rem; }
+  .info-card p { font-size: 1rem; line-height: 1.7; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .highlight-box { background: var(--purple-light); border-left: 4px solid var(--purple); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 1rem; font-weight: 700; color: var(--purple); line-height: 1.6; }
+
+  /* PROBABILITY SCALE */
+  .prob-scale { position: relative; margin: 2rem 0 1rem; padding: 0 1rem; }
+  .scale-track { height: 12px; background: linear-gradient(to right, #c0392b, #e8a020, #2e8b57); border-radius: 6px; position: relative; }
+  .scale-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; }
+  .scale-label { font-size: 0.78rem; font-weight: 700; color: var(--dark); text-align: center; flex: 1; }
+  .scale-words { display: flex; justify-content: space-between; margin-top: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+  .scale-word { padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 2px solid; }
+  .sw-impossible { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .sw-unlikely { background: #fff0e0; border-color: #e87000; color: #c05800; }
+  .sw-evens { background: var(--yellow-light); border-color: var(--yellow); color: #7a5500; }
+  .sw-likely { background: #e8f5ee; border-color: #4a9b6a; color: #1a6b40; }
+  .sw-certain { background: var(--green-light); border-color: var(--green); color: var(--green); }
+
+  /* DRAG AND DROP SCALE */
+  .dnd-scale { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--purple-light); }
+  .dnd-bank { display: flex; flex-wrap: wrap; gap: 0.6rem; padding: 0.75rem; background: #f5f0eb; border-radius: 12px; border: 2px dashed #ccc; min-height: 56px; margin-bottom: 1.5rem; }
+  .dnd-item { padding: 0.5rem 0.9rem; background: white; border: 2px solid var(--purple); border-radius: 20px; font-size: 0.88rem; font-weight: 700; color: var(--purple); cursor: grab; user-select: none; transition: transform 0.15s; }
+  .dnd-item:hover { transform: scale(1.04); }
+  .dnd-item.dragging { opacity: 0.5; }
+  .scale-drop-row { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.5rem 0; }
+  .scale-drop-zone { flex-shrink: 0; width: 110px; min-height: 80px; border-radius: 12px; border: 2px dashed #ccc; padding: 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; transition: all 0.15s; }
+  .scale-drop-zone.drag-over { border-color: var(--orange); background: var(--orange-light); }
+  .scale-drop-zone .zone-label { font-size: 0.72rem; font-weight: 700; text-align: center; padding-bottom: 0.3rem; border-bottom: 2px solid currentColor; width: 100%; }
+  .zone-imp { border-color: var(--red); background: var(--red-light); } .zone-imp .zone-label { color: var(--red); }
+  .zone-unl { border-color: #e87000; background: #fff0e0; } .zone-unl .zone-label { color: #c05800; }
+  .zone-eve { border-color: var(--yellow); background: var(--yellow-light); } .zone-eve .zone-label { color: #7a5500; }
+  .zone-lik { border-color: #4a9b6a; background: #e8f5ee; } .zone-lik .zone-label { color: #1a6b40; }
+  .zone-cer { border-color: var(--green); background: var(--green-light); } .zone-cer .zone-label { color: var(--green); }
+
+  /* SPINNER GAME */
+  .spinner-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 1rem 0; }
+  .spinner-canvas { cursor: pointer; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); }
+  .spinner-result { font-size: 1.2rem; font-weight: 700; color: var(--purple); min-height: 1.8rem; text-align: center; }
+  .spin-stats { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
+  .spin-stat { background: white; border: 2px solid var(--purple-light); border-radius: 10px; padding: 0.5rem 0.9rem; text-align: center; min-width: 80px; }
+  .spin-stat .stat-num { font-size: 1.4rem; font-weight: 700; color: var(--purple); }
+  .spin-stat .stat-label { font-size: 0.72rem; color: var(--muted); }
+
+  /* COIN FLIP */
+  .coin-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 1rem 0; }
+  .coin { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; transition: transform 0.1s; box-shadow: 0 4px 16px rgba(0,0,0,0.15); border: 4px solid rgba(255,255,255,0.5); user-select: none; }
+  .coin:hover { transform: scale(1.05); }
+  .coin.heads { background: linear-gradient(135deg, #f0c030, #d4a020); }
+  .coin.tails { background: linear-gradient(135deg, #a0a0b0, #808090); }
+  .coin.flipping { animation: coinFlip 0.5s ease; }
+  @keyframes coinFlip { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(0.1)} }
+  .coin-stats { display: flex; gap: 1.5rem; justify-content: center; }
+  .coin-stat { text-align: center; }
+  .coin-stat .cnum { font-size: 2rem; font-weight: 700; color: var(--purple); }
+  .coin-stat .clabel { font-size: 0.8rem; color: var(--muted); }
+
+  /* DICE GAME */
+  .dice-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 1rem 0; }
+  .dice { width: 90px; height: 90px; background: white; border-radius: 14px; border: 3px solid var(--purple); display: flex; align-items: center; justify-content: center; font-size: 3rem; cursor: pointer; box-shadow: 0 4px 16px rgba(122,63,168,0.2); user-select: none; transition: transform 0.1s; }
+  .dice:hover { transform: scale(1.05); }
+  .dice.rolling { animation: diceRoll 0.4s ease; }
+  @keyframes diceRoll { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-15deg) scale(0.9)} 75%{transform:rotate(15deg) scale(0.9)} }
+  .dice-tally { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; margin-top: 0.5rem; width: 100%; max-width: 360px; }
+  .tally-cell { background: var(--purple-light); border-radius: 8px; padding: 0.5rem; text-align: center; }
+  .tally-cell .tface { font-size: 1.2rem; }
+  .tally-cell .tcount { font-size: 1rem; font-weight: 700; color: var(--purple); }
+
+  /* QUIZ */
+  .quiz-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid #e0d8d0; }
+  .quiz-card .q-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.5rem; }
+  .quiz-card .q-text { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn { padding: 0.75rem 1rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback { margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; display: none; line-height: 1.5; }
+  .feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  /* WORD SORT */
+  .word-sort-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 0.75rem; margin-top: 1rem; }
+  .word-sort-col { border-radius: 12px; padding: 0.75rem; min-height: 120px; border: 2px dashed #ccc; transition: all 0.15s; }
+  .word-sort-col.drag-over { border-color: var(--orange); background: var(--orange-light); }
+  .word-sort-col h3 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 2px solid currentColor; text-align: center; }
+  .wsc-imp { border-color: var(--red); background: var(--red-light); } .wsc-imp h3 { color: var(--red); }
+  .wsc-unl { border-color: #e87000; background: #fff0e0; } .wsc-unl h3 { color: #c05800; }
+  .wsc-eve { border-color: var(--yellow); background: var(--yellow-light); } .wsc-eve h3 { color: #7a5500; }
+  .wsc-lik { border-color: #4a9b6a; background: #e8f5ee; } .wsc-lik h3 { color: #1a6b40; }
+  .wsc-cer { border-color: var(--green); background: var(--green-light); } .wsc-cer h3 { color: var(--green); }
+  .word-item { padding: 0.35rem 0.7rem; background: white; border: 2px solid var(--purple); border-radius: 10px; font-size: 0.82rem; font-weight: 700; color: var(--purple); cursor: grab; user-select: none; margin-bottom: 0.4rem; display: inline-block; transition: transform 0.15s; }
+  .word-item:hover { transform: scale(1.04); }
+  .word-bank { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem; background: #f5f0eb; border-radius: 12px; border: 2px dashed #ccc; min-height: 52px; margin-bottom: 1rem; }
+
+  .score-box { background: var(--purple); border-radius: 16px; padding: 1.5rem; text-align: center; color: white; margin-bottom: 1.25rem; }
+  .score-box .score-num { font-size: 3rem; font-weight: 700; line-height: 1; }
+  .score-box .score-label { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
+
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--purple); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-outline { background: white; color: var(--purple); border: 2px solid var(--purple); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .skip-link { display: inline-block; font-size: 0.85rem; color: var(--muted); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; background: none; border: none; font-family: inherit; }
+
+  .export-bar { background: var(--purple-light); border-top: 2px solid #d8b8f8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--purple); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media(max-width:500px) { .scale-drop-row { gap: 0.35rem; } .scale-drop-zone { width: 90px; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="tag">Week 2 · Maths</p>
+  <h1>🎲 Language of Probability</h1>
+  <p>Impossible, unlikely, even, likely, certain — let's explore chance!</p>
+</header>
+
+<div class="name-bar">
+  <label for="studentName">Your name:</label>
+  <input id="studentName" type="text" placeholder="Type your name here..." />
+  <span style="font-size:0.8rem;color:#d8b8f8;">— used on your results</span>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 6 sections</span>
+  <span class="timer-label">⏱ ~45 mins</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. What is Probability?</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. The Scale Game</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Spin It!</button>
+  <button class="nav-btn" onclick="goToSection(3)" id="nav3">4. Flip & Roll</button>
+  <button class="nav-btn" onclick="goToSection(4)" id="nav4">5. Word Sort</button>
+  <button class="nav-btn" onclick="goToSection(5)" id="nav5">6. Quiz</button>
+</nav>
+
+<main class="main">
+
+  <!-- SECTION 1: WHAT IS PROBABILITY -->
+  <section class="section active" id="section0">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">What is Probability?</h2>
+
+    <div class="info-card">
+      <h2>🎲 Chance and likelihood</h2>
+      <p><strong>Probability</strong> is the chance that something will happen. Some things are very likely to happen. Some things are very unlikely. And some things are somewhere in between.</p>
+      <p>We use special words to describe how likely something is. These words sit on a scale — from <strong>impossible</strong> all the way to <strong>certain</strong>.</p>
+    </div>
+
+    <div class="info-card">
+      <h2>📏 The Probability Scale</h2>
+      <p>Imagine a line. On the left is <strong>impossible</strong> — it will never happen. On the right is <strong>certain</strong> — it will definitely happen. Everything else sits somewhere in between.</p>
+      <div class="prob-scale">
+        <div class="scale-track"></div>
+        <div class="scale-labels">
+          <span class="scale-label">0</span>
+          <span class="scale-label">0.25</span>
+          <span class="scale-label">0.5</span>
+          <span class="scale-label">0.75</span>
+          <span class="scale-label">1</span>
+        </div>
+      </div>
+      <div class="scale-words">
+        <span class="scale-word sw-impossible">Impossible</span>
+        <span class="scale-word sw-unlikely">Unlikely</span>
+        <span class="scale-word sw-evens">Even chance</span>
+        <span class="scale-word sw-likely">Likely</span>
+        <span class="scale-word sw-certain">Certain</span>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2>📖 What do the words mean?</h2>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.25rem;">
+        <div style="background:var(--red-light);border-radius:10px;padding:0.9rem 1rem;border-left:4px solid var(--red);">
+          <strong style="color:var(--red);">Impossible</strong> — will never happen. <em style="color:var(--muted);">e.g. rolling a 7 on a standard dice</em>
+        </div>
+        <div style="background:#fff0e0;border-radius:10px;padding:0.9rem 1rem;border-left:4px solid #e87000;">
+          <strong style="color:#c05800;">Unlikely</strong> — could happen but probably won't. <em style="color:var(--muted);">e.g. it snowing in July</em>
+        </div>
+        <div style="background:var(--yellow-light);border-radius:10px;padding:0.9rem 1rem;border-left:4px solid var(--yellow);">
+          <strong style="color:#7a5500;">Even chance</strong> — equally likely to happen or not. <em style="color:var(--muted);">e.g. flipping heads on a coin</em>
+        </div>
+        <div style="background:#e8f5ee;border-radius:10px;padding:0.9rem 1rem;border-left:4px solid #4a9b6a;">
+          <strong style="color:#1a6b40;">Likely</strong> — probably will happen. <em style="color:var(--muted);">e.g. it being light outside at noon</em>
+        </div>
+        <div style="background:var(--green-light);border-radius:10px;padding:0.9rem 1rem;border-left:4px solid var(--green);">
+          <strong style="color:var(--green);">Certain</strong> — will definitely happen. <em style="color:var(--muted);">e.g. the sun rising tomorrow</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Got it — next section →</button>
+      <button class="skip-link" onclick="goToSection(1)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: SCALE GAME -->
+  <section class="section" id="section1">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">🎮 The Scale Game</h2>
+
+    <div class="info-card">
+      <p>Drag each event into the correct column on the probability scale. Where would you put each one?</p>
+    </div>
+
+    <div class="dnd-scale">
+      <p style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:0.75rem;">Drag from here...</p>
+      <div class="dnd-bank" id="dndBank">
+        <div class="dnd-item" draggable="true" data-answer="certain" id="d1">The sun rises tomorrow</div>
+        <div class="dnd-item" draggable="true" data-answer="impossible" id="d2">Roll a 9 on a dice</div>
+        <div class="dnd-item" draggable="true" data-answer="evens" id="d3">Flip heads on a coin</div>
+        <div class="dnd-item" draggable="true" data-answer="unlikely" id="d4">It snows in August</div>
+        <div class="dnd-item" draggable="true" data-answer="likely" id="d5">Getting hungry by lunchtime</div>
+        <div class="dnd-item" draggable="true" data-answer="impossible" id="d6">A cat wins the World Cup</div>
+        <div class="dnd-item" draggable="true" data-answer="certain" id="d7">Monday comes after Sunday</div>
+        <div class="dnd-item" draggable="true" data-answer="unlikely" id="d8">Picking a red card from a mostly blue deck</div>
+        <div class="dnd-item" draggable="true" data-answer="evens" id="d9">Picking odd or even from 1–10</div>
+        <div class="dnd-item" draggable="true" data-answer="likely" id="d10">A baby crying at some point today</div>
+      </div>
+
+      <p style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:0.5rem;">...into the right column here</p>
+      <div class="scale-drop-row">
+        <div class="scale-drop-zone zone-imp" id="zoneImpossible" ondragover="dndOver(event)" ondrop="dndDrop(event,'impossible')">
+          <span class="zone-label">Impossible</span>
+        </div>
+        <div class="scale-drop-zone zone-unl" id="zoneUnlikely" ondragover="dndOver(event)" ondrop="dndDrop(event,'unlikely')">
+          <span class="zone-label">Unlikely</span>
+        </div>
+        <div class="scale-drop-zone zone-eve" id="zoneEvens" ondragover="dndOver(event)" ondrop="dndDrop(event,'evens')">
+          <span class="zone-label">Even chance</span>
+        </div>
+        <div class="scale-drop-zone zone-lik" id="zoneLikely" ondragover="dndOver(event)" ondrop="dndDrop(event,'likely')">
+          <span class="zone-label">Likely</span>
+        </div>
+        <div class="scale-drop-zone zone-cer" id="zoneCertain" ondragover="dndOver(event)" ondrop="dndDrop(event,'certain')">
+          <span class="zone-label">Certain</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="checkDnd()">Check my answers</button>
+      <button class="btn btn-outline" onclick="resetDnd()">Reset</button>
+    </div>
+    <div id="dndFeedback" style="margin-top:1rem;font-size:0.95rem;font-weight:700;display:none;"></div>
+    <div class="btn-row" id="dndNext" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(1)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(1)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 3: SPINNER -->
+  <section class="section" id="section2">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">🎡 Spin It!</h2>
+
+    <!-- STEP 1: LOOK -->
+    <div class="info-card">
+      <h2>Step 1 — Look at the spinner 👀</h2>
+      <p>This spinner is split into <strong>4 coloured sections</strong>. The sections are <strong>different sizes</strong> — that means some colours are more likely to come up than others.</p>
+      <p>The bigger the section, the <strong>more likely</strong> you are to land on it.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.6rem;margin-top:0.75rem;">
+        <div style="background:#e6f5f8;border:2px solid #007291;border-radius:10px;padding:0.7rem;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:700;color:#007291;">🔵 Blue</div>
+          <div style="font-size:0.85rem;color:#007291;font-weight:700;">45% of the spinner</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Almost half — very likely</div>
+        </div>
+        <div style="background:#eaf7f0;border:2px solid #2e8b57;border-radius:10px;padding:0.7rem;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:700;color:#2e8b57;">🟢 Green</div>
+          <div style="font-size:0.85rem;color:#2e8b57;font-weight:700;">30% of the spinner</div>
+          <div style="font-size:0.78rem;color:var(--muted);">About a third — likely</div>
+        </div>
+        <div style="background:#fdf5e0;border:2px solid #e8a020;border-radius:10px;padding:0.7rem;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:700;color:#b07010;">🟡 Yellow</div>
+          <div style="font-size:0.85rem;color:#b07010;font-weight:700;">15% of the spinner</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Small section — unlikely</div>
+        </div>
+        <div style="background:#fdecea;border:2px solid #c0392b;border-radius:10px;padding:0.7rem;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:700;color:#c0392b;">🔴 Red</div>
+          <div style="font-size:0.85rem;color:#c0392b;font-weight:700;">10% of the spinner</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Tiny section — very unlikely</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: PREDICT -->
+    <div class="info-card">
+      <h2>Step 2 — Make a prediction 🔮</h2>
+      <p>Before you spin, have a think. If you spun this spinner 10 times, which colour do you think would come up most?</p>
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.75rem;" id="predictBtns">
+        <button style="padding:0.6rem 1.1rem;border-radius:20px;border:2px solid #007291;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;color:#007291;cursor:pointer;" onclick="setPrediction(this,'Blue')">🔵 Blue</button>
+        <button style="padding:0.6rem 1.1rem;border-radius:20px;border:2px solid #2e8b57;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;color:#2e8b57;cursor:pointer;" onclick="setPrediction(this,'Green')">🟢 Green</button>
+        <button style="padding:0.6rem 1.1rem;border-radius:20px;border:2px solid #b07010;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;color:#b07010;cursor:pointer;" onclick="setPrediction(this,'Yellow')">🟡 Yellow</button>
+        <button style="padding:0.6rem 1.1rem;border-radius:20px;border:2px solid #c0392b;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;color:#c0392b;cursor:pointer;" onclick="setPrediction(this,'Red')">🔴 Red</button>
+      </div>
+      <div id="predictionSet" style="margin-top:0.75rem;font-size:0.9rem;font-weight:700;color:var(--purple);display:none;"></div>
+    </div>
+
+    <!-- STEP 3: SPIN -->
+    <div class="info-card">
+      <h2>Step 3 — Spin 10 times! 🎡</h2>
+      <p>Click the spinner to spin. Try to get to <strong>10 spins</strong> and watch the results build up below.</p>
+
+      <div class="spinner-wrap">
+        <canvas class="spinner-canvas" id="spinnerCanvas" width="220" height="220" onclick="spinIt()"></canvas>
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.25rem;">
+          <p style="font-size:0.88rem;color:var(--muted);">Click to spin!</p>
+          <div style="background:var(--purple);color:white;border-radius:20px;padding:0.3rem 0.9rem;font-size:0.85rem;font-weight:700;" id="spinCounter">0 / 10 spins</div>
+        </div>
+        <div class="spinner-result" id="spinResult" style="font-size:1.3rem;min-height:2rem;"></div>
+        <div class="spin-stats" id="spinStats"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: QUESTIONS — only shown after 10 spins -->
+    <div id="spinQuestionsBlock" style="display:none;">
+      <div class="info-card" style="border-color:var(--green-light);">
+        <h2 style="color:var(--green);">Step 4 — Answer these questions ✅</h2>
+
+        <div style="background:var(--purple-light);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:1rem;">
+          <div>
+            <p style="font-size:0.95rem;font-weight:700;color:var(--purple);margin-bottom:0.5rem;">1. Which colour came up the most in your spins?</p>
+            <select id="spinQ1" style="padding:0.6rem;border-radius:8px;border:2px solid #e0d8d0;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.95rem;font-weight:700;background:white;width:100%;max-width:250px;">
+              <option value="">Choose a colour...</option>
+              <option>Blue</option><option>Green</option><option>Yellow</option><option>Red</option>
+            </select>
+          </div>
+          <div>
+            <p style="font-size:0.95rem;font-weight:700;color:var(--purple);margin-bottom:0.5rem;">2. Which colour is the LEAST likely to appear? (Look at the section sizes to help you.)</p>
+            <select id="spinQ2" style="padding:0.6rem;border-radius:8px;border:2px solid #e0d8d0;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.95rem;font-weight:700;background:white;width:100%;max-width:250px;">
+              <option value="">Choose a colour...</option>
+              <option>Blue</option><option>Green</option><option>Yellow</option><option>Red</option>
+            </select>
+          </div>
+          <div>
+            <p style="font-size:0.95rem;font-weight:700;color:var(--purple);margin-bottom:0.5rem;">3. Did your results match your prediction?</p>
+            <div style="display:flex;gap:0.6rem;flex-wrap:wrap;" id="matchBtns">
+              <button style="padding:0.5rem 1rem;border-radius:20px;border:2px solid #e0d8d0;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="setMatch(this,'Yes')">Yes</button>
+              <button style="padding:0.5rem 1rem;border-radius:20px;border:2px solid #e0d8d0;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="setMatch(this,'Not exactly')">Not exactly</button>
+              <button style="padding:0.5rem 1rem;border-radius:20px;border:2px solid #e0d8d0;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="setMatch(this,'No')">No</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" style="margin-top:1rem;" onclick="checkSpinAnswers()">Check my answers</button>
+        <div id="spinAnswerFeedback" style="margin-top:0.75rem;font-size:0.9rem;font-weight:700;display:none;line-height:1.6;"></div>
+      </div>
+    </div>
+
+    <div class="btn-row" id="spinNext" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(2)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(2)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 4: COIN AND DICE -->
+  <section class="section" id="section3">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">🪙🎲 Flip & Roll</h2>
+
+    <div class="info-card">
+      <h2>🪙 Coin Flip — Even Chance</h2>
+      <p>A fair coin has two sides — heads and tails. Each flip is an <strong>even chance</strong>. That means there's a 50/50 chance of getting either. Flip it 10 times and see what happens!</p>
+      <div class="coin-wrap">
+        <div class="coin heads" id="coinEl" onclick="flipCoin()">🪙</div>
+        <p style="font-size:0.82rem;color:var(--muted);">Click the coin to flip!</p>
+        <div id="coinResult" style="font-size:1.1rem;font-weight:700;color:var(--purple);min-height:1.6rem;"></div>
+        <div class="coin-stats">
+          <div class="coin-stat"><div class="cnum" id="headsCount">0</div><div class="clabel">Heads</div></div>
+          <div class="coin-stat"><div class="cnum" id="totalFlips">0</div><div class="clabel">Total flips</div></div>
+          <div class="coin-stat"><div class="cnum" id="tailsCount">0</div><div class="clabel">Tails</div></div>
+        </div>
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:0.9rem;margin-top:0.75rem;">
+        <p style="font-size:0.88rem;font-weight:700;color:var(--purple);">After 10 flips — did you get exactly 5 heads and 5 tails? Why do you think that might or might not have happened?</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2>🎲 Dice Roll — Probability in Action</h2>
+      <p>A standard dice has 6 sides. Each number has an equal chance of being rolled. Roll it 12 times and see which numbers come up!</p>
+      <div class="dice-wrap">
+        <div class="dice" id="diceEl" onclick="rollDice()">🎲</div>
+        <p style="font-size:0.82rem;color:var(--muted);">Click the dice to roll!</p>
+        <div id="diceResult" style="font-size:1.1rem;font-weight:700;color:var(--purple);min-height:1.6rem;"></div>
+        <div class="dice-tally" id="diceTally"></div>
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:0.9rem;margin-top:0.75rem;">
+        <p style="font-size:0.88rem;font-weight:700;color:var(--purple);">Which number was rolled most? Is rolling a specific number on a dice likely, unlikely, or even chance?</p>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(3)">Next section →</button>
+      <button class="skip-link" onclick="goToSection(4)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 5: WORD SORT -->
+  <section class="section" id="section4">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">🗂️ Word Sort</h2>
+
+    <div class="info-card">
+      <h2>Sort the probability words</h2>
+      <p>All these words and phrases can be used to describe probability. Drag each one into the right column — where does it belong on the scale?</p>
+    </div>
+
+    <div class="word-bank" id="wordBank">
+      <div class="word-item" draggable="true" data-answer="certain" id="w1">Definite</div>
+      <div class="word-item" draggable="true" data-answer="impossible" id="w2">No chance</div>
+      <div class="word-item" draggable="true" data-answer="likely" id="w3">Probable</div>
+      <div class="word-item" draggable="true" data-answer="unlikely" id="w4">Doubtful</div>
+      <div class="word-item" draggable="true" data-answer="evens" id="w5">50/50</div>
+      <div class="word-item" draggable="true" data-answer="certain" id="w6">Will happen</div>
+      <div class="word-item" draggable="true" data-answer="impossible" id="w7">Cannot happen</div>
+      <div class="word-item" draggable="true" data-answer="unlikely" id="w8">Not very likely</div>
+      <div class="word-item" draggable="true" data-answer="likely" id="w9">Good chance</div>
+      <div class="word-item" draggable="true" data-answer="evens" id="w10">Equal chance</div>
+      <div class="word-item" draggable="true" data-answer="certain" id="w11">Guaranteed</div>
+      <div class="word-item" draggable="true" data-answer="unlikely" id="w12">Slim chance</div>
+    </div>
+
+    <div class="word-sort-cols">
+      <div class="word-sort-col wsc-imp" id="wsImpossible" ondragover="wordOver(event)" ondrop="wordDrop(event,'impossible')">
+        <h3>Impossible</h3>
+      </div>
+      <div class="word-sort-col wsc-unl" id="wsUnlikely" ondragover="wordOver(event)" ondrop="wordDrop(event,'unlikely')">
+        <h3>Unlikely</h3>
+      </div>
+      <div class="word-sort-col wsc-eve" id="wsEvens" ondragover="wordOver(event)" ondrop="wordDrop(event,'evens')">
+        <h3>Even chance</h3>
+      </div>
+      <div class="word-sort-col wsc-lik" id="wsLikely" ondragover="wordOver(event)" ondrop="wordDrop(event,'likely')">
+        <h3>Likely</h3>
+      </div>
+      <div class="word-sort-col wsc-cer" id="wsCertain" ondragover="wordOver(event)" ondrop="wordDrop(event,'certain')">
+        <h3>Certain</h3>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="checkWordSort()">Check my answers</button>
+      <button class="btn btn-outline" onclick="resetWordSort()">Reset</button>
+    </div>
+    <div id="wordSortFeedback" style="margin-top:1rem;font-size:0.95rem;font-weight:700;display:none;"></div>
+    <div class="btn-row" id="wordSortNext" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(4)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(4)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 6: QUIZ -->
+  <section class="section" id="section5">
+    <span class="time-badge">⏱ About 5 minutes</span>
+    <h2 class="section-title">🧠 Final Quiz</h2>
+
+    <div class="quiz-card" id="q1card">
+      <p class="q-number">Question 1 of 7</p>
+      <p class="q-text">Which word describes something that will DEFINITELY happen?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — unlikely means it probably won\'t happen.')">Unlikely</button>
+        <button class="option-btn" onclick="answer(this,true,'q1','✅ Correct! Certain means it will definitely happen — like the sun rising tomorrow.')">Certain</button>
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — even chance means it\'s equally likely to happen or not.')">Even chance</button>
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — likely means it probably will happen, but not definitely.')">Likely</button>
+      </div>
+      <div class="feedback" id="q1feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q2card">
+      <p class="q-number">Question 2 of 7</p>
+      <p class="q-text">You flip a fair coin. What is the probability of getting heads?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — a fair coin has equal sides, so it\'s not impossible to get heads.')">Impossible</button>
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — heads is just as likely as tails, so it\'s not unlikely.')">Unlikely</button>
+        <button class="option-btn" onclick="answer(this,true,'q2','✅ Correct! A fair coin has two equal sides — heads and tails are equally likely. That\'s an even chance.')">Even chance</button>
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — tails is just as likely as heads, so it\'s not certain.')">Certain</button>
+      </div>
+      <div class="feedback" id="q2feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q3card">
+      <p class="q-number">Question 3 of 7</p>
+      <p class="q-text">A bag has 9 red balls and 1 blue ball. What is the probability of picking the blue ball?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — there is 1 blue ball so it\'s possible, just very unlikely.')">Impossible</button>
+        <button class="option-btn" onclick="answer(this,true,'q3','✅ Correct! With only 1 blue ball out of 10, it\'s possible but not very likely at all — that\'s unlikely.')">Unlikely</button>
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — there are far more red balls than blue, so it\'s not an even chance.')">Even chance</button>
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — you\'re much more likely to pick red than blue.')">Likely</button>
+      </div>
+      <div class="feedback" id="q3feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q4card">
+      <p class="q-number">Question 4 of 7</p>
+      <p class="q-text">Which of these is IMPOSSIBLE?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — it does rain in summer sometimes, so it\'s possible.')">It raining in summer</button>
+        <button class="option-btn" onclick="answer(this,true,'q4','✅ Correct! A standard dice only has faces 1–6. Rolling a 7 is impossible.')">Rolling a 7 on a standard dice</button>
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — this is unlikely but not impossible.')">Getting all 6 questions right on a quiz by guessing</button>
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — this is very unlikely but technically possible.')">Winning the lottery</button>
+      </div>
+      <div class="feedback" id="q4feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q5card">
+      <p class="q-number">Question 5 of 7</p>
+      <p class="q-text">Which word means the SAME as "even chance"?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — guaranteed means certain, not 50/50.')">Guaranteed</button>
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — probable means likely, not 50/50.')">Probable</button>
+        <button class="option-btn" onclick="answer(this,true,'q5','✅ Correct! 50/50 means equally likely to happen or not — exactly the same as even chance.')">50/50</button>
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — slim chance means unlikely, not 50/50.')">Slim chance</button>
+      </div>
+      <div class="feedback" id="q5feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q6card">
+      <p class="q-number">Question 6 of 7</p>
+      <p class="q-text">On a probability scale from 0 to 1, where does "certain" sit?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — 0 represents impossible, not certain.')">0</button>
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — 0.5 represents even chance, not certain.')">0.5</button>
+        <button class="option-btn" onclick="answer(this,true,'q6','✅ Correct! Certain sits at 1 on the probability scale — it will definitely happen.')">1</button>
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — 0.75 represents likely but not certain.')">0.75</button>
+      </div>
+      <div class="feedback" id="q6feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q7card">
+      <p class="q-number">Question 7 of 7</p>
+      <p class="q-text">A spinner has 4 equal sections: red, blue, green and yellow. What is the probability of landing on red?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q7','Not quite — there is a red section, so it\'s not impossible.')">Impossible</button>
+        <button class="option-btn" onclick="answer(this,false,'q7','Not quite — all sections are equal, so red is just as likely as the others.')">Certain</button>
+        <button class="option-btn" onclick="answer(this,false,'q7','Not quite — with 4 equal sections, red isn\'t more or less likely than the others.')">Likely</button>
+        <button class="option-btn" onclick="answer(this,true,'q7','✅ Correct! With 4 equal sections, each colour has a 1 in 4 (25%) chance — that\'s unlikely but possible.')">Unlikely</button>
+      </div>
+      <div class="feedback" id="q7feedback"></div>
+    </div>
+
+    <div id="quizResult" style="display:none;">
+      <div class="score-box">
+        <div class="score-num" id="quizScore">0/7</div>
+        <div class="score-label">Quiz complete!</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="completeSection(5)">🎉 Finish</button>
+        <button class="btn btn-outline" onclick="resetQuiz()">Try again</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="export-bar">
+  <span>Save your results:</span>
+  <button onclick="sendEmail()" style="padding:0.6rem 1.25rem;background:var(--purple);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Email to teacher</button>
+  <button onclick="printResults()" style="padding:0.6rem 1.25rem;background:var(--orange);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🖨️ Save as PDF</button>
+</div>
+<footer>Base 6 · Chilton Bridge School · Week 2 Maths</footer>
+
+<script>
+  const sectionCount = 6;
+  const completed = Array(sectionCount).fill(false);
+  let quizScore = 0; let quizAnswered = 0;
+  let dndScore = 0; let wordSortScore = 0; let spinScore = 0;
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c, i) => { const b = document.getElementById('nav'+i); if(c){b.classList.add('done');b.classList.remove('active');} });
+  }
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('section'+i).classList.add('active');
+    if(!completed[i]) document.getElementById('nav'+i).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(i===2) drawSpinner();
+    if(i===3) initDiceTally();
+  }
+  function completeSection(i) {
+    completed[i]=true; updateProgress();
+    const next=i+1; if(next<sectionCount) goToSection(next); else showFinish();
+  }
+
+  // DND SCALE
+  let dndDragged = null;
+  document.querySelectorAll('.dnd-item').forEach(item=>{
+    item.addEventListener('dragstart',e=>{dndDragged=item;item.classList.add('dragging');});
+    item.addEventListener('dragend',()=>item.classList.remove('dragging'));
+  });
+  function dndOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+  document.querySelectorAll('.scale-drop-zone,#dndBank').forEach(z=>{z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));});
+  function dndDrop(e,col){e.preventDefault();e.currentTarget.classList.remove('drag-over');if(dndDragged)e.currentTarget.appendChild(dndDragged);}
+  document.getElementById('dndBank').addEventListener('dragover',e=>e.preventDefault());
+  document.getElementById('dndBank').addEventListener('drop',e=>{e.preventDefault();if(dndDragged)document.getElementById('dndBank').appendChild(dndDragged);});
+
+  function checkDnd(){
+    const zones={impossible:'zoneImpossible',unlikely:'zoneUnlikely',evens:'zoneEvens',likely:'zoneLikely',certain:'zoneCertain'};
+    let correct=0,total=0;
+    Object.entries(zones).forEach(([ans,zoneId])=>{
+      document.getElementById(zoneId).querySelectorAll('.dnd-item').forEach(item=>{
+        total++;
+        if(item.dataset.answer===ans){item.style.background='var(--green-light)';item.style.borderColor='var(--green)';item.style.color='var(--green)';correct++;}
+        else{item.style.background='var(--red-light)';item.style.borderColor='var(--red)';item.style.color='var(--red)';}
+      });
+    });
+    dndScore=correct;
+    const fb=document.getElementById('dndFeedback');
+    fb.style.display='block';
+    if(correct===10){fb.style.color='var(--green)';fb.textContent='🎉 Perfect! All 10 correct!';document.getElementById('dndNext').style.display='flex';}
+    else{fb.style.color='var(--orange)';fb.textContent=correct+' out of '+total+' correct. Green = right place, red = needs moving. Try again!';}
+  }
+  function resetDnd(){
+    const bank=document.getElementById('dndBank');
+    document.querySelectorAll('.dnd-item').forEach(item=>{item.style.background='';item.style.borderColor='';item.style.color='';bank.appendChild(item);});
+    document.getElementById('dndFeedback').style.display='none';
+    document.getElementById('dndNext').style.display='none';
+  }
+
+  // SPINNER
+  const spinColors=['#007291','#ef7724','#2e8b57','#e8a020'];
+  const spinLabels=['Blue','Red','Green','Yellow'];
+  const spinSizes=[0.45,0.1,0.3,0.15]; // proportions
+  const spinCounts={Blue:0,Red:0,Green:0,Yellow:0};
+  let spinTotal=0; let isSpinning=false; let spinAngle=0;
+
+  function drawSpinner(highlightIndex=-1){
+    const canvas=document.getElementById('spinnerCanvas');
+    if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const cx=110,cy=110,r=100;
+    ctx.clearRect(0,0,220,220);
+    let start=spinAngle-Math.PI/2;
+    spinSizes.forEach((size,i)=>{
+      const slice=size*2*Math.PI;
+      ctx.beginPath();ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,start,start+slice);
+      ctx.closePath();
+      ctx.fillStyle=i===highlightIndex?'white':spinColors[i];
+      ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=3;ctx.stroke();
+      const mid=start+slice/2;
+      ctx.fillStyle='white';ctx.font='bold 13px Atkinson Hyperlegible,sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(spinLabels[i],cx+Math.cos(mid)*65,cy+Math.sin(mid)*65);
+      start+=slice;
+    });
+    // needle
+    ctx.beginPath();ctx.moveTo(cx,cy-12);ctx.lineTo(cx+8,cy+8);ctx.lineTo(cx-8,cy+8);ctx.closePath();
+    ctx.fillStyle='#1a1a1a';ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fillStyle='white';ctx.fill();ctx.strokeStyle='#1a1a1a';ctx.lineWidth=2;ctx.stroke();
+  }
+
+  function spinIt(){
+    if(isSpinning)return;
+    isSpinning=true;
+    let speed=0.3+Math.random()*0.2;
+    let total=Math.PI*6+Math.random()*Math.PI*4;
+    let traveled=0;
+    const animate=()=>{
+      spinAngle+=speed;traveled+=speed;speed*=0.985;
+      drawSpinner();
+      if(speed>0.01&&traveled<total){requestAnimationFrame(animate);}
+      else{
+        isSpinning=false;
+        let norm=((spinAngle%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);
+        let pointer=(norm+Math.PI/2)%(Math.PI*2);
+        let cum=0;let result=0;
+        spinSizes.forEach((s,i)=>{cum+=s*Math.PI*2;if(pointer<=cum&&result===0)result=i;});
+        spinCounts[spinLabels[result]]++;spinTotal++;
+        document.getElementById('spinResult').textContent='🎉 '+spinLabels[result]+'!';
+        document.getElementById('spinResult').style.color=spinColors[result];
+        document.getElementById('spinCounter').textContent=spinTotal+' / 10 spins';
+        updateSpinStats();
+        if(spinTotal>=10){
+          document.getElementById('spinQuestionsBlock').style.display='block';
+          document.getElementById('spinCounter').style.background='var(--green)';
+          document.getElementById('spinCounter').textContent='✅ 10 spins done!';
+          document.getElementById('spinNext').style.display='flex';
+        }
+      }
+    };
+    requestAnimationFrame(animate);
+  }
+
+  let spinPrediction=''; let spinMatch='';
+  function setPrediction(btn, val){
+    document.querySelectorAll('#predictBtns button').forEach(b=>b.style.opacity='0.5');
+    btn.style.opacity='1'; btn.style.fontWeight='900';
+    spinPrediction=val;
+    document.getElementById('predictionSet').style.display='block';
+    document.getElementById('predictionSet').textContent='Your prediction: '+val+' will come up most. Now spin to find out!';
+  }
+  function setMatch(btn, val){
+    document.querySelectorAll('#matchBtns button').forEach(b=>{b.style.borderColor='#e0d8d0';b.style.background='white';});
+    btn.style.borderColor='var(--purple)'; btn.style.background='var(--purple-light)';
+    spinMatch=val;
+  }
+
+  function updateSpinStats(){
+    const div=document.getElementById('spinStats');
+    div.innerHTML=spinLabels.map((l,i)=>`<div class="spin-stat"><div class="stat-num" style="color:${spinColors[i]}">${spinCounts[l]}</div><div class="stat-label">${l}</div></div>`).join('');
+  }
+
+  function checkSpinAnswers(){
+    const q1=document.getElementById('spinQ1').value;
+    const q2=document.getElementById('spinQ2').value;
+    const fb=document.getElementById('spinAnswerFeedback');
+    fb.style.display='block';
+    let correct=0; let msg='';
+    if(q1==='Blue'){msg+='✅ Q1: Blue is most likely — it takes up 45% of the spinner, nearly half!\n';correct++;}
+    else if(q1===''){msg+='❌ Q1: You didn\'t choose a colour. Blue has the biggest section at 45%.\n';}
+    else{msg+='❌ Q1: '+q1+' came up a lot but Blue has the biggest section (45%), so it\'s the most likely overall.\n';}
+    if(q2==='Red'){msg+='✅ Q2: Red is correct — it only has 10% of the spinner, the smallest section!\n';correct++;}
+    else if(q2===''){msg+='❌ Q2: You didn\'t choose. Red has the tiniest section at just 10%.\n';}
+    else{msg+='❌ Q2: '+q2+' is small, but Red is even smaller — only 10% of the spinner.\n';}
+    if(spinMatch){msg+=(spinMatch==='Yes'||spinMatch==='Not exactly'?'✅':'💭')+' Q3: '+spinMatch+' — that\'s the thing about probability: even when something is likely, it doesn\'t always happen that way in a small number of tries!';}
+    spinScore=correct;
+    fb.style.color=correct===2?'var(--green)':'var(--orange)';
+    fb.style.whiteSpace='pre-line';
+    fb.textContent=msg;
+    document.getElementById('spinNext').style.display='flex';
+  }
+
+  // COIN
+  let headsCount=0,tailsCount=0,totalFlips=0;
+  function flipCoin(){
+    const coin=document.getElementById('coinEl');
+    coin.classList.add('flipping');
+    setTimeout(()=>{
+      coin.classList.remove('flipping');
+      const isHeads=Math.random()<0.5;
+      if(isHeads){headsCount++;coin.className='coin heads';coin.textContent='🪙';}
+      else{tailsCount++;coin.className='coin tails';coin.textContent='⚪';}
+      totalFlips++;
+      document.getElementById('headsCount').textContent=headsCount;
+      document.getElementById('tailsCount').textContent=tailsCount;
+      document.getElementById('totalFlips').textContent=totalFlips;
+      document.getElementById('coinResult').textContent=isHeads?'Heads! 🪙':'Tails! ⚪';
+      document.getElementById('coinResult').style.color=isHeads?'#c8a020':'#888';
+    },500);
+  }
+
+  // DICE
+  const diceFaces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  const diceCounts=[0,0,0,0,0,0];
+  let totalRolls=0;
+  function initDiceTally(){
+    const tally=document.getElementById('diceTally');
+    if(!tally)return;
+    tally.innerHTML=diceFaces.map((f,i)=>`<div class="tally-cell"><div class="tface">${f}</div><div class="tcount" id="tc${i+1}">${diceCounts[i]}</div></div>`).join('');
+  }
+  function rollDice(){
+    const dice=document.getElementById('diceEl');
+    dice.classList.add('rolling');
+    setTimeout(()=>{
+      dice.classList.remove('rolling');
+      const roll=Math.floor(Math.random()*6);
+      dice.textContent=diceFaces[roll];
+      diceCounts[roll]++;totalRolls++;
+      document.getElementById('diceResult').textContent='Rolled a '+(roll+1)+'!';
+      for(let i=0;i<6;i++){const el=document.getElementById('tc'+(i+1));if(el)el.textContent=diceCounts[i];}
+    },400);
+  }
+
+  // WORD SORT
+  let wordDragged=null;
+  document.querySelectorAll('.word-item').forEach(item=>{
+    item.addEventListener('dragstart',e=>{wordDragged=item;item.classList.add('dragging');});
+    item.addEventListener('dragend',()=>item.classList.remove('dragging'));
+  });
+  function wordOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+  document.querySelectorAll('.word-sort-col,#wordBank').forEach(z=>{z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));});
+  function wordDrop(e,col){e.preventDefault();e.currentTarget.classList.remove('drag-over');if(wordDragged)e.currentTarget.appendChild(wordDragged);}
+  document.getElementById('wordBank').addEventListener('dragover',e=>e.preventDefault());
+  document.getElementById('wordBank').addEventListener('drop',e=>{e.preventDefault();if(wordDragged)document.getElementById('wordBank').appendChild(wordDragged);});
+
+  function checkWordSort(){
+    const map={impossible:'wsImpossible',unlikely:'wsUnlikely',evens:'wsEvens',likely:'wsLikely',certain:'wsCertain'};
+    let correct=0,total=0;
+    Object.entries(map).forEach(([ans,id])=>{
+      document.getElementById(id).querySelectorAll('.word-item').forEach(item=>{
+        total++;
+        if(item.dataset.answer===ans){item.style.background='var(--green-light)';item.style.borderColor='var(--green)';item.style.color='var(--green)';correct++;}
+        else{item.style.background='var(--red-light)';item.style.borderColor='var(--red)';item.style.color='var(--red)';}
+      });
+    });
+    wordSortScore=correct;
+    const fb=document.getElementById('wordSortFeedback');
+    fb.style.display='block';
+    if(correct===12){fb.style.color='var(--green)';fb.textContent='🎉 Perfect! All 12 words sorted correctly!';document.getElementById('wordSortNext').style.display='flex';}
+    else{fb.style.color='var(--orange)';fb.textContent=correct+' out of '+total+' correct. Keep sorting!';}
+  }
+  function resetWordSort(){
+    const bank=document.getElementById('wordBank');
+    document.querySelectorAll('.word-item').forEach(item=>{item.style.background='';item.style.borderColor='';item.style.color='';bank.appendChild(item);});
+    document.getElementById('wordSortFeedback').style.display='none';
+    document.getElementById('wordSortNext').style.display='none';
+  }
+
+  // QUIZ
+  function answer(btn,correct,qid,feedback){
+    const card=btn.closest('.quiz-card');
+    card.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+    btn.classList.add(correct?'correct':'wrong');
+    if(!correct)card.querySelectorAll('.option-btn').forEach(b=>{if(b.onclick.toString().includes('true,'))b.classList.add('correct');});
+    const fb=document.getElementById(qid+'feedback');
+    fb.textContent=feedback;fb.className='feedback '+(correct?'correct':'wrong');
+    if(correct)quizScore++;quizAnswered++;
+    if(quizAnswered===7){setTimeout(()=>{document.getElementById('quizResult').style.display='block';document.getElementById('quizScore').textContent=quizScore+'/7';},600);}
+  }
+  function resetQuiz(){
+    quizAnswered=0;quizScore=0;
+    document.getElementById('quizResult').style.display='none';
+    for(let i=1;i<=7;i++){
+      document.getElementById('q'+i+'card').querySelectorAll('.option-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+      const fb=document.getElementById('q'+i+'feedback');fb.className='feedback';fb.textContent='';
+    }
+  }
+
+  // RESULTS
+  function getStudentName(){return document.getElementById('studentName').value.trim()||'Student';}
+
+  function buildResultsHTML(){
+    const name=getStudentName();
+    const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const quizQs=['Which word means DEFINITELY happen?','Probability of heads on a fair coin?','9 red 1 blue — probability of blue?','Which is IMPOSSIBLE?','Same as "even chance"?','Where does "certain" sit on 0–1 scale?','Spinner with 4 equal sections — land on red?'];
+    let html=`<div style="font-family:'Atkinson Hyperlegible',sans-serif;max-width:640px;margin:0 auto;color:#1a1a1a;">`;
+    html+=`<div style="background:#7a3fa8;padding:1.5rem;border-radius:12px 12px 0 0;text-align:center;">
+      <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#d8b8f8;margin-bottom:0.3rem;">Base 6 · Chilton Bridge School</p>
+      <h1 style="font-size:1.5rem;font-weight:700;color:#fef8f4;margin-bottom:0.25rem;">Language of Probability — Results</h1>
+      <p style="color:#e0c8ff;font-size:0.9rem;">${name} · ${now}</p>
+    </div>`;
+    html+=`<div style="background:#f5eeff;padding:1rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#7a3fa8;">${completed.filter(Boolean).length}/6</div><div style="font-size:0.8rem;color:#555;">Sections done</div></div>
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#ef7724;">${dndScore}/10</div><div style="font-size:0.8rem;color:#555;">Scale game</div></div>
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#2e8b57;">${wordSortScore}/12</div><div style="font-size:0.8rem;color:#555;">Word sort</div></div>
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#c0407a;">${quizScore}/7</div><div style="font-size:0.8rem;color:#555;">Quiz score</div></div>
+    </div>`;
+    html+=`<div style="padding:1.25rem 1.5rem;background:white;border:1px solid #e0d8d0;border-top:none;"><h2 style="font-size:1rem;font-weight:700;color:#7a3fa8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Quiz Breakdown</h2>`;
+    quizQs.forEach((q,i)=>{
+      const fb=document.getElementById('q'+(i+1)+'feedback');
+      const answered=fb&&fb.textContent.length>0;
+      const correct=fb&&fb.classList.contains('correct');
+      const icon=!answered?'—':(correct?'✅':'❌');
+      const col=!answered?'#888':(correct?'#2e8b57':'#c0392b');
+      html+=`<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0.5rem 0;border-bottom:1px solid #f0ede8;font-size:0.88rem;gap:0.5rem;"><span style="font-weight:700;flex:1;">Q${i+1}: ${q}</span><span style="color:${col};font-weight:700;white-space:nowrap;">${icon} ${!answered?'Not attempted':(correct?'Correct':'Incorrect')}</span></div>`;
+    });
+    html+=`</div><div style="padding:1rem 1.5rem;background:#f5eeff;border:1px solid #e0d8d0;border-top:none;border-radius:0 0 12px 12px;"><p style="font-size:0.8rem;color:#888;text-align:center;">Language of Probability · Week 2 Maths · Base 6</p></div></div>`;
+    return html;
+  }
+
+  function sendEmail(){
+    const name=getStudentName();
+    const now=new Date().toLocaleDateString('en-GB');
+    const quizQs=['Which word means DEFINITELY happen?','Probability of heads on fair coin?','9 red 1 blue — probability of blue?','Which is IMPOSSIBLE?','Same as "even chance"?','Where does "certain" sit on 0-1 scale?','Spinner 4 equal sections — land on red?'];
+    let body=`Language of Probability Results — ${name} — ${now}\n\n`;
+    body+=`SECTIONS COMPLETED: ${completed.filter(Boolean).length}/6\nSCALE GAME: ${dndScore}/10\nWORD SORT: ${wordSortScore}/12\nQUIZ: ${quizScore}/7\n\n--- QUIZ ---\n`;
+    quizQs.forEach((q,i)=>{
+      const fb=document.getElementById('q'+(i+1)+'feedback');
+      const answered=fb&&fb.textContent.length>0;
+      const correct=fb&&fb.classList.contains('correct');
+      body+=`Q${i+1}: ${q} — ${!answered?'Not attempted':(correct?'Correct':'Incorrect')}\n`;
+    });
+    window.location.href='mailto:jay.raine@chiltonbridgeschool.co.uk?subject='+encodeURIComponent('Probability Results — '+name+' — '+now)+'&body='+encodeURIComponent(body);
+  }
+
+  function printResults(){
+    const html=buildResultsHTML();
+    const win=window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>Probability Results</title><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><style>body{font-family:'Atkinson Hyperlegible',sans-serif;background:white;margin:2rem;}@media print{body{margin:0;}.no-print{display:none;}}</style></head><body>${html}<div class="no-print" style="margin-top:1.5rem;text-align:center;"><button onclick="window.print()" style="padding:0.75rem 1.5rem;background:#7a3fa8;color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">Save as PDF / Print</button></div></body></html>`);
+    win.document.close();
+  }
+
+  function showFinish(){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    const fin=document.createElement('section');
+    fin.className='section active';
+    fin.innerHTML=`
+      <div style="text-align:center;padding:2rem 1rem 1rem;">
+        <div style="font-size:4rem;margin-bottom:1rem;">🎲</div>
+        <h2 style="font-size:1.8rem;color:var(--purple);margin-bottom:0.75rem;">Brilliant work!</h2>
+        <p style="font-size:1.05rem;color:var(--muted);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6;">You've explored the language of probability — learning the words, placing events on a scale, spinning, flipping, rolling and sorting. That's a full session of brilliant maths!</p>
+        <div style="background:var(--purple-light);border-radius:14px;padding:1.25rem;max-width:480px;margin:0 auto 1.5rem;text-align:left;">
+          <p style="font-weight:700;color:var(--purple);margin-bottom:0.5rem;">I can now...</p>
+          <ul style="padding-left:1.25rem;color:var(--dark);line-height:2;">
+            <li>Explain what probability means</li>
+            <li>Use words like impossible, unlikely, even chance, likely and certain</li>
+            <li>Place events on a probability scale</li>
+            <li>Predict the likelihood of simple events</li>
+          </ul>
+        </div>
+      </div>
+      <div id="resultsPreview" style="margin-bottom:1.5rem;"></div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;padding-bottom:2rem;">
+        <button class="btn btn-primary" onclick="sendEmail()">📧 Email results to teacher</button>
+        <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+        <button class="btn btn-outline" onclick="goToSection(0)">← Start again</button>
+      </div>`;
+    document.querySelector('.main').appendChild(fin);
+    document.getElementById('resultsPreview').innerHTML=buildResultsHTML();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // Init
+  drawSpinner();
+  initDiceTally();
+</script>
+</body>
+</html>
