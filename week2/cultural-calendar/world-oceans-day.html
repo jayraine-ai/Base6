@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Oceans Day 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ocean: #006994; --ocean-light: #e0f0f8; --ocean-dark: #004a6e;
+    --teal: #007291; --teal-light: #e6f5f8;
+    --orange: #ef7724; --orange-light: #fff3eb;
+    --green: #2e8b57; --green-light: #eaf7f0;
+    --red: #c0392b; --red-light: #fdecea;
+    --yellow: #e8a020; --yellow-light: #fdf5e0;
+    --cream: #fef8f4; --dark: #1a1a1a; --muted: #555;
+    --sand: #f5e6c8; --sand-dark: #d4a820;
+  }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+
+  /* HEADER */
+  .site-header { background: linear-gradient(180deg, #003a5c 0%, #006994 50%, #0088bb 100%); padding: 2rem 2rem 1.5rem; text-align: center; position: relative; overflow: hidden; }
+  .site-header::after { content: '🌊'; font-size: 8rem; position: absolute; bottom: -20px; right: -10px; opacity: 0.1; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #a8d8f0; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; color: white; line-height: 1.2; }
+  .site-header .date-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 0.35rem 0.9rem; font-size: 0.85rem; font-weight: 700; color: white; margin-top: 0.6rem; }
+
+  .name-bar { background: var(--ocean-dark); padding: 0.6rem 2rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .name-bar label { font-size: 0.82rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .name-bar input { flex: 1; max-width: 280px; padding: 0.4rem 0.75rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: #fef8f4; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .name-bar input::placeholder { color: rgba(255,255,255,0.5); }
+
+  .progress-bar-wrap { background: #004a6e; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 0.8rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .timer-label { font-size: 0.8rem; font-weight: 700; color: #a8d8f0; white-space: nowrap; }
+
+  .section-nav { display: flex; overflow-x: auto; gap: 0.5rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid #e0d8d0; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #ccc; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; color: #888; cursor: pointer; transition: all 0.2s; }
+  .nav-btn.active { border-color: var(--ocean); background: var(--ocean-light); color: var(--ocean); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--ocean); margin-bottom: 1.25rem; }
+  .time-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--ocean-light); border: 1.5px solid var(--ocean); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; color: var(--ocean); margin-bottom: 1rem; }
+
+  .info-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--ocean-light); }
+  .info-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--ocean); margin-bottom: 0.75rem; }
+  .info-card p { font-size: 1rem; line-height: 1.7; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .highlight-box { background: var(--ocean-light); border-left: 4px solid var(--ocean); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 1rem; font-weight: 700; color: var(--ocean); line-height: 1.6; }
+
+  /* FACT CARDS */
+  .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 0.75rem; margin: 1rem 0; }
+  .fact-card { border-radius: 14px; padding: 1.1rem; text-align: center; border: 2px solid transparent; cursor: pointer; transition: transform 0.15s; }
+  .fact-card:hover { transform: translateY(-2px); }
+  .fact-card .fact-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+  .fact-card .fact-stat { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .fact-card .fact-label { font-size: 0.82rem; line-height: 1.4; }
+  .fact-card.fc-blue { background: var(--ocean-light); border-color: var(--ocean); } .fact-card.fc-blue .fact-stat { color: var(--ocean); }
+  .fact-card.fc-green { background: var(--green-light); border-color: var(--green); } .fact-card.fc-green .fact-stat { color: var(--green); }
+  .fact-card.fc-orange { background: var(--orange-light); border-color: var(--orange); } .fact-card.fc-orange .fact-stat { color: var(--orange); }
+  .fact-card.fc-red { background: var(--red-light); border-color: var(--red); } .fact-card.fc-red .fact-stat { color: var(--red); }
+  .fact-card.fc-sand { background: var(--sand); border-color: var(--sand-dark); } .fact-card.fc-sand .fact-stat { color: #8a6000; }
+  .fact-card.fc-purple { background: #f5eeff; border-color: #7a3fa8; } .fact-card.fc-purple .fact-stat { color: #7a3fa8; }
+
+  /* DEPTH EXPLORER */
+  .depth-explorer { background: white; border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; border: 2px solid var(--ocean-light); }
+  .depth-zone { padding: 1rem 1.5rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 1rem; }
+  .depth-zone:hover { filter: brightness(0.95); }
+  .depth-zone .dz-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .depth-zone .dz-name { font-size: 0.88rem; font-weight: 700; }
+  .depth-zone .dz-depth { font-size: 0.78rem; opacity: 0.8; }
+  .depth-zone .dz-expand { margin-left: auto; font-size: 1.2rem; transition: transform 0.2s; }
+  .depth-zone.open .dz-expand { transform: rotate(90deg); }
+  .depth-detail { display: none; padding: 0 1.5rem 1rem 4.5rem; font-size: 0.9rem; line-height: 1.6; color: var(--dark); }
+  .depth-detail.open { display: block; }
+  .dz-sunlight { background: #c8eeff; } .dz-sunlight .dz-name { color: #005a80; }
+  .dz-twilight { background: #88b8d8; } .dz-twilight .dz-name { color: #003a5c; }
+  .dz-midnight { background: #3a6888; color: white; } .dz-midnight .dz-name { color: #c8e8ff; }
+  .dz-abyssal { background: #1a3a50; color: #aaa; } .dz-abyssal .dz-name { color: #88b8d8; }
+  .dz-hadal { background: #0a1a28; } .dz-hadal .dz-name { color: #688899; }
+
+  /* THREAT SORTER */
+  .threat-bank { display: flex; flex-wrap: wrap; gap: 0.6rem; padding: 0.75rem; background: #f5f0eb; border-radius: 12px; border: 2px dashed #ccc; min-height: 56px; margin-bottom: 1.25rem; }
+  .threat-item { padding: 0.5rem 0.9rem; background: white; border: 2px solid var(--ocean); border-radius: 10px; font-size: 0.88rem; font-weight: 700; color: var(--ocean); cursor: grab; user-select: none; transition: transform 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+  .threat-item:hover { transform: scale(1.03); }
+  .threat-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 0.75rem; }
+  .threat-col { border-radius: 12px; padding: 0.75rem; min-height: 100px; border: 2px dashed #ccc; transition: all 0.15s; }
+  .threat-col.drag-over { border-color: var(--orange); background: var(--orange-light); }
+  .threat-col h3 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 2px solid currentColor; text-align: center; }
+  .tc-critical { border-color: var(--red); background: var(--red-light); } .tc-critical h3 { color: var(--red); }
+  .tc-serious { border-color: var(--orange); background: var(--orange-light); } .tc-serious h3 { color: #c05a10; }
+  .tc-moderate { border-color: var(--yellow); background: var(--yellow-light); } .tc-moderate h3 { color: #7a5500; }
+
+  /* FACT OR MYTH */
+  .fom-card { background: white; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; border: 2px solid var(--ocean-light); }
+  .fom-card .fom-statement { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem; line-height: 1.4; }
+  .fom-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .fom-btn { padding: 0.6rem 1.25rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .fom-btn:hover:not(:disabled) { border-color: var(--ocean); background: var(--ocean-light); color: var(--ocean); }
+  .fom-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .fom-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .fom-btn:disabled { cursor: default; }
+  .fom-feedback { margin-top: 0.6rem; font-size: 0.88rem; font-weight: 700; padding: 0.6rem 0.9rem; border-radius: 8px; display: none; line-height: 1.5; }
+  .fom-feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .fom-feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  /* PLEDGE */
+  .pledge-card { background: linear-gradient(135deg, var(--ocean-light), #d0e8f8); border: 2px solid var(--ocean); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .pledge-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--ocean); margin-bottom: 0.75rem; }
+  .pledge-options { display: flex; flex-direction: column; gap: 0.6rem; margin: 0.75rem 0; }
+  .pledge-option { padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid #c0d8e8; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.75rem; }
+  .pledge-option:hover { border-color: var(--ocean); background: var(--ocean-light); }
+  .pledge-option.selected { border-color: var(--ocean); background: var(--ocean-light); color: var(--ocean); }
+  .pledge-option .pledge-icon { font-size: 1.3rem; flex-shrink: 0; }
+  textarea.pledge-text { width: 100%; min-height: 80px; padding: 0.75rem; border: 2px solid #c0d8e8; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; background: white; line-height: 1.6; resize: vertical; }
+  textarea.pledge-text:focus { outline: none; border-color: var(--ocean); }
+
+  /* QUIZ */
+  .quiz-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid #e0d8d0; }
+  .quiz-card .q-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.5rem; }
+  .quiz-card .q-text { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn { padding: 0.75rem 1rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--ocean); background: var(--ocean-light); color: var(--ocean); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback { margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; display: none; line-height: 1.5; }
+  .feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  .score-box { background: var(--ocean); border-radius: 16px; padding: 1.5rem; text-align: center; color: white; margin-bottom: 1.25rem; }
+  .score-box .score-num { font-size: 3rem; font-weight: 700; line-height: 1; }
+  .score-box .score-label { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
+
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--ocean); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-green { background: var(--green); color: white; }
+  .btn-outline { background: white; color: var(--ocean); border: 2px solid var(--ocean); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .skip-link { display: inline-block; font-size: 0.85rem; color: var(--muted); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; background: none; border: none; font-family: inherit; }
+
+  .export-bar { background: var(--ocean-light); border-top: 2px solid #b0d0e8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--ocean); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media(max-width:500px) { .facts-grid { grid-template-columns: repeat(2,1fr); } .threat-cols { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="tag">Week 2 · Cultural Calendar</p>
+  <h1>🌊 World Oceans Day</h1>
+  <div class="date-badge">📅 8th June 2026</div>
+</header>
+
+<div class="name-bar">
+  <label for="studentName">Your name:</label>
+  <input id="studentName" type="text" placeholder="Type your name here..." />
+  <span style="font-size:0.8rem;color:#a8d8f0;">— used on your results</span>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 6 sections</span>
+  <span class="timer-label">⏱ ~45 mins</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. Our Oceans</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. Dive Deep</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Ocean Threats</button>
+  <button class="nav-btn" onclick="goToSection(3)" id="nav3">4. Fact or Myth?</button>
+  <button class="nav-btn" onclick="goToSection(4)" id="nav4">5. Quiz</button>
+  <button class="nav-btn" onclick="goToSection(5)" id="nav5">6. My Pledge</button>
+</nav>
+
+<main class="main">
+
+  <!-- SECTION 1: OUR OCEANS -->
+  <section class="section active" id="section0">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">🌊 Our Oceans</h2>
+
+    <div class="info-card">
+      <h2>Why do oceans matter?</h2>
+      <p>The ocean covers over <strong>70% of our planet</strong>. It produces more than half the oxygen we breathe, regulates our climate, feeds billions of people, and is home to the most diverse range of life on Earth.</p>
+      <p>World Oceans Day is celebrated every year on <strong>8th June</strong> — a day to appreciate, protect and think about our relationship with the sea.</p>
+      <div class="highlight-box">The ocean isn't just where fish live. It's the lungs, the thermostat and the food bank of our entire planet.</div>
+    </div>
+
+    <div class="info-card">
+      <h2>🔢 Ocean in numbers</h2>
+      <p>Click each card to find out more.</p>
+      <div class="facts-grid">
+        <div class="fact-card fc-blue" onclick="toggleFact(this,'The ocean contains 97% of all the water on Earth. The rest is freshwater in rivers, lakes, ice caps and underground.')">
+          <div class="fact-icon">💧</div>
+          <div class="fact-stat">97%</div>
+          <div class="fact-label">of Earth's water is in the ocean</div>
+        </div>
+        <div class="fact-card fc-green" onclick="toggleFact(this,'Phytoplankton — tiny plant-like organisms in the ocean — produce over 50% of the oxygen in our atmosphere. Every second breath you take comes from the sea.')">
+          <div class="fact-icon">🌿</div>
+          <div class="fact-stat">50%+</div>
+          <div class="fact-label">of our oxygen comes from the ocean</div>
+        </div>
+        <div class="fact-card fc-orange" onclick="toggleFact(this,'Scientists believe we have explored less than 20% of the ocean floor. More of the moon\'s surface has been mapped than the bottom of our own seas.')">
+          <div class="fact-icon">🔭</div>
+          <div class="fact-stat">&lt;20%</div>
+          <div class="fact-label">of the ocean floor has been explored</div>
+        </div>
+        <div class="fact-card fc-red" onclick="toggleFact(this,'Around 8 million tonnes of plastic enter the ocean every year. That\'s equivalent to a rubbish truck tipping its load into the sea every single minute.')">
+          <div class="fact-icon">🗑️</div>
+          <div class="fact-stat">8M tonnes</div>
+          <div class="fact-label">of plastic enters the ocean each year</div>
+        </div>
+        <div class="fact-card fc-sand" onclick="toggleFact(this,'The ocean is home to around 240,000 known species — and scientists estimate there could be up to 2 million species yet to be discovered.')">
+          <div class="fact-icon">🐠</div>
+          <div class="fact-stat">240,000+</div>
+          <div class="fact-label">known species live in the ocean</div>
+        </div>
+        <div class="fact-card fc-purple" onclick="toggleFact(this,'The deepest point in the ocean is the Mariana Trench in the Pacific — nearly 11km deep. If you dropped Mount Everest in, it would still be covered by over 2km of water.')">
+          <div class="fact-icon">🏔️</div>
+          <div class="fact-stat">11km</div>
+          <div class="fact-label">deep — the Mariana Trench</div>
+        </div>
+      </div>
+      <div id="factDetail" style="margin-top:1rem;background:var(--ocean-light);border-radius:12px;padding:1rem 1.25rem;font-size:0.95rem;line-height:1.6;color:var(--ocean);font-weight:700;display:none;"></div>
+    </div>
+
+    <div class="info-card">
+      <h2>🔗 Connection to our driving question</h2>
+      <p>The ocean is one of the clearest examples of how <strong>choices made today shape the world of tomorrow</strong>. Decisions about plastic use, fishing, energy, and pollution all directly affect whether our oceans survive — and with them, life on Earth as we know it.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Next section →</button>
+      <button class="skip-link" onclick="goToSection(1)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: DEPTH EXPLORER -->
+  <section class="section" id="section1">
+    <span class="time-badge">⏱ About 7 minutes</span>
+    <h2 class="section-title">🤿 Dive Deep</h2>
+
+    <div class="info-card">
+      <h2>How deep does the ocean go?</h2>
+      <p>The ocean is divided into zones based on depth. The deeper you go, the darker, colder and more pressurised it becomes. Each zone is home to very different creatures. Click each zone to explore it.</p>
+    </div>
+
+    <div class="depth-explorer">
+      <div class="depth-zone dz-sunlight" onclick="toggleDepth(this,'detail0')">
+        <div class="dz-icon">☀️</div>
+        <div><div class="dz-name">Sunlight Zone</div><div class="dz-depth">0 – 200m</div></div>
+        <div class="dz-expand">▶</div>
+      </div>
+      <div class="depth-detail" id="detail0">Most ocean life lives here. Sunlight reaches this zone, allowing plants and algae to grow. Coral reefs, dolphins, sharks, turtles and colourful fish all call this zone home. This is also where most human impact — from pollution, fishing and tourism — is felt.</div>
+
+      <div class="depth-zone dz-twilight" onclick="toggleDepth(this,'detail1')">
+        <div class="dz-icon">🌅</div>
+        <div><div class="dz-name">Twilight Zone</div><div class="dz-depth">200 – 1,000m</div></div>
+        <div class="dz-expand">▶</div>
+      </div>
+      <div class="depth-detail" id="detail1">Only faint light filters down here. Many creatures in this zone have large eyes to see in the dim light, or produce their own light (bioluminescence). The giant squid lives here. It's also home to some of the most bizarre-looking fish in the world.</div>
+
+      <div class="depth-zone dz-midnight" onclick="toggleDepth(this,'detail2')">
+        <div class="dz-icon">🌑</div>
+        <div><div class="dz-name">Midnight Zone</div><div class="dz-depth">1,000 – 4,000m</div></div>
+        <div class="dz-expand">▶</div>
+      </div>
+      <div class="depth-detail" id="detail2" style="color:#ccc;">Completely dark and freezing cold. The pressure here is crushing — equivalent to 400 atmospheres. Yet life still exists. Creatures like the anglerfish use their own glowing lures to attract prey in the pitch black. No sunlight, no plants, just hunters.</div>
+
+      <div class="depth-zone dz-abyssal" onclick="toggleDepth(this,'detail3')">
+        <div class="dz-icon">🌊</div>
+        <div><div class="dz-name">Abyssal Zone</div><div class="dz-depth">4,000 – 6,000m</div></div>
+        <div class="dz-expand">▶</div>
+      </div>
+      <div class="depth-detail" id="detail3" style="color:#aaa;">The vast flat plains of the deep ocean floor. Near-freezing temperatures, complete darkness, and enormous pressure. Sea cucumbers, sea spiders and tiny crustaceans feed on particles that drift down from above — called marine snow. This zone covers more of Earth's surface than any other habitat.</div>
+
+      <div class="depth-zone dz-hadal" onclick="toggleDepth(this,'detail4')">
+        <div class="dz-icon">🕳️</div>
+        <div><div class="dz-name">Hadal Zone</div><div class="dz-depth">6,000m+</div></div>
+        <div class="dz-expand">▶</div>
+      </div>
+      <div class="depth-detail" id="detail4" style="color:#688899;">The deepest ocean trenches — including the Mariana Trench at nearly 11km. Fewer humans have visited the deepest point on Earth than have walked on the moon. Yet even here, life exists. Scientists have found tiny snailfish, amphipods and microbial life — surviving in conditions that would destroy any human equipment.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(1)">Next section →</button>
+      <button class="skip-link" onclick="goToSection(2)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 3: THREAT SORTER -->
+  <section class="section" id="section2">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">⚠️ Ocean Threats</h2>
+
+    <div class="info-card">
+      <h2>What is threatening our oceans?</h2>
+      <p>Our oceans face many threats — and they come from human choices. Some threats are more urgent than others. Read the descriptions, then drag each threat into the column that best describes how serious you think it is.</p>
+      <p>There are <strong>no completely wrong answers</strong> — this is about thinking critically. The key is being able to explain your reasoning.</p>
+    </div>
+
+    <div class="threat-bank" id="threatBank">
+      <div class="threat-item" draggable="true" id="t1" data-answer="critical">🗑️ Plastic pollution</div>
+      <div class="threat-item" draggable="true" id="t2" data-answer="critical">🌡️ Ocean warming</div>
+      <div class="threat-item" draggable="true" id="t3" data-answer="critical">🎣 Overfishing</div>
+      <div class="threat-item" draggable="true" id="t4" data-answer="critical">🧪 Chemical pollution</div>
+      <div class="threat-item" draggable="true" id="t5" data-answer="serious">🚢 Noise pollution from ships</div>
+      <div class="threat-item" draggable="true" id="t6" data-answer="serious">⚓ Damage from anchors and tourism</div>
+      <div class="threat-item" draggable="true" id="t7" data-answer="critical">🌊 Ocean acidification</div>
+      <div class="threat-item" draggable="true" id="t8" data-answer="serious">💡 Light pollution near coastlines</div>
+      <div class="threat-item" draggable="true" id="t9" data-answer="moderate">🏄 Recreational surfing and swimming</div>
+      <div class="threat-item" draggable="true" id="t10" data-answer="moderate">🚤 Small leisure boats</div>
+    </div>
+
+    <div class="threat-cols">
+      <div class="threat-col tc-critical" id="tcCritical" ondragover="threatOver(event)" ondrop="threatDrop(event,'critical')">
+        <h3>🚨 Critical threat</h3>
+      </div>
+      <div class="threat-col tc-serious" id="tcSerious" ondragover="threatOver(event)" ondrop="threatDrop(event,'serious')">
+        <h3>⚠️ Serious threat</h3>
+      </div>
+      <div class="threat-col tc-moderate" id="tcModerate" ondragover="threatOver(event)" ondrop="threatDrop(event,'moderate')">
+        <h3>🟡 Moderate threat</h3>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="checkThreats()">See suggested answers</button>
+      <button class="btn btn-outline" onclick="resetThreats()">Reset</button>
+    </div>
+    <div id="threatFeedback" style="margin-top:1rem;font-size:0.9rem;line-height:1.6;display:none;background:var(--ocean-light);border-radius:12px;padding:1rem 1.25rem;color:var(--ocean);font-weight:700;"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(2)">Next section →</button>
+      <button class="skip-link" onclick="goToSection(3)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 4: FACT OR MYTH -->
+  <section class="section" id="section3">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">🔍 Fact or Myth?</h2>
+
+    <div class="info-card">
+      <p>How much do you know about the ocean? Read each statement and decide — is it a <strong>fact</strong> or a <strong>myth</strong>?</p>
+    </div>
+
+    <div class="fom-card">
+      <p class="fom-statement">1. "We have explored more of the moon's surface than the ocean floor."</p>
+      <div class="fom-btns">
+        <button class="fom-btn" onclick="fomAnswer(this,true,'fom1','✅ Fact! This is absolutely true. More of the lunar surface has been mapped than our own ocean floor. The deep sea is one of the least explored places on Earth.')">✅ Fact</button>
+        <button class="fom-btn" onclick="fomAnswer(this,false,'fom1','❌ It\'s actually a fact! We really have mapped more of the moon than the ocean floor. The deep sea is one of the most mysterious places on our planet.')">❌ Myth</button>
+      </div>
+      <div class="fom-feedback" id="fom1"></div>
+    </div>
+
+    <div class="fom-card">
+      <p class="fom-statement">2. "The Great Barrier Reef is visible from space."</p>
+      <div class="fom-btns">
+        <button class="fom-btn" onclick="fomAnswer(this,false,'fom2','❌ This is actually a myth! The Great Barrier Reef cannot be seen from space with the naked eye. This is a common misconception — even the Great Wall of China isn\'t reliably visible from space either.')">✅ Fact</button>
+        <button class="fom-btn" onclick="fomAnswer(this,true,'fom2','✅ Correct — it\'s a myth! The Great Barrier Reef cannot be seen from space with the naked eye. This claim is often repeated but has been debunked by astronauts.')">❌ Myth</button>
+      </div>
+      <div class="fom-feedback" id="fom2"></div>
+    </div>
+
+    <div class="fom-card">
+      <p class="fom-statement">3. "The ocean produces more than half of the world's oxygen."</p>
+      <div class="fom-btns">
+        <button class="fom-btn" onclick="fomAnswer(this,true,'fom3','✅ Fact! Tiny ocean organisms called phytoplankton produce over 50% of the oxygen in our atmosphere. The ocean is often called the lungs of the Earth.')">✅ Fact</button>
+        <button class="fom-btn" onclick="fomAnswer(this,false,'fom3','❌ This is actually a fact! Phytoplankton — tiny plant-like organisms in the ocean — produce over half our oxygen. Every second breath you take comes from the sea.')">❌ Myth</button>
+      </div>
+      <div class="fom-feedback" id="fom3"></div>
+    </div>
+
+    <div class="fom-card">
+      <p class="fom-statement">4. "Sharks kill more people than any other animal each year."</p>
+      <div class="fom-btns">
+        <button class="fom-btn" onclick="fomAnswer(this,false,'fom4','❌ Myth! Sharks kill on average fewer than 10 people per year globally. Mosquitoes kill over 700,000 people annually through disease. Sharks are actually in far more danger from humans than we are from them.')">✅ Fact</button>
+        <button class="fom-btn" onclick="fomAnswer(this,true,'fom4','✅ Correct — it\'s a myth! Sharks kill fewer than 10 people per year on average. Mosquitoes, hippos, and even cows kill far more. In fact, humans kill around 100 million sharks every year.')">❌ Myth</button>
+      </div>
+      <div class="fom-feedback" id="fom4"></div>
+    </div>
+
+    <div class="fom-card">
+      <p class="fom-statement">5. "There is a floating island of plastic in the Pacific Ocean roughly three times the size of France."</p>
+      <div class="fom-btns">
+        <button class="fom-btn" onclick="fomAnswer(this,true,'fom5','✅ Fact — and a troubling one. The Great Pacific Garbage Patch covers an estimated 1.6 million square kilometres. Most of it is microplastics — tiny fragments invisible to the naked eye — making it nearly impossible to clean up.')">✅ Fact</button>
+        <button class="fom-btn" onclick="fomAnswer(this,false,'fom5','❌ This is actually a fact. The Great Pacific Garbage Patch is a vast area of ocean polluted by plastic debris. It covers roughly 1.6 million sq km — about three times the size of France.')">❌ Myth</button>
+      </div>
+      <div class="fom-feedback" id="fom5"></div>
+    </div>
+
+    <div class="fom-card">
+      <p class="fom-statement">6. "Coral reefs cover less than 1% of the ocean floor but support 25% of all marine species."</p>
+      <div class="fom-btns">
+        <button class="fom-btn" onclick="fomAnswer(this,true,'fom6','✅ Fact! Coral reefs are sometimes called the rainforests of the sea — they cover less than 1% of the ocean floor but are home to around a quarter of all marine species. Losing them would be catastrophic.')">✅ Fact</button>
+        <button class="fom-btn" onclick="fomAnswer(this,false,'fom6','❌ This is actually true! Coral reefs are one of the most biodiverse ecosystems on Earth. Despite covering less than 1% of the ocean floor, they support roughly 25% of all marine life.')">❌ Myth</button>
+      </div>
+      <div class="fom-feedback" id="fom6"></div>
+    </div>
+
+    <div id="fomScore" style="margin-top:1rem;font-size:1rem;font-weight:700;color:var(--ocean);display:none;"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(3)">Next section →</button>
+      <button class="skip-link" onclick="goToSection(4)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 5: QUIZ -->
+  <section class="section" id="section4">
+    <span class="time-badge">⏱ About 7 minutes</span>
+    <h2 class="section-title">🧠 Ocean Quiz</h2>
+
+    <div class="quiz-card" id="q1card">
+      <p class="q-number">Question 1 of 6</p>
+      <p class="q-text">What percentage of Earth's surface is covered by ocean?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — the ocean covers even more than that!')">About 50%</button>
+        <button class="option-btn" onclick="answer(this,false,'q1','Getting closer, but the ocean is even bigger!')">About 60%</button>
+        <button class="option-btn" onclick="answer(this,true,'q1','✅ Correct! Oceans cover about 71% of Earth\'s surface — making our planet mostly ocean, not land.')">About 70%</button>
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — 90% would leave very little land!')">About 90%</button>
+      </div>
+      <div class="feedback" id="q1feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q2card">
+      <p class="q-number">Question 2 of 6</p>
+      <p class="q-text">What is the deepest point in the ocean called?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — the Dead Sea is a lake, not part of the deepest ocean.')">The Dead Sea Trench</button>
+        <button class="option-btn" onclick="answer(this,true,'q2','✅ Correct! The Mariana Trench in the Pacific Ocean is the deepest known point on Earth — nearly 11km deep.')">The Mariana Trench</button>
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — the Atlantic Ridge is an underwater mountain range, not the deepest point.')">The Atlantic Ridge</button>
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — that\'s not a real location!')">The Pacific Abyss</button>
+      </div>
+      <div class="feedback" id="q2feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q3card">
+      <p class="q-number">Question 3 of 6</p>
+      <p class="q-text">Which of these is the BIGGEST threat to coral reefs?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — while tourism can damage reefs, it\'s not the biggest threat.')">Tourism and swimming</button>
+        <button class="option-btn" onclick="answer(this,true,'q3','✅ Correct! Ocean warming caused by climate change causes coral bleaching — where corals expel the algae that give them colour and food, turning white and dying. It\'s the biggest threat to reefs worldwide.')">Ocean warming and bleaching</button>
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — while fishing affects ocean life, the biggest threat to coral reefs specifically is warming.')">Commercial fishing</button>
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — submarine cables don\'t significantly threaten coral reefs.')">Underwater cables</button>
+      </div>
+      <div class="feedback" id="q3feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q4card">
+      <p class="q-number">Question 4 of 6</p>
+      <p class="q-text">World Oceans Day is celebrated on which date?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — that\'s World Earth Day in April.')">22nd April</button>
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — that\'s World Environment Day.')">5th June</button>
+        <button class="option-btn" onclick="answer(this,true,'q4','✅ Correct! World Oceans Day is on 8th June every year.')">8th June</button>
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — 21st June is the summer solstice.')">21st June</button>
+      </div>
+      <div class="feedback" id="q4feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q5card">
+      <p class="q-number">Question 5 of 6</p>
+      <p class="q-text">Roughly how many tonnes of plastic enter the ocean every year?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — the real figure is much higher than that.')">500,000 tonnes</button>
+        <button class="option-btn" onclick="answer(this,false,'q5','Getting closer — but the real figure is even higher.')">2 million tonnes</button>
+        <button class="option-btn" onclick="answer(this,true,'q5','✅ Correct — and that\'s roughly one rubbish truck\'s worth every single minute of every day.')">8 million tonnes</button>
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — even the real figure of 8 million tonnes is shocking enough!')">50 million tonnes</button>
+      </div>
+      <div class="feedback" id="q5feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q6card">
+      <p class="q-number">Question 6 of 6</p>
+      <p class="q-text">What connects Harrison's recycled fishing rod project to World Oceans Day?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — although fishing is ocean-related, the deeper connection is about materials and waste.')">Fishing is the only way to get food from the sea</button>
+        <button class="option-btn" onclick="answer(this,true,'q6','✅ Exactly! Using recycled materials means less waste ends up in landfill or the ocean. Every choice to reuse rather than throw away is a step towards healthier oceans.')">Using recycled materials reduces waste and ocean pollution</button>
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — fishing rods don\'t cause ocean warming directly.')">Fishing rods cause ocean warming</button>
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — there is a meaningful connection here!')">There is no connection</button>
+      </div>
+      <div class="feedback" id="q6feedback"></div>
+    </div>
+
+    <div id="quizResult" style="display:none;">
+      <div class="score-box">
+        <div class="score-num" id="quizScore">0/6</div>
+        <div class="score-label">Quiz complete — great work!</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="completeSection(4)">Almost done — make your pledge →</button>
+        <button class="btn btn-outline" onclick="resetQuiz()">Try again</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: PLEDGE -->
+  <section class="section" id="section5">
+    <span class="time-badge">⏱ About 7 minutes</span>
+    <h2 class="section-title">🌊 My Ocean Pledge</h2>
+
+    <div class="info-card">
+      <h2>What will YOU do?</h2>
+      <p>World Oceans Day isn't just about learning — it's about action. Even small choices, made by many people, can make a real difference. Today is your chance to make a pledge — a promise about one thing you'll do differently to help protect the ocean.</p>
+    </div>
+
+    <div class="pledge-card">
+      <h2>Choose your pledge</h2>
+      <p style="font-size:0.9rem;color:var(--muted);margin-bottom:0.75rem;">Pick the one that feels most meaningful to you — or write your own below.</p>
+      <div class="pledge-options" id="pledgeOptions">
+        <button class="pledge-option" onclick="selectPledge(this,'I will use a reusable water bottle instead of buying single-use plastic bottles.')">
+          <span class="pledge-icon">💧</span> I will use a reusable water bottle instead of buying single-use plastic bottles.
+        </button>
+        <button class="pledge-option" onclick="selectPledge(this,'I will pick up litter if I see it near a beach, river or park.')">
+          <span class="pledge-icon">🧹</span> I will pick up litter if I see it near a beach, river or park.
+        </button>
+        <button class="pledge-option" onclick="selectPledge(this,'I will learn more about ocean life and share what I find out with someone I know.')">
+          <span class="pledge-icon">📚</span> I will learn more about ocean life and share what I find out with someone I know.
+        </button>
+        <button class="pledge-option" onclick="selectPledge(this,'I will try to reduce the amount of single-use plastic I use this week.')">
+          <span class="pledge-icon">♻️</span> I will try to reduce the amount of single-use plastic I use this week.
+        </button>
+        <button class="pledge-option" onclick="selectPledge(this,'I will think about where my food comes from and try to make more sustainable choices.')">
+          <span class="pledge-icon">🐟</span> I will think about where my food comes from and try to make more sustainable choices.
+        </button>
+      </div>
+
+      <p style="font-size:0.88rem;font-weight:700;color:var(--ocean);margin-top:1rem;margin-bottom:0.4rem;">Or write your own pledge:</p>
+      <textarea class="pledge-text" id="customPledge" placeholder="I will..."></textarea>
+
+      <p style="font-size:0.88rem;font-weight:700;color:var(--ocean);margin-top:1rem;margin-bottom:0.4rem;">Why does this pledge matter to you?</p>
+      <textarea class="pledge-text" id="pledgeWhy" placeholder="This matters to me because..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-green" onclick="submitPledge()">🌊 Send my pledge to teacher</button>
+      <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+    </div>
+    <div id="pledgeSuccess" style="display:none;margin-top:1rem;background:var(--green-light);border:2px solid var(--green);border-radius:12px;padding:1rem;color:var(--green);font-weight:700;">
+      ✅ Pledge sent! Your teacher has received your World Oceans Day response.
+    </div>
+  </section>
+
+</main>
+
+<div class="export-bar">
+  <span>Save your work:</span>
+  <button onclick="submitPledge()" style="padding:0.6rem 1.25rem;background:var(--ocean);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Email to teacher</button>
+  <button onclick="printResults()" style="padding:0.6rem 1.25rem;background:var(--orange);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🖨️ Save as PDF</button>
+</div>
+<footer>Base 6 · Chilton Bridge School · Week 2 Cultural Calendar · World Oceans Day 2026</footer>
+
+<script>
+  const sectionCount = 6;
+  const completed = Array(sectionCount).fill(false);
+  let quizScore = 0; let quizAnswered = 0;
+  let fomAnswered = 0; let fomScore = 0;
+  let selectedPledge = '';
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c,i)=>{const b=document.getElementById('nav'+i);if(c){b.classList.add('done');b.classList.remove('active');}});
+  }
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('section'+i).classList.add('active');
+    if(!completed[i])document.getElementById('nav'+i).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function completeSection(i) {
+    completed[i]=true;updateProgress();
+    const next=i+1;if(next<sectionCount)goToSection(next);else showFinish();
+  }
+
+  // FACT CARDS
+  function toggleFact(card, text) {
+    const d = document.getElementById('factDetail');
+    if(d.style.display==='block'&&d.textContent===text){d.style.display='none';}
+    else{d.textContent=text;d.style.display='block';}
+  }
+
+  // DEPTH EXPLORER
+  function toggleDepth(zone, detailId) {
+    const detail = document.getElementById(detailId);
+    const isOpen = detail.classList.contains('open');
+    document.querySelectorAll('.depth-detail').forEach(d=>d.classList.remove('open'));
+    document.querySelectorAll('.depth-zone').forEach(z=>z.classList.remove('open'));
+    if(!isOpen){detail.classList.add('open');zone.classList.add('open');}
+  }
+
+  // THREAT SORTER
+  let threatDragged = null;
+  document.querySelectorAll('.threat-item').forEach(item=>{
+    item.addEventListener('dragstart',e=>{threatDragged=item;item.style.opacity='0.5';});
+    item.addEventListener('dragend',()=>{if(threatDragged)threatDragged.style.opacity='1';});
+  });
+  function threatOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+  document.querySelectorAll('.threat-col,#threatBank').forEach(z=>{z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));});
+  function threatDrop(e,col){e.preventDefault();e.currentTarget.classList.remove('drag-over');if(threatDragged)e.currentTarget.appendChild(threatDragged);}
+  document.getElementById('threatBank').addEventListener('dragover',e=>e.preventDefault());
+  document.getElementById('threatBank').addEventListener('drop',e=>{e.preventDefault();if(threatDragged)document.getElementById('threatBank').appendChild(threatDragged);});
+
+  function checkThreats(){
+    const fb=document.getElementById('threatFeedback');
+    fb.style.display='block';
+    fb.innerHTML=`<p style="margin-bottom:0.5rem;">Here's what experts generally consider:</p>
+      <p>🚨 <strong>Critical threats:</strong> Plastic pollution, ocean warming, overfishing, chemical pollution, and ocean acidification are widely considered the most serious threats — they affect entire ecosystems and are difficult to reverse.</p>
+      <p style="margin-top:0.5rem;">⚠️ <strong>Serious threats:</strong> Noise pollution and physical damage from tourism or anchors are real problems, particularly for marine mammals and coral.</p>
+      <p style="margin-top:0.5rem;">🟡 <strong>Moderate threats:</strong> Leisure activities like recreational swimming and small boats have a much smaller impact — though being mindful still matters.</p>
+      <p style="margin-top:0.75rem;color:#005a80;">There's no single right answer here — the important thing is being able to explain your thinking!</p>`;
+  }
+  function resetThreats(){
+    const bank=document.getElementById('threatBank');
+    document.querySelectorAll('.threat-item').forEach(item=>bank.appendChild(item));
+    document.getElementById('threatFeedback').style.display='none';
+  }
+
+  // FACT OR MYTH
+  function fomAnswer(btn, correct, id, msg) {
+    const card=btn.closest('.fom-card');
+    card.querySelectorAll('.fom-btn').forEach(b=>b.disabled=true);
+    btn.classList.add(correct?'correct':'wrong');
+    const fb=document.getElementById(id);fb.textContent=msg;fb.className='fom-feedback '+(correct?'correct':'wrong');
+    if(correct)fomScore++;fomAnswered++;
+    if(fomAnswered===6){
+      const s=document.getElementById('fomScore');
+      s.style.display='block';
+      s.textContent='You got '+fomScore+' out of 6 correct!'+( fomScore===6?' Perfect score! 🎉':fomScore>=4?' Great work! 🌊':' Keep exploring — there\'s a lot to learn about the ocean!');
+    }
+  }
+
+  // QUIZ
+  function answer(btn,correct,qid,feedback){
+    const card=btn.closest('.quiz-card');
+    card.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+    btn.classList.add(correct?'correct':'wrong');
+    if(!correct)card.querySelectorAll('.option-btn').forEach(b=>{if(b.onclick.toString().includes('true,'))b.classList.add('correct');});
+    const fb=document.getElementById(qid+'feedback');fb.textContent=feedback;fb.className='feedback '+(correct?'correct':'wrong');
+    if(correct)quizScore++;quizAnswered++;
+    if(quizAnswered===6){setTimeout(()=>{document.getElementById('quizResult').style.display='block';document.getElementById('quizScore').textContent=quizScore+'/6';},600);}
+  }
+  function resetQuiz(){
+    quizAnswered=0;quizScore=0;document.getElementById('quizResult').style.display='none';
+    for(let i=1;i<=6;i++){document.getElementById('q'+i+'card').querySelectorAll('.option-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});const fb=document.getElementById('q'+i+'feedback');fb.className='feedback';fb.textContent='';}
+  }
+
+  // PLEDGE
+  function selectPledge(btn, text) {
+    document.querySelectorAll('.pledge-option').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedPledge=text;
+  }
+
+  function getStudentName(){return document.getElementById('studentName').value.trim()||'Student';}
+
+  function submitPledge(){
+    const name=getStudentName();
+    const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const pledge=selectedPledge||document.getElementById('customPledge').value||'(no pledge selected)';
+    const why=document.getElementById('pledgeWhy').value||'(not filled in)';
+    const quizQs=['% of Earth covered by ocean?','Deepest ocean point?','Biggest threat to coral reefs?','World Oceans Day date?','Plastic entering ocean per year?','Harrison\'s project connection?'];
+    let body=`World Oceans Day — ${name} — ${now}\n\n`;
+    body+=`SECTIONS COMPLETED: ${completed.filter(Boolean).length}/6\n`;
+    body+=`FACT OR MYTH SCORE: ${fomScore}/6\nQUIZ SCORE: ${quizScore}/6\n\n`;
+    body+=`--- MY PLEDGE ---\n${pledge}\n\nWHY IT MATTERS TO ME:\n${why}\n\n`;
+    body+=`--- QUIZ BREAKDOWN ---\n`;
+    quizQs.forEach((q,i)=>{const fb=document.getElementById('q'+(i+1)+'feedback');const a=fb&&fb.textContent.length>0;const c=fb&&fb.classList.contains('correct');body+=`Q${i+1}: ${q} — ${!a?'Not attempted':(c?'Correct':'Incorrect')}\n`;});
+    window.location.href='mailto:jay.raine@chiltonbridgeschool.co.uk?subject='+encodeURIComponent('World Oceans Day — '+name+' — '+now)+'&body='+encodeURIComponent(body);
+    document.getElementById('pledgeSuccess').style.display='block';
+    completed[5]=true;updateProgress();
+  }
+
+  function buildResultsHTML(){
+    const name=getStudentName();
+    const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const pledge=selectedPledge||document.getElementById('customPledge').value||'(no pledge selected)';
+    const why=document.getElementById('pledgeWhy').value||'(not filled in)';
+    let html=`<div style="font-family:'Atkinson Hyperlegible',sans-serif;max-width:640px;margin:0 auto;color:#1a1a1a;">`;
+    html+=`<div style="background:linear-gradient(135deg,#003a5c,#006994);padding:1.5rem;border-radius:12px 12px 0 0;text-align:center;"><p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#a8d8f0;margin-bottom:0.3rem;">Base 6 · Chilton Bridge School</p><h1 style="font-size:1.5rem;font-weight:700;color:#fef8f4;margin-bottom:0.25rem;">🌊 World Oceans Day — Results</h1><p style="color:#c8e8ff;font-size:0.9rem;">${name} · ${now}</p></div>`;
+    html+=`<div style="background:#e0f0f8;padding:1rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;"><div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#006994;">${completed.filter(Boolean).length}/6</div><div style="font-size:0.8rem;color:#555;">Sections done</div></div><div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#ef7724;">${fomScore}/6</div><div style="font-size:0.8rem;color:#555;">Fact or Myth</div></div><div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#2e8b57;">${quizScore}/6</div><div style="font-size:0.8rem;color:#555;">Quiz score</div></div></div>`;
+    html+=`<div style="padding:1.25rem 1.5rem;background:white;border:1px solid #e0d8d0;border-top:none;"><h2 style="font-size:1rem;font-weight:700;color:#006994;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">My Ocean Pledge</h2><p style="font-size:0.95rem;line-height:1.6;font-weight:700;">${pledge}</p><p style="font-size:0.88rem;color:#555;margin-top:0.5rem;line-height:1.5;"><em>Why it matters: ${why}</em></p></div>`;
+    html+=`<div style="padding:1rem 1.5rem;background:#e0f0f8;border:1px solid #e0d8d0;border-top:none;border-radius:0 0 12px 12px;"><p style="font-size:0.8rem;color:#555;text-align:center;">World Oceans Day 2026 · Week 2 Cultural Calendar · Base 6</p></div></div>`;
+    return html;
+  }
+
+  function printResults(){
+    const html=buildResultsHTML();
+    const win=window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>World Oceans Day Results</title><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><style>body{font-family:'Atkinson Hyperlegible',sans-serif;background:white;margin:2rem;}@media print{body{margin:0;}.no-print{display:none;}}</style></head><body>${html}<div class="no-print" style="margin-top:1.5rem;text-align:center;"><button onclick="window.print()" style="padding:0.75rem 1.5rem;background:#006994;color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">Save as PDF / Print</button></div></body></html>`);
+    win.document.close();
+  }
+
+  function showFinish(){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    const fin=document.createElement('section');fin.className='section active';
+    fin.innerHTML=`<div style="text-align:center;padding:2rem 1rem 1rem;"><div style="font-size:4rem;margin-bottom:1rem;">🌊</div><h2 style="font-size:1.8rem;color:var(--ocean);margin-bottom:0.75rem;">Amazing work!</h2><p style="font-size:1.05rem;color:var(--muted);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6;">You've explored our oceans, dived into the deep, thought about the threats they face, tested your knowledge — and made a personal pledge. Happy World Oceans Day!</p><div style="background:var(--ocean-light);border-radius:14px;padding:1.25rem;max-width:480px;margin:0 auto 1.5rem;text-align:left;"><p style="font-weight:700;color:var(--ocean);margin-bottom:0.5rem;">I can now...</p><ul style="padding-left:1.25rem;color:var(--dark);line-height:2;"><li>Explain why oceans matter to life on Earth</li><li>Name the zones of the ocean and what lives there</li><li>Describe key threats facing our oceans</li><li>Make a personal pledge to help protect them</li></ul></div></div><div id="resultsPreview" style="margin-bottom:1.5rem;"></div><div style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;padding-bottom:2rem;"><button class="btn btn-primary" onclick="submitPledge()">📧 Email to teacher</button><button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button><button class="btn btn-outline" onclick="goToSection(0)">← Start again</button></div>`;
+    document.querySelector('.main').appendChild(fin);
+    document.getElementById('resultsPreview').innerHTML=buildResultsHTML();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
