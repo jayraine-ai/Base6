@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bias in History Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal: #007291; --orange: #ef7724; --cream: #fef8f4;
+    --dark: #1a1a1a; --muted: #555;
+    --teal-light: #e6f5f8; --orange-light: #fff3eb;
+    --green: #2e8b57; --green-light: #eaf7f0;
+    --red: #c0392b; --red-light: #fdecea;
+    --brown: #b05030; --brown-light: #fdf0eb;
+    --purple: #7a3fa8; --purple-light: #f5eeff;
+    --yellow: #e8a020; --yellow-light: #fdf5e0;
+  }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+
+  .site-header { background-color: var(--brown); padding: 1.5rem 2rem 1.25rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fde0d0; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .site-header p { font-size: 0.95rem; color: #fbd0c0; margin-top: 0.5rem; }
+
+  .name-bar { background: #8a3a20; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 0.75rem; }
+  .name-bar label { font-size: 0.82rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .name-bar input { flex: 1; max-width: 280px; padding: 0.4rem 0.75rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: #fef8f4; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .name-bar input::placeholder { color: rgba(255,255,255,0.5); }
+  .name-bar span { font-size: 0.8rem; color: #fbd0c0; }
+
+  .progress-bar-wrap { background: #6e2810; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 0.8rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .timer-label { font-size: 0.8rem; font-weight: 700; color: #fde0c0; white-space: nowrap; }
+
+  .section-nav { display: flex; overflow-x: auto; gap: 0.5rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid #e0d8d0; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #ccc; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; color: #888; cursor: pointer; transition: all 0.2s; }
+  .nav-btn.active { border-color: var(--brown); background: var(--brown-light); color: var(--brown); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--brown); margin-bottom: 1.25rem; }
+
+  .time-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--orange-light); border: 1.5px solid var(--orange); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; color: var(--orange); margin-bottom: 1rem; }
+
+  .info-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--brown-light); }
+  .info-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--brown); margin-bottom: 0.75rem; }
+  .info-card p { font-size: 1rem; line-height: 1.7; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .highlight-box { background: var(--brown-light); border-left: 4px solid var(--brown); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 1rem; font-weight: 700; color: var(--brown); line-height: 1.6; }
+
+  /* SOURCE CARDS */
+  .source-card { background: #fffdf8; border: 2px solid #d4c4a0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; position: relative; }
+  .source-card .source-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8a6a30; margin-bottom: 0.5rem; }
+  .source-card .source-title { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; }
+  .source-card .source-text { font-size: 0.95rem; line-height: 1.7; color: var(--dark); font-style: italic; border-left: 3px solid #d4c4a0; padding-left: 0.9rem; }
+  .source-card .source-meta { font-size: 0.8rem; color: var(--muted); margin-top: 0.6rem; }
+
+  /* BIAS SPOTTER */
+  .bias-options { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; }
+  .bias-btn { padding: 0.65rem 1rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; }
+  .bias-btn:hover:not(:disabled) { border-color: var(--brown); background: var(--brown-light); color: var(--brown); }
+  .bias-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .bias-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .bias-btn:disabled { cursor: default; }
+  .bias-feedback { margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; display: none; line-height: 1.5; }
+  .bias-feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .bias-feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  /* REFLECTION TEXTAREAS */
+  .reflect-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--brown-light); }
+  .reflect-card .reflect-q { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem; line-height: 1.4; }
+  .reflect-card .reflect-hint { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.5; }
+  .reflect-textarea { width: 100%; min-height: 90px; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); resize: vertical; line-height: 1.6; }
+  .reflect-textarea:focus { outline: none; border-color: var(--brown); }
+
+  /* SORT GAME */
+  .sort-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+  .sort-bank { display: flex; flex-wrap: wrap; gap: 0.6rem; padding: 0.75rem; background: #f5f0eb; border-radius: 12px; border: 2px dashed #ccc; min-height: 56px; margin-bottom: 1rem; }
+  .sort-col { border-radius: 12px; padding: 0.75rem; min-height: 100px; border: 2px dashed #ccc; transition: all 0.15s; }
+  .sort-col.drag-over { border-color: var(--orange); background: var(--orange-light); }
+  .sort-col h3 { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; padding-bottom: 0.4rem; border-bottom: 2px solid currentColor; }
+  .sort-col.col-bias { border-color: var(--red); background: var(--red-light); } .sort-col.col-bias h3 { color: var(--red); }
+  .sort-col.col-fact { border-color: var(--teal); background: var(--teal-light); } .sort-col.col-fact h3 { color: var(--teal); }
+  .sort-item { padding: 0.45rem 0.85rem; background: white; border: 2px solid var(--brown); border-radius: 10px; font-size: 0.85rem; font-weight: 700; color: var(--brown); cursor: grab; user-select: none; transition: transform 0.15s; display: inline-block; }
+  .sort-item:hover { transform: scale(1.03); }
+  .sort-item.dragging { opacity: 0.5; }
+
+  /* QUIZ */
+  .quiz-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid #e0d8d0; }
+  .quiz-card .q-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.5rem; }
+  .quiz-card .q-text { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn { padding: 0.75rem 1rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--brown); background: var(--brown-light); color: var(--brown); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback { margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; display: none; line-height: 1.5; }
+  .feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  .score-box { background: var(--brown); border-radius: 16px; padding: 1.5rem; text-align: center; color: white; margin-bottom: 1.25rem; }
+  .score-box .score-num { font-size: 3rem; font-weight: 700; line-height: 1; }
+  .score-box .score-label { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
+
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--brown); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-teal { background: var(--teal); color: white; }
+  .btn-outline { background: white; color: var(--brown); border: 2px solid var(--brown); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .skip-link { display: inline-block; font-size: 0.85rem; color: var(--muted); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; background: none; border: none; font-family: inherit; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (max-width: 500px) { .sort-cols { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="tag">Week 2 · History</p>
+  <h1>📜 Bias in History</h1>
+  <p>How do we know if a source is telling the whole story?</p>
+</header>
+
+<div class="name-bar">
+  <label for="studentName">Your name:</label>
+  <input id="studentName" type="text" placeholder="Type your name here..." />
+  <span>— used on your results</span>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 5 sections</span>
+  <span class="timer-label">⏱ ~45 mins</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. What is Bias?</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. Spot the Bias</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Fact or Opinion?</button>
+  <button class="nav-btn" onclick="goToSection(3)" id="nav3">4. Your Thinking</button>
+  <button class="nav-btn" onclick="goToSection(4)" id="nav4">5. Quiz</button>
+</nav>
+
+<main class="main">
+
+  <!-- SECTION 1: WHAT IS BIAS -->
+  <section class="section active" id="section0">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">What is Bias?</h2>
+
+    <div class="info-card">
+      <h2>📖 History is written by people</h2>
+      <p>Everything we know about the past comes from <strong>sources</strong> — things that were written, drawn, built or recorded. But every source was made by a person. And people have opinions, feelings and reasons for saying what they say.</p>
+      <p>When a source only tells part of the story, or twists the truth to favour one side, we call that <strong>bias</strong>.</p>
+      <div class="highlight-box">Bias = when a source is unfairly influenced by the feelings, opinions or interests of the person who created it.</div>
+    </div>
+
+    <div class="info-card">
+      <h2>🤔 Why does bias happen?</h2>
+      <p>People can be biased for lots of reasons. They might:</p>
+      <ul style="padding-left:1.25rem; line-height:2; margin-top:0.5rem;">
+        <li>Want to make themselves or their country look good</li>
+        <li>Dislike or fear another group of people</li>
+        <li>Want to persuade others to agree with them</li>
+        <li>Only know one side of the story</li>
+        <li>Be writing for a particular audience</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h2>📰 A real example</h2>
+      <p>During World War Two, governments on all sides produced <strong>propaganda</strong> — posters, films and leaflets designed to make their own side look heroic and the enemy look evil. This is bias on purpose.</p>
+      <p>But bias isn't always deliberate. A diary written by a soldier might only describe what they personally saw and felt — leaving out the bigger picture. That's bias too, even if the writer wasn't trying to deceive anyone.</p>
+      <div class="highlight-box">All sources can be biased — even ones written by honest people. That's why historians always ask: who wrote this, and why?</div>
+    </div>
+
+    <div class="info-card">
+      <h2>🔍 Questions historians ask</h2>
+      <ul style="padding-left:1.25rem; line-height:2.2; margin-top:0.25rem;">
+        <li><strong>Who</strong> created this source?</li>
+        <li><strong>When</strong> was it created?</li>
+        <li><strong>Why</strong> was it created?</li>
+        <li><strong>Who</strong> was it created for?</li>
+        <li>What might be <strong>missing</strong> from this source?</li>
+      </ul>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Got it — next section →</button>
+      <button class="skip-link" onclick="goToSection(1)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: SPOT THE BIAS -->
+  <section class="section" id="section1">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">🔍 Spot the Bias</h2>
+
+    <div class="info-card">
+      <p>Read each source below and answer the question. Think about <strong>who wrote it</strong>, <strong>why they wrote it</strong>, and <strong>what they might have left out</strong>.</p>
+    </div>
+
+    <!-- SOURCE 1 -->
+    <div class="source-card">
+      <p class="source-label">Source A</p>
+      <p class="source-title">A British newspaper report, 1900</p>
+      <p class="source-text">"Our brave soldiers fought with great courage and honour against the savage and uncivilised natives. Britain's presence in Africa is a gift to its people — bringing order, education and progress to a land that had none."</p>
+      <p class="source-meta">Written by a British journalist during the period of British Empire expansion in Africa.</p>
+    </div>
+    <div class="info-card" style="border-color:var(--yellow-light);">
+      <p class="q-number" style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--orange); margin-bottom:0.5rem;">Question 1 of 3</p>
+      <p style="font-weight:700; margin-bottom:0.75rem;">Why might this source be biased?</p>
+      <div class="bias-options" id="b1">
+        <button class="bias-btn" onclick="biasAnswer(this,'b1',false,'b1fb','Not quite — the date matters, but the main reason for bias here is who wrote it and their viewpoint.')">It was written a long time ago so it must be wrong</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b1',true,'b1fb','✅ Correct! The journalist was British and writing for a British audience. They used words like "savage" and "uncivilised" to justify British control, without considering the African perspective at all.')">It was written by a British journalist who only shows the British viewpoint</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b1',false,'b1fb','Not quite — newspapers can be biased even when writing about current events.')">Newspapers only report on things that happened in the past</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b1',false,'b1fb','Not quite — the journalist may have believed what they wrote. Bias doesn\'t always mean lying.')">The journalist was deliberately lying</button>
+      </div>
+      <div class="bias-feedback" id="b1fb"></div>
+    </div>
+
+    <!-- SOURCE 2 -->
+    <div class="source-card">
+      <p class="source-label">Source B</p>
+      <p class="source-title">A diary entry from a World War One soldier, 1916</p>
+      <p class="source-text">"Today was quiet along our section of the trench. We played cards and tried to keep warm. The men seem in good spirits despite everything. I truly believe we will be home by Christmas."</p>
+      <p class="source-meta">Written by a British officer in a private diary.</p>
+    </div>
+    <div class="info-card" style="border-color:var(--yellow-light);">
+      <p class="q-number" style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--orange); margin-bottom:0.5rem;">Question 2 of 3</p>
+      <p style="font-weight:700; margin-bottom:0.75rem;">What kind of bias might this source have?</p>
+      <div class="bias-options" id="b2">
+        <button class="bias-btn" onclick="biasAnswer(this,'b2',false,'b2fb','Not quite — it\'s a private diary, so the writer wasn\'t trying to persuade anyone.')">It was written to persuade people to join the army</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b2',false,'b2fb','Not quite — personal bias means the writer\'s own feelings and limited viewpoint shape what they write.')">It has no bias because it is a private diary</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b2',true,'b2fb','✅ Correct! The soldier could only write about what he personally saw and felt. He didn\'t know what was happening on other parts of the front, and his optimism ("home by Christmas") shows personal bias — we now know the war lasted until 1918.')">It only shows one person\'s limited view and feelings</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b2',false,'b2fb','Not quite — diary entries are a valuable historical source, even if they are limited.')">Diary entries are not useful historical sources</button>
+      </div>
+      <div class="bias-feedback" id="b2fb"></div>
+    </div>
+
+    <!-- SOURCE 3 -->
+    <div class="source-card">
+      <p class="source-label">Source C</p>
+      <p class="source-title">A government poster, Britain, 1940</p>
+      <p class="source-text">"BRITAIN SHALL NOT FALL. Our men fight for freedom, for family, for the future. Every citizen must do their part. Buy war bonds today."</p>
+      <p class="source-meta">An official poster produced by the British government during the Second World War.</p>
+    </div>
+    <div class="info-card" style="border-color:var(--yellow-light);">
+      <p class="q-number" style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--orange); margin-bottom:0.5rem;">Question 3 of 3</p>
+      <p style="font-weight:700; margin-bottom:0.75rem;">This is propaganda. What does that mean?</p>
+      <div class="bias-options" id="b3">
+        <button class="bias-btn" onclick="biasAnswer(this,'b3',false,'b3fb','Not quite — propaganda is deliberately created to influence people, but it isn\'t always completely false.')">It is completely made up and untrue</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b3',true,'b3fb','✅ Correct! Propaganda is information deliberately created to influence what people think, feel or do. This poster was designed to boost morale and encourage people to support the war effort — it only shows one side of the story.')">It is information designed to persuade people and influence their feelings</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b3',false,'b3fb','Not quite — propaganda is biased by design. It is created to support one particular viewpoint.')">It is a balanced and fair account of events</button>
+        <button class="bias-btn" onclick="biasAnswer(this,'b3',false,'b3fb','Not quite — propaganda is usually very deliberate. Governments create it on purpose to influence public opinion.')">It is an accidental mistake by the government</button>
+      </div>
+      <div class="bias-feedback" id="b3fb"></div>
+    </div>
+
+    <div class="btn-row" id="spotNextBtn" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(1)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(1)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 3: FACT OR OPINION SORT -->
+  <section class="section" id="section2">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">🎮 Fact or Opinion?</h2>
+
+    <div class="info-card">
+      <h2>What is the difference?</h2>
+      <p>One way to spot bias is to look for <strong>opinions disguised as facts</strong>. A fact can be checked and proven. An opinion is what someone thinks or believes — even if they state it as if it were true.</p>
+      <div class="highlight-box">
+        Fact: "The Battle of Hastings took place in 1066."<br>
+        Opinion: "The Norman invasion was good for Britain."
+      </div>
+      <p>Drag each statement into the correct column.</p>
+    </div>
+
+    <div class="sort-bank" id="sortBank">
+      <div class="sort-item" draggable="true" data-answer="fact" id="fs1">World War One began in 1914</div>
+      <div class="sort-item" draggable="true" data-answer="opinion" id="fs2">Britain was the greatest empire in history</div>
+      <div class="sort-item" draggable="true" data-answer="fact" id="fs3">The Berlin Wall fell in 1989</div>
+      <div class="sort-item" draggable="true" data-answer="opinion" id="fs4">The Vikings were the most fearsome warriors</div>
+      <div class="sort-item" draggable="true" data-answer="fact" id="fs5">Women gained the right to vote in 1918</div>
+      <div class="sort-item" draggable="true" data-answer="opinion" id="fs6">Life was better before the Industrial Revolution</div>
+      <div class="sort-item" draggable="true" data-answer="fact" id="fs7">The Titanic sank in April 1912</div>
+      <div class="sort-item" draggable="true" data-answer="opinion" id="fs8">Churchill was Britain's greatest ever leader</div>
+    </div>
+
+    <div class="sort-cols">
+      <div class="sort-col col-fact" id="colFact" ondragover="dragOver(event)" ondrop="drop(event,'fact')">
+        <h3>✅ Fact</h3>
+      </div>
+      <div class="sort-col col-bias" id="colOpinion" ondragover="dragOver(event)" ondrop="drop(event,'opinion')">
+        <h3>💬 Opinion</h3>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="checkSort()">Check my answers</button>
+      <button class="btn btn-outline" onclick="resetSort()">Reset</button>
+    </div>
+    <div id="sortFeedback" style="margin-top:1rem; font-size:0.95rem; font-weight:700; display:none;"></div>
+    <div class="btn-row" id="sortNextBtn" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(2)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(2)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 4: REFLECTION -->
+  <section class="section" id="section3">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">💭 Your Thinking</h2>
+
+    <div class="info-card">
+      <p>Now it's your turn to think like a historian. There are no right or wrong answers here — just write what you think. Take your time.</p>
+    </div>
+
+    <div class="reflect-card">
+      <p class="reflect-q">1. Look back at Source A (the British newspaper). What do you think was left out of that report?</p>
+      <p class="reflect-hint">Think about: whose point of view is missing? What might the people living in Africa have said about British rule?</p>
+      <textarea class="reflect-textarea" id="r1" placeholder="Write your thoughts here..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <p class="reflect-q">2. Can a biased source still be useful to a historian? Explain your thinking.</p>
+      <p class="reflect-hint">Hint: even a biased source tells us something — it might tell us what people at the time believed, feared, or wanted others to think.</p>
+      <textarea class="reflect-textarea" id="r2" placeholder="Write your thoughts here..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <p class="reflect-q">3. If you were writing about something that happened to you today, how might your version of events be biased?</p>
+      <p class="reflect-hint">Think about: would you leave anything out? Would you make yourself look better? Would you remember everything perfectly?</p>
+      <textarea class="reflect-textarea" id="r3" placeholder="Write your thoughts here..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(3)">Next section →</button>
+      <button class="skip-link" onclick="completeSection(3)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 5: QUIZ -->
+  <section class="section" id="section4">
+    <span class="time-badge">⏱ About 7 minutes</span>
+    <h2 class="section-title">🧠 Quick Quiz</h2>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 1 of 6</p>
+      <p class="q-text">What does the word "bias" mean in history?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — bias is about fairness and perspective, not age.')">When a source is very old</button>
+        <button class="option-btn" onclick="answer(this,true,'q1','✅ Correct! Bias means a source is influenced by the opinions, feelings or interests of whoever created it — so it doesn\'t give a fully fair or balanced view.')">When a source is influenced by the opinions or feelings of the person who made it</button>
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — a source can be biased even if it contains some true facts.')">When a source contains false information</button>
+        <button class="option-btn" onclick="answer(this,false,'q1','Not quite — primary sources are created at the time of an event, but they can still be biased.')">When a source is a primary source</button>
+      </div>
+      <div class="feedback" id="q1feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 2 of 6</p>
+      <p class="q-text">Which of these is an example of propaganda?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — a census records factual data about the population.')">A census recording population numbers</button>
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — a ship\'s log records factual information about a voyage.')">A ship\'s log recording a voyage</button>
+        <button class="option-btn" onclick="answer(this,true,'q2','✅ Correct! A wartime poster designed to encourage people to join the army is propaganda — it is deliberately created to influence what people think and do.')">A wartime poster designed to encourage people to join the army</button>
+        <button class="option-btn" onclick="answer(this,false,'q2','Not quite — an archaeological report aims to present factual findings.')">An archaeological report about Roman remains</button>
+      </div>
+      <div class="feedback" id="q2feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 3 of 6</p>
+      <p class="q-text">Why might a soldier's diary from World War One be considered biased?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — soldiers could write diaries. The issue is what they could see and know.')">Soldiers were not allowed to write diaries</button>
+        <button class="option-btn" onclick="answer(this,true,'q3','✅ Correct! A soldier could only write about what they personally experienced. They had no way of knowing the full picture of events happening across the whole war.')">It only shows one person\'s limited experience and point of view</button>
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — diaries are actually a valuable primary source for historians.')">Diaries are not useful historical sources</button>
+        <button class="option-btn" onclick="answer(this,false,'q3','Not quite — the language used might be old-fashioned but that is not what makes something biased.')">It was written in old-fashioned language</button>
+      </div>
+      <div class="feedback" id="q3feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 4 of 6</p>
+      <p class="q-text">Which of these is a FACT rather than an opinion?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — "greatest" is a judgement, not a fact. Different people would disagree.')">Henry VIII was the greatest Tudor monarch</button>
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — "unnecessary" is an opinion. Many historians debate this.')">World War One was an unnecessary war</button>
+        <button class="option-btn" onclick="answer(this,true,'q4','✅ Correct! This is a fact — it can be checked and proven. The Suffragettes were a real campaign group who campaigned for women\'s voting rights.')">The Suffragettes campaigned for women\'s right to vote</button>
+        <button class="option-btn" onclick="answer(this,false,'q4','Not quite — "better off" is an opinion. It depends on who you ask and what factors you consider.')">People were better off before the Industrial Revolution</button>
+      </div>
+      <div class="feedback" id="q4feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 5 of 6</p>
+      <p class="q-text">A historian is studying a source. Which question is MOST useful for detecting bias?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — the length of a source doesn\'t tell us whether it is biased.')">How long is the source?</button>
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — whether it is handwritten or typed doesn\'t reveal bias.')">Is the source handwritten or typed?</button>
+        <button class="option-btn" onclick="answer(this,true,'q5','✅ Correct! Knowing who created a source and why helps us understand their perspective, what they might have included or left out, and whether they had a reason to present events in a particular way.')">Who created this source, and why?</button>
+        <button class="option-btn" onclick="answer(this,false,'q5','Not quite — where a source is kept tells us about its preservation, not its bias.')">Where is the source kept?</button>
+      </div>
+      <div class="feedback" id="q5feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 6 of 6</p>
+      <p class="q-text">Can a biased source still be useful to a historian?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — biased sources can be very useful. They just need to be interpreted carefully.')">No — biased sources should be ignored</button>
+        <button class="option-btn" onclick="answer(this,true,'q6','✅ Correct! Even a biased source is useful — it can tell historians what people at the time believed, feared or wanted others to think. The key is to be aware of the bias and interpret the source carefully.')">Yes — they can reveal what people at the time believed or wanted others to think</button>
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — bias doesn\'t mean a source is deliberately dishonest. It can be unintentional.')">Only if the bias was deliberate</button>
+        <button class="option-btn" onclick="answer(this,false,'q6','Not quite — you can still learn from a single biased source, as long as you are aware of its limitations.')">Only if you have at least three other sources to compare it with</button>
+      </div>
+      <div class="feedback" id="q6feedback"></div>
+    </div>
+
+    <div id="quizResult" style="display:none;">
+      <div class="score-box">
+        <div class="score-num" id="quizScore">0/6</div>
+        <div class="score-label">Quiz complete!</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="completeSection(4)">🎉 Finish</button>
+        <button class="btn btn-outline" onclick="resetQuiz()">Try again</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Week 2 History</footer>
+
+<script>
+  const sectionCount = 5;
+  const completed = [false,false,false,false,false];
+  let biasAnswered = { b1: false, b2: false, b3: false };
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c, i) => {
+      const btn = document.getElementById('nav' + i);
+      if (c) { btn.classList.add('done'); btn.classList.remove('active'); }
+    });
+  }
+
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('section' + i).classList.add('active');
+    if (!completed[i]) document.getElementById('nav' + i).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function completeSection(i) {
+    completed[i] = true;
+    updateProgress();
+    const next = i + 1;
+    if (next < sectionCount) goToSection(next);
+    else showFinish();
+  }
+
+  // BIAS SPOTTER
+  function biasAnswer(btn, group, correct, fbId, msg) {
+    const container = document.getElementById(group);
+    container.querySelectorAll('.bias-btn').forEach(b => b.disabled = true);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) container.querySelectorAll('.bias-btn').forEach(b => { if (b.onclick.toString().includes('true,')) b.classList.add('correct'); });
+    const fb = document.getElementById(fbId);
+    fb.textContent = msg;
+    fb.className = 'bias-feedback ' + (correct ? 'correct' : 'wrong');
+    biasAnswered[group] = true;
+    if (Object.values(biasAnswered).every(Boolean)) {
+      document.getElementById('spotNextBtn').style.display = 'flex';
+    }
+  }
+
+  // DRAG AND DROP SORT
+  let draggedItem = null;
+  document.querySelectorAll('.sort-item').forEach(item => {
+    item.addEventListener('dragstart', e => { draggedItem = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); draggedItem = null; });
+  });
+
+  function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+  document.querySelectorAll('.sort-col, #sortBank').forEach(zone => zone.addEventListener('dragleave', () => zone.classList.remove('drag-over')));
+  function drop(e, col) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (draggedItem) e.currentTarget.appendChild(draggedItem);
+  }
+  document.getElementById('sortBank').addEventListener('dragover', e => e.preventDefault());
+  document.getElementById('sortBank').addEventListener('drop', e => { e.preventDefault(); if (draggedItem) document.getElementById('sortBank').appendChild(draggedItem); });
+
+  function checkSort() {
+    const factCol = document.getElementById('colFact');
+    const opinCol = document.getElementById('colOpinion');
+    let correct = 0; let total = 0;
+    [...factCol.querySelectorAll('.sort-item')].forEach(item => {
+      total++;
+      if (item.dataset.answer === 'fact') { item.style.background='var(--green-light)'; item.style.borderColor='var(--green)'; item.style.color='var(--green)'; correct++; }
+      else { item.style.background='var(--red-light)'; item.style.borderColor='var(--red)'; item.style.color='var(--red)'; }
+    });
+    [...opinCol.querySelectorAll('.sort-item')].forEach(item => {
+      total++;
+      if (item.dataset.answer === 'opinion') { item.style.background='var(--green-light)'; item.style.borderColor='var(--green)'; item.style.color='var(--green)'; correct++; }
+      else { item.style.background='var(--red-light)'; item.style.borderColor='var(--red)'; item.style.color='var(--red)'; }
+    });
+    const fb = document.getElementById('sortFeedback');
+    fb.style.display = 'block';
+    if (correct === 8) {
+      fb.style.color = 'var(--green)';
+      fb.textContent = '🎉 Perfect! All 8 correct!';
+      document.getElementById('sortNextBtn').style.display = 'flex';
+    } else {
+      fb.style.color = 'var(--orange)';
+      fb.textContent = correct + ' out of ' + total + ' correct. Green = right place, red = needs moving.';
+    }
+  }
+
+  function resetSort() {
+    const bank = document.getElementById('sortBank');
+    document.querySelectorAll('.sort-item').forEach(item => {
+      item.style.background = ''; item.style.borderColor = ''; item.style.color = '';
+      bank.appendChild(item);
+    });
+    document.getElementById('sortFeedback').style.display = 'none';
+    document.getElementById('sortNextBtn').style.display = 'none';
+  }
+
+  // QUIZ
+  let quizAnswered = 0; let quizScore = 0;
+  const quizQuestions = [
+    'What does the word "bias" mean in history?',
+    'Which of these is an example of propaganda?',
+    'Why might a soldier\'s diary from World War One be considered biased?',
+    'Which of these is a FACT rather than an opinion?',
+    'Which question is MOST useful for detecting bias?',
+    'Can a biased source still be useful to a historian?'
+  ];
+
+  function answer(btn, correct, qid, feedback) {
+    const card = btn.closest('.quiz-card');
+    card.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) card.querySelectorAll('.option-btn').forEach(b => { if (b.onclick.toString().includes('true,')) b.classList.add('correct'); });
+    const fb = document.getElementById(qid + 'feedback');
+    fb.textContent = feedback;
+    fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+    if (correct) quizScore++;
+    quizAnswered++;
+    if (quizAnswered === 6) {
+      setTimeout(() => {
+        document.getElementById('quizResult').style.display = 'block';
+        document.getElementById('quizScore').textContent = quizScore + '/6';
+      }, 600);
+    }
+  }
+
+  function resetQuiz() {
+    quizAnswered = 0; quizScore = 0;
+    document.getElementById('quizResult').style.display = 'none';
+    for (let i = 1; i <= 6; i++) {
+      document.getElementById('q' + i + 'card').querySelectorAll('.option-btn').forEach(b => { b.disabled = false; b.classList.remove('correct','wrong'); });
+      const fb = document.getElementById('q' + i + 'feedback');
+      fb.className = 'feedback'; fb.textContent = '';
+    }
+  }
+
+  // RESULTS
+  function getStudentName() { return document.getElementById('studentName').value.trim() || 'Student'; }
+
+  function getBiasResults() {
+    return ['b1','b2','b3'].map((id, i) => {
+      const container = document.getElementById(id);
+      const correct = container ? container.querySelector('.bias-btn.correct') : null;
+      const sources = ['Source A (British newspaper)', 'Source B (Soldier\'s diary)', 'Source C (Government poster)'];
+      return { source: sources[i], answered: !!correct, correct: !!correct };
+    });
+  }
+
+  function getSortResults() {
+    const factCol = document.getElementById('colFact');
+    const opinCol = document.getElementById('colOpinion');
+    const items = [...document.querySelectorAll('.sort-item')];
+    return items.map(item => {
+      const inFact = factCol.contains(item);
+      const inOpin = opinCol.contains(item);
+      const placed = inFact || inOpin;
+      const placedAs = inFact ? 'fact' : (inOpin ? 'opinion' : 'not placed');
+      return { text: item.textContent, answer: item.dataset.answer, placedAs, correct: placed && placedAs === item.dataset.answer };
+    });
+  }
+
+  function getReflections() {
+    return [
+      { q: 'What was left out of Source A?', a: document.getElementById('r1')?.value || '' },
+      { q: 'Can a biased source still be useful?', a: document.getElementById('r2')?.value || '' },
+      { q: 'How might your own writing be biased?', a: document.getElementById('r3')?.value || '' }
+    ];
+  }
+
+  function buildResultsHTML() {
+    const name = getStudentName();
+    const now = new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    const biasRes = getBiasResults();
+    const sortRes = getSortResults();
+    const reflections = getReflections();
+    const biasCorrect = biasRes.filter(r => r.correct).length;
+    const sortCorrect = sortRes.filter(r => r.correct).length;
+    const sectionsCompleted = completed.filter(Boolean).length;
+
+    let html = `<div style="font-family:'Atkinson Hyperlegible',sans-serif; max-width:640px; margin:0 auto; color:#1a1a1a;">`;
+    html += `<div style="background:#b05030; padding:1.5rem; border-radius:12px 12px 0 0; text-align:center;">
+      <p style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#fde0d0; margin-bottom:0.3rem;">Base 6 · Chilton Bridge School</p>
+      <h1 style="font-size:1.5rem; font-weight:700; color:#fef8f4; margin-bottom:0.25rem;">Bias in History — Results</h1>
+      <p style="color:#fbd0c0; font-size:0.9rem;">${name} · ${now}</p>
+    </div>`;
+
+    html += `<div style="background:#fdf0eb; padding:1rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+      <div style="flex:1; background:white; border-radius:10px; padding:0.9rem; text-align:center; min-width:110px;">
+        <div style="font-size:1.8rem; font-weight:700; color:#b05030;">${sectionsCompleted}/5</div>
+        <div style="font-size:0.8rem; color:#555;">Sections done</div>
+      </div>
+      <div style="flex:1; background:white; border-radius:10px; padding:0.9rem; text-align:center; min-width:110px;">
+        <div style="font-size:1.8rem; font-weight:700; color:#ef7724;">${biasCorrect}/3</div>
+        <div style="font-size:0.8rem; color:#555;">Bias spotter</div>
+      </div>
+      <div style="flex:1; background:white; border-radius:10px; padding:0.9rem; text-align:center; min-width:110px;">
+        <div style="font-size:1.8rem; font-weight:700; color:#007291;">${sortCorrect}/8</div>
+        <div style="font-size:0.8rem; color:#555;">Fact/Opinion sort</div>
+      </div>
+      <div style="flex:1; background:white; border-radius:10px; padding:0.9rem; text-align:center; min-width:110px;">
+        <div style="font-size:1.8rem; font-weight:700; color:#2e8b57;">${quizScore}/6</div>
+        <div style="font-size:0.8rem; color:#555;">Quiz score</div>
+      </div>
+    </div>`;
+
+    html += `<div style="padding:1.25rem 1.5rem; background:white; border:1px solid #e0d8d0; border-top:none;">
+      <h2 style="font-size:1rem; font-weight:700; color:#b05030; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Bias Spotter</h2>`;
+    biasRes.forEach(r => {
+      const icon = r.answered ? (r.correct ? '✅' : '❌') : '—';
+      const col = r.answered ? (r.correct ? '#2e8b57' : '#c0392b') : '#888';
+      html += `<div style="display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #f0ede8; font-size:0.9rem;">
+        <span style="font-weight:700;">${r.source}</span>
+        <span style="color:${col}; font-weight:700;">${icon} ${r.answered ? (r.correct ? 'Correct' : 'Incorrect') : 'Not attempted'}</span>
+      </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div style="padding:1.25rem 1.5rem; background:white; border:1px solid #e0d8d0; border-top:none;">
+      <h2 style="font-size:1rem; font-weight:700; color:#007291; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Fact or Opinion Sort</h2>`;
+    sortRes.forEach(r => {
+      const icon = r.correct ? '✅' : (r.placedAs === 'not placed' ? '—' : '❌');
+      const col = r.correct ? '#2e8b57' : (r.placedAs === 'not placed' ? '#888' : '#c0392b');
+      html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid #f0ede8; font-size:0.88rem; gap:0.5rem;">
+        <span style="font-weight:700; flex:1;">"${r.text}"</span>
+        <span style="color:${col}; font-weight:700; white-space:nowrap;">${icon} ${r.placedAs === 'not placed' ? 'Not placed' : (r.correct ? r.answer : 'Placed as ' + r.placedAs + ' (correct: ' + r.answer + ')')}</span>
+      </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div style="padding:1.25rem 1.5rem; background:white; border:1px solid #e0d8d0; border-top:none;">
+      <h2 style="font-size:1rem; font-weight:700; color:#7a3fa8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Reflections</h2>`;
+    reflections.forEach(r => {
+      html += `<div style="padding:0.75rem 0; border-bottom:1px solid #f0ede8;">
+        <p style="font-size:0.85rem; font-weight:700; color:#555; margin-bottom:0.3rem;">${r.q}</p>
+        <p style="font-size:0.9rem; color:#1a1a1a; line-height:1.6;">${r.a || '<em style="color:#aaa;">No response written</em>'}</p>
+      </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div style="padding:1.25rem 1.5rem; background:white; border:1px solid #e0d8d0; border-top:none;">
+      <h2 style="font-size:1rem; font-weight:700; color:#2e8b57; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Quiz</h2>`;
+    quizQuestions.forEach((q, i) => {
+      const fb = document.getElementById('q' + (i+1) + 'feedback');
+      const answered = fb && fb.textContent.length > 0;
+      const correct = fb && fb.classList.contains('correct');
+      const icon = !answered ? '—' : (correct ? '✅' : '❌');
+      const col = !answered ? '#888' : (correct ? '#2e8b57' : '#c0392b');
+      html += `<div style="display:flex; justify-content:space-between; align-items:flex-start; padding:0.5rem 0; border-bottom:1px solid #f0ede8; font-size:0.88rem; gap:0.5rem;">
+        <span style="font-weight:700; flex:1;">Q${i+1}: ${q}</span>
+        <span style="color:${col}; font-weight:700; white-space:nowrap;">${icon} ${!answered ? 'Not attempted' : (correct ? 'Correct' : 'Incorrect')}</span>
+      </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div style="padding:1rem 1.5rem; background:#fdf0eb; border:1px solid #e0d8d0; border-top:none; border-radius:0 0 12px 12px;">
+      <p style="font-size:0.8rem; color:#888; text-align:center;">Bias in History · Week 2 History · Base 6 · Chilton Bridge School</p>
+    </div></div>`;
+    return html;
+  }
+
+  function sendEmail() {
+    const name = getStudentName();
+    const biasRes = getBiasResults();
+    const sortRes = getSortResults();
+    const reflections = getReflections();
+    const now = new Date().toLocaleDateString('en-GB');
+    let body = `Bias in History Results — ${name} — ${now}\n\n`;
+    body += `SECTIONS COMPLETED: ${completed.filter(Boolean).length} / 5\n`;
+    body += `BIAS SPOTTER: ${biasRes.filter(r=>r.correct).length} / 3\n`;
+    body += `FACT/OPINION SORT: ${sortRes.filter(r=>r.correct).length} / 8\n`;
+    body += `QUIZ: ${quizScore} / 6\n\n`;
+    body += `--- BIAS SPOTTER ---\n`;
+    biasRes.forEach(r => body += `${r.source}: ${r.answered ? (r.correct ? 'Correct' : 'Incorrect') : 'Not attempted'}\n`);
+    body += `\n--- FACT OR OPINION SORT ---\n`;
+    sortRes.forEach(r => body += `"${r.text}" — Placed as: ${r.placedAs} — ${r.correct ? 'Correct' : 'Incorrect (correct: ' + r.answer + ')'}\n`);
+    body += `\n--- REFLECTIONS ---\n`;
+    reflections.forEach(r => body += `${r.q}\n${r.a || '(No response)'}\n\n`);
+    body += `--- QUIZ ---\n`;
+    quizQuestions.forEach((q, i) => {
+      const fb = document.getElementById('q' + (i+1) + 'feedback');
+      const answered = fb && fb.textContent.length > 0;
+      const correct = fb && fb.classList.contains('correct');
+      body += `Q${i+1}: ${q} — ${!answered ? 'Not attempted' : (correct ? 'Correct' : 'Incorrect')}\n`;
+    });
+    const subject = encodeURIComponent(`Bias in History Results — ${name} — ${now}`);
+    window.location.href = `mailto:jay.raine@chiltonbridgeschool.co.uk?subject=${subject}&body=${encodeURIComponent(body)}`;
+  }
+
+  function printResults() {
+    const html = buildResultsHTML();
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html><html><head>
+      <title>Bias in History Results</title>
+      <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+      <style>body{font-family:'Atkinson Hyperlegible',sans-serif;background:white;margin:2rem;}@media print{body{margin:0;}.no-print{display:none;}}</style>
+    </head><body>${html}
+      <div class="no-print" style="margin-top:1.5rem;text-align:center;">
+        <button onclick="window.print()" style="padding:0.75rem 1.5rem;background:#b05030;color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">Save as PDF / Print</button>
+      </div>
+    </body></html>`);
+    win.document.close();
+  }
+
+  function showFinish() {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const fin = document.createElement('section');
+    fin.className = 'section active';
+    fin.innerHTML = `
+      <div style="text-align:center; padding:2rem 1rem 1rem;">
+        <div style="font-size:4rem; margin-bottom:1rem;">🎉</div>
+        <h2 style="font-size:1.8rem; color:var(--brown); margin-bottom:0.75rem;">Brilliant thinking!</h2>
+        <p style="font-size:1.05rem; color:var(--muted); margin-bottom:2rem; max-width:480px; margin-left:auto; margin-right:auto; line-height:1.6;">
+          You've explored what bias means, spotted it in real historical sources, sorted facts from opinions, shared your own thinking, and completed the quiz.
+        </p>
+        <div style="background:var(--brown-light); border-radius:14px; padding:1.25rem; max-width:480px; margin:0 auto 1.5rem; text-align:left;">
+          <p style="font-weight:700; color:var(--brown); margin-bottom:0.5rem;">I can now...</p>
+          <ul style="padding-left:1.25rem; color:var(--dark); line-height:2;">
+            <li>Explain what bias means in history</li>
+            <li>Identify bias in historical sources</li>
+            <li>Tell the difference between facts and opinions</li>
+            <li>Discuss why a biased source can still be useful</li>
+          </ul>
+        </div>
+      </div>
+      <div id="resultsPreview" style="margin-bottom:1.5rem;"></div>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center; padding-bottom:2rem;">
+        <button class="btn btn-teal" onclick="sendEmail()">📧 Email results to teacher</button>
+        <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+        <button class="btn btn-outline" onclick="goToSection(0)">← Start again</button>
+      </div>`;
+    document.querySelector('.main').appendChild(fin);
+    document.getElementById('resultsPreview').innerHTML = buildResultsHTML();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
