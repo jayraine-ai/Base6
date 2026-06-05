@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Place Value Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal: #007291; --orange: #ef7724; --cream: #fef8f4;
+    --dark: #1a1a1a; --muted: #555;
+    --teal-light: #e6f5f8; --orange-light: #fff3eb;
+    --green: #2e8b57; --green-light: #eaf7f0;
+    --red: #c0392b; --red-light: #fdecea;
+    --purple: #7a3fa8; --purple-light: #f5eeff;
+    --yellow: #e8a020; --yellow-light: #fdf5e0;
+  }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+
+  .site-header { background-color: var(--teal); padding: 1.5rem 2rem 1.25rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #a8dce8; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .site-header p { font-size: 0.95rem; color: #c8e8f0; margin-top: 0.5rem; }
+
+  .progress-bar-wrap { background: #005a72; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 0.8rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .timer-label { font-size: 0.8rem; font-weight: 700; color: #fde0c0; white-space: nowrap; }
+
+  .section-nav { display: flex; overflow-x: auto; gap: 0.5rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid #e0d8d0; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #ccc; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; color: #888; cursor: pointer; transition: all 0.2s; }
+  .nav-btn.active { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--teal); margin-bottom: 1.25rem; }
+
+  .info-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--teal-light); }
+  .info-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--teal); margin-bottom: 0.75rem; }
+  .info-card p { font-size: 1rem; line-height: 1.7; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .highlight-box { background: var(--teal-light); border-left: 4px solid var(--teal); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 1rem; font-weight: 700; color: var(--teal); line-height: 1.5; }
+
+  /* PLACE VALUE CHART */
+  .pv-chart { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin: 1rem 0; }
+  .pv-col { border-radius: 12px; padding: 0.75rem 0.5rem; text-align: center; }
+  .pv-col .pv-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+  .pv-col .pv-value { font-size: 2rem; font-weight: 700; }
+  .pv-col.thousands { background: var(--purple-light); } .pv-col.thousands .pv-label { color: var(--purple); } .pv-col.thousands .pv-value { color: var(--purple); }
+  .pv-col.hundreds { background: var(--teal-light); } .pv-col.hundreds .pv-label { color: var(--teal); } .pv-col.hundreds .pv-value { color: var(--teal); }
+  .pv-col.tens { background: var(--orange-light); } .pv-col.tens .pv-label { color: var(--orange); } .pv-col.tens .pv-value { color: var(--orange); }
+  .pv-col.ones { background: var(--green-light); } .pv-col.ones .pv-label { color: var(--green); } .pv-col.ones .pv-value { color: var(--green); }
+
+  /* INTERACTIVE BUILDER */
+  .builder-wrap { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--teal-light); }
+  .builder-display { font-size: 3rem; font-weight: 700; color: var(--teal); text-align: center; padding: 1rem; background: var(--teal-light); border-radius: 12px; margin-bottom: 1.25rem; letter-spacing: 0.05em; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+  .builder-controls { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+  .digit-control { text-align: center; }
+  .digit-control .dc-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .digit-control .dc-btn-row { display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+  .dc-btn { width: 36px; height: 36px; border-radius: 8px; border: 2px solid; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
+  .dc-btn:hover { transform: scale(1.1); }
+  .dc-val { font-size: 1.5rem; font-weight: 700; min-width: 28px; text-align: center; }
+  .thousands .dc-btn { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+  .thousands .dc-label { color: var(--purple); }
+  .thousands .dc-val { color: var(--purple); }
+  .hundreds .dc-btn { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .hundreds .dc-label { color: var(--teal); }
+  .hundreds .dc-val { color: var(--teal); }
+  .tens .dc-btn { border-color: var(--orange); background: var(--orange-light); color: var(--orange); }
+  .tens .dc-label { color: var(--orange); }
+  .tens .dc-val { color: var(--orange); }
+  .ones .dc-btn { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .ones .dc-label { color: var(--green); }
+  .ones .dc-val { color: var(--green); }
+  .builder-question { background: var(--yellow-light); border-left: 4px solid var(--yellow); border-radius: 10px; padding: 0.9rem 1.1rem; margin-top: 1rem; font-size: 0.95rem; font-weight: 700; color: #7a5500; line-height: 1.5; }
+
+  /* QUIZ */
+  .quiz-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid #e0d8d0; }
+  .quiz-card .q-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.5rem; }
+  .quiz-card .q-text { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn { padding: 0.75rem 1rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback { margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; display: none; line-height: 1.5; }
+  .feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  /* NUMBER LINE */
+  .number-line-wrap { overflow-x: auto; padding: 1rem 0; }
+  .number-line { position: relative; height: 60px; min-width: 600px; margin: 0 1rem; }
+  .nl-track { position: absolute; top: 50%; left: 0; right: 0; height: 4px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
+  .nl-tick { position: absolute; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; }
+  .nl-tick .tick-line { width: 2px; height: 16px; background: var(--teal); }
+  .nl-tick .tick-label { font-size: 0.75rem; font-weight: 700; color: var(--teal); margin-top: 4px; }
+  .nl-point { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; border-radius: 50%; background: var(--orange); border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: grab; transition: background 0.2s; z-index: 10; }
+  .nl-point:hover { background: #c05a10; }
+
+  /* ORDERING GAME */
+  .order-game { margin: 1rem 0; }
+  .order-bank { display: flex; flex-wrap: wrap; gap: 0.6rem; padding: 0.75rem; background: #f5f0eb; border-radius: 12px; border: 2px dashed #ccc; min-height: 56px; margin-bottom: 1rem; }
+  .order-slots { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .order-slot { width: 90px; height: 52px; border-radius: 10px; border: 2px dashed #ccc; background: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: #ccc; transition: all 0.15s; }
+  .order-slot.drag-over { border-color: var(--orange); background: var(--orange-light); }
+  .order-slot.filled { border-color: var(--teal); color: var(--teal); border-style: solid; }
+  .order-num { padding: 0.5rem 0.9rem; background: white; border: 2px solid var(--teal); border-radius: 10px; font-size: 1rem; font-weight: 700; color: var(--teal); cursor: grab; user-select: none; transition: transform 0.15s; }
+  .order-num:hover { transform: scale(1.04); }
+  .order-num.dragging { opacity: 0.5; }
+
+  /* CALCULATION SECTION */
+  .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .calc-card { background: white; border: 2px solid var(--teal-light); border-radius: 14px; padding: 1.25rem; }
+  .calc-card .calc-q { font-size: 1.3rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem; }
+  .calc-input { width: 100%; padding: 0.6rem 0.8rem; border: 2px solid #e0d8d0; border-radius: 8px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--dark); background: var(--cream); text-align: center; }
+  .calc-input:focus { outline: none; border-color: var(--teal); }
+  .calc-input.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .calc-input.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .calc-hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; text-align: center; }
+
+  /* SCORE */
+  .score-box { background: var(--teal); border-radius: 16px; padding: 1.5rem; text-align: center; color: white; margin-bottom: 1.25rem; }
+  .score-box .score-num { font-size: 3rem; font-weight: 700; line-height: 1; }
+  .score-box .score-label { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
+
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-outline { background: white; color: var(--teal); border: 2px solid var(--teal); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .skip-link { display: inline-block; font-size: 0.85rem; color: var(--muted); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; background: none; border: none; font-family: inherit; }
+  .skip-link:hover { color: var(--teal); }
+
+  .time-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--orange-light); border: 1.5px solid var(--orange); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; color: var(--orange); margin-bottom: 1rem; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (max-width: 500px) {
+    .builder-controls { grid-template-columns: repeat(2, 1fr); }
+    .pv-chart { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="tag">Week 1 · Maths</p>
+  <h1>🔢 Place Value Explorer</h1>
+  <p>Numbers up to 10,000 — understand, build and calculate</p>
+</header>
+
+<div class="name-bar" style="background:#005a72; padding:0.6rem 2rem; display:flex; align-items:center; gap:0.75rem;">
+  <label for="studentName" style="font-size:0.82rem; font-weight:700; color:#fef8f4; white-space:nowrap;">Your name:</label>
+  <input id="studentName" type="text" placeholder="Type your name here..." style="flex:1; max-width:280px; padding:0.4rem 0.75rem; border-radius:8px; border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.15); color:#fef8f4; font-family:'Atkinson Hyperlegible',sans-serif; font-size:0.9rem; font-weight:700;" />
+  <span style="font-size:0.8rem; color:#a8dce8;">— used on your results</span>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 5 sections</span>
+  <span class="timer-label">⏱ ~45 mins</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. What is Place Value?</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. Build a Number</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Order Numbers</button>
+  <button class="nav-btn" onclick="goToSection(3)" id="nav3">4. Calculate</button>
+  <button class="nav-btn" onclick="goToSection(4)" id="nav4">5. Quiz</button>
+</nav>
+
+<main class="main">
+
+  <!-- SECTION 1: WHAT IS PLACE VALUE -->
+  <section class="section active" id="section0">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">What is Place Value?</h2>
+
+    <div class="info-card">
+      <h2>📍 Where a digit lives matters</h2>
+      <p>In any number, each digit has a <strong>place</strong>. That place tells us how much that digit is worth. The same digit can mean very different things depending on where it sits.</p>
+      <p>For example — the digit <strong>3</strong> means something very different in these two numbers:</p>
+      <div class="highlight-box">3,000 — the 3 is worth three thousand<br>300 — the 3 is worth three hundred</div>
+    </div>
+
+    <div class="info-card">
+      <h2>🏠 The four place value columns</h2>
+      <p>Every number up to 10,000 fits into four columns. From left to right:</p>
+      <div class="pv-chart">
+        <div class="pv-col thousands"><div class="pv-label">Thousands</div><div class="pv-value">Th</div></div>
+        <div class="pv-col hundreds"><div class="pv-label">Hundreds</div><div class="pv-value">H</div></div>
+        <div class="pv-col tens"><div class="pv-label">Tens</div><div class="pv-value">T</div></div>
+        <div class="pv-col ones"><div class="pv-label">Ones</div><div class="pv-value">O</div></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2>👀 Let's look at an example</h2>
+      <p>Take the number <strong>4,372</strong>. Let's break it down:</p>
+      <div class="pv-chart">
+        <div class="pv-col thousands"><div class="pv-label">Thousands</div><div class="pv-value">4</div></div>
+        <div class="pv-col hundreds"><div class="pv-label">Hundreds</div><div class="pv-value">3</div></div>
+        <div class="pv-col tens"><div class="pv-label">Tens</div><div class="pv-value">7</div></div>
+        <div class="pv-col ones"><div class="pv-label">Ones</div><div class="pv-value">2</div></div>
+      </div>
+      <div class="highlight-box">4,372 = 4,000 + 300 + 70 + 2</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Got it — next section →</button>
+      <button class="skip-link" onclick="goToSection(1)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: BUILD A NUMBER -->
+  <section class="section" id="section1">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">🏗️ Build a Number</h2>
+
+    <div class="info-card">
+      <p>Use the buttons below to build numbers and see how place value works. Try the challenges at the bottom!</p>
+    </div>
+
+    <div class="builder-wrap">
+      <div class="builder-display" id="builderDisplay">0</div>
+      <div class="builder-controls">
+        <div class="digit-control thousands">
+          <div class="dc-label">Thousands</div>
+          <div class="dc-btn-row">
+            <button class="dc-btn" onclick="changeDigit('th', 1)">+</button>
+            <span class="dc-val" id="th-val">0</span>
+            <button class="dc-btn" onclick="changeDigit('th', -1)">−</button>
+          </div>
+        </div>
+        <div class="digit-control hundreds">
+          <div class="dc-label">Hundreds</div>
+          <div class="dc-btn-row">
+            <button class="dc-btn" onclick="changeDigit('h', 1)">+</button>
+            <span class="dc-val" id="h-val">0</span>
+            <button class="dc-btn" onclick="changeDigit('h', -1)">−</button>
+          </div>
+        </div>
+        <div class="digit-control tens">
+          <div class="dc-label">Tens</div>
+          <div class="dc-btn-row">
+            <button class="dc-btn" onclick="changeDigit('t', 1)">+</button>
+            <span class="dc-val" id="t-val">0</span>
+            <button class="dc-btn" onclick="changeDigit('t', -1)">−</button>
+          </div>
+        </div>
+        <div class="digit-control ones">
+          <div class="dc-label">Ones</div>
+          <div class="dc-btn-row">
+            <button class="dc-btn" onclick="changeDigit('o', 1)">+</button>
+            <span class="dc-val" id="o-val">0</span>
+            <button class="dc-btn" onclick="changeDigit('o', -1)">−</button>
+          </div>
+        </div>
+      </div>
+      <div id="builderBreakdown" style="margin-top:1rem; font-size:0.9rem; color:var(--muted); text-align:center;"></div>
+    </div>
+
+    <div class="info-card">
+      <h2>🎯 Challenges — can you build these?</h2>
+      <div id="builderChallenge" class="builder-question">Challenge 1 of 4: Build the number <strong id="challengeTarget">2,506</strong></div>
+      <div id="challengeFeedback" style="margin-top:0.75rem; font-size:0.95rem; font-weight:700; display:none;"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="checkChallenge()">Check my number</button>
+        <button class="btn btn-outline" onclick="resetBuilder()">Reset to 0</button>
+      </div>
+    </div>
+
+    <div class="btn-row" id="builderNextBtn" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(1)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(1)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 3: ORDER NUMBERS -->
+  <section class="section" id="section2">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">📊 Order Numbers</h2>
+
+    <div class="info-card">
+      <h2>How do we put numbers in order?</h2>
+      <p>To order numbers, look at the <strong>highest place value column first</strong> — the thousands. If those are the same, look at the hundreds. If those are the same, look at the tens, and so on.</p>
+      <div class="highlight-box">Start left and work right — the biggest column decides first.</div>
+    </div>
+
+    <div class="info-card">
+      <h2>🎮 Ordering Game</h2>
+      <p>Drag the numbers into the boxes in order from <strong>smallest to largest</strong>.</p>
+
+      <div class="order-game" id="orderGame">
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.75rem;">Drag from here...</p>
+        <div class="order-bank" id="orderBank"></div>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">...into order here (smallest → largest)</p>
+        <div class="order-slots" id="orderSlots"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="checkOrder()">Check my order</button>
+        <button class="btn btn-outline" onclick="resetOrder()">Reset</button>
+      </div>
+      <div id="orderFeedback" style="margin-top:0.75rem; font-size:0.95rem; font-weight:700; display:none;"></div>
+    </div>
+
+    <div class="btn-row" id="orderNextBtn" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(2)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(2)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 4: CALCULATE -->
+  <section class="section" id="section3">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">➕ Calculate</h2>
+
+    <div class="info-card">
+      <h2>Adding and subtracting with place value</h2>
+      <p>When we add or subtract, we work <strong>column by column</strong> — ones with ones, tens with tens, hundreds with hundreds. Place value keeps everything lined up correctly.</p>
+    </div>
+
+    <div class="info-card">
+      <h2>🧮 Have a go</h2>
+      <p style="margin-bottom:1rem;">Type your answers in the boxes. Press Enter or click away to check.</p>
+      <div class="calc-grid" id="calcGrid"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="checkCalcs()">Check all answers</button>
+        <button class="btn btn-outline" onclick="resetCalcs()">Clear answers</button>
+      </div>
+      <div id="calcFeedback" style="margin-top:0.75rem; font-size:0.95rem; font-weight:700; display:none;"></div>
+    </div>
+
+    <div class="btn-row" id="calcNextBtn" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(3)">Next section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(3)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 5: QUIZ -->
+  <section class="section" id="section4">
+    <span class="time-badge">⏱ About 7 minutes</span>
+    <h2 class="section-title">🧠 Quick Quiz</h2>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 1 of 6</p>
+      <p class="q-text">In the number 3,472 — what is the value of the digit 4?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q1', 'Not quite — 4 is in the hundreds column, so it is worth 400.')">4</button>
+        <button class="option-btn" onclick="answer(this, false, 'q1', 'Not quite — 4 is in the hundreds column, not the thousands.')">4,000</button>
+        <button class="option-btn" onclick="answer(this, true, 'q1', '✅ Correct! The 4 is in the hundreds column, so it is worth 400.')">400</button>
+        <button class="option-btn" onclick="answer(this, false, 'q1', 'Not quite — 4 is in the hundreds column, so it is worth 400.')">40</button>
+      </div>
+      <div class="feedback" id="q1feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 2 of 6</p>
+      <p class="q-text">What is 5,000 + 300 + 60 + 7?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q2', 'Not quite — add each column: 5,000 + 300 + 60 + 7 = 5,367.')">5,637</button>
+        <button class="option-btn" onclick="answer(this, true, 'q2', '✅ Correct! 5,000 + 300 + 60 + 7 = 5,367.')">5,367</button>
+        <button class="option-btn" onclick="answer(this, false, 'q2', 'Not quite — add each column: 5,000 + 300 + 60 + 7 = 5,367.')">5,376</button>
+        <button class="option-btn" onclick="answer(this, false, 'q2', 'Not quite — add each column: 5,000 + 300 + 60 + 7 = 5,367.')">53,067</button>
+      </div>
+      <div class="feedback" id="q2feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 3 of 6</p>
+      <p class="q-text">Which of these numbers is the largest?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q3', 'Not quite — compare the thousands digit first. 7,201 has the most thousands.')">3,987</button>
+        <button class="option-btn" onclick="answer(this, false, 'q3', 'Not quite — compare the thousands digit first. 7,201 has the most thousands.')">6,450</button>
+        <button class="option-btn" onclick="answer(this, true, 'q3', '✅ Correct! 7,201 has 7 thousands — more than any of the others.')">7,201</button>
+        <button class="option-btn" onclick="answer(this, false, 'q3', 'Not quite — compare the thousands digit first. 7,201 has the most thousands.')">7,099</button>
+      </div>
+      <div class="feedback" id="q3feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 4 of 6</p>
+      <p class="q-text">What is 2,450 + 300?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q4', 'Not quite — 300 goes into the hundreds column: 4 + 3 = 7 hundreds. So 2,450 + 300 = 2,750.')">2,480</button>
+        <button class="option-btn" onclick="answer(this, false, 'q4', 'Not quite — 300 goes into the hundreds column: 4 + 3 = 7 hundreds. So 2,450 + 300 = 2,750.')">5,450</button>
+        <button class="option-btn" onclick="answer(this, true, 'q4', '✅ Correct! 300 adds to the hundreds column: 4 + 3 = 7, giving 2,750.')">2,750</button>
+        <button class="option-btn" onclick="answer(this, false, 'q4', 'Not quite — 300 goes into the hundreds column: 4 + 3 = 7 hundreds. So 2,450 + 300 = 2,750.')">2,530</button>
+      </div>
+      <div class="feedback" id="q4feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 5 of 6</p>
+      <p class="q-text">In the number 8,064 — which digit is in the tens column?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q5', 'Not quite — 8 is in the thousands column.')">8</button>
+        <button class="option-btn" onclick="answer(this, false, 'q5', 'Not quite — 0 is in the hundreds column.')">0</button>
+        <button class="option-btn" onclick="answer(this, true, 'q5', '✅ Correct! In 8,064 — 8 is thousands, 0 is hundreds, 6 is tens, 4 is ones.')">6</button>
+        <button class="option-btn" onclick="answer(this, false, 'q5', 'Not quite — 4 is in the ones column.')">4</button>
+      </div>
+      <div class="feedback" id="q5feedback"></div>
+    </div>
+
+    <div class="quiz-card">
+      <p class="q-number">Question 6 of 6</p>
+      <p class="q-text">What is 6,800 − 500?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q6', 'Not quite — subtract from the hundreds column: 8 − 5 = 3, giving 6,300.')">6,200</button>
+        <button class="option-btn" onclick="answer(this, true, 'q6', '✅ Correct! 500 comes off the hundreds: 8 − 5 = 3, so 6,800 − 500 = 6,300.')">6,300</button>
+        <button class="option-btn" onclick="answer(this, false, 'q6', 'Not quite — subtract from the hundreds column: 8 − 5 = 3, giving 6,300.')">1,800</button>
+        <button class="option-btn" onclick="answer(this, false, 'q6', 'Not quite — subtract from the hundreds column: 8 − 5 = 3, giving 6,300.')">6,350</button>
+      </div>
+      <div class="feedback" id="q6feedback"></div>
+    </div>
+
+    <div id="quizResult" style="display:none;">
+      <div class="score-box">
+        <div class="score-num" id="quizScore">0/6</div>
+        <div class="score-label">Quiz complete!</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="completeSection(4)">🎉 Finish</button>
+        <button class="btn btn-outline" onclick="resetQuiz()">Try again</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Week 1 Maths</footer>
+
+<script>
+  const sectionCount = 5;
+  const completed = [false, false, false, false, false];
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c, i) => {
+      const btn = document.getElementById('nav' + i);
+      if (c) { btn.classList.add('done'); btn.classList.remove('active'); }
+    });
+  }
+
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('section' + i).classList.add('active');
+    if (!completed[i]) document.getElementById('nav' + i).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function completeSection(i) {
+    completed[i] = true;
+    updateProgress();
+    const next = i + 1;
+    if (next < sectionCount) goToSection(next);
+    else showFinish();
+  }
+
+  function getStudentName() {
+    return document.getElementById('studentName').value.trim() || 'Student';
+  }
+
+  function getCalcResults() {
+    return calcQuestions.map((q, i) => {
+      const input = document.getElementById('calc' + i);
+      const val = input ? parseInt(input.value) : null;
+      return { q: q.q, answer: q.a, given: val, correct: val === q.a };
+    });
+  }
+
+  function getQuizResults() {
+    const questions = [
+      'In 3,472 — what is the value of the digit 4?',
+      'What is 5,000 + 300 + 60 + 7?',
+      'Which of these numbers is the largest?',
+      'What is 2,450 + 300?',
+      'In 8,064 — which digit is in the tens column?',
+      'What is 6,800 − 500?'
+    ];
+    return questions.map((q, i) => {
+      const fb = document.getElementById('q' + (i+1) + 'feedback');
+      const answered = fb && fb.textContent.length > 0;
+      const correct = fb && fb.classList.contains('correct');
+      return { q, answered, correct };
+    });
+  }
+
+  function buildResultsHTML() {
+    const name = getStudentName();
+    const now = new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    const calcRes = getCalcResults();
+    const quizRes = getQuizResults();
+    const calcCorrect = calcRes.filter(r => r.correct).length;
+    const quizCorrect = quizRes.filter(r => r.correct).length;
+    const sectionsCompleted = completed.filter(Boolean).length;
+
+    let html = `<div style="font-family:'Atkinson Hyperlegible',sans-serif; max-width:640px; margin:0 auto; color:#1a1a1a;">`;
+    html += `<div style="background:#007291; padding:1.5rem; border-radius:12px 12px 0 0; text-align:center;">
+      <p style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#a8dce8; margin-bottom:0.3rem;">Base 6 · Chilton Bridge School</p>
+      <h1 style="font-size:1.5rem; font-weight:700; color:#fef8f4; margin-bottom:0.25rem;">Place Value Explorer — Results</h1>
+      <p style="color:#c8e8f0; font-size:0.9rem;">${name} · ${now}</p>
+    </div>`;
+
+    html += `<div style="background:#e6f5f8; padding:1rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+      <div style="flex:1; background:white; border-radius:10px; padding:0.9rem; text-align:center; min-width:120px;">
+        <div style="font-size:1.8rem; font-weight:700; color:#007291;">${sectionsCompleted}/5</div>
+        <div style="font-size:0.8rem; color:#555;">Sections completed</div>
+      </div>
+      <div style="flex:1; background:white; border-radius:10px; padding:0.9rem; text-align:center; min-width:120px;">
+        <div style="font-size:1.8rem; font-weight:700; color:#ef7724;">${calcCorrect}/6</div>
+        <div style="font-size:0.8rem; color:#555;">Calculations correct</div>
+      </div>
+      <div style="flex:1; background:white; border-radius:10px; padding:0.9rem; text-align:center; min-width:120px;">
+        <div style="font-size:1.8rem; font-weight:700; color:#2e8b57;">${quizCorrect}/6</div>
+        <div style="font-size:0.8rem; color:#555;">Quiz score</div>
+      </div>
+    </div>`;
+
+    html += `<div style="padding:1.25rem 1.5rem; background:white; border:1px solid #e0d8d0; border-top:none;">
+      <h2 style="font-size:1rem; font-weight:700; color:#007291; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Calculations</h2>`;
+    calcRes.forEach(r => {
+      const col = r.correct ? '#2e8b57' : (r.given !== null && !isNaN(r.given) ? '#c0392b' : '#888');
+      const icon = r.correct ? '✅' : (r.given !== null && !isNaN(r.given) ? '❌' : '—');
+      const given = (r.given !== null && !isNaN(r.given)) ? r.given.toLocaleString() : 'not answered';
+      html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid #f0ede8; font-size:0.9rem;">
+        <span style="font-weight:700;">${r.q}</span>
+        <span style="color:${col}; font-weight:700;">${icon} ${given} ${!r.correct && r.given !== null && !isNaN(r.given) ? '(correct: ' + r.answer.toLocaleString() + ')' : ''}</span>
+      </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div style="padding:1.25rem 1.5rem; background:white; border:1px solid #e0d8d0; border-top:none;">
+      <h2 style="font-size:1rem; font-weight:700; color:#2e8b57; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Quiz</h2>`;
+    quizRes.forEach((r, i) => {
+      const col = !r.answered ? '#888' : (r.correct ? '#2e8b57' : '#c0392b');
+      const icon = !r.answered ? '—' : (r.correct ? '✅' : '❌');
+      html += `<div style="display:flex; justify-content:space-between; align-items:flex-start; padding:0.5rem 0; border-bottom:1px solid #f0ede8; font-size:0.9rem; gap:1rem;">
+        <span style="font-weight:700; flex:1;">Q${i+1}: ${r.q}</span>
+        <span style="color:${col}; font-weight:700; white-space:nowrap;">${icon} ${!r.answered ? 'not attempted' : (r.correct ? 'Correct' : 'Incorrect')}</span>
+      </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div style="padding:1rem 1.5rem; background:#fff3eb; border:1px solid #e0d8d0; border-top:none; border-radius:0 0 12px 12px;">
+      <p style="font-size:0.8rem; color:#888; text-align:center;">Place Value Explorer · Week 1 Maths · Base 6 · Chilton Bridge School</p>
+    </div></div>`;
+
+    return html;
+  }
+
+  function sendEmail() {
+    const name = getStudentName();
+    const calcRes = getCalcResults();
+    const quizRes = getQuizResults();
+    const calcCorrect = calcRes.filter(r => r.correct).length;
+    const quizCorrect = quizRes.filter(r => r.correct).length;
+    const now = new Date().toLocaleDateString('en-GB');
+
+    let body = `Place Value Explorer Results — ${name} — ${now}\n\n`;
+    body += `SECTIONS COMPLETED: ${completed.filter(Boolean).length} / 5\n`;
+    body += `CALCULATIONS: ${calcCorrect} / 6 correct\n`;
+    body += `QUIZ SCORE: ${quizCorrect} / 6\n\n`;
+    body += `--- CALCULATIONS ---\n`;
+    calcRes.forEach(r => {
+      const given = (r.given !== null && !isNaN(r.given)) ? r.given.toLocaleString() : 'not answered';
+      body += `${r.q} Student answered: ${given} — ${r.correct ? 'Correct' : 'Incorrect (correct answer: ' + r.answer.toLocaleString() + ')'}\n`;
+    });
+    body += `\n--- QUIZ ---\n`;
+    quizRes.forEach((r, i) => {
+      body += `Q${i+1}: ${r.q} — ${!r.answered ? 'Not attempted' : (r.correct ? 'Correct' : 'Incorrect')}\n`;
+    });
+
+    const subject = encodeURIComponent(`Place Value Results — ${name} — ${now}`);
+    const encodedBody = encodeURIComponent(body);
+    window.location.href = `mailto:jay.raine@chiltonbridgeschool.co.uk?subject=${subject}&body=${encodedBody}`;
+  }
+
+  function printResults() {
+    const html = buildResultsHTML();
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html><html><head>
+      <title>Place Value Results</title>
+      <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+      <style>
+        body { font-family: 'Atkinson Hyperlegible', sans-serif; background: white; margin: 2rem; }
+        @media print { body { margin: 0; } .no-print { display: none; } }
+      </style>
+    </head><body>
+      ${html}
+      <div class="no-print" style="margin-top:1.5rem; text-align:center;">
+        <button onclick="window.print()" style="padding:0.75rem 1.5rem; background:#007291; color:white; border:none; border-radius:10px; font-family:'Atkinson Hyperlegible',sans-serif; font-size:1rem; font-weight:700; cursor:pointer;">Save as PDF / Print</button>
+      </div>
+    </body></html>`);
+    win.document.close();
+  }
+
+  function showFinish() {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const fin = document.createElement('section');
+    fin.className = 'section active';
+    fin.innerHTML = `
+      <div style="text-align:center; padding:2rem 1rem 1rem;">
+        <div style="font-size:4rem; margin-bottom:1rem;">🎉</div>
+        <h2 style="font-size:1.8rem; color:var(--teal); margin-bottom:0.75rem;">Brilliant work!</h2>
+        <p style="font-size:1.05rem; color:var(--muted); margin-bottom:2rem; max-width:480px; margin-left:auto; margin-right:auto; line-height:1.6;">
+          You've explored place value all the way up to 10,000 — reading, building, ordering and calculating. That's a full session done!
+        </p>
+        <div style="background:var(--teal-light); border-radius:14px; padding:1.25rem; max-width:480px; margin:0 auto 1.5rem; text-align:left;">
+          <p style="font-weight:700; color:var(--teal); margin-bottom:0.5rem;">I can now...</p>
+          <ul style="padding-left:1.25rem; color:var(--dark); line-height:2;">
+            <li>Explain what place value means</li>
+            <li>Read and write numbers up to 10,000</li>
+            <li>Order numbers from smallest to largest</li>
+            <li>Add and subtract using place value columns</li>
+          </ul>
+        </div>
+      </div>
+      <div id="resultsPreview" style="margin-bottom:1.5rem;"></div>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center; padding-bottom:2rem;">
+        <button class="btn btn-primary" onclick="sendEmail()">📧 Email results to teacher</button>
+        <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+        <button class="btn btn-outline" onclick="goToSection(0)">← Start again</button>
+      </div>`;
+    document.querySelector('.main').appendChild(fin);
+    document.getElementById('resultsPreview').innerHTML = buildResultsHTML();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // BUILDER
+  const digits = { th: 0, h: 0, t: 0, o: 0 };
+  const challenges = [2506, 1090, 7834, 4001];
+  let challengeIndex = 0;
+  let challengesPassed = 0;
+
+  function changeDigit(col, dir) {
+    digits[col] = Math.max(0, Math.min(col === 'th' ? 9 : 9, digits[col] + dir));
+    updateBuilder();
+  }
+
+  function updateBuilder() {
+    const num = digits.th * 1000 + digits.h * 100 + digits.t * 10 + digits.o;
+    document.getElementById('th-val').textContent = digits.th;
+    document.getElementById('h-val').textContent = digits.h;
+    document.getElementById('t-val').textContent = digits.t;
+    document.getElementById('o-val').textContent = digits.o;
+    document.getElementById('builderDisplay').textContent = num.toLocaleString();
+    const parts = [];
+    if (digits.th) parts.push(digits.th * 1000 + ' (thousands)');
+    if (digits.h) parts.push(digits.h * 100 + ' (hundreds)');
+    if (digits.t) parts.push(digits.t * 10 + ' (tens)');
+    if (digits.o) parts.push(digits.o + ' (ones)');
+    document.getElementById('builderBreakdown').textContent = parts.length ? parts.join(' + ') : '';
+  }
+
+  function setChallenge() {
+    const t = challenges[challengeIndex];
+    document.getElementById('challengeTarget').textContent = t.toLocaleString();
+    document.querySelector('#builderChallenge').firstChild.textContent = 'Challenge ' + (challengeIndex + 1) + ' of ' + challenges.length + ': Build the number ';
+  }
+
+  function checkChallenge() {
+    const current = digits.th * 1000 + digits.h * 100 + digits.t * 10 + digits.o;
+    const target = challenges[challengeIndex];
+    const fb = document.getElementById('challengeFeedback');
+    fb.style.display = 'block';
+    if (current === target) {
+      fb.style.color = 'var(--green)';
+      challengesPassed++;
+      if (challengeIndex < challenges.length - 1) {
+        fb.textContent = '✅ Correct! Moving to the next challenge...';
+        challengeIndex++;
+        setTimeout(() => { setChallenge(); fb.style.display = 'none'; resetBuilder(false); }, 1500);
+      } else {
+        fb.textContent = '🎉 You completed all 4 challenges!';
+        document.getElementById('builderNextBtn').style.display = 'flex';
+      }
+    } else {
+      fb.style.color = 'var(--red)';
+      fb.textContent = 'Not quite — your number is ' + current.toLocaleString() + '. Try again!';
+    }
+  }
+
+  function resetBuilder(resetChallenge = true) {
+    digits.th = 0; digits.h = 0; digits.t = 0; digits.o = 0;
+    updateBuilder();
+    if (resetChallenge) { challengeIndex = 0; setChallenge(); document.getElementById('challengeFeedback').style.display = 'none'; }
+  }
+
+  setChallenge();
+
+  // ORDERING GAME
+  const orderSets = [
+    [1204, 3800, 750, 9001, 4567],
+    [2100, 999, 5430, 8762, 3310]
+  ];
+  let currentOrderSet = 0;
+  let orderDragged = null;
+
+  function initOrder() {
+    const nums = [...orderSets[currentOrderSet]];
+    const shuffled = [...nums].sort(() => Math.random() - 0.5);
+    const bank = document.getElementById('orderBank');
+    const slots = document.getElementById('orderSlots');
+    bank.innerHTML = '';
+    slots.innerHTML = '';
+    shuffled.forEach((n, i) => {
+      const el = document.createElement('div');
+      el.className = 'order-num';
+      el.textContent = n.toLocaleString();
+      el.dataset.value = n;
+      el.draggable = true;
+      el.addEventListener('dragstart', e => { orderDragged = el; el.classList.add('dragging'); });
+      el.addEventListener('dragend', () => el.classList.remove('dragging'));
+      bank.appendChild(el);
+    });
+    nums.forEach((_, i) => {
+      const slot = document.createElement('div');
+      slot.className = 'order-slot';
+      slot.textContent = i + 1;
+      slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+      slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+      slot.addEventListener('drop', e => {
+        e.preventDefault();
+        slot.classList.remove('drag-over');
+        if (orderDragged) {
+          if (slot.querySelector('.order-num')) bank.appendChild(slot.querySelector('.order-num'));
+          slot.appendChild(orderDragged);
+          slot.classList.add('filled');
+        }
+      });
+      slots.appendChild(slot);
+    });
+    bank.addEventListener('dragover', e => e.preventDefault());
+    bank.addEventListener('drop', e => {
+      e.preventDefault();
+      if (orderDragged) bank.appendChild(orderDragged);
+    });
+  }
+
+  function checkOrder() {
+    const slots = document.querySelectorAll('.order-slot');
+    const sorted = [...orderSets[currentOrderSet]].sort((a, b) => a - b);
+    let correct = 0;
+    slots.forEach((slot, i) => {
+      const num = slot.querySelector('.order-num');
+      if (num && parseInt(num.dataset.value) === sorted[i]) {
+        num.style.background = 'var(--green-light)';
+        num.style.borderColor = 'var(--green)';
+        num.style.color = 'var(--green)';
+        correct++;
+      } else if (num) {
+        num.style.background = 'var(--red-light)';
+        num.style.borderColor = 'var(--red)';
+        num.style.color = 'var(--red)';
+      }
+    });
+    const fb = document.getElementById('orderFeedback');
+    fb.style.display = 'block';
+    if (correct === sorted.length) {
+      fb.style.color = 'var(--green)';
+      fb.textContent = '🎉 Perfect order!';
+      document.getElementById('orderNextBtn').style.display = 'flex';
+    } else {
+      fb.style.color = 'var(--orange)';
+      fb.textContent = correct + ' out of ' + sorted.length + ' in the right place. Green = correct, red = needs moving.';
+    }
+  }
+
+  function resetOrder() {
+    document.getElementById('orderFeedback').style.display = 'none';
+    document.getElementById('orderNextBtn').style.display = 'none';
+    initOrder();
+  }
+
+  initOrder();
+
+  // CALCULATIONS
+  const calcQuestions = [
+    { q: '1,200 + 500 =', a: 1700 },
+    { q: '3,450 + 200 =', a: 3650 },
+    { q: '6,800 − 300 =', a: 6500 },
+    { q: '4,070 + 900 =', a: 4970 },
+    { q: '8,500 − 2,000 =', a: 6500 },
+    { q: '5,340 + 60 =', a: 5400 },
+  ];
+
+  function initCalcs() {
+    const grid = document.getElementById('calcGrid');
+    grid.innerHTML = '';
+    calcQuestions.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'calc-card';
+      card.innerHTML = `
+        <div class="calc-q">${q.q}</div>
+        <input class="calc-input" type="number" id="calc${i}" placeholder="?" data-answer="${q.a}">
+        <div class="calc-hint" id="calchint${i}"></div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  function checkCalcs() {
+    let correct = 0;
+    calcQuestions.forEach((q, i) => {
+      const input = document.getElementById('calc' + i);
+      const hint = document.getElementById('calchint' + i);
+      const val = parseInt(input.value);
+      if (val === q.a) {
+        input.classList.add('correct'); input.classList.remove('wrong');
+        hint.textContent = '✅ Correct!'; hint.style.color = 'var(--green)';
+        correct++;
+      } else if (input.value !== '') {
+        input.classList.add('wrong'); input.classList.remove('correct');
+        hint.textContent = 'Answer: ' + q.a.toLocaleString();
+        hint.style.color = 'var(--red)';
+      }
+    });
+    const fb = document.getElementById('calcFeedback');
+    fb.style.display = 'block';
+    fb.style.color = correct === calcQuestions.length ? 'var(--green)' : 'var(--orange)';
+    fb.textContent = correct + ' out of ' + calcQuestions.length + ' correct.';
+    if (correct >= 4) document.getElementById('calcNextBtn').style.display = 'flex';
+  }
+
+  function resetCalcs() {
+    calcQuestions.forEach((_, i) => {
+      const input = document.getElementById('calc' + i);
+      const hint = document.getElementById('calchint' + i);
+      input.value = ''; input.classList.remove('correct', 'wrong');
+      hint.textContent = '';
+    });
+    document.getElementById('calcFeedback').style.display = 'none';
+    document.getElementById('calcNextBtn').style.display = 'none';
+  }
+
+  initCalcs();
+
+  // QUIZ
+  let quizAnswered = 0; let quizScore = 0;
+  function answer(btn, correct, qid, feedback) {
+    const card = btn.closest('.quiz-card');
+    card.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) card.querySelectorAll('.option-btn').forEach(b => { if (b.onclick.toString().includes('true,')) b.classList.add('correct'); });
+    const fb = document.getElementById(qid + 'feedback');
+    fb.textContent = feedback;
+    fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+    if (correct) quizScore++;
+    quizAnswered++;
+    if (quizAnswered === 6) {
+      setTimeout(() => {
+        document.getElementById('quizResult').style.display = 'block';
+        document.getElementById('quizScore').textContent = quizScore + '/6';
+      }, 600);
+    }
+  }
+
+  function resetQuiz() {
+    quizAnswered = 0; quizScore = 0;
+    document.getElementById('quizResult').style.display = 'none';
+    for (let i = 1; i <= 6; i++) {
+      document.getElementById('q' + i + 'card').querySelectorAll('.option-btn').forEach(b => { b.disabled = false; b.classList.remove('correct', 'wrong'); });
+      const fb = document.getElementById('q' + i + 'feedback');
+      fb.className = 'feedback'; fb.textContent = '';
+    }
+  }
+</script>
+</body>
+</html>
