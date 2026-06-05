@@ -12,24 +12,24 @@
   .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem; }
   .back-link:hover { opacity: 1; }
   .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
-  .subject-hero { background-color: #b05030; padding: 0 2rem 2rem; text-align: center; }
-  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fde0d0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .subject-hero { background-color: #c0392b; padding: 2rem 2rem 2.5rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
   .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
   .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #b05030; margin-bottom: 1.25rem; }
-  .focus-card { background: #fdf0eb; border-left: 4px solid #b05030; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
-  .focus-card p.label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #b05030; margin-bottom: 0.5rem; }
-  .focus-card ul { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
-  .focus-card ul li { font-size: 0.95rem; color: #1a1a1a; line-height: 1.5; }
-  .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card { background: #ffffff; border: 2px solid #b05030; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-  .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(176,80,48,0.15); }
-  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
+  .focus-card { background: #fff; border-left: 5px solid #c0392b; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .focus-card .label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #c0392b; margin-bottom: 0.6rem; }
+  .focus-card ul { padding-left: 1.2rem; }
+  .focus-card ul li { font-size: 1rem; line-height: 1.7; color: #333; }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-bottom: 1rem; }
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  a.resource-card { background: #ffffff; border: 2px solid #e8e0d8; border-radius: 14px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; text-decoration: none; color: inherit; transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s; cursor: pointer; }
+  a.resource-card:hover { border-color: #c0392b; box-shadow: 0 4px 16px rgba(192,57,43,0.12); transform: translateY(-2px); }
+  .resource-card.placeholder { background: #ffffff; border: 2px dashed #ccc; border-radius: 14px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; opacity: 0.5; cursor: default; }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
-  .resource-name { font-size: 1.05rem; font-weight: 700; color: #8a3a20; line-height: 1.3; }
+  .resource-name { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
   .resource-name.muted { color: #999; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
-  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #8a3a20; }
+  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #c0392b; }
   .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
@@ -49,21 +49,20 @@
 <main class="main">
 
   <div class="focus-card">
-    <p class="label">This week we are focusing on</p>
+    <p class="label">This week we are exploring</p>
     <ul>
-      <li>The wider world beyond living memory</li>
-      <li>Britain and the world: beyond living memory</li>
-      <li>I can discuss ideas of interpretation of sources, artefacts and historical events, including bias</li>
+      <li>Britain and the world beyond living memory</li>
+      <li>How to analyse sources, artefacts and bias</li>
     </ul>
   </div>
 
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
-    <a class="resource-card" href="bias-in-history.html">
-      <div class="resource-icon">🔍</div>
-      <span class="resource-name">Bias in History</span>
-      <span class="resource-desc">Explore what bias means, spot it in real sources, and think like a historian. Includes email and PDF results.</span>
+    <a class="resource-card" href="ww2-history-game.html">
+      <div class="resource-icon">⚔️</div>
+      <span class="resource-name">WW2: Britain and the World</span>
+      <span class="resource-desc">Four missions — analyse sources, sequence events, test your knowledge, and write like a historian.</span>
       <span class="resource-arrow">Open activity →</span>
     </a>
 
@@ -75,6 +74,7 @@
     </div>
 
   </div>
+
 </main>
 
 <footer>
