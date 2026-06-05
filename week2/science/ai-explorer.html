@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Explorer — What is AI?</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #007291;
+    --orange: #ef7724;
+    --cream: #fef8f4;
+    --dark: #1a1a1a;
+    --muted: #555;
+    --teal-light: #e6f5f8;
+    --orange-light: #fff3eb;
+    --green: #2e8b57;
+    --green-light: #eaf7f0;
+    --purple: #7a3fa8;
+    --purple-light: #f5eeff;
+    --red: #c0392b;
+    --red-light: #fdecea;
+  }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background-color: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .site-header {
+    background-color: var(--teal);
+    padding: 1.5rem 2rem 1.25rem;
+    text-align: center;
+  }
+  .site-header .tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #a8dce8;
+    margin-bottom: 0.4rem;
+  }
+  .site-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fef8f4;
+    line-height: 1.2;
+  }
+  .site-header p {
+    font-size: 0.95rem;
+    color: #c8e8f0;
+    margin-top: 0.5rem;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: #005a72;
+    padding: 0.6rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .progress-bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fef8f4;
+    white-space: nowrap;
+  }
+
+  /* SECTION NAV */
+  .section-nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: white;
+    border-bottom: 2px solid #e0d8d0;
+  }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    background: white;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn.active { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  /* MAIN */
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    border: 2px solid var(--teal-light);
+  }
+  .info-card h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+  .info-card p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+  }
+  .info-card p:last-child { margin-bottom: 0; }
+
+  .highlight-box {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1.5;
+  }
+
+  /* EXAMPLE GRID */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .example-card {
+    background: white;
+    border: 2px solid #e0d8d0;
+    border-radius: 14px;
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+  }
+  .example-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .example-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .example-card .name { font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 0.25rem; }
+  .example-card .desc { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+  /* QUIZ */
+  .quiz-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    border: 2px solid #e0d8d0;
+  }
+  .quiz-card .q-number {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.5rem;
+  }
+  .quiz-card .q-text {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 2px solid #e0d8d0;
+    background: white;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--dark);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: none;
+    line-height: 1.5;
+  }
+  .feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  /* SORT GAME */
+  .sort-game { margin: 1rem 0; }
+  .sort-instructions {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  .sort-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    min-height: 48px;
+    padding: 0.75rem;
+    background: #f5f0eb;
+    border-radius: 12px;
+    border: 2px dashed #ccc;
+  }
+  .sort-item {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--teal);
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.15s;
+  }
+  .sort-item:hover { transform: scale(1.03); }
+  .sort-item.dragging { opacity: 0.5; }
+  .sort-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .sort-col {
+    border-radius: 12px;
+    padding: 0.75rem;
+    min-height: 100px;
+    border: 2px dashed #ccc;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .sort-col.drag-over { border-color: var(--orange); background: var(--orange-light); }
+  .sort-col h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid currentColor;
+  }
+  .sort-col.col-ai { border-color: var(--teal); background: var(--teal-light); }
+  .sort-col.col-ai h3 { color: var(--teal); }
+  .sort-col.col-not { border-color: #b05030; background: #fdf0eb; }
+  .sort-col.col-not h3 { color: #b05030; }
+  .sort-col .sort-item { border-color: inherit; }
+
+  /* MATCH GAME */
+  .match-game { margin: 1rem 0; }
+  .match-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+  .match-card {
+    aspect-ratio: 1.2;
+    border-radius: 12px;
+    border: 2px solid #e0d8d0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--dark);
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  .match-card:hover:not(.matched):not(.selected) { border-color: var(--teal); background: var(--teal-light); }
+  .match-card.selected { border-color: var(--orange); background: var(--orange-light); color: var(--orange); }
+  .match-card.matched { border-color: var(--green); background: var(--green-light); color: var(--green); cursor: default; }
+  .match-card.wrong-flash { border-color: var(--red); background: var(--red-light); }
+
+  /* SCORE */
+  .score-box {
+    background: var(--teal);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    color: white;
+    margin-bottom: 1.25rem;
+  }
+  .score-box .score-num { font-size: 3rem; font-weight: 700; line-height: 1; }
+  .score-box .score-label { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-outline { background: white; color: var(--teal); border: 2px solid var(--teal); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 1.25rem;
+  }
+
+  .skip-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+  .skip-link:hover { color: var(--teal); }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (max-width: 500px) {
+    .sort-columns { grid-template-columns: 1fr; }
+    .match-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="tag">Week 2 · Science</p>
+  <h1>🤖 What is AI?</h1>
+  <p>Explore, discover and play your way through Artificial Intelligence</p>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 4 sections</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. What is AI?</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. AI Around Us</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Sort It Out</button>
+  <button class="nav-btn" onclick="goToSection(3)" id="nav3">4. Quiz</button>
+</nav>
+
+<main class="main">
+
+  <!-- SECTION 1: WHAT IS AI -->
+  <section class="section active" id="section0">
+    <h2 class="section-title">What is Artificial Intelligence?</h2>
+
+    <div class="info-card">
+      <h2>🧠 Intelligence — but artificial</h2>
+      <p>When we say something is <strong>intelligent</strong>, we usually mean it can think, learn and solve problems. Humans do this naturally. But what if a machine could do it too?</p>
+      <p><strong>Artificial Intelligence</strong> — or AI — is when computers are programmed to do things that normally require human thinking. Things like recognising your face, understanding what you say, or suggesting what to watch next.</p>
+      <div class="highlight-box">AI = computers that can learn, recognise patterns, and make decisions.</div>
+    </div>
+
+    <div class="info-card">
+      <h2>🤔 Is AI the same as a robot?</h2>
+      <p>Not always! Robots are physical machines — they have bodies. AI is the <strong>brain</strong>, not the body. Some robots use AI, but AI can also live inside your phone, your TV, or a website — with no body at all.</p>
+      <p>Think of it this way: a calculator does maths but it's not AI — it just follows fixed rules. An AI can <strong>learn</strong> from experience and get better over time. That's the key difference.</p>
+    </div>
+
+    <div class="info-card">
+      <h2>📚 A quick definition to remember</h2>
+      <div class="highlight-box">AI is technology that can learn from information and use what it has learned to do useful things — like recognising speech, spotting patterns, or making suggestions.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Got it — next section →</button>
+      <button class="skip-link" onclick="goToSection(1)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: AI AROUND US -->
+  <section class="section" id="section1">
+    <h2 class="section-title">AI in Everyday Life</h2>
+
+    <div class="info-card">
+      <p>AI is everywhere — you've probably used it today without even realising. Here are some real examples:</p>
+    </div>
+
+    <div class="examples-grid">
+      <div class="example-card">
+        <div class="icon">🎵</div>
+        <div class="name">Spotify / YouTube</div>
+        <div class="desc">AI learns what music and videos you enjoy and suggests more like them</div>
+      </div>
+      <div class="example-card">
+        <div class="icon">🗣️</div>
+        <div class="name">Voice Assistants</div>
+        <div class="desc">Siri, Alexa and Google Assistant use AI to understand what you're saying</div>
+      </div>
+      <div class="example-card">
+        <div class="icon">📸</div>
+        <div class="name">Face Unlock</div>
+        <div class="desc">Your phone uses AI to recognise your face and unlock</div>
+      </div>
+      <div class="example-card">
+        <div class="icon">🛒</div>
+        <div class="name">Online Shopping</div>
+        <div class="desc">AI suggests products based on what you've looked at before</div>
+      </div>
+      <div class="example-card">
+        <div class="icon">🎮</div>
+        <div class="name">Video Games</div>
+        <div class="desc">Enemy characters and NPCs use AI to react to what you do</div>
+      </div>
+      <div class="example-card">
+        <div class="icon">🌐</div>
+        <div class="name">Google Search</div>
+        <div class="desc">AI helps rank and suggest the most useful results for your search</div>
+      </div>
+      <div class="example-card">
+        <div class="icon">🚗</div>
+        <div class="name">Sat Nav</div>
+        <div class="desc">AI predicts traffic and finds the best route in real time</div>
+      </div>
+      <div class="example-card">
+        <div class="icon">💬</div>
+        <div class="name">Chatbots</div>
+        <div class="desc">Customer service bots and AI assistants like me use AI to have conversations</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(1)">Got it — next section →</button>
+      <button class="btn btn-outline" onclick="goToSection(0)">← Back</button>
+    </div>
+  </section>
+
+  <!-- SECTION 3: SORT GAME -->
+  <section class="section" id="section2">
+    <h2 class="section-title">🎮 Sort It Out!</h2>
+
+    <div class="info-card">
+      <p>Can you sort these into the right columns? Drag each item into <strong>AI</strong> or <strong>Not AI</strong>.</p>
+    </div>
+
+    <div class="sort-game">
+      <p class="sort-instructions">Drag the cards below into the correct column. If you're not sure, have a guess — you can always change your mind!</p>
+
+      <div class="sort-items" id="sortBank">
+        <div class="sort-item" draggable="true" data-answer="ai" id="s1">Spotify recommendations</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s2">A light switch</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s3">Face unlock on a phone</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s4">A calculator</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s5">Siri or Alexa</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s6">A doorbell</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s7">YouTube autoplay</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s8">A vending machine</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s9">Google Search suggestions</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s10">A paper map</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s11">Netflix "What to watch next"</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s12">A pencil sharpener</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s13">Sat nav predicting traffic</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s14">A clock</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s15">Spam filter in email</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s16">A kettle</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s17">Autocorrect on a phone</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s18">A printer</div>
+        <div class="sort-item" draggable="true" data-answer="ai" id="s19">A chatbot on a website</div>
+        <div class="sort-item" draggable="true" data-answer="not" id="s20">A light on a timer</div>
+      </div>
+
+      <div class="sort-columns">
+        <div class="sort-col col-ai" id="colAi" ondragover="dragOver(event)" ondrop="drop(event, 'ai')">
+          <h3>🤖 AI</h3>
+        </div>
+        <div class="sort-col col-not" id="colNot" ondragover="dragOver(event)" ondrop="drop(event, 'not')">
+          <h3>❌ Not AI</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="checkSort()">Check my answers</button>
+      <button class="btn btn-outline" onclick="resetSort()">Reset</button>
+    </div>
+    <div id="sortFeedback" style="margin-top:1rem; font-size:0.95rem; font-weight:700; color: var(--green); display:none;"></div>
+
+    <div class="btn-row" id="sortNextBtn" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(2)">Next section →</button>
+    </div>
+  </section>
+
+  <!-- SECTION 4: QUIZ -->
+  <section class="section" id="section3">
+    <h2 class="section-title">🧠 Quick Quiz</h2>
+
+    <div class="quiz-card" id="q1card">
+      <p class="q-number">Question 1 of 5</p>
+      <p class="q-text">What does AI stand for?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q1', 'Not quite — Automated Intelligence isn\'t the term we use.')">Automated Intelligence</button>
+        <button class="option-btn" onclick="answer(this, true, 'q1', '✅ Correct! AI stands for Artificial Intelligence — technology that can think and learn like humans.')">Artificial Intelligence</button>
+        <button class="option-btn" onclick="answer(this, false, 'q1', 'Not quite — that\'s not what AI stands for.')">Advanced Internet</button>
+        <button class="option-btn" onclick="answer(this, false, 'q1', 'Not quite — that\'s not what AI stands for.')">Automatic Interface</button>
+      </div>
+      <div class="feedback" id="q1feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q2card">
+      <p class="q-number">Question 2 of 5</p>
+      <p class="q-text">Which of these is the BEST example of AI?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q2', 'Not quite — a fan just spins when you turn it on. It doesn\'t learn or make decisions.')">An electric fan</button>
+        <button class="option-btn" onclick="answer(this, false, 'q2', 'Not quite — a calculator follows fixed rules. It doesn\'t learn or adapt.')">A calculator</button>
+        <button class="option-btn" onclick="answer(this, true, 'q2', '✅ Correct! Spotify learns what music you like and gets better at suggestions over time — that\'s AI in action.')">Spotify suggesting songs you might like</button>
+        <button class="option-btn" onclick="answer(this, false, 'q2', 'Not quite — a light timer just follows a schedule. It doesn\'t learn or adapt.')">A light on a timer</button>
+      </div>
+      <div class="feedback" id="q2feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q3card">
+      <p class="q-number">Question 3 of 5</p>
+      <p class="q-text">What makes AI different from a regular computer program?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q3', 'Not quite — AI doesn\'t need to be connected to the internet to work.')">It needs the internet to work</button>
+        <button class="option-btn" onclick="answer(this, true, 'q3', '✅ Correct! AI can learn from data and improve over time — a regular program just follows fixed instructions.')">It can learn from data and improve over time</button>
+        <button class="option-btn" onclick="answer(this, false, 'q3', 'Not quite — AI can run on all kinds of devices, not just robots.')">It only works inside robots</button>
+        <button class="option-btn" onclick="answer(this, false, 'q3', 'Not quite — AI uses electricity just like any other computer program.')">It runs without electricity</button>
+      </div>
+      <div class="feedback" id="q3feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q4card">
+      <p class="q-number">Question 4 of 5</p>
+      <p class="q-text">Which of these uses AI to understand what you say?</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q4', 'Not quite — a microwave just heats food. It doesn\'t understand speech.')">A microwave</button>
+        <button class="option-btn" onclick="answer(this, false, 'q4', 'Not quite — a pencil is just a writing tool!')">A pencil</button>
+        <button class="option-btn" onclick="answer(this, false, 'q4', 'Not quite — a TV remote sends signals but doesn\'t understand speech.')">A TV remote</button>
+        <button class="option-btn" onclick="answer(this, true, 'q4', '✅ Correct! Alexa uses AI to listen to your voice, understand what you\'re asking, and respond.')">Amazon Alexa</button>
+      </div>
+      <div class="feedback" id="q4feedback"></div>
+    </div>
+
+    <div class="quiz-card" id="q5card">
+      <p class="q-number">Question 5 of 5</p>
+      <p class="q-text">True or false: AI is always inside a robot with a physical body.</p>
+      <div class="options">
+        <button class="option-btn" onclick="answer(this, false, 'q5', 'Not quite — AI doesn\'t need a physical body. It can live inside a phone, website, or speaker.')">True</button>
+        <button class="option-btn" onclick="answer(this, true, 'q5', '✅ Correct! AI is the brain, not the body. It can run on your phone, a website, or a smart speaker — no robot needed.')">False</button>
+      </div>
+      <div class="feedback" id="q5feedback"></div>
+    </div>
+
+    <div id="quizResult" style="display:none;">
+      <div class="score-box">
+        <div class="score-num" id="quizScore">0/5</div>
+        <div class="score-label">Quiz complete!</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="completeSection(3)">🎉 Finish</button>
+        <button class="btn btn-outline" onclick="resetQuiz()">Try again</button>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Week 2 Science
+</footer>
+
+<script>
+  const sectionCount = 4;
+  const completed = [false, false, false, false];
+  let quizAnswered = 0;
+  let quizScore = 0;
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c, i) => {
+      const btn = document.getElementById('nav' + i);
+      if (c) { btn.classList.add('done'); btn.classList.remove('active'); }
+    });
+  }
+
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('section' + i).classList.add('active');
+    if (!completed[i]) document.getElementById('nav' + i).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function completeSection(i) {
+    completed[i] = true;
+    updateProgress();
+    const next = i + 1;
+    if (next < sectionCount) {
+      goToSection(next);
+    } else {
+      showFinish();
+    }
+  }
+
+  function showFinish() {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const fin = document.createElement('section');
+    fin.className = 'section active';
+    fin.innerHTML = `
+      <div style="text-align:center; padding: 3rem 1rem;">
+        <div style="font-size:4rem; margin-bottom:1rem;">🎉</div>
+        <h2 style="font-size:1.8rem; color:var(--teal); margin-bottom:0.75rem;">You did it!</h2>
+        <p style="font-size:1.05rem; color:var(--muted); margin-bottom:2rem; max-width:480px; margin-left:auto; margin-right:auto; line-height:1.6;">
+          You've explored what AI is, seen it in everyday life, sorted examples, and completed the quiz. Great work!
+        </p>
+        <div style="background:var(--teal-light); border-radius:14px; padding:1.25rem; max-width:480px; margin:0 auto 2rem; text-align:left;">
+          <p style="font-weight:700; color:var(--teal); margin-bottom:0.5rem;">I can now...</p>
+          <ul style="padding-left:1.25rem; color:var(--dark); line-height:2;">
+            <li>Explain what AI is in my own words</li>
+            <li>Give examples of AI I use in everyday life</li>
+            <li>Tell the difference between AI and non-AI technology</li>
+          </ul>
+        </div>
+        <button class="btn btn-outline" onclick="goToSection(0)">← Start again</button>
+      </div>`;
+    document.querySelector('.main').appendChild(fin);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // QUIZ
+  function answer(btn, correct, qid, feedback) {
+    const card = btn.closest('.quiz-card');
+    card.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) {
+      card.querySelectorAll('.option-btn').forEach(b => {
+        if (b.onclick.toString().includes('true,')) b.classList.add('correct');
+      });
+    }
+    const fb = document.getElementById(qid + 'feedback');
+    fb.textContent = feedback;
+    fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+    if (correct) quizScore++;
+    quizAnswered++;
+    if (quizAnswered === 5) {
+      setTimeout(() => {
+        document.getElementById('quizResult').style.display = 'block';
+        document.getElementById('quizScore').textContent = quizScore + '/5';
+      }, 600);
+    }
+  }
+
+  function resetQuiz() {
+    quizAnswered = 0; quizScore = 0;
+    document.getElementById('quizResult').style.display = 'none';
+    for (let i = 1; i <= 5; i++) {
+      const card = document.getElementById('q' + i + 'card');
+      card.querySelectorAll('.option-btn').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct', 'wrong');
+      });
+      const fb = document.getElementById('q' + i + 'feedback');
+      fb.className = 'feedback';
+      fb.textContent = '';
+    }
+  }
+
+  // DRAG AND DROP SORT
+  let draggedItem = null;
+
+  document.querySelectorAll('.sort-item').forEach(item => {
+    item.addEventListener('dragstart', e => { draggedItem = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', e => { item.classList.remove('dragging'); draggedItem = null; });
+  });
+
+  function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+
+  document.querySelectorAll('.sort-col, #sortBank').forEach(zone => {
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  });
+
+  function drop(e, col) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (draggedItem) e.currentTarget.appendChild(draggedItem);
+  }
+
+  document.getElementById('sortBank').addEventListener('dragover', e => e.preventDefault());
+  document.getElementById('sortBank').addEventListener('drop', e => {
+    e.preventDefault();
+    if (draggedItem) document.getElementById('sortBank').appendChild(draggedItem);
+  });
+
+  function checkSort() {
+    const aiCol = document.getElementById('colAi');
+    const notCol = document.getElementById('colNot');
+    let correct = 0; let total = 0;
+    [...aiCol.querySelectorAll('.sort-item')].forEach(item => {
+      total++;
+      if (item.dataset.answer === 'ai') { item.style.background = '#eaf7f0'; item.style.borderColor = '#2e8b57'; item.style.color = '#2e8b57'; correct++; }
+      else { item.style.background = '#fdecea'; item.style.borderColor = '#c0392b'; item.style.color = '#c0392b'; }
+    });
+    [...notCol.querySelectorAll('.sort-item')].forEach(item => {
+      total++;
+      if (item.dataset.answer === 'not') { item.style.background = '#eaf7f0'; item.style.borderColor = '#2e8b57'; item.style.color = '#2e8b57'; correct++; }
+      else { item.style.background = '#fdecea'; item.style.borderColor = '#c0392b'; item.style.color = '#c0392b'; }
+    });
+    const fb = document.getElementById('sortFeedback');
+    fb.style.display = 'block';
+    if (correct === 20) {
+      fb.style.color = '#2e8b57';
+      fb.textContent = '🎉 Perfect! All ' + correct + ' correct!';
+      document.getElementById('sortNextBtn').style.display = 'flex';
+    } else {
+      fb.style.color = '#c05a10';
+      fb.textContent = correct + ' out of ' + total + ' correct. The green ones are right, red ones need moving. Have another go!';
+    }
+  }
+
+  function resetSort() {
+    const bank = document.getElementById('sortBank');
+    document.querySelectorAll('.sort-item').forEach(item => {
+      item.style.background = '';
+      item.style.borderColor = '';
+      item.style.color = '';
+      bank.appendChild(item);
+    });
+    document.getElementById('sortFeedback').style.display = 'none';
+    document.getElementById('sortNextBtn').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
