@@ -22,10 +22,14 @@
   .focus-card ul { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
   .focus-card ul li { font-size: 0.95rem; color: #1a1a1a; line-height: 1.5; }
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card.placeholder { background: #ffffff; border: 2px dashed #ccc; border-radius: 14px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; opacity: 0.5; cursor: default; }
+  .resource-card { background: #ffffff; border: 2px solid #2e8b57; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(46,139,87,0.15); }
+  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
-  .resource-name.muted { font-size: 1.05rem; font-weight: 700; color: #999; line-height: 1.3; }
+  .resource-name { font-size: 1.05rem; font-weight: 700; color: #1f6b40; line-height: 1.3; }
+  .resource-name.muted { color: #999; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
+  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #1f6b40; }
   .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
@@ -56,17 +60,17 @@
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
-    <div class="resource-card placeholder">
+    <a class="resource-card" href="ai-explorer.html">
       <div class="resource-icon">🤖</div>
-      <span class="resource-name muted">What is AI?</span>
-      <span class="resource-desc">Activity coming soon.</span>
-      <span class="resource-tag">Coming soon</span>
-    </div>
+      <span class="resource-name">AI Explorer</span>
+      <span class="resource-desc">Explore what AI is, see it in everyday life, sort examples and take a quiz.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
 
     <div class="resource-card placeholder">
       <div class="resource-icon">💡</div>
-      <span class="resource-name muted">AI in Everyday Life</span>
-      <span class="resource-desc">Activity coming soon.</span>
+      <span class="resource-name muted">More coming soon</span>
+      <span class="resource-desc">Additional resources will appear here.</span>
       <span class="resource-tag">Coming soon</span>
     </div>
 
