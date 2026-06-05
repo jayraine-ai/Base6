@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changing Me — Embracing Change</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --purple: #7a3fa8; --purple-light: #f5eeff; --purple-dark: #5a2a88;
+    --teal: #007291; --teal-light: #e6f5f8;
+    --orange: #ef7724; --orange-light: #fff3eb;
+    --green: #2e8b57; --green-light: #eaf7f0;
+    --red: #c0392b; --red-light: #fdecea;
+    --yellow: #e8a020; --yellow-light: #fdf5e0;
+    --pink: #c0407a; --pink-light: #fdeef5;
+    --cream: #fef8f4; --dark: #1a1a1a; --muted: #555;
+  }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+
+  .site-header { background: linear-gradient(135deg, var(--purple-dark), var(--purple)); padding: 1.5rem 2rem 1.25rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #d8b8f8; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; color: white; line-height: 1.2; }
+  .site-header p { font-size: 0.95rem; color: #e0c8ff; margin-top: 0.5rem; }
+
+  .name-bar { background: var(--purple-dark); padding: 0.6rem 2rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .name-bar label { font-size: 0.82rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .name-bar input { flex: 1; max-width: 280px; padding: 0.4rem 0.75rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: #fef8f4; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .name-bar input::placeholder { color: rgba(255,255,255,0.5); }
+
+  .progress-bar-wrap { background: #3a1a68; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 0.8rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .timer-label { font-size: 0.8rem; font-weight: 700; color: #d8b8f8; white-space: nowrap; }
+
+  .section-nav { display: flex; overflow-x: auto; gap: 0.5rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid #e0d8d0; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #ccc; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; color: #888; cursor: pointer; transition: all 0.2s; }
+  .nav-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--purple); margin-bottom: 1.25rem; }
+  .time-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--purple-light); border: 1.5px solid var(--purple); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; color: var(--purple); margin-bottom: 1rem; }
+
+  .info-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--purple-light); }
+  .info-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--purple); margin-bottom: 0.75rem; }
+  .info-card p { font-size: 1rem; line-height: 1.7; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .highlight-box { background: var(--purple-light); border-left: 4px solid var(--purple); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 1rem; font-weight: 700; color: var(--purple); line-height: 1.6; }
+
+  /* MYTH BUSTERS */
+  .myth-card { background: white; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; border: 2px solid var(--purple-light); }
+  .myth-statement { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem; line-height: 1.4; }
+  .myth-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .myth-btn { padding: 0.6rem 1.25rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .myth-btn:hover:not(:disabled) { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+  .myth-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .myth-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .myth-btn:disabled { cursor: default; }
+  .myth-feedback { margin-top: 0.6rem; font-size: 0.9rem; font-weight: 700; padding: 0.6rem 0.9rem; border-radius: 8px; display: none; line-height: 1.5; }
+  .myth-feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .myth-feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  /* ROUTINE BUILDER */
+  .routine-builder { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--purple-light); }
+  .task-bank { display: flex; flex-wrap: wrap; gap: 0.6rem; padding: 0.75rem; background: #f5f0eb; border-radius: 12px; border: 2px dashed #ccc; min-height: 60px; margin-bottom: 1.25rem; }
+  .task-item { padding: 0.5rem 0.9rem; background: white; border: 2px solid var(--purple); border-radius: 20px; font-size: 0.88rem; font-weight: 700; color: var(--purple); cursor: grab; user-select: none; transition: transform 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+  .task-item:hover { transform: scale(1.03); }
+  .task-item.dragging { opacity: 0.5; }
+  .routine-slots { display: flex; flex-direction: column; gap: 0.5rem; }
+  .routine-slot { min-height: 52px; border-radius: 12px; border: 2px dashed #ccc; padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; transition: all 0.15s; background: white; }
+  .routine-slot.drag-over { border-color: var(--orange); background: var(--orange-light); }
+  .routine-slot.filled { border-style: solid; border-color: var(--purple); }
+  .slot-number { font-size: 0.8rem; font-weight: 700; color: var(--muted); width: 20px; flex-shrink: 0; }
+  .slot-label { font-size: 0.82rem; color: #ccc; font-style: italic; }
+  .routine-timer { background: var(--purple-light); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; text-align: center; }
+  .routine-timer p { font-size: 0.9rem; font-weight: 700; color: var(--purple); margin-bottom: 0.5rem; }
+  .timer-display { font-size: 2.5rem; font-weight: 700; color: var(--purple); }
+  .timer-display.warning { color: var(--orange); }
+  .timer-display.done { color: var(--green); }
+
+  /* CHOOSE YOUR DAY */
+  .story-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--purple-light); }
+  .story-scene { background: linear-gradient(135deg, var(--purple-light), #ede0ff); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .story-scene .scene-time { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 0.4rem; }
+  .story-scene .scene-text { font-size: 1rem; line-height: 1.7; color: var(--dark); }
+  .story-scene .scene-text strong { color: var(--purple); }
+  .choice-label { font-size: 0.88rem; font-weight: 700; color: var(--muted); margin-bottom: 0.6rem; }
+  .choices { display: flex; flex-direction: column; gap: 0.6rem; }
+  .choice-btn { padding: 0.85rem 1.1rem; border-radius: 12px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 0.75rem; line-height: 1.4; }
+  .choice-btn:hover:not(:disabled) { border-color: var(--purple); background: var(--purple-light); }
+  .choice-btn .choice-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .choice-btn:disabled { opacity: 0.5; cursor: default; }
+  .outcome-panel { border-radius: 12px; padding: 1rem 1.25rem; margin-top: 0.75rem; font-size: 0.95rem; font-weight: 700; line-height: 1.6; display: none; }
+  .outcome-panel.positive { background: var(--green-light); color: var(--green); border: 2px solid var(--green); }
+  .outcome-panel.neutral { background: var(--yellow-light); color: #7a5500; border: 2px solid var(--yellow); }
+  .outcome-panel.negative { background: var(--red-light); color: var(--red); border: 2px solid var(--red); }
+  .outcome-panel.show { display: block; }
+  .confidence-meter { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; }
+  .conf-label { font-size: 0.82rem; font-weight: 700; color: var(--muted); white-space: nowrap; }
+  .conf-track { flex: 1; height: 12px; background: #e0d8d0; border-radius: 6px; overflow: hidden; }
+  .conf-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease, background 0.6s ease; }
+  .conf-value { font-size: 0.82rem; font-weight: 700; color: var(--purple); white-space: nowrap; }
+
+  /* REFLECTION */
+  .reflect-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--purple-light); }
+  .reflect-card h3 { font-size: 1rem; font-weight: 700; color: var(--purple); margin-bottom: 0.4rem; }
+  .reflect-card .hint { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.6rem; font-style: italic; line-height: 1.4; }
+  textarea.rt { width: 100%; min-height: 80px; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; }
+  textarea.rt:focus { outline: none; border-color: var(--purple); }
+
+  /* ROUTINE CARD */
+  .routine-card-display { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); border-radius: 16px; padding: 1.5rem; color: white; margin-bottom: 1.25rem; }
+  .routine-card-display h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #e8d8ff; }
+  .routine-steps { display: flex; flex-direction: column; gap: 0.5rem; }
+  .routine-step { display: flex; align-items: center; gap: 0.75rem; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 0.6rem 0.9rem; font-size: 0.9rem; font-weight: 700; }
+  .step-num { background: rgba(255,255,255,0.2); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; flex-shrink: 0; }
+
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--purple); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-green { background: var(--green); color: white; }
+  .btn-outline { background: white; color: var(--purple); border: 2px solid var(--purple); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .skip-link { display: inline-block; font-size: 0.85rem; color: var(--muted); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; background: none; border: none; font-family: inherit; }
+
+  .export-bar { background: var(--purple-light); border-top: 2px solid #d8b8f8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--purple); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media(max-width:500px) { .task-bank { gap: 0.4rem; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="tag">Week 2 · PSHE</p>
+  <h1>🌱 Changing Me</h1>
+  <p>Embracing Change — personal hygiene, grooming and feeling good</p>
+</header>
+
+<div class="name-bar">
+  <label for="studentName">Your name:</label>
+  <input id="studentName" type="text" placeholder="Type your name here..." />
+  <span style="font-size:0.8rem;color:#d8b8f8;">— used on your results</span>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 5 sections</span>
+  <span class="timer-label">⏱ ~45 mins</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. Why It Matters</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. Myth Busters</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Build Your Routine</button>
+  <button class="nav-btn" onclick="goToSection(3)" id="nav3">4. Choose Your Day</button>
+  <button class="nav-btn" onclick="goToSection(4)" id="nav4">5. Reflect</button>
+</nav>
+
+<main class="main">
+
+  <!-- SECTION 1: WHY IT MATTERS -->
+  <section class="section active" id="section0">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">🌱 Why Personal Hygiene Matters</h2>
+
+    <div class="info-card">
+      <h2>Everyone goes through change</h2>
+      <p>As we grow up, our bodies change — and so do our hygiene needs. This isn't something to be embarrassed about. It happens to every single person on the planet. The good news is that taking care of yourself is straightforward once you know what to do and why.</p>
+      <div class="highlight-box">Personal hygiene isn't about being perfect. It's about feeling comfortable in your own skin — and showing respect for yourself and the people around you.</div>
+    </div>
+
+    <div class="info-card">
+      <h2>🧠 It's connected to how you feel</h2>
+      <p>Research shows that personal hygiene and self-care have a direct impact on how confident and comfortable we feel. When we feel clean and well-groomed, we tend to feel more confident, more focused, and more ready to take on the day.</p>
+      <p>It also matters socially — being aware of how we present ourselves is part of understanding and respecting others around us.</p>
+    </div>
+
+    <div class="info-card">
+      <h2>📋 What we're covering today</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;margin-top:0.5rem;">
+        <div style="background:var(--purple-light);border-radius:12px;padding:0.9rem;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:0.3rem;">🚿</div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--purple);">Washing and bathing</div>
+        </div>
+        <div style="background:var(--teal-light);border-radius:12px;padding:0.9rem;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:0.3rem;">🦷</div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--teal);">Oral hygiene</div>
+        </div>
+        <div style="background:var(--orange-light);border-radius:12px;padding:0.9rem;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:0.3rem;">👕</div>
+          <div style="font-size:0.85rem;font-weight:700;color:#c05a10;">Clean clothes</div>
+        </div>
+        <div style="background:var(--green-light);border-radius:12px;padding:0.9rem;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:0.3rem;">💆</div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--green);">Hair and skin care</div>
+        </div>
+        <div style="background:var(--yellow-light);border-radius:12px;padding:0.9rem;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:0.3rem;">🌸</div>
+          <div style="font-size:0.85rem;font-weight:700;color:#7a5500;">Deodorant and scent</div>
+        </div>
+        <div style="background:var(--pink-light);border-radius:12px;padding:0.9rem;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:0.3rem;">😴</div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--pink);">Rest and recovery</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Next — Myth Busters →</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: MYTH BUSTERS -->
+  <section class="section" id="section1">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">💥 Hygiene Myth Busters</h2>
+
+    <div class="info-card">
+      <p>There's a lot of confusing information out there about personal hygiene. Some things people believe are just myths. Can you tell which is which?</p>
+    </div>
+
+    <div class="myth-card">
+      <p class="myth-statement">1. "You need to wash your hair every single day to keep it clean."</p>
+      <div class="myth-btns">
+        <button class="myth-btn" onclick="mythAnswer(this,'m1',false,'m1f','❌ Actually a myth! Washing your hair every day can strip away natural oils that keep it healthy. Most people should wash their hair 2–3 times a week, though this depends on hair type. Over-washing can make hair dry and brittle.')">✅ True</button>
+        <button class="myth-btn" onclick="mythAnswer(this,'m1',true,'m1f','✅ Correct — it\'s a myth! Daily washing can strip natural oils. Most hair types do best with washing 2–3 times a week. Your hair type, activity level and products used all affect how often you need to wash.')">❌ Myth</button>
+      </div>
+      <div class="myth-feedback" id="m1f"></div>
+    </div>
+
+    <div class="myth-card">
+      <p class="myth-statement">2. "Deodorant and antiperspirant are the same thing."</p>
+      <div class="myth-btns">
+        <button class="myth-btn" onclick="mythAnswer(this,'m2',false,'m2f','❌ Actually a myth! They work differently. Deodorant masks or neutralises body odour. Antiperspirant actually reduces sweating by temporarily blocking sweat glands. Many products combine both, but they do different jobs.')">✅ True</button>
+        <button class="myth-btn" onclick="mythAnswer(this,'m2',true,'m2f','✅ Correct — they\'re different! Deodorant neutralises smell. Antiperspirant reduces sweat. Some products do both, but knowing the difference helps you choose the right one for you.')">❌ Myth</button>
+      </div>
+      <div class="myth-feedback" id="m2f"></div>
+    </div>
+
+    <div class="myth-card">
+      <p class="myth-statement">3. "You should brush your teeth immediately after eating."</p>
+      <div class="myth-btns">
+        <button class="myth-btn" onclick="mythAnswer(this,'m3',false,'m3f','❌ Surprisingly, this is a myth! After eating — especially acidic foods or drinks — your tooth enamel is temporarily softened. Brushing straight away can actually damage it. Dentists recommend waiting 30–60 minutes before brushing.')">✅ True</button>
+        <button class="myth-btn" onclick="mythAnswer(this,'m3',true,'m3f','✅ Correct — it\'s a myth! Brushing immediately after eating can damage softened enamel. Wait 30–60 minutes. You can rinse with water in the meantime. The best times to brush are morning before breakfast and last thing at night.')">❌ Myth</button>
+      </div>
+      <div class="myth-feedback" id="m3f"></div>
+    </div>
+
+    <div class="myth-card">
+      <p class="myth-statement">4. "Sweating more means you're less clean."</p>
+      <div class="myth-btns">
+        <button class="myth-btn" onclick="mythAnswer(this,'m4',false,'m4f','❌ This is a myth! Sweat itself is actually odourless — it\'s when sweat mixes with bacteria on your skin that it can start to smell. Sweating is a completely natural and healthy process that helps regulate body temperature. Active people may just need to shower a bit more often.')">✅ True</button>
+        <button class="myth-btn" onclick="mythAnswer(this,'m4',true,'m4f','✅ Correct — it\'s a myth! Sweat itself is odourless. The smell comes from bacteria. Sweating is healthy and natural — it helps cool your body down. Regular showering after exercise keeps everything fresh.')">❌ Myth</button>
+      </div>
+      <div class="myth-feedback" id="m4f"></div>
+    </div>
+
+    <div class="myth-card">
+      <p class="myth-statement">5. "Spots and acne mean you're not washing your face properly."</p>
+      <div class="myth-btns">
+        <button class="myth-btn" onclick="mythAnswer(this,'m5',false,'m5f','❌ This is a myth and an important one. Acne is primarily caused by hormonal changes — which is why it\'s so common during puberty. Over-washing can actually make acne worse by irritating skin. Gentle washing twice a day is recommended, but spots are not a sign of being dirty.')">✅ True</button>
+        <button class="myth-btn" onclick="mythAnswer(this,'m5',true,'m5f','✅ Correct — it\'s a myth! Acne is mainly caused by hormones, not dirt. Over-washing can irritate skin and make things worse. Gentle washing twice a day is fine. Spots are a normal part of puberty — not a hygiene failure.')">❌ Myth</button>
+      </div>
+      <div class="myth-feedback" id="m5f"></div>
+    </div>
+
+    <div id="mythScore" style="display:none;margin-top:1rem;"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(1)">Next — Build Your Routine →</button>
+      <button class="skip-link" onclick="goToSection(2)">Skip ahead</button>
+    </div>
+  </section>
+
+  <!-- SECTION 3: ROUTINE BUILDER -->
+  <section class="section" id="section2">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">🗓️ Build Your Morning Routine</h2>
+
+    <div class="info-card">
+      <h2>Your routine, your way</h2>
+      <p>A good morning routine sets you up for the day. There's no single "correct" routine — but there are some essentials. Drag the tasks below into your routine slots in the order that works for you. Not everything needs to happen every single morning, but aim to include the most important ones.</p>
+    </div>
+
+    <div class="routine-builder">
+      <p style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:0.6rem;">Drag tasks from here...</p>
+      <div class="task-bank" id="taskBank">
+        <div class="task-item" draggable="true" id="t1">🦷 Brush teeth</div>
+        <div class="task-item" draggable="true" id="t2">🚿 Shower or wash</div>
+        <div class="task-item" draggable="true" id="t3">👕 Get dressed</div>
+        <div class="task-item" draggable="true" id="t4">🌸 Apply deodorant</div>
+        <div class="task-item" draggable="true" id="t5">💆 Hair care</div>
+        <div class="task-item" draggable="true" id="t6">🍳 Eat breakfast</div>
+        <div class="task-item" draggable="true" id="t7">💧 Drink water</div>
+        <div class="task-item" draggable="true" id="t8">🧴 Skincare</div>
+        <div class="task-item" draggable="true" id="t9">🎒 Pack bag</div>
+        <div class="task-item" draggable="true" id="t10">📱 Check phone</div>
+      </div>
+
+      <p style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:0.5rem;">...into your routine here (drag into any order)</p>
+      <div class="routine-slots" id="routineSlots">
+        <div class="routine-slot" id="rs1" ondragover="slotOver(event)" ondrop="slotDrop(event,'rs1')" ondragleave="slotLeave(event)"><span class="slot-number">1</span><span class="slot-label">Drop a task here</span></div>
+        <div class="routine-slot" id="rs2" ondragover="slotOver(event)" ondrop="slotDrop(event,'rs2')" ondragleave="slotLeave(event)"><span class="slot-number">2</span><span class="slot-label">Drop a task here</span></div>
+        <div class="routine-slot" id="rs3" ondragover="slotOver(event)" ondrop="slotDrop(event,'rs3')" ondragleave="slotLeave(event)"><span class="slot-number">3</span><span class="slot-label">Drop a task here</span></div>
+        <div class="routine-slot" id="rs4" ondragover="slotOver(event)" ondrop="slotDrop(event,'rs4')" ondragleave="slotLeave(event)"><span class="slot-number">4</span><span class="slot-label">Drop a task here</span></div>
+        <div class="routine-slot" id="rs5" ondragover="slotOver(event)" ondrop="slotDrop(event,'rs5')" ondragleave="slotLeave(event)"><span class="slot-number">5</span><span class="slot-label">Drop a task here</span></div>
+        <div class="routine-slot" id="rs6" ondragover="slotOver(event)" ondrop="slotDrop(event,'rs6')" ondragleave="slotLeave(event)"><span class="slot-number">6</span><span class="slot-label">Drop a task here</span></div>
+      </div>
+
+      <div class="routine-timer">
+        <p>⏱ How long does your routine take? Start the timer when you begin, stop when you're done planning.</p>
+        <div class="timer-display" id="routineTimer">0:00</div>
+        <div class="btn-row" style="justify-content:center;margin-top:0.75rem;">
+          <button class="btn btn-primary" onclick="startRoutineTimer()" id="timerStartBtn">▶ Start timer</button>
+          <button class="btn btn-outline" onclick="stopRoutineTimer()" id="timerStopBtn" style="display:none;">⏹ Stop</button>
+          <button class="btn btn-outline" onclick="resetRoutineTimer()" id="timerResetBtn" style="display:none;">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="routineCardWrap" style="display:none;">
+      <div class="routine-card-display" id="routineCardDisplay">
+        <h3>✨ Your Morning Routine</h3>
+        <div class="routine-steps" id="routineSteps"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="generateRoutineCard()">✨ Generate my routine card</button>
+      <button class="btn btn-primary" onclick="completeSection(2)">Next — Choose Your Day →</button>
+    </div>
+    <button class="skip-link" onclick="goToSection(3)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 4: CHOOSE YOUR DAY -->
+  <section class="section" id="section3">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">🌅 Choose Your Day</h2>
+
+    <div class="info-card">
+      <p>It's Monday morning. You're about to start the day. The choices you make in the next few hours will shape how you feel — and how others experience being around you. There are no wrong answers here, just outcomes to think about.</p>
+    </div>
+
+    <!-- SCENE 1 -->
+    <div class="story-card" id="scene1card">
+      <div class="story-scene">
+        <p class="scene-time">☀️ 7:15am — Morning</p>
+        <p class="scene-text">Your alarm goes off. You've got about 30 minutes before you need to leave. You feel tired. You had a shower yesterday evening, but you've been sweating a bit overnight. You notice your school shirt from last week is still on the floor.</p>
+      </div>
+      <p class="choice-label">What do you do?</p>
+      <div class="choices">
+        <button class="choice-btn" onclick="makeChoice(1,'a')"><span class="choice-icon">🚿</span>Quick shower, fresh clothes, brush teeth — full reset even if it means rushing a bit.</button>
+        <button class="choice-btn" onclick="makeChoice(1,'b')"><span class="choice-icon">💧</span>Quick wash of face and underarms, fresh clothes, brush teeth — efficient and effective.</button>
+        <button class="choice-btn" onclick="makeChoice(1,'c')"><span class="choice-icon">😴</span>Skip washing, grab the shirt from the floor, teeth can wait until later.</button>
+      </div>
+      <div class="outcome-panel" id="outcome1"></div>
+      <div class="confidence-meter" id="conf1" style="display:none;">
+        <span class="conf-label">Confidence level:</span>
+        <div class="conf-track"><div class="conf-fill" id="confFill1"></div></div>
+        <span class="conf-value" id="confVal1"></span>
+      </div>
+    </div>
+
+    <!-- SCENE 2 -->
+    <div class="story-card" id="scene2card" style="display:none;">
+      <div class="story-scene">
+        <p class="scene-time">🏫 9:30am — At school</p>
+        <p class="scene-text">You're sitting in class. It's warm. You notice a slight smell and you're not sure if it's coming from you. You have deodorant in your bag — you just forgot to use it this morning.</p>
+      </div>
+      <p class="choice-label">What do you do?</p>
+      <div class="choices">
+        <button class="choice-btn" onclick="makeChoice(2,'a')"><span class="choice-icon">🌸</span>Quietly excuse yourself and apply deodorant in the bathroom. Sort it out.</button>
+        <button class="choice-btn" onclick="makeChoice(2,'b')"><span class="choice-icon">🤷</span>Ignore it and hope nobody notices. You don't want to draw attention.</button>
+        <button class="choice-btn" onclick="makeChoice(2,'c')"><span class="choice-icon">😬</span>Feel embarrassed and distracted — it's all you can think about for the rest of the lesson.</button>
+      </div>
+      <div class="outcome-panel" id="outcome2"></div>
+      <div class="confidence-meter" id="conf2" style="display:none;">
+        <div class="conf-track"><div class="conf-fill" id="confFill2"></div></div>
+        <span class="conf-value" id="confVal2"></span>
+      </div>
+    </div>
+
+    <!-- SCENE 3 -->
+    <div class="story-card" id="scene3card" style="display:none;">
+      <div class="story-scene">
+        <p class="scene-time">🍽️ 12:15pm — Lunchtime</p>
+        <p class="scene-text">After eating, a friend mentions that they've got a bit of food stuck in their teeth and offers you a look in their phone camera to check yours too. You notice your teeth feel a bit fuzzy — you realise you didn't brush them properly this morning.</p>
+      </div>
+      <p class="choice-label">What do you do?</p>
+      <div class="choices">
+        <button class="choice-btn" onclick="makeChoice(3,'a')"><span class="choice-icon">😊</span>Thank your friend, check, rinse your mouth with water. Mental note to brush more carefully tonight.</button>
+        <button class="choice-btn" onclick="makeChoice(3,'b')"><span class="choice-icon">🙄</span>Brush it off — teeth are fine, nobody actually cares.</button>
+        <button class="choice-btn" onclick="makeChoice(3,'c')"><span class="choice-icon">🫠</span>Feel really embarrassed and avoid talking to people for the rest of lunch.</button>
+      </div>
+      <div class="outcome-panel" id="outcome3"></div>
+      <div class="confidence-meter" id="conf3" style="display:none;">
+        <div class="conf-track"><div class="conf-fill" id="confFill3"></div></div>
+        <span class="conf-value" id="confVal3"></span>
+      </div>
+    </div>
+
+    <!-- SCENE 4 -->
+    <div class="story-card" id="scene4card" style="display:none;">
+      <div class="story-scene">
+        <p class="scene-time">🌙 9:30pm — Evening</p>
+        <p class="scene-text">You've had a long day. You're tired and your bed looks incredibly inviting. You know you should shower and do your full evening routine, but you just really don't feel like it.</p>
+      </div>
+      <p class="choice-label">What do you do?</p>
+      <div class="choices">
+        <button class="choice-btn" onclick="makeChoice(4,'a')"><span class="choice-icon">🚿</span>Do the full routine — shower, brush teeth, skincare. Future you will thank you.</button>
+        <button class="choice-btn" onclick="makeChoice(4,'b')"><span class="choice-icon">🦷</span>Skip the shower but definitely brush your teeth and do the quick essentials.</button>
+        <button class="choice-btn" onclick="makeChoice(4,'c')"><span class="choice-icon">😴</span>Go straight to bed. You're too tired. You'll sort it in the morning.</button>
+      </div>
+      <div class="outcome-panel" id="outcome4"></div>
+      <div class="confidence-meter" id="conf4" style="display:none;">
+        <div class="conf-track"><div class="conf-fill" id="confFill4"></div></div>
+        <span class="conf-value" id="confVal4"></span>
+      </div>
+    </div>
+
+    <div id="dayComplete" style="display:none;">
+      <div class="info-card" style="border-color:var(--green-light);margin-top:1rem;">
+        <h2 style="color:var(--green);">✅ Day complete!</h2>
+        <p>You've made it through the day. Remember — every choice is just information, not judgement. The point is to notice how small decisions about hygiene and self-care connect to how we feel about ourselves throughout the day.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="completeSection(3)">Final section →</button>
+      </div>
+    </div>
+
+    <button class="skip-link" onclick="completeSection(3)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 5: REFLECT -->
+  <section class="section" id="section4">
+    <span class="time-badge">⏱ About 9 minutes</span>
+    <h2 class="section-title">💭 Reflect</h2>
+
+    <div class="info-card">
+      <h2>Thinking it through</h2>
+      <p>These questions are just for you — there are no right or wrong answers. Take your time and write whatever feels honest.</p>
+    </div>
+
+    <div class="reflect-card">
+      <h3>1. Which part of your personal hygiene routine feels most important to you? Why?</h3>
+      <p class="hint">There's no right answer — different things matter to different people.</p>
+      <textarea class="rt" id="r1" placeholder="The part that feels most important to me is..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <h3>2. Is there anything about personal hygiene or grooming that you find confusing or that you'd like to understand better?</h3>
+      <p class="hint">This is a safe space — your teacher won't share this with anyone else.</p>
+      <textarea class="rt" id="r2" placeholder="Something I find confusing or want to understand more is..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <h3>3. Did anything from the Myth Busters section surprise you?</h3>
+      <textarea class="rt" id="r3" placeholder="Something that surprised me was..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <h3>4. What is one small thing you could add to or improve in your current routine?</h3>
+      <p class="hint">Just one thing — keep it realistic and achievable.</p>
+      <textarea class="rt" id="r4" placeholder="One thing I could improve is..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitResults()">📧 Send to teacher</button>
+      <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+      <button class="btn btn-outline" onclick="completeSection(4)">🎉 Finish</button>
+    </div>
+    <div id="submitSuccess" style="display:none;margin-top:1rem;background:var(--green-light);border:2px solid var(--green);border-radius:12px;padding:1rem;color:var(--green);font-weight:700;">
+      ✅ Sent! Your teacher will receive your responses.
+    </div>
+  </section>
+
+</main>
+
+<div class="export-bar">
+  <span>Save your work:</span>
+  <button onclick="submitResults()" style="padding:0.6rem 1.25rem;background:var(--purple);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Email to teacher</button>
+  <button onclick="printResults()" style="padding:0.6rem 1.25rem;background:var(--orange);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🖨️ Save as PDF</button>
+</div>
+<footer>Base 6 · Chilton Bridge School · Week 2 PSHE</footer>
+
+<script>
+  const sectionCount = 5;
+  const completed = Array(sectionCount).fill(false);
+  let mythScore = 0; let mythAnswered = 0;
+  let confidenceScore = 0; let scenesComplete = 0;
+  let dayChoices = {};
+  let routineTimerInterval = null; let routineSeconds = 0; let timerRunning = false;
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c,i) => { const b = document.getElementById('nav'+i); if(c){b.classList.add('done');b.classList.remove('active');} });
+  }
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('section'+i).classList.add('active');
+    if(!completed[i]) document.getElementById('nav'+i).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function completeSection(i) {
+    completed[i]=true; updateProgress();
+    const next=i+1; if(next<sectionCount) goToSection(next); else showFinish();
+  }
+
+  // MYTH BUSTERS
+  function mythAnswer(btn, id, correct, fbId, msg) {
+    const card = btn.closest('.myth-card');
+    card.querySelectorAll('.myth-btn').forEach(b => b.disabled = true);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if(!correct) card.querySelectorAll('.myth-btn').forEach(b => { if(b.onclick.toString().includes('true,')) b.classList.add('correct'); });
+    const fb = document.getElementById(fbId);
+    fb.textContent = msg; fb.className = 'myth-feedback ' + (correct ? 'correct' : 'wrong');
+    if(correct) mythScore++;
+    mythAnswered++;
+    if(mythAnswered === 5) {
+      const s = document.getElementById('mythScore');
+      s.style.display = 'block';
+      s.innerHTML = `<div style="background:var(--purple-light);border:2px solid var(--purple);border-radius:12px;padding:1rem;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:var(--purple);">${mythScore}/5</div>
+        <div style="font-size:0.9rem;color:var(--muted);margin-top:0.2rem;">Myth busters correct</div>
+      </div>`;
+    }
+  }
+
+  // ROUTINE BUILDER DRAG AND DROP
+  let routineDragged = null;
+  document.querySelectorAll('.task-item').forEach(item => {
+    item.addEventListener('dragstart', e => { routineDragged = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); routineDragged = null; });
+  });
+  document.getElementById('taskBank').addEventListener('dragover', e => e.preventDefault());
+  document.getElementById('taskBank').addEventListener('drop', e => { e.preventDefault(); if(routineDragged) document.getElementById('taskBank').appendChild(routineDragged); });
+
+  function slotOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+  function slotLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+  function slotDrop(e, slotId) {
+    e.preventDefault();
+    const slot = document.getElementById(slotId);
+    slot.classList.remove('drag-over');
+    if(!routineDragged) return;
+    // If slot has an item, send it back to bank
+    const existing = slot.querySelector('.task-item');
+    if(existing) document.getElementById('taskBank').appendChild(existing);
+    slot.appendChild(routineDragged);
+    slot.classList.add('filled');
+    // Remove placeholder label
+    const label = slot.querySelector('.slot-label');
+    if(label) label.style.display = 'none';
+  }
+
+  // ROUTINE TIMER
+  function startRoutineTimer() {
+    if(timerRunning) return;
+    timerRunning = true;
+    document.getElementById('timerStartBtn').style.display = 'none';
+    document.getElementById('timerStopBtn').style.display = 'inline-block';
+    routineTimerInterval = setInterval(() => {
+      routineSeconds++;
+      const m = Math.floor(routineSeconds / 60);
+      const s = routineSeconds % 60;
+      const el = document.getElementById('routineTimer');
+      el.textContent = m + ':' + String(s).padStart(2,'0');
+      el.className = 'timer-display' + (routineSeconds > 1800 ? ' warning' : '');
+    }, 1000);
+  }
+  function stopRoutineTimer() {
+    clearInterval(routineTimerInterval); timerRunning = false;
+    document.getElementById('timerStopBtn').style.display = 'none';
+    document.getElementById('timerResetBtn').style.display = 'inline-block';
+    document.getElementById('routineTimer').classList.add('done');
+  }
+  function resetRoutineTimer() {
+    clearInterval(routineTimerInterval); timerRunning = false; routineSeconds = 0;
+    document.getElementById('routineTimer').textContent = '0:00';
+    document.getElementById('routineTimer').className = 'timer-display';
+    document.getElementById('timerStartBtn').style.display = 'inline-block';
+    document.getElementById('timerStopBtn').style.display = 'none';
+    document.getElementById('timerResetBtn').style.display = 'none';
+  }
+
+  function generateRoutineCard() {
+    const steps = [];
+    for(let i=1; i<=6; i++) {
+      const slot = document.getElementById('rs'+i);
+      const item = slot.querySelector('.task-item');
+      if(item) steps.push(item.textContent.trim());
+    }
+    if(steps.length === 0) { alert('Drag some tasks into your routine first!'); return; }
+    const wrap = document.getElementById('routineCardWrap');
+    const stepsEl = document.getElementById('routineSteps');
+    stepsEl.innerHTML = steps.map((s,i) => `<div class="routine-step"><span class="step-num">${i+1}</span>${s}</div>`).join('');
+    wrap.style.display = 'block';
+    wrap.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  function getRoutineSteps() {
+    const steps = [];
+    for(let i=1; i<=6; i++) {
+      const slot = document.getElementById('rs'+i);
+      const item = slot.querySelector('.task-item');
+      if(item) steps.push(item.textContent.trim());
+    }
+    return steps;
+  }
+
+  // CHOOSE YOUR DAY
+  const outcomes = {
+    1: {
+      a: { type: 'positive', text: '✅ Great start! You feel fresh and ready. A bit rushed but worth it — you arrive feeling confident and comfortable.', conf: 90 },
+      b: { type: 'positive', text: '✅ Smart move. Quick and effective — you feel clean and put-together without using all your time.', conf: 80 },
+      c: { type: 'negative', text: '⚠️ You arrive feeling a bit uncomfortable and self-conscious. The shirt has a faint smell from last week. It\'s harder to focus when you\'re not feeling your best.', conf: 35 }
+    },
+    2: {
+      a: { type: 'positive', text: '✅ Problem solved. A 2-minute trip to the bathroom and you feel so much better. Hardly anyone noticed you were gone.', conf: 85 },
+      b: { type: 'neutral', text: '💛 You get through the lesson, but it\'s a distraction. Hoping for the best isn\'t quite the same as taking action.', conf: 50 },
+      c: { type: 'negative', text: '⚠️ Spending a whole lesson distracted and embarrassed isn\'t great — and the solution was in your bag the whole time! Self-consciousness can be tough but taking action usually helps more than worrying.', conf: 25 }
+    },
+    3: {
+      a: { type: 'positive', text: '✅ Practical and no big deal. Your friend was just being kind. A rinse and a mental note — you move on and enjoy lunch.', conf: 80 },
+      b: { type: 'neutral', text: '💛 Fair enough — nobody\'s perfect. Though regular brushing does matter for long-term tooth health, not just how you feel in the moment.', conf: 60 },
+      c: { type: 'negative', text: '⚠️ It\'s easy to let small things spiral into bigger feelings. This was a tiny, fixable moment — but shame can make it feel much bigger. Being kind to yourself matters too.', conf: 30 }
+    },
+    4: {
+      a: { type: 'positive', text: '✅ Future you absolutely thanks you. You sleep better when you feel clean, and tomorrow morning starts on a better footing.', conf: 90 },
+      b: { type: 'neutral', text: '💛 A reasonable compromise. Brushing your teeth is the most important evening task for health reasons — well done for getting that done at least.', conf: 65 },
+      c: { type: 'negative', text: '⚠️ We all do this sometimes — but going to bed without brushing your teeth is something dentists really recommend against. Tomorrow might start feeling a bit harder. Tired evenings are tough, but short routines can help.', conf: 40 }
+    }
+  };
+
+  function makeChoice(scene, choice) {
+    dayChoices[scene] = choice;
+    const card = document.getElementById('scene'+scene+'card');
+    card.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+    const outcome = outcomes[scene][choice];
+    const panel = document.getElementById('outcome'+scene);
+    panel.textContent = outcome.text;
+    panel.className = 'outcome-panel ' + outcome.type + ' show';
+
+    const confEl = document.getElementById('conf'+scene);
+    const fillEl = document.getElementById('confFill'+scene);
+    const valEl = document.getElementById('confVal'+scene);
+    confEl.style.display = 'flex';
+    const col = outcome.conf >= 70 ? 'var(--green)' : outcome.conf >= 45 ? 'var(--yellow)' : 'var(--red)';
+    fillEl.style.width = outcome.conf + '%';
+    fillEl.style.background = col;
+    valEl.textContent = outcome.conf + '%';
+    valEl.style.color = col;
+
+    confidenceScore += outcome.conf;
+    scenesComplete++;
+
+    setTimeout(() => {
+      const next = document.getElementById('scene'+(scene+1)+'card');
+      if(next) { next.style.display = 'block'; next.scrollIntoView({behavior:'smooth',block:'start'}); }
+      else {
+        setTimeout(() => {
+          document.getElementById('dayComplete').style.display = 'block';
+          document.getElementById('dayComplete').scrollIntoView({behavior:'smooth',block:'start'});
+        }, 400);
+      }
+    }, 800);
+  }
+
+  // RESULTS
+  function getStudentName() { return document.getElementById('studentName').value.trim() || 'Student'; }
+
+  function buildResultsHTML() {
+    const name = getStudentName();
+    const now = new Date().toLocaleDateString('en-GB', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const routineSteps = getRoutineSteps();
+    const avgConf = scenesComplete > 0 ? Math.round(confidenceScore / scenesComplete) : 0;
+    const choiceLabels = {a:'Option A (best practice)', b:'Option B (reasonable)', c:'Option C (missed opportunity)'};
+    const sceneNames = ['Morning routine','Deodorant at school','Lunchtime teeth check','Evening routine'];
+    const reflections = [
+      { q:'Most important part of your routine?', a: document.getElementById('r1')?.value||'' },
+      { q:'Anything confusing or wanting to know more?', a: document.getElementById('r2')?.value||'' },
+      { q:'Something that surprised you from Myth Busters?', a: document.getElementById('r3')?.value||'' },
+      { q:'One thing you could improve in your routine?', a: document.getElementById('r4')?.value||'' }
+    ];
+
+    let html = `<div style="font-family:'Atkinson Hyperlegible',sans-serif;max-width:640px;margin:0 auto;color:#1a1a1a;">`;
+    html += `<div style="background:linear-gradient(135deg,#5a2a88,#7a3fa8);padding:1.5rem;border-radius:12px 12px 0 0;text-align:center;">
+      <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#d8b8f8;margin-bottom:0.3rem;">Base 6 · Chilton Bridge School</p>
+      <h1 style="font-size:1.5rem;font-weight:700;color:#fef8f4;margin-bottom:0.25rem;">🌱 Changing Me — Results</h1>
+      <p style="color:#e0c8ff;font-size:0.9rem;">${name} · ${now}</p>
+    </div>`;
+    html += `<div style="background:#f5eeff;padding:1rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#7a3fa8;">${completed.filter(Boolean).length}/5</div><div style="font-size:0.8rem;color:#555;">Sections done</div></div>
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#ef7724;">${mythScore}/5</div><div style="font-size:0.8rem;color:#555;">Myth busters</div></div>
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#2e8b57;">${avgConf}%</div><div style="font-size:0.8rem;color:#555;">Avg confidence</div></div>
+    </div>`;
+
+    if(routineSteps.length > 0) {
+      html += `<div style="padding:1.25rem 1.5rem;background:white;border:1px solid #e0d8d0;border-top:none;"><h2 style="font-size:1rem;font-weight:700;color:#7a3fa8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">My Morning Routine</h2>`;
+      routineSteps.forEach((s,i) => { html += `<div style="padding:0.4rem 0;font-size:0.9rem;border-bottom:1px solid #f0ede8;">${i+1}. ${s}</div>`; });
+      html += `</div>`;
+    }
+
+    if(Object.keys(dayChoices).length > 0) {
+      html += `<div style="padding:1.25rem 1.5rem;background:white;border:1px solid #e0d8d0;border-top:none;"><h2 style="font-size:1rem;font-weight:700;color:#7a3fa8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Choose Your Day — Choices</h2>`;
+      Object.entries(dayChoices).forEach(([scene, choice]) => {
+        html += `<div style="padding:0.5rem 0;border-bottom:1px solid #f0ede8;font-size:0.9rem;"><strong>${sceneNames[parseInt(scene)-1]}:</strong> ${choiceLabels[choice]||choice}</div>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `<div style="padding:1.25rem 1.5rem;background:white;border:1px solid #e0d8d0;border-top:none;"><h2 style="font-size:1rem;font-weight:700;color:#7a3fa8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Reflections</h2>`;
+    reflections.forEach(r => {
+      html += `<div style="padding:0.75rem 0;border-bottom:1px solid #f0ede8;"><p style="font-size:0.82rem;font-weight:700;color:#888;margin-bottom:0.3rem;">${r.q}</p><p style="font-size:0.9rem;line-height:1.6;">${r.a||'<em style="color:#aaa;">No response written</em>'}</p></div>`;
+    });
+    html += `</div><div style="padding:1rem 1.5rem;background:#f5eeff;border:1px solid #e0d8d0;border-top:none;border-radius:0 0 12px 12px;"><p style="font-size:0.8rem;color:#888;text-align:center;">Changing Me · Week 2 PSHE · Base 6 · Chilton Bridge School</p></div></div>`;
+    return html;
+  }
+
+  function submitResults() {
+    const name = getStudentName();
+    const now = new Date().toLocaleDateString('en-GB');
+    const routineSteps = getRoutineSteps();
+    const sceneNames = ['Morning routine','Deodorant at school','Lunchtime teeth','Evening routine'];
+    const choiceLabels = {a:'Option A',b:'Option B',c:'Option C'};
+    const avgConf = scenesComplete > 0 ? Math.round(confidenceScore / scenesComplete) : 0;
+    let body = `Changing Me — ${name} — ${now}\n\n`;
+    body += `SECTIONS: ${completed.filter(Boolean).length}/5\nMYTH BUSTERS: ${mythScore}/5\nAVG CONFIDENCE SCORE: ${avgConf}%\n\n`;
+    if(routineSteps.length > 0) { body += `MY MORNING ROUTINE:\n${routineSteps.map((s,i)=>`${i+1}. ${s}`).join('\n')}\n\n`; }
+    if(Object.keys(dayChoices).length > 0) {
+      body += `CHOOSE YOUR DAY:\n`;
+      Object.entries(dayChoices).forEach(([s,c]) => { body += `${sceneNames[parseInt(s)-1]}: ${choiceLabels[c]||c}\n`; });
+      body += '\n';
+    }
+    body += `REFLECTIONS:\n`;
+    ['r1','r2','r3','r4'].forEach((id,i) => {
+      const qs = ['Most important part of routine?','Anything confusing?','Something surprising from Myth Busters?','One thing to improve?'];
+      body += `${qs[i]}\n${document.getElementById(id)?.value||'(not filled in)'}\n\n`;
+    });
+    window.location.href = 'mailto:jay.raine@chiltonbridgeschool.co.uk?subject=' + encodeURIComponent('Changing Me — '+name+' — '+now) + '&body=' + encodeURIComponent(body);
+    document.getElementById('submitSuccess').style.display = 'block';
+    completed[4] = true; updateProgress();
+  }
+
+  function printResults() {
+    const html = buildResultsHTML();
+    const win = window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>Changing Me Results</title><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><style>body{font-family:'Atkinson Hyperlegible',sans-serif;background:white;margin:2rem;}@media print{body{margin:0;}.no-print{display:none;}}</style></head><body>${html}<div class="no-print" style="margin-top:1.5rem;text-align:center;"><button onclick="window.print()" style="padding:0.75rem 1.5rem;background:#7a3fa8;color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">Save as PDF / Print</button></div></body></html>`);
+    win.document.close();
+  }
+
+  function showFinish() {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    const fin = document.createElement('section');
+    fin.className = 'section active';
+    fin.innerHTML = `
+      <div style="text-align:center;padding:2rem 1rem 1rem;">
+        <div style="font-size:4rem;margin-bottom:1rem;">🌱</div>
+        <h2 style="font-size:1.8rem;color:var(--purple);margin-bottom:0.75rem;">Well done!</h2>
+        <p style="font-size:1.05rem;color:var(--muted);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6;">You've explored why personal hygiene matters, busted some myths, built your own morning routine, navigated a whole day of choices, and reflected on what it all means for you.</p>
+        <div style="background:var(--purple-light);border-radius:14px;padding:1.25rem;max-width:480px;margin:0 auto 1.5rem;text-align:left;">
+          <p style="font-weight:700;color:var(--purple);margin-bottom:0.5rem;">I can now...</p>
+          <ul style="padding-left:1.25rem;color:var(--dark);line-height:2;">
+            <li>Explain why personal hygiene matters for health and confidence</li>
+            <li>Identify common hygiene myths</li>
+            <li>Describe what a good morning routine looks like</li>
+            <li>Connect self-care choices to how I feel throughout the day</li>
+          </ul>
+        </div>
+      </div>
+      <div id="resultsPreview" style="margin-bottom:1.5rem;"></div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;padding-bottom:2rem;">
+        <button class="btn btn-primary" onclick="submitResults()">📧 Send to teacher</button>
+        <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+        <button class="btn btn-outline" onclick="goToSection(0)">← Start again</button>
+      </div>`;
+    document.querySelector('.main').appendChild(fin);
+    document.getElementById('resultsPreview').innerHTML = buildResultsHTML();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
