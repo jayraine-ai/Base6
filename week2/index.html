@@ -3,115 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Week 2 · Base 6</title>
+<title>PSHE · Week 2 · Base 6</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
   .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
-  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem; }
   .back-link:hover { opacity: 1; }
   .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
-  .week-hero { background-color: #007291; padding: 0 2rem 2rem; text-align: center; }
-  .week-hero .week-label { font-size: 0.85rem; font-weight: 700; color: #fde0c0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .week-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; margin-bottom: 0.75rem; }
-  .week-hero p { font-size: 1rem; color: #c8e8f0; max-width: 580px; margin: 0 auto; line-height: 1.6; }
-  .wotw-banner { background-color: #ef7724; padding: 0.9rem 2rem; text-align: center; }
-  .wotw-link { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
-  .wotw-link:hover { text-decoration: underline; }
-  .wotw-link .wotw-label { font-size: 0.8rem; opacity: 0.85; margin-right: 0.25rem; }
+
+  .subject-hero { background-color: #c0436b; padding: 2rem 2rem 2.5rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+
   .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
-  .subjects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
-  .subject-card { background: #ffffff; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; border: 2px solid transparent; }
-  .subject-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-  .subject-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
-  .subject-name { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
-  .subject-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
-  .subject-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; }
-  .card-maths    { border-color: #007291; } .card-maths .subject-name { color: #007291; } .card-maths .subject-arrow { color: #007291; }
-  .card-english  { border-color: #ef7724; } .card-english .subject-name { color: #c05a10; } .card-english .subject-arrow { color: #c05a10; }
-  .card-pshe     { border-color: #9c5fc5; } .card-pshe .subject-name { color: #7a3fa8; } .card-pshe .subject-arrow { color: #7a3fa8; }
-  .card-cultural { border-color: #e8a020; } .card-cultural .subject-name { color: #b07010; } .card-cultural .subject-arrow { color: #b07010; }
-  .card-project  { border-color: #007291; background: #e6f5f8; } .card-project .subject-name { color: #004f65; } .card-project .subject-arrow { color: #004f65; }
-  .card-science  { border-color: #2e8b57; } .card-science .subject-name { color: #1f6b40; } .card-science .subject-arrow { color: #1f6b40; }
-  .card-history  { border-color: #b05030; } .card-history .subject-name { color: #8a3a20; } .card-history .subject-arrow { color: #8a3a20; }
+
+  .focus-card { background: #fff; border-left: 5px solid #c0436b; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .focus-card .label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #c0436b; margin-bottom: 0.6rem; }
+  .focus-card ul { padding-left: 1.2rem; }
+  .focus-card ul li { font-size: 1rem; line-height: 1.7; color: #333; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-bottom: 1rem; }
+
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+
+  a.resource-card {
+    background: #ffffff;
+    border: 2px solid #e8e0d8;
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    cursor: pointer;
+  }
+  a.resource-card:hover {
+    border-color: #c0436b;
+    box-shadow: 0 4px 16px rgba(192, 67, 107, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .resource-card.placeholder {
+    background: #ffffff;
+    border: 2px dashed #ccc;
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
+  .resource-name { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
+  .resource-name.muted { color: #999; }
+  .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
+  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #c0436b; }
+  .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
+
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <a class="back-link" href="../index.html">← Back to Base 6</a>
-  <span class="breadcrumb">/ Week 2</span>
+  <a class="back-link" href="../index.html">← Week 2</a>
+  <span class="breadcrumb">/ PSHE</span>
 </header>
 
-<div class="week-hero">
-  <p class="week-label">Week 2</p>
-  <h1>Data, Language and AI</h1>
-  <p>Choose a subject below to see this week's activities and resources.</p>
-</div>
-
-<div class="wotw-banner">
-  <a class="wotw-link" href="trajectory-explorer.html">
-    <span class="wotw-label">Word of the Week —</span> Trajectory →
-  </a>
+<div class="subject-hero">
+  <p class="subject-label">Week 2 · PSHE</p>
+  <h1>💬 PSHE</h1>
 </div>
 
 <main class="main">
-  <p class="section-label">This week's subjects</p>
-  <div class="subjects-grid">
 
-    <a class="subject-card card-maths" href="maths/index.html">
-      <div class="subject-icon">🔢</div>
-      <span class="subject-name">Maths</span>
-      <span class="subject-desc">Data, charts and the language of probability.</span>
-      <span class="subject-arrow">See activities →</span>
+  <div class="focus-card">
+    <p class="label">This week we are exploring</p>
+    <ul>
+      <li>How our bodies and routines change as we grow</li>
+      <li>Building a morning routine that works for you</li>
+    </ul>
+  </div>
+
+  <p class="section-label">Resources</p>
+  <div class="resources-grid">
+
+    <a class="resource-card" href="changing-me.html">
+      <div class="resource-icon">🎵</div>
+      <span class="resource-name">Changing Me</span>
+      <span class="resource-desc">Build your own morning routine playlist and explore the science behind why routines matter.</span>
+      <span class="resource-arrow">Open activity →</span>
     </a>
 
-    <a class="subject-card card-english" href="english/index.html">
-      <div class="subject-icon">📝</div>
-      <span class="subject-name">English</span>
-      <span class="subject-desc">Language features, tone, style and communication.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-pshe" href="pshe/index.html">
-      <div class="subject-icon">💬</div>
-      <span class="subject-name">PSHE</span>
-      <span class="subject-desc">Coming soon.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-cultural" href="cultural-calendar/index.html">
-      <div class="subject-icon">🌍</div>
-      <span class="subject-name">Cultural Calendar</span>
-      <span class="subject-desc">Exploring cultures, events and celebrations.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-project" href="project/index.html">
-      <div class="subject-icon">🚀</div>
-      <span class="subject-name">Project</span>
-      <span class="subject-desc">Continued development on individual projects.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-science" href="science/index.html">
-      <div class="subject-icon">🔬</div>
-      <span class="subject-name">Science</span>
-      <span class="subject-desc">What is AI and how is it used in everyday life?</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-history" href="history/index.html">
-      <div class="subject-icon">📜</div>
-      <span class="subject-name">History</span>
-      <span class="subject-desc">The wider world beyond living memory — sources, artefacts and bias.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
+    <div class="resource-card placeholder">
+      <div class="resource-icon">➕</div>
+      <span class="resource-name muted">More coming soon</span>
+      <span class="resource-desc">Additional resources will appear here.</span>
+      <span class="resource-tag">Coming soon</span>
+    </div>
 
   </div>
+
 </main>
 
 <footer>
