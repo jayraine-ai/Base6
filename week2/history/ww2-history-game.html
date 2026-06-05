@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WW2: Britain and the World · History · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #fef8f4;
+    --teal: #007291;
+    --orange: #ef7724;
+    --dark: #1a1a1a;
+    --mid: #555;
+    --light-border: #e0d8d0;
+    --card-bg: #ffffff;
+    --history-red: #c0392b;
+    --history-gold: #b8860b;
+    --correct: #2e8b57;
+    --wrong: #c0392b;
+  }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background-color: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .site-header {
+    background-color: var(--teal);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .back-link {
+    color: #fef8f4;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 0.85;
+  }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d1b1b 50%, #1a1a2e 100%);
+    padding: 2.5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.02) 40px,
+      rgba(255,255,255,0.02) 80px
+    );
+  }
+  .hero-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--history-gold);
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fef8f4;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+  .hero p {
+    font-size: 1rem;
+    color: rgba(254,248,244,0.75);
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  /* SCORE BAR */
+  .score-bar {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 40px;
+    padding: 0.5rem 1.5rem;
+    display: inline-flex;
+    gap: 2rem;
+    position: relative;
+  }
+  .score-item { color: #fef8f4; font-size: 0.85rem; }
+  .score-item strong { font-weight: 700; color: var(--history-gold); }
+
+  /* MAIN */
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* MISSION CARDS (chapter select) */
+  .missions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .mission-card {
+    background: var(--card-bg);
+    border: 2px solid var(--light-border);
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    text-align: left;
+  }
+  .mission-card:hover:not(.locked) {
+    border-color: var(--history-red);
+    box-shadow: 0 4px 16px rgba(192,57,43,0.12);
+    transform: translateY(-2px);
+  }
+  .mission-card.locked { opacity: 0.45; cursor: not-allowed; }
+  .mission-card.completed { border-color: var(--correct); }
+  .mission-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .mission-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--history-red);
+    margin-bottom: 0.2rem;
+  }
+  .mission-title { font-size: 1rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.4rem; }
+  .mission-desc { font-size: 0.82rem; color: var(--mid); line-height: 1.5; }
+  .mission-status {
+    margin-top: 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--correct);
+  }
+  .mission-status.locked-label { color: #aaa; }
+
+  /* SECTION TITLE */
+  .section-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--history-red);
+    margin-bottom: 1rem;
+  }
+
+  /* ACTIVITY PANEL */
+  .activity-panel {
+    display: none;
+    background: var(--card-bg);
+    border: 2px solid var(--light-border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .activity-panel.active { display: block; }
+
+  .panel-header {
+    background: linear-gradient(135deg, #1a1a2e, #2d1b1b);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .panel-header h2 { font-size: 1.1rem; font-weight: 700; color: #fef8f4; }
+  .panel-header .close-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 8px;
+    color: #fef8f4;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+  }
+  .panel-header .close-btn:hover { background: rgba(255,255,255,0.25); }
+
+  .panel-body { padding: 1.75rem; }
+
+  /* INTRO SCREEN */
+  .intro-screen { text-align: center; }
+  .intro-screen .big-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  .intro-screen h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .intro-screen p { font-size: 0.95rem; color: var(--mid); line-height: 1.7; margin-bottom: 1.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-block;
+    padding: 0.7rem 1.6rem;
+    border-radius: 10px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-red { background: var(--history-red); color: #fff; }
+  .btn-teal { background: var(--teal); color: #fff; }
+  .btn-green { background: var(--correct); color: #fff; }
+  .btn-outline { background: transparent; border: 2px solid var(--light-border); color: var(--dark); }
+  .btn-outline:hover { border-color: var(--teal); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* QUIZ STYLES */
+  .question-counter {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 1rem;
+  }
+  .question-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    color: var(--dark);
+  }
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 520px) { .options-grid { grid-template-columns: 1fr; } }
+  .option-btn {
+    background: #fafaf8;
+    border: 2px solid var(--light-border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--dark);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.12s, background 0.12s;
+    line-height: 1.4;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal); background: #f0f8fb; }
+  .option-btn.correct { border-color: var(--correct); background: #edfaf3; color: var(--correct); }
+  .option-btn.wrong { border-color: var(--wrong); background: #fdf0ef; color: var(--wrong); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    display: none;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  .feedback-box.correct { background: #edfaf3; border: 2px solid var(--correct); color: #1a5c37; }
+  .feedback-box.wrong { background: #fdf0ef; border: 2px solid var(--wrong); color: #7a1f1f; }
+  .feedback-box.show { display: block; }
+
+  /* SOURCE DOCUMENT */
+  .source-doc {
+    background: #fffdf5;
+    border: 2px solid #d4c483;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .source-doc::before {
+    content: '📄 PRIMARY SOURCE';
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--history-gold);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .source-doc p {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: #333;
+    font-style: italic;
+  }
+  .source-doc .source-credit {
+    font-size: 0.78rem;
+    color: #888;
+    font-style: normal;
+    margin-top: 0.75rem;
+  }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 1.5rem; }
+  .timeline-slots { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+  .timeline-slot {
+    background: #f5f2ee;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    color: #aaa;
+    font-weight: 700;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .timeline-slot.filled { border-color: var(--teal); background: #f0f8fb; color: var(--dark); }
+  .timeline-slot.correct-slot { border-color: var(--correct); background: #edfaf3; color: var(--correct); }
+  .timeline-slot.wrong-slot { border-color: var(--wrong); background: #fdf0ef; color: var(--wrong); }
+  .slot-year { font-size: 0.78rem; font-weight: 700; color: var(--history-red); min-width: 36px; }
+  .timeline-events { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .event-chip {
+    background: #fff;
+    border: 2px solid var(--teal);
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s, opacity 0.12s;
+    color: var(--teal);
+  }
+  .event-chip:hover { background: #f0f8fb; }
+  .event-chip.used { opacity: 0.3; cursor: default; pointer-events: none; }
+
+  /* WRITING TASK */
+  .writing-prompt {
+    background: linear-gradient(135deg, #1a1a2e, #2d1b1b);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    color: #fef8f4;
+  }
+  .writing-prompt .prompt-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--history-gold);
+    margin-bottom: 0.5rem;
+  }
+  .writing-prompt p { font-size: 0.95rem; line-height: 1.6; }
+  .writing-scaffold { margin-bottom: 1rem; }
+  .scaffold-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+  .scaffold-label {
+    background: var(--history-red);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    margin-top: 0.6rem;
+    min-width: 60px;
+    text-align: center;
+  }
+  .scaffold-input {
+    flex: 1;
+    border: 2px solid var(--light-border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.92rem;
+    color: var(--dark);
+    background: #fafaf8;
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.5;
+    transition: border-color 0.15s;
+  }
+  .scaffold-input:focus { outline: none; border-color: var(--teal); background: #fff; }
+  .writing-hint {
+    background: #fff8e1;
+    border-left: 4px solid #f9a825;
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: #5a4000;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 1.25rem; }
+  .progress-label { font-size: 0.78rem; color: var(--mid); margin-bottom: 0.4rem; }
+  .progress-bar-outer { background: #ece7e0; border-radius: 999px; height: 8px; }
+  .progress-bar-inner { background: var(--history-red); border-radius: 999px; height: 8px; transition: width 0.4s ease; }
+
+  /* RESULT SCREEN */
+  .result-screen { text-align: center; padding: 1rem 0; }
+  .result-screen .result-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
+  .result-screen h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .result-screen p { font-size: 0.95rem; color: var(--mid); line-height: 1.6; margin-bottom: 1.5rem; }
+  .stars { font-size: 2rem; margin-bottom: 0.5rem; letter-spacing: 0.1em; }
+  .medal { font-size: 2.5rem; }
+
+  /* EMAIL SECTION */
+  .email-section {
+    background: #f5f2ee;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+    text-align: left;
+  }
+  .email-section h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .email-section p { font-size: 0.85rem; color: var(--mid); margin-bottom: 1rem; line-height: 1.5; }
+  .email-input {
+    width: 100%;
+    border: 2px solid var(--light-border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.92rem;
+    margin-bottom: 0.75rem;
+    background: #fff;
+  }
+  .email-input:focus { outline: none; border-color: var(--teal); }
+
+  /* STEP NAV */
+  .step-nav {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  /* FINAL SUMMARY */
+  .final-summary {
+    display: none;
+    background: linear-gradient(135deg, #1a1a2e, #2d1b1b);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    color: #fef8f4;
+    margin-top: 1rem;
+  }
+  .final-summary.show { display: block; }
+  .final-summary h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .final-summary p { color: rgba(254,248,244,0.75); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .final-stats { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .final-stat { text-align: center; }
+  .final-stat .stat-num { font-size: 2rem; font-weight: 700; color: var(--history-gold); }
+  .final-stat .stat-label { font-size: 0.78rem; color: rgba(254,248,244,0.6); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .skip-link {
+    display: inline-block;
+    font-size: 0.82rem;
+    color: #aaa;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+  }
+  .skip-link:hover { color: var(--mid); }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid var(--light-border); margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../index.html">← History</a>
+  <span class="breadcrumb">/ WW2: Britain and the World</span>
+</header>
+
+<div class="hero">
+  <p class="hero-label">History · Beyond Living Memory</p>
+  <h1>⚔️ WW2: Britain and the World</h1>
+  <p>Complete four missions to explore World War 2 — analyse real sources, sequence events, test your knowledge, and write like a historian.</p>
+  <div class="score-bar">
+    <span class="score-item">Missions: <strong id="completed-count">0</strong>/4</span>
+    <span class="score-item">Points: <strong id="total-points">0</strong></span>
+  </div>
+</div>
+
+<main class="main">
+
+  <p class="section-label">Choose a Mission</p>
+
+  <div class="missions-grid" id="missions-grid">
+
+    <div class="mission-card" id="card-1" onclick="openMission(1)">
+      <div class="mission-icon">📄</div>
+      <div class="mission-num">Mission 1</div>
+      <div class="mission-title">Source Detective</div>
+      <div class="mission-desc">Read real wartime sources and work out what they tell us about life in Britain during WW2.</div>
+    </div>
+
+    <div class="mission-card" id="card-2" onclick="openMission(2)">
+      <div class="mission-icon">📅</div>
+      <div class="mission-num">Mission 2</div>
+      <div class="mission-title">Timeline Challenge</div>
+      <div class="mission-desc">Can you place the key events of WW2 in the right order? Sequence them from start to finish.</div>
+    </div>
+
+    <div class="mission-card" id="card-3" onclick="openMission(3)">
+      <div class="mission-icon">❓</div>
+      <div class="mission-num">Mission 3</div>
+      <div class="mission-title">Fact Blitz</div>
+      <div class="mission-desc">Five rapid-fire questions about WW2. How many can you get right?</div>
+    </div>
+
+    <div class="mission-card" id="card-4" onclick="openMission(4)">
+      <div class="mission-icon">✍️</div>
+      <div class="mission-num">Mission 4</div>
+      <div class="mission-title">Historian's Report</div>
+      <div class="mission-desc">Write a short historian's report: how did WW2 change Britain and the world?</div>
+    </div>
+
+  </div>
+
+  <!-- MISSION 1: SOURCE DETECTIVE -->
+  <div class="activity-panel" id="panel-1">
+    <div class="panel-header">
+      <h2>📄 Mission 1 — Source Detective</h2>
+      <button class="close-btn" onclick="closePanel(1)">✕ Close</button>
+    </div>
+    <div class="panel-body" id="body-1">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- MISSION 2: TIMELINE -->
+  <div class="activity-panel" id="panel-2">
+    <div class="panel-header">
+      <h2>📅 Mission 2 — Timeline Challenge</h2>
+      <button class="close-btn" onclick="closePanel(2)">✕ Close</button>
+    </div>
+    <div class="panel-body" id="body-2">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- MISSION 3: QUIZ -->
+  <div class="activity-panel" id="panel-3">
+    <div class="panel-header">
+      <h2>❓ Mission 3 — Fact Blitz</h2>
+      <button class="close-btn" onclick="closePanel(3)">✕ Close</button>
+    </div>
+    <div class="panel-body" id="body-3">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- MISSION 4: WRITING -->
+  <div class="activity-panel" id="panel-4">
+    <div class="panel-header">
+      <h2>✍️ Mission 4 — Historian's Report</h2>
+      <button class="close-btn" onclick="closePanel(4)">✕ Close</button>
+    </div>
+    <div class="panel-body" id="body-4">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- FINAL SUMMARY -->
+  <div class="final-summary" id="final-summary">
+    <div class="medal">🏅</div>
+    <h2>Mission Complete!</h2>
+    <p>You've explored WW2 as a source detective, timeline expert, quiz champion and historian. Brilliant work.</p>
+    <div class="final-stats">
+      <div class="final-stat">
+        <div class="stat-num" id="final-missions">0</div>
+        <div class="stat-label">Missions Done</div>
+      </div>
+      <div class="final-stat">
+        <div class="stat-num" id="final-points">0</div>
+        <div class="stat-label">Points Earned</div>
+      </div>
+    </div>
+    <div class="email-section" style="text-align:left; background:rgba(255,255,255,0.08); border-radius:12px; padding:1.25rem 1.5rem; margin-bottom:1rem;">
+      <h4 style="color:#fef8f4; margin-bottom:0.4rem;">📬 Send your results to Jay</h4>
+      <p style="color:rgba(254,248,244,0.65); font-size:0.85rem; margin-bottom:0.75rem;">If you'd like to, you can send a summary of what you did today.</p>
+      <input class="email-input" id="student-name" placeholder="Your first name (optional)" style="margin-bottom:0.6rem;">
+      <button class="btn btn-teal" onclick="sendEmail()" style="width:100%;">Send to Jay →</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School</footer>
+
+<script>
+// ─── STATE ────────────────────────────────────────────────
+const state = {
+  completed: new Set(),
+  points: 0,
+  quizScore: 0,
+  timelineScore: 0,
+  sourceScore: 0,
+  writingAnswers: {},
+};
+
+// ─── SOURCES DATA ─────────────────────────────────────────
+const sources = [
+  {
+    text: "We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields and in the streets, we shall fight in the hills; we shall never surrender.",
+    credit: "Winston Churchill, speech to the House of Commons, June 1940",
+    questions: [
+      {
+        q: "What is Churchill trying to do with this speech?",
+        opts: ["Surrender to Germany", "Inspire people to keep fighting", "Ask America for help", "Announce the end of the war"],
+        correct: 1,
+        feedback: "Correct! Churchill was trying to inspire the British people and show they would never give up, even after major setbacks at Dunkirk."
+      },
+      {
+        q: "Which word best describes the tone of this source?",
+        opts: ["Frightened", "Confused", "Defiant", "Apologetic"],
+        correct: 2,
+        feedback: "Defiant is right. The repeated phrase 'we shall fight' shows Churchill's determination and refusal to accept defeat."
+      }
+    ]
+  },
+  {
+    text: "Dig for Victory! Every available piece of land must be used to grow food. Our merchant ships are being attacked — we cannot rely on imported food. Every garden, every park, every spare patch of ground must become a vegetable plot.",
+    credit: "Government poster campaign, 1939–1945",
+    questions: [
+      {
+        q: "Why did the government want people to grow their own food?",
+        opts: ["Food was boring", "Merchant ships bringing food were being attacked", "There was too much land", "Farmers had gone on holiday"],
+        correct: 1,
+        feedback: "Correct! German U-boats (submarines) attacked supply ships, making it hard to import food. Growing food at home helped Britain survive."
+      },
+      {
+        q: "What does this source tell us about life on the 'Home Front'?",
+        opts: ["Ordinary people played no part in the war", "Only soldiers had to make sacrifices", "Civilians at home helped the war effort in practical ways", "Britain had plenty of food"],
+        correct: 2,
+        feedback: "Exactly right. The 'Home Front' refers to civilians doing their part — rationing, growing food, working in factories. Everyone contributed."
+      }
+    ]
+  }
+];
+
+let sourceIdx = 0;
+let sourceQIdx = 0;
+let sourceAnswered = false;
+
+// ─── TIMELINE DATA ────────────────────────────────────────
+const timelineEvents = [
+  { year: "1939", event: "Britain declares war on Germany" },
+  { year: "1940", event: "The Blitz — bombing of British cities" },
+  { year: "1940", event: "Evacuation of Dunkirk" },
+  { year: "1941", event: "USA joins the war after Pearl Harbor" },
+  { year: "1944", event: "D-Day — Allied landings in Normandy" },
+  { year: "1945", event: "Germany surrenders — VE Day" },
+];
+
+let timelineSelected = Array(timelineEvents.length).fill(null);
+let timelineSubmitted = false;
+
+// ─── QUIZ DATA ────────────────────────────────────────────
+const quizQuestions = [
+  {
+    q: "What was the name given to the German air force that bombed Britain in WW2?",
+    opts: ["The Gestapo", "The Luftwaffe", "The Wehrmacht", "The Stormtroopers"],
+    correct: 1,
+    feedback: "The Luftwaffe was the German air force. During the Battle of Britain in 1940, it fought against the RAF."
+  },
+  {
+    q: "What does 'evacuation' mean in the context of WW2?",
+    opts: ["Joining the army", "Moving children from cities to the countryside for safety", "Rationing food", "Building air raid shelters"],
+    correct: 1,
+    feedback: "Around 3 million children were evacuated from British cities to the countryside to keep them safe from bombing."
+  },
+  {
+    q: "Which country did Germany invade in 1939, triggering Britain's entry into the war?",
+    opts: ["France", "Russia", "Poland", "Denmark"],
+    correct: 2,
+    feedback: "Germany's invasion of Poland on 1 September 1939 led Britain and France to declare war on Germany two days later."
+  },
+  {
+    q: "What was rationing?",
+    opts: [
+      "A type of bombing",
+      "Limits on how much food and goods people could buy",
+      "A way of sending secret messages",
+      "Training for soldiers"
+    ],
+    correct: 1,
+    feedback: "Rationing meant everyone got a fair share of limited supplies like food, clothing and petrol. It started in Britain in January 1940."
+  },
+  {
+    q: "On what date did WW2 in Europe end (VE Day)?",
+    opts: ["1st September 1939", "6th June 1944", "8th May 1945", "2nd September 1945"],
+    correct: 2,
+    feedback: "Victory in Europe (VE) Day was 8th May 1945, when Germany surrendered. Crowds celebrated in the streets across Britain."
+  }
+];
+
+let quizIdx = 0;
+let quizAnswered = false;
+let quizScore = 0;
+
+// ─── WRITING DATA ─────────────────────────────────────────
+const writingScaffold = [
+  { label: "BEFORE", placeholder: "Before WW2, Britain was..." },
+  { label: "DURING", placeholder: "During the war, life changed because..." },
+  { label: "AFTER", placeholder: "After the war, Britain was different because..." },
+  { label: "IMPACT", placeholder: "One important way WW2 changed the world was..." },
+];
+
+// ─── OPEN / CLOSE ─────────────────────────────────────────
+function openMission(n) {
+  document.querySelectorAll('.activity-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + n).classList.add('active');
+  document.getElementById('panel-' + n).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderMission(n);
+}
+
+function closePanel(n) {
+  document.getElementById('panel-' + n).classList.remove('active');
+}
+
+function renderMission(n) {
+  if (n === 1) renderSource();
+  if (n === 2) renderTimeline();
+  if (n === 3) renderQuiz();
+  if (n === 4) renderWriting();
+}
+
+// ─── MISSION 1: SOURCE ────────────────────────────────────
+function renderSource() {
+  const body = document.getElementById('body-1');
+  if (state.completed.has(1)) {
+    body.innerHTML = completedScreen("You analysed " + sources.length + " primary sources and spotted what they tell us about Britain at war.", 1);
+    return;
+  }
+  const s = sources[sourceIdx];
+  const q = s.questions[sourceQIdx];
+  const total = sources.reduce((a, src) => a + src.questions.length, 0);
+  const done = sources.slice(0, sourceIdx).reduce((a, src) => a + src.questions.length, 0) + sourceQIdx;
+
+  body.innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-label">Question ${done + 1} of ${total}</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${((done)/total)*100}%"></div></div>
+    </div>
+    <div class="source-doc"><p>${s.text}</p><div class="source-credit">${s.credit}</div></div>
+    <div class="question-text">${q.q}</div>
+    <div class="options-grid" id="src-opts">
+      ${q.opts.map((o, i) => `<button class="option-btn" onclick="answerSource(${i})">${o}</button>`).join('')}
+    </div>
+    <div class="feedback-box" id="src-feedback"></div>
+    <div class="step-nav">
+      <button class="btn btn-red" id="src-next" onclick="nextSource()" disabled>Next →</button>
+      <button class="skip-link" onclick="skipSource()">Skip this mission</button>
+    </div>
+  `;
+}
+
+function answerSource(i) {
+  if (sourceAnswered) return;
+  sourceAnswered = true;
+  const s = sources[sourceIdx];
+  const q = s.questions[sourceQIdx];
+  const opts = document.querySelectorAll('#src-opts .option-btn');
+  opts.forEach(b => b.disabled = true);
+  opts[i].classList.add(i === q.correct ? 'correct' : 'wrong');
+  if (i !== q.correct) opts[q.correct].classList.add('correct');
+  const fb = document.getElementById('src-feedback');
+  fb.className = 'feedback-box show ' + (i === q.correct ? 'correct' : 'wrong');
+  fb.innerHTML = (i === q.correct ? '✅ ' : '❌ ') + q.feedback;
+  if (i === q.correct) state.sourceScore++;
+  document.getElementById('src-next').disabled = false;
+}
+
+function nextSource() {
+  sourceAnswered = false;
+  const s = sources[sourceIdx];
+  if (sourceQIdx < s.questions.length - 1) {
+    sourceQIdx++;
+  } else if (sourceIdx < sources.length - 1) {
+    sourceIdx++;
+    sourceQIdx = 0;
+  } else {
+    completeMission(1, state.sourceScore * 10);
+    renderSource();
+    return;
+  }
+  renderSource();
+}
+
+function skipSource() {
+  completeMission(1, 0);
+  renderSource();
+}
+
+// ─── MISSION 2: TIMELINE ──────────────────────────────────
+function renderTimeline() {
+  const body = document.getElementById('body-2');
+  if (state.completed.has(2)) {
+    body.innerHTML = completedScreen("You successfully sequenced " + timelineEvents.length + " key events from WW2.", 2);
+    return;
+  }
+
+  const shuffled = [...timelineEvents].sort(() => Math.random() - 0.5);
+  window._timelineShuffled = shuffled;
+  window._timelineSelected = Array(timelineEvents.length).fill(null);
+
+  body.innerHTML = `
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:1.25rem; line-height:1.6;">
+      Tap an event below, then tap the slot where you think it belongs. Place all ${timelineEvents.length} events in the correct order.
+    </p>
+    <div style="margin-bottom:1rem;">
+      <div class="section-label" style="margin-bottom:0.5rem;">📅 The Timeline</div>
+      <div id="tl-slots">
+        ${timelineEvents.map((e, i) => `
+          <div class="timeline-slot" id="tl-slot-${i}" onclick="placeEvent(${i})">
+            <span class="slot-year">${e.year}</span>
+            <span id="tl-slot-text-${i}" style="color:#aaa; font-size:0.85rem;">— tap to place an event here —</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="section-label" style="margin-bottom:0.5rem;">🃏 Events to Place</div>
+    <div class="timeline-events" id="tl-chips">
+      ${shuffled.map((e, i) => `<div class="event-chip" id="tl-chip-${i}" onclick="selectChip(${i})">${e.event}</div>`).join('')}
+    </div>
+    <div class="feedback-box" id="tl-feedback" style="margin-top:1rem;"></div>
+    <div class="step-nav" style="margin-top:1rem;">
+      <button class="btn btn-red" onclick="checkTimeline()">Check my order ✓</button>
+      <button class="skip-link" onclick="skipTimeline()">Skip this mission</button>
+    </div>
+  `;
+  window._selectedChip = null;
+}
+
+function selectChip(i) {
+  window._selectedChip = i;
+  document.querySelectorAll('.event-chip').forEach(c => c.style.background = '');
+  const chip = document.getElementById('tl-chip-' + i);
+  if (chip && !chip.classList.contains('used')) {
+    chip.style.background = '#d4edfa';
+  }
+}
+
+function placeEvent(slotIdx) {
+  if (window._selectedChip === null) return;
+  const chipIdx = window._selectedChip;
+  const chip = document.getElementById('tl-chip-' + chipIdx);
+  if (!chip || chip.classList.contains('used')) return;
+
+  // if slot already filled, swap back
+  const prevChipIdx = window._timelineSelected[slotIdx];
+  if (prevChipIdx !== null) {
+    document.getElementById('tl-chip-' + prevChipIdx).classList.remove('used');
+  }
+
+  window._timelineSelected[slotIdx] = chipIdx;
+  chip.classList.add('used');
+  chip.style.background = '';
+  const slotText = document.getElementById('tl-slot-text-' + slotIdx);
+  const slot = document.getElementById('tl-slot-' + slotIdx);
+  slotText.textContent = window._timelineShuffled[chipIdx].event;
+  slotText.style.color = 'var(--dark)';
+  slot.classList.add('filled');
+  window._selectedChip = null;
+}
+
+function checkTimeline() {
+  const selected = window._timelineSelected;
+  if (selected.some(s => s === null)) {
+    const fb = document.getElementById('tl-feedback');
+    fb.className = 'feedback-box show wrong';
+    fb.innerHTML = '⚠️ Place all events before checking!';
+    return;
+  }
+  let correct = 0;
+  selected.forEach((chipIdx, slotIdx) => {
+    const placedEvent = window._timelineShuffled[chipIdx].event;
+    const correctEvent = timelineEvents[slotIdx].event;
+    const slot = document.getElementById('tl-slot-' + slotIdx);
+    slot.classList.remove('filled');
+    if (placedEvent === correctEvent) {
+      slot.classList.add('correct-slot');
+      correct++;
+    } else {
+      slot.classList.add('wrong-slot');
+      const slotText = document.getElementById('tl-slot-text-' + slotIdx);
+      slotText.textContent = placedEvent + ' ✗ (should be: ' + correctEvent + ')';
+    }
+  });
+  const fb = document.getElementById('tl-feedback');
+  state.timelineScore = correct;
+  if (correct === timelineEvents.length) {
+    fb.className = 'feedback-box show correct';
+    fb.innerHTML = '✅ Perfect! You placed all ' + timelineEvents.length + ' events in the right order!';
+    setTimeout(() => { completeMission(2, correct * 10); renderTimeline(); }, 1800);
+  } else {
+    fb.className = 'feedback-box show wrong';
+    fb.innerHTML = `You got ${correct} out of ${timelineEvents.length} correct. The correct events are now shown in green. <button class="btn btn-outline" style="margin-top:0.75rem; font-size:0.82rem; padding:0.5rem 1rem;" onclick="retryTimeline()">Try again</button>`;
+  }
+}
+
+function retryTimeline() { renderTimeline(); }
+function skipTimeline() { completeMission(2, 0); renderTimeline(); }
+
+// ─── MISSION 3: QUIZ ──────────────────────────────────────
+function renderQuiz() {
+  const body = document.getElementById('body-3');
+  if (state.completed.has(3)) {
+    body.innerHTML = completedScreen(`You scored ${state.quizScore} out of ${quizQuestions.length} in the Fact Blitz!`, 3);
+    return;
+  }
+  if (quizIdx >= quizQuestions.length) {
+    state.quizScore = quizScore;
+    const stars = quizScore >= 5 ? '⭐⭐⭐' : quizScore >= 3 ? '⭐⭐' : '⭐';
+    body.innerHTML = `
+      <div class="result-screen">
+        <div class="stars">${stars}</div>
+        <div class="result-icon">🎉</div>
+        <h3>Fact Blitz Complete!</h3>
+        <p>You scored <strong>${quizScore} out of ${quizQuestions.length}</strong>. ${quizScore === 5 ? 'Full marks — amazing!' : quizScore >= 3 ? 'Good effort!' : 'Have another go anytime!'}</p>
+        <button class="btn btn-red" onclick="completeMission(3, ${quizScore * 10}); renderQuiz();">Finish Mission →</button>
+      </div>
+    `;
+    return;
+  }
+  const q = quizQuestions[quizIdx];
+  body.innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-label">Question ${quizIdx + 1} of ${quizQuestions.length}</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${(quizIdx/quizQuestions.length)*100}%"></div></div>
+    </div>
+    <div class="question-text">${q.q}</div>
+    <div class="options-grid" id="quiz-opts">
+      ${q.opts.map((o, i) => `<button class="option-btn" onclick="answerQuiz(${i})">${o}</button>`).join('')}
+    </div>
+    <div class="feedback-box" id="quiz-feedback"></div>
+    <div class="step-nav">
+      <button class="btn btn-red" id="quiz-next" onclick="nextQuiz()" disabled>Next →</button>
+      <button class="skip-link" onclick="skipQuiz()">Skip this mission</button>
+    </div>
+  `;
+  quizAnswered = false;
+}
+
+function answerQuiz(i) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[quizIdx];
+  const opts = document.querySelectorAll('#quiz-opts .option-btn');
+  opts.forEach(b => b.disabled = true);
+  opts[i].classList.add(i === q.correct ? 'correct' : 'wrong');
+  if (i !== q.correct) opts[q.correct].classList.add('correct');
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = 'feedback-box show ' + (i === q.correct ? 'correct' : 'wrong');
+  fb.innerHTML = (i === q.correct ? '✅ ' : '❌ ') + q.feedback;
+  if (i === q.correct) quizScore++;
+  document.getElementById('quiz-next').disabled = false;
+}
+
+function nextQuiz() { quizIdx++; renderQuiz(); }
+function skipQuiz() { completeMission(3, 0); renderQuiz(); }
+
+// ─── MISSION 4: WRITING ───────────────────────────────────
+function renderWriting() {
+  const body = document.getElementById('body-4');
+  if (state.completed.has(4)) {
+    body.innerHTML = completedScreen("You completed your Historian's Report. Great work thinking like a historian!", 4);
+    return;
+  }
+  body.innerHTML = `
+    <div class="writing-prompt">
+      <div class="prompt-label">📝 Your Task</div>
+      <p>Write a short historian's report answering: <strong>How did World War 2 change Britain and the world?</strong> Use the scaffolding below to help you structure your ideas.</p>
+    </div>
+    <div class="writing-hint">💡 <strong>Tip:</strong> A good historian uses evidence and explains causes and effects. Try to include at least one specific fact you learned today.</div>
+    <div class="writing-scaffold">
+      ${writingScaffold.map((s, i) => `
+        <div class="scaffold-item">
+          <div class="scaffold-label">${s.label}</div>
+          <textarea class="scaffold-input" id="write-${i}" placeholder="${s.placeholder}" rows="2"></textarea>
+        </div>
+      `).join('')}
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-red" onclick="submitWriting()">Submit Report →</button>
+      <button class="skip-link" onclick="skipWriting()">Skip this mission</button>
+    </div>
+  `;
+}
+
+function submitWriting() {
+  const answers = writingScaffold.map((s, i) => {
+    state.writingAnswers[s.label] = document.getElementById('write-' + i).value.trim();
+    return state.writingAnswers[s.label];
+  });
+  const hasContent = answers.some(a => a.length > 10);
+  if (!hasContent) {
+    alert("Have a go at writing something first — even a few words is great!");
+    return;
+  }
+  completeMission(4, 30);
+  renderWriting();
+}
+function skipWriting() { completeMission(4, 0); renderWriting(); }
+
+// ─── COMPLETE MISSION ─────────────────────────────────────
+function completeMission(n, pts) {
+  if (state.completed.has(n)) return;
+  state.completed.add(n);
+  state.points += pts;
+  document.getElementById('completed-count').textContent = state.completed.size;
+  document.getElementById('total-points').textContent = state.points;
+  const card = document.getElementById('card-' + n);
+  card.classList.add('completed');
+  card.innerHTML += '<div class="mission-status">✅ Completed</div>';
+  if (state.completed.size === 4) showFinal();
+}
+
+function completedScreen(msg, n) {
+  return `<div class="result-screen">
+    <div class="result-icon">✅</div>
+    <h3>Mission ${n} Complete!</h3>
+    <p>${msg}</p>
+    <button class="btn btn-outline" onclick="closePanel(${n})">← Back to Missions</button>
+  </div>`;
+}
+
+function showFinal() {
+  document.getElementById('final-missions').textContent = state.completed.size;
+  document.getElementById('final-points').textContent = state.points;
+  document.getElementById('final-summary').classList.add('show');
+  document.getElementById('final-summary').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── EMAIL ────────────────────────────────────────────────
+function sendEmail() {
+  const name = document.getElementById('student-name').value.trim() || 'A student';
+  const writing = Object.entries(state.writingAnswers).map(([k, v]) => `${k}: ${v || '(not answered)'}`).join('\n');
+  const body = `WW2 History Game — Results\n\nStudent: ${name}\nMissions completed: ${state.completed.size}/4\nPoints: ${state.points}\n\n--- Historian's Report ---\n${writing || '(writing mission not completed)'}\n\nQuiz score: ${state.quizScore}/${quizQuestions.length}\nTimeline score: ${state.timelineScore}/${timelineEvents.length}\nSource questions correct: ${state.sourceScore}`;
+  const gmail = `https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=${encodeURIComponent(name + ' — WW2 History Game Results')}&body=${encodeURIComponent(body)}`;
+  window.open(gmail, '_blank');
+}
+</script>
+</body>
+</html>
