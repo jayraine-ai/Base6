@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leon's Project Space · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --accent: #1a1a2e; --accent-mid: #c0392b; --accent-light: #fdecea; --cream: #fef8f4; --dark: #1a1a1a; --muted: #555; --green: #2e8b57; --green-light: #eaf7f0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+  #lockScreen { position: fixed; inset: 0; background: var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
+  #lockScreen h1 { font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+  #lockScreen p { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 2rem; line-height: 1.5; }
+  #lockScreen .lock-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  #passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.2rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
+  #passwordInput::placeholder { color: rgba(255,255,255,0.4); }
+  #passwordInput:focus { outline: none; border-color: var(--accent-mid); background: rgba(255,255,255,0.15); }
+  #unlockBtn { padding: 0.75rem 2rem; background: var(--accent-mid); color: white; border: none; border-radius: 12px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+  #lockError { color: #ff9999; background: rgba(255,0,0,0.15); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; margin-top: 0.75rem; display: none; }
+  #mainContent { display: none; }
+  .site-header { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); padding: 1.5rem 2rem; text-align: center; border-bottom: 3px solid var(--accent-mid); }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 1.8rem; font-weight: 700; color: white; }
+  .site-header p { font-size: 0.9rem; color: #bbb; margin-top: 0.4rem; }
+  .back-bar { background: #1a1a2e; padding: 0.6rem 2rem; }
+  .back-link { color: #aaa; font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+  .main { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 2px solid #f0e8e8; }
+  .section-card h2 { font-size: 1.15rem; font-weight: 700; color: var(--accent-mid); margin-bottom: 1rem; }
+  label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; margin-top: 0.9rem; }
+  label:first-of-type { margin-top: 0; }
+  textarea, input[type=text] { width: 100%; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; min-height: 80px; }
+  input[type=text] { min-height: unset; }
+  textarea:focus, input:focus { outline: none; border-color: var(--accent-mid); }
+  .hint-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; font-style: italic; }
+  .script-box { width: 100%; min-height: 200px; padding: 1rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.9rem; color: var(--dark); background: #f8f8f8; line-height: 1.8; resize: vertical; }
+  .script-box:focus { outline: none; border-color: var(--accent-mid); }
+  .mood-grid { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
+  .mood-btn { padding: 0.5rem 0.9rem; border-radius: 20px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: var(--dark); }
+  .mood-btn.selected { border-color: var(--accent-mid); background: var(--accent-light); color: var(--accent-mid); }
+  .star-row { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+  .star-btn { font-size: 1.5rem; cursor: pointer; opacity: 0.3; background: none; border: none; padding: 0; }
+  .star-btn.active { opacity: 1; }
+  .scene-card { background: #f8f8ff; border: 2px solid #ddd; border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; }
+  .scene-card input[type=text] { margin-bottom: 0.5rem; }
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent-mid); color: white; }
+  .btn-dark { background: var(--accent); color: white; }
+  .btn-outline { background: white; color: var(--accent-mid); border: 2px solid var(--accent-mid); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; justify-content: center; }
+  .success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 1rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+  .export-bar { background: #f0eef8; border-top: 2px solid #ddd; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<div id="lockScreen">
+  <div class="lock-icon">🎬</div>
+  <h1>Leon's Project Space</h1>
+  <p>This is your personal project page.<br>Enter your password to get started.</p>
+  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock →</button>
+  <div id="lockError">That password doesn't match — try again.</div>
+</div>
+<div id="mainContent">
+  <header class="site-header">
+    <p class="tag">Week 2 · Project</p>
+    <h1>🎬 Box-Man: Delivery of Justice</h1>
+    <p>Leon's movie script — in production</p>
+  </header>
+  <div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 2</a></div>
+  <main class="main">
+
+    <div class="section-card">
+      <h2>😊 Check In</h2>
+      <label>How are you feeling today?</label>
+      <div class="mood-grid" id="moodGrid">
+        <button class="mood-btn" onclick="selectMood(this)">😄 Great</button>
+        <button class="mood-btn" onclick="selectMood(this)">🙂 Good</button>
+        <button class="mood-btn" onclick="selectMood(this)">😐 Okay</button>
+        <button class="mood-btn" onclick="selectMood(this)">😔 Not great</button>
+        <button class="mood-btn" onclick="selectMood(this)">😤 Frustrated</button>
+        <button class="mood-btn" onclick="selectMood(this)">😴 Tired</button>
+      </div>
+      <label>Anything on your mind before we start? (optional)</label>
+      <textarea id="checkInNote" placeholder="You don't have to write anything — just a space if you need it..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>🦸 The Story</h2>
+      <label>Describe the story of Box-Man: Delivery of Justice in your own words.</label>
+      <p class="hint-text">Who is Box-Man? What is he trying to do? Who or what is he up against?</p>
+      <textarea id="storySummary" placeholder="Box-Man is a character who..."></textarea>
+      <label>Who are the main characters in your film?</label>
+      <textarea id="characters" placeholder="Main characters:&#10;Box-Man — &#10;Others — "></textarea>
+      <label>What genre is your film? (e.g. action, comedy, action-comedy, thriller...)</label>
+      <input type="text" id="genre" placeholder="e.g. Action-comedy" />
+    </div>
+
+    <div class="section-card">
+      <h2>📝 Script Writing</h2>
+      <label>What scenes have you planned or written so far? Give a brief outline.</label>
+      <p class="hint-text">You don't need a full script yet — even a list of scenes or a rough plan is a great start.</p>
+      <textarea id="sceneOutline" placeholder="Scene 1: ...&#10;Scene 2: ...&#10;Scene 3: ..."></textarea>
+      <label>Write or paste any script you've worked on this week below.</label>
+      <p class="hint-text">Use the format: CHARACTER NAME: (action) "dialogue". It's okay if it's rough!</p>
+      <textarea class="script-box" id="scriptText" placeholder="BOX-MAN: (looks at parcel) 'This delivery... will not be late.'&#10;&#10;VILLAIN: 'You'll never make it on time!'&#10;&#10;BOX-MAN: (runs) ..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>🎥 Production Planning</h2>
+      <label>Where are you planning to film your movie?</label>
+      <textarea id="locations" placeholder="Filming locations I'm thinking about..."></textarea>
+      <label>What equipment or props do you need?</label>
+      <textarea id="equipment" placeholder="Equipment/props needed:&#10;- &#10;- "></textarea>
+      <label>Who else is involved in your film? (cast, crew, helpers)</label>
+      <textarea id="crew" placeholder="People involved in my film..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>📋 Progress This Week</h2>
+      <label>What have you worked on this week?</label>
+      <textarea id="weekWork" placeholder="This week I worked on..."></textarea>
+      <label>What is going well?</label>
+      <textarea id="goingWell" placeholder="Something going well is..."></textarea>
+      <label>What is tricky or stuck?</label>
+      <textarea id="stuck" placeholder="Something I'm finding tricky is..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>💭 Reflection</h2>
+      <label>How does Box-Man: Delivery of Justice connect to: "How do our choices today shape the worlds of tomorrow?"</label>
+      <textarea id="drivingQ" placeholder="My film connects to this because..."></textarea>
+      <label>What is one thing you've learned or discovered this week?</label>
+      <textarea id="learned" placeholder="Something I discovered is..."></textarea>
+      <label>What do you want to work on next?</label>
+      <textarea id="nextSteps" placeholder="Next I want to..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>⭐ Self Assessment</h2>
+      <label>How hard did you work this week?</label>
+      <div class="star-row" id="effortStars">
+        <button class="star-btn" onclick="setStars('effortStars',1)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',2)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',3)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',4)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',5)">⭐</button>
+      </div>
+      <label>How confident do you feel about your project?</label>
+      <div class="star-row" id="confStars">
+        <button class="star-btn" onclick="setStars('confStars',1)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',2)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',3)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',4)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',5)">⭐</button>
+      </div>
+      <label>Anything else you want your teacher to know?</label>
+      <textarea id="teacherNote" placeholder="A message for your teacher (optional)..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitForm()">📧 Send to teacher</button>
+      <button class="btn btn-outline" onclick="clearForm()">Clear form</button>
+    </div>
+    <div class="success-msg" id="successMsg">✅ Sent! Your teacher will receive your project update.</div>
+  </main>
+  <div class="export-bar">
+    <span>Save your work:</span>
+    <button onclick="submitForm()" style="padding:0.6rem 1.25rem;background:#c0392b;color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Email to teacher</button>
+  </div>
+  <footer>Base 6 · Chilton Bridge School · Week 2 Project</footer>
+</div>
+<script>
+  const PASSWORD = 'leon';
+  let effortRating=0; let confRating=0; let mood='';
+  function tryUnlock(){
+    if(document.getElementById('passwordInput').value.trim().toLowerCase()===PASSWORD){document.getElementById('lockScreen').style.display='none';document.getElementById('mainContent').style.display='block';}
+    else{document.getElementById('lockError').style.display='block';document.getElementById('passwordInput').value='';}
+  }
+  function selectMood(btn){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');mood=btn.textContent;}
+  function setStars(g,r){document.getElementById(g).querySelectorAll('.star-btn').forEach((s,i)=>s.classList.toggle('active',i<r));if(g==='effortStars')effortRating=r;if(g==='confStars')confRating=r;}
+  function submitForm(){
+    const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    let body=`Project Update — Leon — Week 2 — ${now}\n\n`;
+    body+=`MOOD: ${mood||'Not selected'}\nCHECK-IN: ${document.getElementById('checkInNote').value||'(none)'}\n\n`;
+    body+=`STORY SUMMARY: ${document.getElementById('storySummary').value||'(not filled in)'}\n`;
+    body+=`CHARACTERS: ${document.getElementById('characters').value||'(not filled in)'}\n`;
+    body+=`GENRE: ${document.getElementById('genre').value||'(not filled in)'}\n\n`;
+    body+=`SCENE OUTLINE: ${document.getElementById('sceneOutline').value||'(not filled in)'}\n\n`;
+    body+=`SCRIPT WRITTEN THIS WEEK:\n${document.getElementById('scriptText').value||'(none yet)'}\n\n`;
+    body+=`FILMING LOCATIONS: ${document.getElementById('locations').value||'(not filled in)'}\n`;
+    body+=`EQUIPMENT/PROPS: ${document.getElementById('equipment').value||'(not filled in)'}\n`;
+    body+=`CAST/CREW: ${document.getElementById('crew').value||'(not filled in)'}\n\n`;
+    body+=`WORK THIS WEEK: ${document.getElementById('weekWork').value||'(not filled in)'}\n`;
+    body+=`GOING WELL: ${document.getElementById('goingWell').value||'(not filled in)'}\n`;
+    body+=`TRICKY: ${document.getElementById('stuck').value||'(not filled in)'}\n\n`;
+    body+=`DRIVING QUESTION: ${document.getElementById('drivingQ').value||'(not filled in)'}\n`;
+    body+=`LEARNED: ${document.getElementById('learned').value||'(not filled in)'}\n`;
+    body+=`NEXT STEPS: ${document.getElementById('nextSteps').value||'(not filled in)'}\n\n`;
+    body+=`EFFORT: ${effortRating}/5\nCONFIDENCE: ${confRating}/5\nTEACHER NOTE: ${document.getElementById('teacherNote').value||'(none)'}`;
+    window.location.href='mailto:jay.raine@chiltonbridgeschool.co.uk?subject='+encodeURIComponent('Project Update — Leon — Week 2 — '+now)+'&body='+encodeURIComponent(body);
+    document.getElementById('successMsg').style.display='block';
+  }
+  function clearForm(){
+    if(!confirm('Clear everything?'))return;
+    ['checkInNote','storySummary','characters','genre','sceneOutline','scriptText','locations','equipment','crew','weekWork','goingWell','stuck','drivingQ','learned','nextSteps','teacherNote'].forEach(id=>document.getElementById(id).value='');
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));mood='';
+    effortRating=0;confRating=0;
+    ['effortStars','confStars'].forEach(g=>document.getElementById(g).querySelectorAll('.star-btn').forEach(s=>s.classList.remove('active')));
+    document.getElementById('successMsg').style.display='none';
+  }
+</script>
+</body>
+</html>

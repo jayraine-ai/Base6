@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leo's Project Space · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --accent: #007291; --accent-light: #e6f5f8; --cream: #fef8f4; --dark: #1a1a1a; --muted: #555; --green: #2e8b57; --green-light: #eaf7f0; --red: #c0392b; --red-light: #fdecea; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+  #lockScreen { position: fixed; inset: 0; background: var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
+  #lockScreen h1 { font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+  #lockScreen p { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 2rem; line-height: 1.5; }
+  #lockScreen .lock-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  #passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.2); color: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.2rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
+  #passwordInput::placeholder { color: rgba(255,255,255,0.5); }
+  #passwordInput:focus { outline: none; border-color: white; background: rgba(255,255,255,0.3); }
+  #unlockBtn { padding: 0.75rem 2rem; background: white; color: var(--accent); border: none; border-radius: 12px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+  #lockError { color: white; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; margin-top: 0.75rem; display: none; }
+  #mainContent { display: none; }
+  .site-header { background: linear-gradient(135deg, #007291, #005a72); padding: 1.5rem 2rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #a8dce8; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 1.8rem; font-weight: 700; color: white; }
+  .site-header p { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-top: 0.4rem; }
+  .back-bar { background: rgba(0,0,50,0.15); padding: 0.6rem 2rem; }
+  .back-link { color: white; font-size: 0.85rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .main { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 2px solid var(--accent-light); }
+  .section-card h2 { font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+  label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; margin-top: 0.9rem; }
+  label:first-of-type { margin-top: 0; }
+  textarea, input[type=text] { width: 100%; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; min-height: 80px; }
+  textarea:focus, input[type=text]:focus { outline: none; border-color: var(--accent); }
+  .hint-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; font-style: italic; }
+  .mood-grid { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
+  .mood-btn { padding: 0.5rem 0.9rem; border-radius: 20px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.15s; color: var(--dark); }
+  .mood-btn.selected { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .star-row { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+  .star-btn { font-size: 1.5rem; cursor: pointer; opacity: 0.3; transition: opacity 0.15s, transform 0.15s; background: none; border: none; padding: 0; }
+  .star-btn.active { opacity: 1; }
+  .feature-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+  .feature-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.9rem; background: var(--accent-light); border-radius: 10px; }
+  .feature-item input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+  .feature-item label { margin: 0; font-size: 0.9rem; cursor: pointer; }
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-outline { background: white; color: var(--accent); border: 2px solid var(--accent); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; justify-content: center; }
+  .success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 1rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+  .export-bar { background: var(--accent-light); border-top: 2px solid #c0dce8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<div id="lockScreen">
+  <div class="lock-icon">📱</div>
+  <h1>Leo's Project Space</h1>
+  <p>This is your personal project page.<br>Enter your password to get started.</p>
+  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock →</button>
+  <div id="lockError">That password doesn't match — try again.</div>
+</div>
+<div id="mainContent">
+  <header class="site-header">
+    <p class="tag">Week 2 · Project</p>
+    <h1>📱 Leo's Wellbeing App</h1>
+    <p>Designing something that helps people feel better</p>
+  </header>
+  <div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 2</a></div>
+  <main class="main">
+
+    <div class="section-card">
+      <h2>😊 Check In</h2>
+      <label>How are you feeling today?</label>
+      <div class="mood-grid" id="moodGrid">
+        <button class="mood-btn" onclick="selectMood(this)">😄 Great</button>
+        <button class="mood-btn" onclick="selectMood(this)">🙂 Good</button>
+        <button class="mood-btn" onclick="selectMood(this)">😐 Okay</button>
+        <button class="mood-btn" onclick="selectMood(this)">😔 Not great</button>
+        <button class="mood-btn" onclick="selectMood(this)">😤 Frustrated</button>
+        <button class="mood-btn" onclick="selectMood(this)">😴 Tired</button>
+      </div>
+      <label>Anything on your mind before we start? (optional)</label>
+      <textarea id="checkInNote" placeholder="You don't have to write anything — just a space if you need it..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>📱 Your App Concept</h2>
+      <label>What is the name of your wellbeing app?</label>
+      <input type="text" id="appName" placeholder="e.g. CalmSpace, MindCheck, FeelGood..." />
+      <label>Who is your app designed for? Who would use it?</label>
+      <p class="hint-text">Think about age, situation, what kind of person might need it most.</p>
+      <textarea id="targetUser" placeholder="My app is designed for..."></textarea>
+      <label>What problem does your app solve? What does it help people with?</label>
+      <textarea id="appProblem" placeholder="My app helps people who..."></textarea>
+      <label>Which of these features does your app include? Tick all that apply.</label>
+      <div class="feature-list">
+        <div class="feature-item"><input type="checkbox" id="f1"><label for="f1">Mood tracker</label></div>
+        <div class="feature-item"><input type="checkbox" id="f2"><label for="f2">Breathing or calming exercises</label></div>
+        <div class="feature-item"><input type="checkbox" id="f3"><label for="f3">Daily journal or diary</label></div>
+        <div class="feature-item"><input type="checkbox" id="f4"><label for="f4">Positive affirmations or motivational messages</label></div>
+        <div class="feature-item"><input type="checkbox" id="f5"><label for="f5">Reminders or check-ins</label></div>
+        <div class="feature-item"><input type="checkbox" id="f6"><label for="f6">Something else (describe below)</label></div>
+      </div>
+      <label>Any other features or ideas?</label>
+      <textarea id="otherFeatures" placeholder="Other ideas for my app..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>🎨 Design and Progress</h2>
+      <label>Describe what your app looks like — colours, layout, feel.</label>
+      <p class="hint-text">Think about what would make it feel calm and safe to use. What colours? What would the home screen show?</p>
+      <textarea id="appDesign" placeholder="My app would look..."></textarea>
+      <label>What have you worked on this week?</label>
+      <textarea id="weekWork" placeholder="This week I worked on..."></textarea>
+      <label>What is going well with your project?</label>
+      <textarea id="goingWell" placeholder="Something going well is..."></textarea>
+      <label>What is tricky or needs more thought?</label>
+      <textarea id="stuck" placeholder="Something I'm finding tricky is..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>💭 Reflection</h2>
+      <label>How does your wellbeing app connect to the driving question: "How do our choices today shape the worlds of tomorrow?"</label>
+      <textarea id="drivingQ" placeholder="My app connects to this because..."></textarea>
+      <label>What is one thing you've learned or discovered this week while working on it?</label>
+      <textarea id="learned" placeholder="Something I discovered is..."></textarea>
+      <label>What do you want to work on next?</label>
+      <textarea id="nextSteps" placeholder="Next I want to..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>⭐ Self Assessment</h2>
+      <label>How hard did you work this week?</label>
+      <div class="star-row" id="effortStars">
+        <button class="star-btn" onclick="setStars('effortStars',1)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',2)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',3)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',4)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',5)">⭐</button>
+      </div>
+      <label>How confident do you feel about your project right now?</label>
+      <div class="star-row" id="confStars">
+        <button class="star-btn" onclick="setStars('confStars',1)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',2)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',3)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',4)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',5)">⭐</button>
+      </div>
+      <label>Anything else you want your teacher to know?</label>
+      <textarea id="teacherNote" placeholder="A message for your teacher (optional)..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitForm()">📧 Send to teacher</button>
+      <button class="btn btn-outline" onclick="clearForm()">Clear form</button>
+    </div>
+    <div class="success-msg" id="successMsg">✅ Sent! Your teacher will receive your project update.</div>
+  </main>
+  <div class="export-bar">
+    <span>Save your work:</span>
+    <button onclick="submitForm()" style="padding:0.6rem 1.25rem;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Email to teacher</button>
+  </div>
+  <footer>Base 6 · Chilton Bridge School · Week 2 Project</footer>
+</div>
+<script>
+  const PASSWORD = 'leo';
+  let effortRating = 0; let confRating = 0; let mood = '';
+  function tryUnlock() {
+    if (document.getElementById('passwordInput').value.trim().toLowerCase() === PASSWORD) {
+      document.getElementById('lockScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    } else {
+      document.getElementById('lockError').style.display = 'block';
+      document.getElementById('passwordInput').value = '';
+    }
+  }
+  function selectMood(btn) { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); mood=btn.textContent; }
+  function setStars(g,r) { document.getElementById(g).querySelectorAll('.star-btn').forEach((s,i)=>s.classList.toggle('active',i<r)); if(g==='effortStars')effortRating=r; if(g==='confStars')confRating=r; }
+  function getChecked() { return ['f1','f2','f3','f4','f5','f6'].filter(id=>document.getElementById(id).checked).map(id=>document.querySelector('label[for='+id+']').textContent).join(', ') || 'None selected'; }
+  function submitForm() {
+    const now = new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    let body = `Project Update — Leo — Week 2 — ${now}\n\n`;
+    body += `MOOD: ${mood||'Not selected'}\nCHECK-IN NOTE: ${document.getElementById('checkInNote').value||'(none)'}\n\n`;
+    body += `APP NAME: ${document.getElementById('appName').value||'(not filled in)'}\n`;
+    body += `TARGET USER: ${document.getElementById('targetUser').value||'(not filled in)'}\n`;
+    body += `PROBLEM IT SOLVES: ${document.getElementById('appProblem').value||'(not filled in)'}\n`;
+    body += `FEATURES: ${getChecked()}\n`;
+    body += `OTHER FEATURES: ${document.getElementById('otherFeatures').value||'(none)'}\n\n`;
+    body += `APP DESIGN: ${document.getElementById('appDesign').value||'(not filled in)'}\n`;
+    body += `WORK THIS WEEK: ${document.getElementById('weekWork').value||'(not filled in)'}\n`;
+    body += `GOING WELL: ${document.getElementById('goingWell').value||'(not filled in)'}\n`;
+    body += `TRICKY/STUCK: ${document.getElementById('stuck').value||'(not filled in)'}\n\n`;
+    body += `DRIVING QUESTION: ${document.getElementById('drivingQ').value||'(not filled in)'}\n`;
+    body += `LEARNED: ${document.getElementById('learned').value||'(not filled in)'}\n`;
+    body += `NEXT STEPS: ${document.getElementById('nextSteps').value||'(not filled in)'}\n\n`;
+    body += `EFFORT: ${effortRating}/5\nCONFIDENCE: ${confRating}/5\n`;
+    body += `TEACHER NOTE: ${document.getElementById('teacherNote').value||'(none)'}`;
+    window.location.href = 'mailto:jay.raine@chiltonbridgeschool.co.uk?subject='+encodeURIComponent('Project Update — Leo — Week 2 — '+now)+'&body='+encodeURIComponent(body);
+    document.getElementById('successMsg').style.display = 'block';
+  }
+  function clearForm() {
+    if(!confirm('Clear everything?'))return;
+    ['checkInNote','appName','targetUser','appProblem','otherFeatures','appDesign','weekWork','goingWell','stuck','drivingQ','learned','nextSteps','teacherNote'].forEach(id=>document.getElementById(id).value='');
+    ['f1','f2','f3','f4','f5','f6'].forEach(id=>document.getElementById(id).checked=false);
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); mood='';
+    effortRating=0;confRating=0;
+    ['effortStars','confStars'].forEach(g=>document.getElementById(g).querySelectorAll('.star-btn').forEach(s=>s.classList.remove('active')));
+    document.getElementById('successMsg').style.display='none';
+  }
+</script>
+</body>
+</html>
