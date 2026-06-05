@@ -12,18 +12,24 @@
   .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem; }
   .back-link:hover { opacity: 1; }
   .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
-  .subject-hero { background-color: #b07010; padding: 0 2rem 2rem; text-align: center; }
-  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fdecc8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .subject-hero { background: linear-gradient(135deg, #003a5c, #006994); padding: 0 2rem 2rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #a8d8f0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; margin-bottom: 0.5rem; }
+  .subject-hero p { font-size: 1rem; color: #c8e8f0; max-width: 520px; margin: 0 auto; line-height: 1.6; }
   .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #b07010; margin-bottom: 1.25rem; }
-  .coming-soon-card { background: #fdf5e0; border-left: 4px solid #e8a020; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
-  .coming-soon-card p { font-size: 1rem; color: #555; line-height: 1.6; }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #006994; margin-bottom: 1.25rem; }
+  .focus-card { background: #e0f0f8; border-left: 4px solid #006994; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .focus-card p.label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #006994; margin-bottom: 0.5rem; }
+  .focus-card p.body { font-size: 0.95rem; color: #1a1a1a; line-height: 1.6; }
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card.placeholder { background: #ffffff; border: 2px dashed #ccc; border-radius: 14px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; opacity: 0.5; cursor: default; }
+  .resource-card { background: #ffffff; border: 2px solid #006994; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,105,148,0.15); }
+  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
-  .resource-name.muted { font-size: 1.05rem; font-weight: 700; color: #999; line-height: 1.3; }
+  .resource-name { font-size: 1.05rem; font-weight: 700; color: #006994; line-height: 1.3; }
+  .resource-name.muted { color: #999; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
+  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #006994; }
   .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
@@ -37,22 +43,31 @@
 
 <div class="subject-hero">
   <p class="subject-label">Week 2 · Cultural Calendar</p>
-  <h1>🌍 Cultural Calendar</h1>
+  <h1>🌊 World Oceans Day</h1>
+  <p>Exploring our oceans, the threats they face, and what we can do to protect them.</p>
 </div>
 
 <main class="main">
 
-  <div class="coming-soon-card">
-    <p>This week's Cultural Calendar content is being prepared. Check back soon — activities will appear below when they are ready.</p>
+  <div class="focus-card">
+    <p class="label">This week</p>
+    <p class="body">World Oceans Day is celebrated every year on <strong>8th June</strong>. This year we're exploring why oceans matter, what threatens them, and how our choices today shape the oceans of tomorrow.</p>
   </div>
 
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
+    <a class="resource-card" href="world-oceans-day.html">
+      <div class="resource-icon">🌊</div>
+      <span class="resource-name">World Oceans Day 2026</span>
+      <span class="resource-desc">Explore ocean facts, dive into the deep zones, sort ocean threats, play Fact or Myth, take the quiz and make your personal pledge. Includes email and PDF results.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
+
     <div class="resource-card placeholder">
-      <div class="resource-icon">🌍</div>
-      <span class="resource-name muted">Cultural Calendar Activity</span>
-      <span class="resource-desc">Activity coming soon.</span>
+      <div class="resource-icon">➕</div>
+      <span class="resource-name muted">More coming soon</span>
+      <span class="resource-desc">Additional resources will appear here.</span>
       <span class="resource-tag">Coming soon</span>
     </div>
 
