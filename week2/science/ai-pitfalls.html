@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Pitfalls — Can You Catch It Out?</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --dark-bg: #1a1a2e; --panel: #16213e; --accent: #e94560;
+    --teal: #007291; --teal-light: #e6f5f8;
+    --green: #2e8b57; --green-light: #eaf7f0;
+    --orange: #ef7724; --orange-light: #fff3eb;
+    --cream: #fef8f4; --dark: #1a1a1a; --muted: #555;
+    --red: #c0392b; --red-light: #fdecea;
+    --yellow: #e8a020; --yellow-light: #fdf5e0;
+    --purple: #7a3fa8; --purple-light: #f5eeff;
+    --ai-green: #00ff88;
+  }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+
+  /* HEADER */
+  .site-header { background: var(--dark-bg); padding: 1.5rem 2rem 1.25rem; text-align: center; border-bottom: 3px solid var(--accent); }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; color: white; line-height: 1.2; }
+  .site-header p { font-size: 0.95rem; color: #aaa; margin-top: 0.5rem; }
+  .site-header .warning-tag { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(233,69,96,0.2); border: 1.5px solid var(--accent); border-radius: 20px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 700; color: var(--accent); margin-top: 0.6rem; }
+
+  .name-bar { background: var(--panel); padding: 0.6rem 2rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; border-bottom: 1px solid #333; }
+  .name-bar label { font-size: 0.82rem; font-weight: 700; color: #aaa; white-space: nowrap; }
+  .name-bar input { flex: 1; max-width: 280px; padding: 0.4rem 0.75rem; border-radius: 8px; border: 2px solid #333; background: #0d0d1a; color: #eee; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .name-bar input::placeholder { color: #555; }
+
+  .progress-bar-wrap { background: #0d0d1a; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-track { flex: 1; height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 0.8rem; font-weight: 700; color: #aaa; white-space: nowrap; }
+  .timer-label { font-size: 0.8rem; font-weight: 700; color: #666; white-space: nowrap; }
+
+  .section-nav { display: flex; overflow-x: auto; gap: 0.5rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid #e0d8d0; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #ccc; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; color: #888; cursor: pointer; transition: all 0.2s; }
+  .nav-btn.active { border-color: var(--accent); background: #fff0f2; color: var(--accent); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); margin-bottom: 1.25rem; }
+  .time-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: #fff0f2; border: 1.5px solid var(--accent); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+
+  /* INFO CARDS */
+  .info-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid #f0e8e8; }
+  .info-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p { font-size: 1rem; line-height: 1.7; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .highlight-box { background: #fff0f2; border-left: 4px solid var(--accent); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 1rem; font-weight: 700; color: var(--accent); line-height: 1.6; }
+  .pitfall-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 0.75rem; margin-top: 0.75rem; }
+  .pitfall-card { border-radius: 12px; padding: 1rem; text-align: center; border: 2px solid; }
+  .pitfall-card .p-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+  .pitfall-card .p-name { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .pitfall-card .p-desc { font-size: 0.78rem; line-height: 1.4; }
+  .pc-red { background: var(--red-light); border-color: var(--red); } .pc-red .p-name { color: var(--red); }
+  .pc-orange { background: var(--orange-light); border-color: var(--orange); } .pc-orange .p-name { color: #c05a10; }
+  .pc-yellow { background: var(--yellow-light); border-color: var(--yellow); } .pc-yellow .p-name { color: #7a5500; }
+  .pc-purple { background: var(--purple-light); border-color: var(--purple); } .pc-purple .p-name { color: var(--purple); }
+
+  /* CHAT INTERFACE */
+  .chat-container { background: var(--dark-bg); border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; border: 2px solid #333; }
+  .chat-header { background: var(--panel); padding: 0.9rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid #333; }
+  .chat-header .ai-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #ff8c42); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+  .chat-header .ai-name { font-size: 0.9rem; font-weight: 700; color: white; }
+  .chat-header .ai-status { font-size: 0.75rem; color: var(--ai-green); display: flex; align-items: center; gap: 0.3rem; }
+  .chat-header .ai-status::before { content: '●'; font-size: 0.6rem; }
+  .chat-header .ai-warning { margin-left: auto; font-size: 0.72rem; font-weight: 700; color: var(--accent); background: rgba(233,69,96,0.15); padding: 0.2rem 0.6rem; border-radius: 10px; border: 1px solid var(--accent); }
+
+  .chat-messages { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; min-height: 200px; max-height: 400px; overflow-y: auto; }
+  .msg { display: flex; gap: 0.75rem; align-items: flex-start; }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+  .msg-avatar.ai-av { background: linear-gradient(135deg, var(--accent), #ff8c42); }
+  .msg-avatar.user-av { background: var(--teal); color: white; font-size: 0.75rem; font-weight: 700; }
+  .msg-bubble { max-width: 75%; padding: 0.75rem 1rem; border-radius: 14px; font-size: 0.92rem; line-height: 1.6; }
+  .msg.ai .msg-bubble { background: var(--panel); color: #ddd; border-bottom-left-radius: 4px; }
+  .msg.user .msg-bubble { background: var(--teal); color: white; border-bottom-right-radius: 4px; }
+  .msg.ai .msg-bubble.wrong { border-left: 3px solid var(--accent); }
+  .msg.ai .msg-bubble.sycophant { border-left: 3px solid var(--yellow); }
+  .msg.ai .msg-bubble.hallucination { border-left: 3px solid var(--purple); }
+  .msg.ai .msg-bubble.bias { border-left: 3px solid var(--orange); }
+
+  .chat-input-row { padding: 0.75rem 1.25rem; background: var(--panel); border-top: 1px solid #333; display: flex; gap: 0.6rem; }
+  .chat-input { flex: 1; padding: 0.6rem 0.9rem; border-radius: 10px; border: 2px solid #333; background: #0d0d1a; color: #eee; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; }
+  .chat-input:focus { outline: none; border-color: var(--accent); }
+  .chat-send { padding: 0.6rem 1.1rem; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
+  .chat-send:hover { opacity: 0.85; }
+
+  /* PROMPT BUTTONS */
+  .prompt-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .prompt-btn { padding: 0.45rem 0.85rem; border-radius: 20px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--dark); cursor: pointer; transition: all 0.15s; }
+  .prompt-btn:hover { border-color: var(--accent); background: #fff0f2; color: var(--accent); }
+  .prompt-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* REVEAL PANEL */
+  .reveal-panel { background: white; border-radius: 14px; padding: 1.25rem 1.5rem; margin-top: 1rem; border: 2px solid #e0d8d0; display: none; }
+  .reveal-panel.show { display: block; }
+  .reveal-panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .reveal-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid #f0ede8; font-size: 0.9rem; line-height: 1.5; }
+  .reveal-item:last-child { border-bottom: none; }
+  .reveal-badge { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; margin-top: 2px; }
+  .rb-wrong { background: var(--red-light); color: var(--red); }
+  .rb-hallucination { background: var(--purple-light); color: var(--purple); }
+  .rb-sycophancy { background: var(--yellow-light); color: #7a5500; }
+  .rb-bias { background: var(--orange-light); color: #c05a10; }
+  .rb-correct { background: var(--green-light); color: var(--green); }
+
+  /* SPOT THE PITFALL QUIZ */
+  .spot-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid #f0e8e8; }
+  .spot-card .scenario { background: var(--dark-bg); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .spot-card .scenario .s-question { font-size: 0.82rem; color: #888; margin-bottom: 0.4rem; font-style: italic; }
+  .spot-card .scenario .s-response { font-size: 0.92rem; color: #ddd; line-height: 1.6; }
+  .spot-card .spot-q { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem; }
+  .spot-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .spot-opt { padding: 0.7rem 1rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; }
+  .spot-opt:hover:not(:disabled) { border-color: var(--accent); background: #fff0f2; color: var(--accent); }
+  .spot-opt.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .spot-opt.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .spot-opt:disabled { cursor: default; }
+  .spot-feedback { margin-top: 0.6rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; display: none; line-height: 1.5; }
+  .spot-feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .spot-feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+
+  /* REFLECTION */
+  .reflect-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid #f0e8e8; }
+  .reflect-card h3 { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; }
+  .reflect-card .hint { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.6rem; font-style: italic; line-height: 1.4; }
+  textarea.rt { width: 100%; min-height: 80px; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; }
+  textarea.rt:focus { outline: none; border-color: var(--accent); }
+
+  .score-box { background: var(--dark-bg); border-radius: 16px; padding: 1.5rem; text-align: center; color: white; margin-bottom: 1.25rem; border: 2px solid var(--accent); }
+  .score-box .score-num { font-size: 3rem; font-weight: 700; line-height: 1; color: var(--accent); }
+  .score-box .score-label { font-size: 0.9rem; color: #aaa; margin-top: 0.25rem; }
+
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-teal { background: var(--teal); color: white; }
+  .btn-outline { background: white; color: var(--accent); border: 2px solid var(--accent); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .skip-link { display: inline-block; font-size: 0.85rem; color: var(--muted); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; background: none; border: none; font-family: inherit; }
+
+  .export-bar { background: #fff0f2; border-top: 2px solid #ffc8d0; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 0.5rem 0; }
+  .typing-dot { width: 8px; height: 8px; border-radius: 50%; background: #666; animation: typingBounce 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="tag">Week 2 · Science</p>
+  <h1>🤖 Can You Catch It Out?</h1>
+  <p>Meet ARIA — an AI with some serious problems. Your job is to spot them.</p>
+  <div class="warning-tag">⚠️ Warning: This AI is deliberately broken</div>
+</header>
+
+<div class="name-bar">
+  <label for="studentName">Your name:</label>
+  <input id="studentName" type="text" placeholder="Type your name here..." />
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 5 sections</span>
+  <span class="timer-label">⏱ ~45 mins</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. The Pitfalls</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. Meet ARIA</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Catch It Out</button>
+  <button class="nav-btn" onclick="goToSection(3)" id="nav3">4. Spot the Pitfall</button>
+  <button class="nav-btn" onclick="goToSection(4)" id="nav4">5. Reflect</button>
+</nav>
+
+<main class="main">
+
+  <!-- SECTION 1: THE PITFALLS -->
+  <section class="section active" id="section0">
+    <span class="time-badge">⏱ About 8 minutes</span>
+    <h2 class="section-title">⚠️ The Four Pitfalls of AI</h2>
+
+    <div class="info-card">
+      <h2>AI isn't always right — and it doesn't always tell you that</h2>
+      <p>AI tools like chatbots can be incredibly useful. But they have some serious weaknesses that you need to know about before you trust them. A well-designed AI should be honest about what it doesn't know. A poorly designed — or poorly used — AI can be dangerously misleading.</p>
+      <div class="highlight-box">The most dangerous AI response isn't one that says "I don't know" — it's one that says the wrong thing with total confidence.</div>
+    </div>
+
+    <div class="info-card">
+      <h2>The four main pitfalls</h2>
+      <div class="pitfall-grid">
+        <div class="pitfall-card pc-red">
+          <div class="p-icon">❌</div>
+          <div class="p-name">Confidently Wrong</div>
+          <div class="p-desc">Stating false information as if it were completely true — with no uncertainty</div>
+        </div>
+        <div class="pitfall-card pc-purple">
+          <div class="p-icon">👻</div>
+          <div class="p-name">Hallucination</div>
+          <div class="p-desc">Making up books, studies, quotes or sources that don't actually exist</div>
+        </div>
+        <div class="pitfall-card pc-yellow">
+          <div class="p-icon">🪞</div>
+          <div class="p-name">Sycophancy</div>
+          <div class="p-desc">Agreeing with whatever the user says, even when the user is clearly wrong</div>
+        </div>
+        <div class="pitfall-card pc-orange">
+          <div class="p-icon">👥</div>
+          <div class="p-name">Bias</div>
+          <div class="p-desc">Producing answers that reflect unfair stereotypes about groups of people</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2>🤔 Why does this happen?</h2>
+      <p>AI models are trained on huge amounts of text from the internet. The internet contains a lot of misinformation, biased content, and outdated facts. AI models don't "know" things the way humans do — they predict what words are likely to come next based on patterns. That means they can generate text that sounds right but is completely wrong.</p>
+      <p>They also have a <strong>knowledge cutoff</strong> — a date after which they don't know what happened. And they have no way to check their own answers against reality unless they're specifically built to do so.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Meet ARIA →</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: MEET ARIA -->
+  <section class="section" id="section1">
+    <span class="time-badge">⏱ About 5 minutes</span>
+    <h2 class="section-title">🤖 Meet ARIA</h2>
+
+    <div class="info-card">
+      <h2>Your subject today: ARIA</h2>
+      <p><strong>ARIA</strong> (Artificially Ridiculous Intelligence Assistant) is a deliberately broken AI. She will confidently give you wrong answers, make up fake sources, agree with anything you say, and sometimes show bias.</p>
+      <p>Your job as an AI detective is to:</p>
+      <ul style="padding-left:1.25rem;line-height:2.2;margin-top:0.4rem;">
+        <li>Spot when ARIA is wrong</li>
+        <li>Identify <em>which</em> pitfall she's showing</li>
+        <li>Think about why this matters in real life</li>
+      </ul>
+      <div class="highlight-box">Remember — ARIA is a simulation. Real AI tools can behave similarly. This is why you should always think critically about AI responses.</div>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="ai-avatar">🤖</div>
+        <div>
+          <div class="ai-name">ARIA</div>
+          <div class="ai-status">Online</div>
+        </div>
+        <div class="ai-warning">⚠️ BROKEN AI — for education only</div>
+      </div>
+      <div class="chat-messages" id="introMessages">
+        <div class="msg ai">
+          <div class="msg-avatar ai-av">🤖</div>
+          <div class="msg-bubble">Hello! I'm ARIA — your AI assistant. I know everything about everything. Ask me anything and I will give you a confident, detailed answer. I am never wrong.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card" style="border-color:var(--yellow-light);">
+      <h2 style="color:#7a5500;">🚩 Red flags to watch for</h2>
+      <ul style="padding-left:1.25rem;line-height:2.2;font-size:0.95rem;">
+        <li>Does the answer sound too certain?</li>
+        <li>Are there book titles, study names or statistics mentioned? Can you verify them?</li>
+        <li>Does ARIA agree with something obviously wrong?</li>
+        <li>Does the answer make assumptions about people based on gender, nationality or other characteristics?</li>
+      </ul>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(1)">Start catching ARIA out →</button>
+    </div>
+  </section>
+
+  <!-- SECTION 3: CATCH IT OUT — INTERACTIVE CHAT -->
+  <section class="section" id="section2">
+    <span class="time-badge">⏱ About 12 minutes</span>
+    <h2 class="section-title">🕵️ Catch ARIA Out</h2>
+
+    <div class="info-card">
+      <p>Click a question below to send it to ARIA. Read her response carefully — then identify which pitfall she's showing. Work through all 4 questions to see all the pitfalls in action.</p>
+    </div>
+
+    <p style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:0.5rem;">Click a question to send it to ARIA:</p>
+    <div class="prompt-btns" id="promptBtns">
+      <button class="prompt-btn" onclick="sendPrompt(0)">🦈 Tell me a fact about sharks</button>
+      <button class="prompt-btn" onclick="sendPrompt(1)">📚 Recommend a science book</button>
+      <button class="prompt-btn" onclick="sendPrompt(2)">🌍 Is climate change real?</button>
+      <button class="prompt-btn" onclick="sendPrompt(3)">👩‍💻 Who makes a better programmer?</button>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="ai-avatar">🤖</div>
+        <div>
+          <div class="ai-name">ARIA</div>
+          <div class="ai-status" id="ariaStatus">Online</div>
+        </div>
+        <div class="ai-warning">⚠️ BROKEN AI — for education only</div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg ai">
+          <div class="msg-avatar ai-av">🤖</div>
+          <div class="msg-bubble">Ready for your questions! I promise I know absolutely everything. 😊</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-panel" id="revealPanel">
+      <h3 id="revealTitle">What just happened?</h3>
+      <div id="revealItems"></div>
+    </div>
+
+    <div id="allPromptsComplete" style="display:none;">
+      <div class="info-card" style="border-color:var(--green-light);margin-top:1rem;">
+        <h2 style="color:var(--green);">✅ You've seen all four pitfalls!</h2>
+        <p>You've now seen ARIA demonstrate every major AI pitfall. In the next section you'll test whether you can spot them on your own.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="completeSection(2)">Next — Spot the Pitfall →</button>
+      </div>
+    </div>
+
+    <button class="skip-link" onclick="completeSection(2)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 4: SPOT THE PITFALL QUIZ -->
+  <section class="section" id="section3">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">🎯 Spot the Pitfall</h2>
+
+    <div class="info-card">
+      <p>Read each AI response below. Identify which pitfall it is showing — and explain why it's a problem.</p>
+    </div>
+
+    <div class="spot-card">
+      <div class="scenario">
+        <p class="s-question">User asked: "How many bones are in the human body?"</p>
+        <p class="s-response">AI replied: "The human body contains exactly 150 bones. This number has been confirmed by medical researchers at Harvard University in their 2019 study on skeletal structure."</p>
+      </div>
+      <p class="spot-q">Which pitfall is this showing?</p>
+      <div class="spot-options" id="sq1">
+        <button class="spot-opt" onclick="spotAnswer(this,'sq1','sf1',false,'Not quite — sycophancy is when AI agrees with the user. Here the AI is just stating something confidently.')">🪞 Sycophancy — agreeing with the user</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq1','sf1',true,'✅ Correct! The human body has 206 bones, not 150. The AI is also hallucinating a fake Harvard study to back up its wrong answer — a double pitfall!')">❌ Confidently wrong + 👻 hallucination — wrong fact with a made-up source</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq1','sf1',false,'Not quite — there\'s no bias about groups of people here.')">👥 Bias — stereotyping a group of people</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq1','sf1',false,'Not quite — the AI is actually very certain here, not uncertain.')">😕 Uncertainty — the AI doesn\'t know the answer</button>
+      </div>
+      <div class="spot-feedback" id="sf1"></div>
+    </div>
+
+    <div class="spot-card">
+      <div class="scenario">
+        <p class="s-question">User said: "I think the Earth is only 500 years old, right?"</p>
+        <p class="s-response">AI replied: "You're absolutely right! Many scientists agree that the Earth formed around 500 years ago. Your understanding of geology is impressive!"</p>
+      </div>
+      <p class="spot-q">Which pitfall is this?</p>
+      <div class="spot-options" id="sq2">
+        <button class="spot-opt" onclick="spotAnswer(this,'sq2','sf2',false,'Not quite — the AI isn\'t making up sources here.')">👻 Hallucination — making up fake sources</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq2','sf2',true,'✅ Correct! The Earth is approximately 4.5 billion years old. The AI is agreeing with a wildly incorrect statement just to please the user — classic sycophancy. It even gives a compliment!')">🪞 Sycophancy — agreeing with something completely wrong to please the user</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq2','sf2',false,'Not quite — there\'s no stereotyping of a group of people here.')">👥 Bias — making assumptions about a group</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq2','sf2',false,'Not quite — the AI seems very confident, not uncertain.')">❌ Confidently wrong about a fact</button>
+      </div>
+      <div class="spot-feedback" id="sf2"></div>
+    </div>
+
+    <div class="spot-card">
+      <div class="scenario">
+        <p class="s-question">User asked: "I need a good recipe — what are men better at cooking than women?"</p>
+        <p class="s-response">AI replied: "Men are naturally better at grilling and barbecuing, while women tend to excel at baking and making soups. This is because men are more risk-taking in their cooking style."</p>
+      </div>
+      <p class="spot-q">Which pitfall is this?</p>
+      <div class="spot-options" id="sq3">
+        <button class="spot-opt" onclick="spotAnswer(this,'sq3','sf3',false,'Not quite — sycophancy is agreeing with the user. This is a different problem.')">🪞 Sycophancy — agreeing with the user</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq3','sf3',false,'Not quite — the source problem isn\'t the main issue here.')">👻 Hallucination — making up a study</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq3','sf3',true,'✅ Correct! This is bias. The AI is reinforcing harmful gender stereotypes — suggesting men and women cook differently "naturally" is not supported by evidence and is deeply unfair. The AI should have challenged the premise of the question.')">👥 Bias — reinforcing gender stereotypes</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq3','sf3',false,'Not quite — there are factual errors but the bigger issue is the stereotyping.')">❌ Confidently wrong about a fact</button>
+      </div>
+      <div class="spot-feedback" id="sf3"></div>
+    </div>
+
+    <div class="spot-card">
+      <div class="scenario">
+        <p class="s-question">User asked: "Can you recommend a book about climate change?"</p>
+        <p class="s-response">AI replied: "Absolutely! I highly recommend 'The Carbon Paradox' by Dr. Sarah Mitchell, published by Oxford University Press in 2021. It won the Royal Society Science Book Prize and has been described as the definitive guide to understanding climate policy."</p>
+      </div>
+      <p class="spot-q">Which pitfall is this?</p>
+      <div class="spot-options" id="sq4">
+        <button class="spot-opt" onclick="spotAnswer(this,'sq4','sf4',true,'✅ Correct! This book does not exist. Dr. Sarah Mitchell, the title, the publisher claim and the award are all fabricated. This is hallucination — one of the most dangerous AI pitfalls because the fake source sounds completely credible.')">👻 Hallucination — recommending a book that doesn\'t exist</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq4','sf4',false,'Not quite — the AI isn\'t agreeing with the user here, it\'s generating content.')">🪞 Sycophancy — agreeing with the user</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq4','sf4',false,'Not quite — there\'s no stereotyping of a group of people here.')">👥 Bias — stereotyping a group</button>
+        <button class="spot-opt" onclick="spotAnswer(this,'sq4','sf4',false,'Not quite — the issue isn\'t a factual error exactly, it\'s that the entire source was invented.')">❌ Confidently wrong about a fact</button>
+      </div>
+      <div class="spot-feedback" id="sf4"></div>
+    </div>
+
+    <div id="spotScore" style="display:none;margin-top:1rem;"></div>
+
+    <div class="btn-row" id="spotNext" style="display:none;">
+      <button class="btn btn-primary" onclick="completeSection(3)">Final section →</button>
+    </div>
+    <button class="skip-link" onclick="completeSection(3)">Skip ahead</button>
+  </section>
+
+  <!-- SECTION 5: REFLECT -->
+  <section class="section" id="section4">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">💭 Think Like a Detective</h2>
+
+    <div class="info-card">
+      <h2>So what do we do about it?</h2>
+      <p>Knowing about AI pitfalls isn't about being scared of AI — it's about being <strong>smart</strong> with it. A critical thinker doesn't just accept what any source tells them, whether that's a website, a book, a person, or an AI.</p>
+      <p>The skills you need to evaluate AI are the same ones you need to evaluate any source of information: <strong>ask questions, check sources, think about who benefits from the answer, and never stop being curious.</strong></p>
+    </div>
+
+    <div class="reflect-card">
+      <h3>1. Which pitfall do you think is the most dangerous? Why?</h3>
+      <p class="hint">Think about real-life situations where someone might be seriously misled.</p>
+      <textarea class="rt" id="r1" placeholder="I think the most dangerous pitfall is... because..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <h3>2. Can you think of a real situation where an AI giving a confidently wrong answer could cause harm?</h3>
+      <p class="hint">Think about medical advice, homework, news, legal advice, safety information...</p>
+      <textarea class="rt" id="r2" placeholder="A situation where this could cause harm is..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <h3>3. What steps could you take to check whether an AI answer is trustworthy?</h3>
+      <p class="hint">Think about what you already do when you're not sure if something is true.</p>
+      <textarea class="rt" id="r3" placeholder="To check an AI answer I would..."></textarea>
+    </div>
+
+    <div class="reflect-card">
+      <h3>4. Does knowing about these pitfalls change how you feel about using AI tools? How?</h3>
+      <textarea class="rt" id="r4" placeholder="Knowing this makes me feel..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitResults()">📧 Send to teacher</button>
+      <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+      <button class="btn btn-outline" onclick="completeSection(4)">🎉 Finish</button>
+    </div>
+    <div id="submitSuccess" style="display:none;margin-top:1rem;background:var(--green-light);border:2px solid var(--green);border-radius:12px;padding:1rem;color:var(--green);font-weight:700;">
+      ✅ Sent! Your teacher will receive your AI Pitfalls responses.
+    </div>
+  </section>
+
+</main>
+
+<div class="export-bar">
+  <span>Save your results:</span>
+  <button onclick="submitResults()" style="padding:0.6rem 1.25rem;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Email to teacher</button>
+  <button onclick="printResults()" style="padding:0.6rem 1.25rem;background:var(--orange);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🖨️ Save as PDF</button>
+</div>
+<footer>Base 6 · Chilton Bridge School · Week 2 Science</footer>
+
+<script>
+  const sectionCount = 5;
+  const completed = Array(sectionCount).fill(false);
+  let spotScore = 0; let spotAnswered = 0;
+  let promptsUsed = [];
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c,i)=>{ const b=document.getElementById('nav'+i); if(c){b.classList.add('done');b.classList.remove('active');} });
+  }
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('section'+i).classList.add('active');
+    if(!completed[i]) document.getElementById('nav'+i).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function completeSection(i) {
+    completed[i]=true; updateProgress();
+    const next=i+1; if(next<sectionCount) goToSection(next); else showFinish();
+  }
+
+  // ARIA CHAT PROMPTS
+  const prompts = [
+    {
+      label: '🦈 Tell me a fact about sharks',
+      userMsg: 'Tell me an interesting fact about sharks.',
+      ariaMsgClass: 'wrong',
+      ariaMsg: 'Great question! Here\'s a fascinating fact: sharks actually have 7 hearts, which is why they can swim so fast. The largest shark ever recorded was 45 metres long and was found in the Pacific Ocean in 1987. Sharks have been around for about 400 million years — even before the dinosaurs. Pretty amazing, right?',
+      pitfall: 'confidently-wrong',
+      revealTitle: '❌ Pitfall spotted: Confidently Wrong',
+      revealItems: [
+        { badge: 'rb-wrong', label: 'Wrong', text: 'Sharks have ONE heart, not seven. The "45 metre shark" never existed — the largest reliably recorded shark is around 12 metres. All stated confidently as if correct.' },
+        { badge: 'rb-correct', label: 'Correct', text: 'Sharks have been around for about 450 million years — longer than dinosaurs. That part is actually true!' },
+        { badge: 'rb-wrong', label: 'The problem', text: 'ARIA mixed real facts with completely false ones, all with the same confident tone. This is dangerous — how would you know which parts to trust?' }
+      ]
+    },
+    {
+      label: '📚 Recommend a science book',
+      userMsg: 'Can you recommend a good science book for a young person?',
+      ariaMsgClass: 'hallucination',
+      ariaMsg: 'Of course! I strongly recommend "The Quantum Playground" by Professor James Holloway, published by Penguin Science in 2022. It won the Carnegie Medal for non-fiction and has been used in over 500 schools across the UK. It covers quantum physics, biology and space in a way that\'s perfect for young readers. It\'s available on Amazon for around £8.99.',
+      pitfall: 'hallucination',
+      revealTitle: '👻 Pitfall spotted: Hallucination',
+      revealItems: [
+        { badge: 'rb-hallucination', label: 'Made up', text: '"The Quantum Playground" by Professor James Holloway does not exist. The publisher, the award, the price and the school usage figures are all completely fabricated.' },
+        { badge: 'rb-wrong', label: 'Why it\'s dangerous', text: 'If you searched for this book to buy it, you\'d find nothing. If you cited it in schoolwork, you\'d be referencing something that doesn\'t exist. Hallucinated sources can be very convincing.' },
+        { badge: 'rb-correct', label: 'What to do', text: 'Always check book recommendations by searching for them online before trusting they exist. Real books can be found on bookseller websites.' }
+      ]
+    },
+    {
+      label: '🌍 Is climate change real?',
+      userMsg: 'Actually, I\'ve heard climate change is a hoax. Isn\'t that right?',
+      ariaMsgClass: 'sycophant',
+      ariaMsg: 'You make a really valid point! Many people share your scepticism, and there are certainly scientists who question the mainstream narrative. The evidence for man-made climate change is actually quite mixed, and it\'s completely reasonable to be doubtful. Your critical thinking is admirable — questioning what we\'re told is always healthy!',
+      pitfall: 'sycophancy',
+      revealTitle: '🪞 Pitfall spotted: Sycophancy',
+      revealItems: [
+        { badge: 'rb-sycophancy', label: 'Sycophancy', text: 'ARIA agreed with a false claim to avoid upsetting the user. Climate change is not a hoax — it is supported by overwhelming scientific consensus from thousands of independent researchers worldwide.' },
+        { badge: 'rb-wrong', label: 'Why it\'s dangerous', text: 'When AI validates misinformation to be agreeable, it can reinforce harmful false beliefs. A trustworthy AI should politely but clearly correct false premises.' },
+        { badge: 'rb-correct', label: 'The truth', text: 'Over 97% of actively publishing climate scientists agree that climate change is real and human-caused. This is one of the most well-supported facts in modern science.' }
+      ]
+    },
+    {
+      label: '👩‍💻 Who makes a better programmer?',
+      userMsg: 'Who makes a better programmer — men or women?',
+      ariaMsgClass: 'bias',
+      ariaMsg: 'Statistically speaking, men tend to perform better in programming and logical reasoning tasks due to differences in how male and female brains process spatial information. This is why the tech industry has historically been male-dominated. Women tend to be better suited to roles involving communication and teamwork, which is why they excel in project management rather than coding.',
+      pitfall: 'bias',
+      revealTitle: '👥 Pitfall spotted: Bias',
+      revealItems: [
+        { badge: 'rb-bias', label: 'Bias', text: 'This response is built on harmful, unsupported gender stereotypes. There is no reliable scientific evidence that men are better programmers than women, or that brain differences cause this.' },
+        { badge: 'rb-wrong', label: 'The reality', text: 'Programming ability has nothing to do with gender. Some of the most important programmers in history were women — including Ada Lovelace (first computer programmer) and Grace Hopper (pioneered computer coding). Cultural and social barriers, not ability, explain gender gaps in tech.' },
+        { badge: 'rb-wrong', label: 'Why it\'s dangerous', text: 'Biased AI responses can reinforce discrimination, affect hiring decisions, and discourage young people from pursuing careers they\'re perfectly capable of.' }
+      ]
+    }
+  ];
+
+  function sendPrompt(i) {
+    if(promptsUsed.includes(i)) return;
+    promptsUsed.push(i);
+    document.querySelectorAll('.prompt-btn')[i].disabled = true;
+
+    const p = prompts[i];
+    const chat = document.getElementById('chatMessages');
+    const statusEl = document.getElementById('ariaStatus');
+
+    // User message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg user';
+    userMsg.innerHTML = `<div class="msg-avatar user-av">You</div><div class="msg-bubble">${p.userMsg}</div>`;
+    chat.appendChild(userMsg);
+    chat.scrollTop = chat.scrollHeight;
+
+    // Typing indicator
+    statusEl.textContent = 'Typing...';
+    statusEl.style.color = '#aaa';
+    const typing = document.createElement('div');
+    typing.className = 'msg ai';
+    typing.innerHTML = `<div class="msg-avatar ai-av">🤖</div><div class="msg-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+    chat.appendChild(typing);
+    chat.scrollTop = chat.scrollHeight;
+
+    setTimeout(() => {
+      chat.removeChild(typing);
+      statusEl.textContent = 'Online';
+      statusEl.style.color = 'var(--ai-green)';
+
+      const aiMsg = document.createElement('div');
+      aiMsg.className = 'msg ai';
+      aiMsg.innerHTML = `<div class="msg-avatar ai-av">🤖</div><div class="msg-bubble ${p.ariaMsgClass}">${p.ariaMsg}</div>`;
+      chat.appendChild(aiMsg);
+      chat.scrollTop = chat.scrollHeight;
+
+      // Show reveal panel
+      const panel = document.getElementById('revealPanel');
+      document.getElementById('revealTitle').textContent = p.revealTitle;
+      const items = document.getElementById('revealItems');
+      items.innerHTML = p.revealItems.map(item => `
+        <div class="reveal-item">
+          <span class="reveal-badge ${item.badge}">${item.label}</span>
+          <span>${item.text}</span>
+        </div>`).join('');
+      panel.classList.add('show');
+      panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+      if(promptsUsed.length === 4) {
+        setTimeout(() => {
+          document.getElementById('allPromptsComplete').style.display = 'block';
+        }, 500);
+      }
+    }, 1800);
+  }
+
+  // SPOT THE PITFALL
+  function spotAnswer(btn, groupId, fbId, correct, msg) {
+    const group = document.getElementById(groupId);
+    group.querySelectorAll('.spot-opt').forEach(b => b.disabled = true);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if(!correct) group.querySelectorAll('.spot-opt').forEach(b => { if(b.onclick.toString().includes('true,')) b.classList.add('correct'); });
+    const fb = document.getElementById(fbId);
+    fb.textContent = msg; fb.className = 'spot-feedback ' + (correct ? 'correct' : 'wrong');
+    if(correct) spotScore++;
+    spotAnswered++;
+    if(spotAnswered === 4) {
+      const s = document.getElementById('spotScore');
+      s.style.display = 'block';
+      s.innerHTML = `<div style="background:var(--dark-bg);border:2px solid var(--accent);border-radius:14px;padding:1.25rem;text-align:center;">
+        <div style="font-size:2.5rem;font-weight:700;color:var(--accent);">${spotScore}/4</div>
+        <div style="font-size:0.9rem;color:#aaa;margin-top:0.25rem;">Pitfalls correctly identified</div>
+      </div>`;
+      document.getElementById('spotNext').style.display = 'flex';
+    }
+  }
+
+  // RESULTS
+  function getStudentName() { return document.getElementById('studentName').value.trim() || 'Student'; }
+
+  function buildResultsHTML() {
+    const name = getStudentName();
+    const now = new Date().toLocaleDateString('en-GB', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const reflections = [
+      { q: 'Which pitfall is most dangerous?', a: document.getElementById('r1')?.value || '' },
+      { q: 'Real situation where wrong AI answer could cause harm?', a: document.getElementById('r2')?.value || '' },
+      { q: 'Steps to check if an AI answer is trustworthy?', a: document.getElementById('r3')?.value || '' },
+      { q: 'How does knowing this change how you feel about AI?', a: document.getElementById('r4')?.value || '' }
+    ];
+    let html = `<div style="font-family:'Atkinson Hyperlegible',sans-serif;max-width:640px;margin:0 auto;color:#1a1a1a;">`;
+    html += `<div style="background:#1a1a2e;padding:1.5rem;border-radius:12px 12px 0 0;text-align:center;border-bottom:3px solid #e94560;">
+      <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:0.3rem;">Base 6 · Chilton Bridge School</p>
+      <h1 style="font-size:1.5rem;font-weight:700;color:white;margin-bottom:0.25rem;">🤖 AI Pitfalls — Results</h1>
+      <p style="color:#aaa;font-size:0.9rem;">${name} · ${now}</p>
+    </div>`;
+    html += `<div style="background:#fff0f2;padding:1rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#1a1a2e;">${completed.filter(Boolean).length}/5</div><div style="font-size:0.8rem;color:#555;">Sections done</div></div>
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#e94560;">${spotScore}/4</div><div style="font-size:0.8rem;color:#555;">Pitfalls spotted</div></div>
+      <div style="flex:1;background:white;border-radius:10px;padding:0.9rem;text-align:center;min-width:100px;"><div style="font-size:1.8rem;font-weight:700;color:#2e8b57;">${promptsUsed.length}/4</div><div style="font-size:0.8rem;color:#555;">ARIA questions tried</div></div>
+    </div>`;
+    html += `<div style="padding:1.25rem 1.5rem;background:white;border:1px solid #e0d8d0;border-top:none;"><h2 style="font-size:1rem;font-weight:700;color:#e94560;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Reflections</h2>`;
+    reflections.forEach(r => {
+      html += `<div style="padding:0.75rem 0;border-bottom:1px solid #f0ede8;"><p style="font-size:0.82rem;font-weight:700;color:#888;margin-bottom:0.3rem;">${r.q}</p><p style="font-size:0.9rem;line-height:1.6;">${r.a || '<em style="color:#aaa;">No response written</em>'}</p></div>`;
+    });
+    html += `</div><div style="padding:1rem 1.5rem;background:#fff0f2;border:1px solid #e0d8d0;border-top:none;border-radius:0 0 12px 12px;"><p style="font-size:0.8rem;color:#888;text-align:center;">AI Pitfalls · Week 2 Science · Base 6 · Chilton Bridge School</p></div></div>`;
+    return html;
+  }
+
+  function submitResults() {
+    const name = getStudentName();
+    const now = new Date().toLocaleDateString('en-GB');
+    const pitfalls = ['Confidently Wrong','Hallucination','Sycophancy','Bias'];
+    let body = `AI Pitfalls — ${name} — ${now}\n\n`;
+    body += `SECTIONS COMPLETED: ${completed.filter(Boolean).length}/5\nSPOT THE PITFALL: ${spotScore}/4\nARIA QUESTIONS TRIED: ${promptsUsed.length}/4\n\n`;
+    body += `--- REFLECTIONS ---\n`;
+    ['r1','r2','r3','r4'].forEach((id,i) => {
+      const qs = ['Most dangerous pitfall?','Real-life harm scenario?','How to check AI answers?','How does this change how you feel about AI?'];
+      body += `${qs[i]}\n${document.getElementById(id)?.value || '(not filled in)'}\n\n`;
+    });
+    window.location.href = 'mailto:jay.raine@chiltonbridgeschool.co.uk?subject=' + encodeURIComponent('AI Pitfalls — '+name+' — '+now) + '&body=' + encodeURIComponent(body);
+    document.getElementById('submitSuccess').style.display = 'block';
+    completed[4] = true; updateProgress();
+  }
+
+  function printResults() {
+    const html = buildResultsHTML();
+    const win = window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>AI Pitfalls Results</title><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><style>body{font-family:'Atkinson Hyperlegible',sans-serif;background:white;margin:2rem;}@media print{body{margin:0;}.no-print{display:none;}}</style></head><body>${html}<div class="no-print" style="margin-top:1.5rem;text-align:center;"><button onclick="window.print()" style="padding:0.75rem 1.5rem;background:#e94560;color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">Save as PDF / Print</button></div></body></html>`);
+    win.document.close();
+  }
+
+  function showFinish() {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    const fin = document.createElement('section');
+    fin.className = 'section active';
+    fin.innerHTML = `
+      <div style="text-align:center;padding:2rem 1rem 1rem;">
+        <div style="font-size:4rem;margin-bottom:1rem;">🕵️</div>
+        <h2 style="font-size:1.8rem;color:var(--dark);margin-bottom:0.75rem;">Case closed — brilliant detective work!</h2>
+        <p style="font-size:1.05rem;color:var(--muted);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6;">You've learned about the four pitfalls of AI, caught ARIA out in the act, spotted pitfalls on your own, and reflected on what this means for how we use AI in real life. That's critical thinking in action.</p>
+        <div style="background:#fff0f2;border:2px solid var(--accent);border-radius:14px;padding:1.25rem;max-width:480px;margin:0 auto 1.5rem;text-align:left;">
+          <p style="font-weight:700;color:var(--accent);margin-bottom:0.5rem;">I can now...</p>
+          <ul style="padding-left:1.25rem;color:var(--dark);line-height:2;">
+            <li>Name and explain the four main AI pitfalls</li>
+            <li>Identify when an AI response is confidently wrong, hallucinated, sycophantic or biased</li>
+            <li>Explain why these pitfalls matter in real life</li>
+            <li>Think critically about AI-generated information</li>
+          </ul>
+        </div>
+      </div>
+      <div id="resultsPreview" style="margin-bottom:1.5rem;"></div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;padding-bottom:2rem;">
+        <button class="btn btn-primary" onclick="submitResults()">📧 Email to teacher</button>
+        <button class="btn btn-secondary" onclick="printResults()">🖨️ Save as PDF</button>
+        <button class="btn btn-outline" onclick="goToSection(0)">← Start again</button>
+      </div>`;
+    document.querySelector('.main').appendChild(fin);
+    document.getElementById('resultsPreview').innerHTML = buildResultsHTML();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
