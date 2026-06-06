@@ -2,40 +2,44 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Ocean Day — Flappy Fish · Base 6</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Atkinson Hyperlegible',sans-serif;background:#001f3f;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:0;}
-  .site-header{background:#007291;padding:1rem 2rem;width:100%;display:flex;align-items:center;gap:1rem;}
+  html,body{width:100%;height:100%;overflow-x:hidden;}
+  body{font-family:'Atkinson Hyperlegible',sans-serif;background:#001f3f;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+  .site-header{background:#007291;padding:.9rem 1.5rem;width:100%;display:flex;align-items:center;gap:1rem;flex-shrink:0;}
   .back-link{color:rgba(255,255,255,.85);font-size:.85rem;font-weight:700;text-decoration:none;}
   .back-link:hover{color:white;}
-  .breadcrumb{color:rgba(255,255,255,.4);font-size:.85rem;}
-  .game-wrap{display:flex;flex-direction:column;align-items:center;padding:16px;width:100%;max-width:560px;}
-  canvas{border-radius:12px;border:2px solid rgba(255,255,255,.15);display:block;cursor:pointer;touch-action:none;}
-  .ui-row{width:100%;max-width:480px;display:flex;gap:8px;margin-top:10px;}
-  .ui-card{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:background .15s;}
-  .ui-card:hover{background:rgba(255,255,255,.13);}
-  .ui-card span{font-size:1.1rem;}
-  .ui-label{font-size:.78rem;color:rgba(255,255,255,.6);font-weight:700;}
-  .ui-val{font-size:.88rem;font-weight:700;color:white;margin-left:auto;}
-  .shop-panel{display:none;width:100%;max-width:480px;background:rgba(0,20,50,.95);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:16px;margin-top:8px;}
-  .shop-panel h2{font-size:.95rem;font-weight:700;color:white;margin-bottom:4px;}
-  .shop-panel p{font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:14px;}
-  .shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-  .skin-card{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .15s;position:relative;}
+  .breadcrumb{color:rgba(255,255,255,.4);font-size:.82rem;}
+  .game-area{display:flex;flex-direction:column;align-items:center;width:100%;padding:12px 12px 0;flex:1;}
+  #canvasWrap{position:relative;width:100%;max-width:480px;}
+  canvas{display:block;width:100%;height:auto;border-radius:12px;border:2px solid rgba(255,255,255,.15);cursor:pointer;touch-action:none;}
+  .ui-row{width:100%;max-width:480px;display:flex;gap:6px;margin-top:8px;}
+  .ui-card{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:background .15s;min-width:0;}
+  .ui-card:hover{background:rgba(255,255,255,.14);}
+  .ui-icon{font-size:1rem;flex-shrink:0;}
+  .ui-label{font-size:.68rem;color:rgba(255,255,255,.55);font-weight:700;white-space:nowrap;}
+  .ui-val{font-size:.82rem;font-weight:700;color:white;margin-left:auto;white-space:nowrap;}
+  .shop-panel{display:none;width:100%;max-width:480px;background:rgba(0,20,50,.97);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:14px;margin-top:7px;}
+  .shop-header{display:flex;align-items:center;margin-bottom:3px;}
+  .shop-title{font-size:.9rem;font-weight:700;color:white;}
+  .shop-sub{font-size:.7rem;color:rgba(255,255,255,.45);margin-bottom:12px;line-height:1.5;}
+  .close-btn{margin-left:auto;background:rgba(255,255,255,.1);border:none;color:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:6px;cursor:pointer;}
+  .close-btn:hover{background:rgba(255,255,255,.2);}
+  .shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+  .skin-card{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:9px;padding:7px 3px;text-align:center;cursor:pointer;transition:all .15s;position:relative;}
   .skin-card:hover{background:rgba(255,255,255,.14);}
   .skin-card.active{border-color:#ffd700;background:rgba(255,215,0,.12);}
   .skin-card.locked-rare{border-color:rgba(180,100,255,.4);}
-  .skin-emoji{font-size:1.8rem;line-height:1.2;display:block;margin-bottom:4px;}
-  .skin-name{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.85);display:block;margin-bottom:2px;}
-  .skin-action{font-size:.65rem;color:rgba(255,255,255,.5);display:block;}
+  .skin-emoji{font-size:1.6rem;line-height:1.2;display:block;margin-bottom:3px;}
+  .skin-name{font-size:.64rem;font-weight:700;color:rgba(255,255,255,.85);display:block;margin-bottom:2px;}
+  .skin-action{font-size:.6rem;color:rgba(255,255,255,.45);display:block;}
   .skin-card.active .skin-action{color:#ffd700;}
-  .rare-badge{position:absolute;top:3px;right:3px;background:rgba(150,80,255,.8);color:white;font-size:.55rem;font-weight:700;padding:1px 4px;border-radius:4px;}
-  .close-btn{float:right;background:rgba(255,255,255,.1);border:none;color:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;margin-top:-2px;}
-  .close-btn:hover{background:rgba(255,255,255,.2);}
-  footer{padding:1rem;font-size:.75rem;color:rgba(255,255,255,.3);text-align:center;width:100%;}
+  .rare-badge{position:absolute;top:2px;right:2px;background:rgba(140,70,255,.85);color:white;font-size:.5rem;font-weight:700;padding:1px 3px;border-radius:3px;}
+  footer{padding:.9rem;font-size:.72rem;color:rgba(255,255,255,.28);text-align:center;width:100%;margin-top:auto;}
+  @media(max-width:360px){.shop-grid{grid-template-columns:repeat(3,1fr);}}
 </style>
 </head>
 <body>
@@ -45,31 +49,35 @@
   <span class="breadcrumb">/ Cultural Calendar / Ocean Day</span>
 </header>
 
-<div class="game-wrap">
-  <canvas id="gc" width="480" height="520"></canvas>
+<div class="game-area">
+  <div id="canvasWrap">
+    <canvas id="gc" width="480" height="520"></canvas>
+  </div>
 
   <div class="ui-row">
-    <div class="ui-card" onclick="openShop()" title="Open cosmetics shop">
-      <span>🐚</span>
+    <div class="ui-card" onclick="openShop()">
+      <span class="ui-icon">🐚</span>
       <span class="ui-label">SHELLS</span>
       <span class="ui-val" id="coinDisplay">0</span>
     </div>
     <div class="ui-card" onclick="openShop()">
-      <span>👕</span>
-      <span class="ui-label">COSMETICS</span>
+      <span class="ui-icon">👕</span>
+      <span class="ui-label">SKINS</span>
       <span class="ui-val" id="ownedCount">1/12</span>
     </div>
     <div class="ui-card">
-      <span>🏆</span>
+      <span class="ui-icon">🏆</span>
       <span class="ui-label">BEST</span>
       <span class="ui-val" id="bestDisplay">0</span>
     </div>
   </div>
 
   <div class="shop-panel" id="shopPanel">
-    <button class="close-btn" onclick="closeShop()">✕ Close</button>
-    <h2>🪸 Cosmetics Shop</h2>
-    <p>Buy skins with shells · Rare skins drop from treasure chests only · Password: your first name</p>
+    <div class="shop-header">
+      <span class="shop-title">🪸 Cosmetics shop</span>
+      <button class="close-btn" onclick="closeShop()">✕ Close</button>
+    </div>
+    <p class="shop-sub">Buy skins with shells · Rare skins drop from treasure chests only</p>
     <div class="shop-grid" id="shopGrid"></div>
   </div>
 </div>
@@ -82,538 +90,468 @@ const ctx = canvas.getContext('2d');
 const W = 480, H = 520;
 
 const SKINS = [
-  {id:'clownfish', name:'Clown fish',  emoji:'🐠', cost:0,   rare:false, owned:true,  desc:'The classic'},
-  {id:'blowfish',  name:'Blowfish',    emoji:'🐡', cost:60,  rare:false, owned:false, desc:'Spiky!'},
-  {id:'shark',     name:'Baby shark',  emoji:'🦈', cost:120, rare:false, owned:false, desc:'Doo doo doo'},
-  {id:'crab',      name:'Crab',        emoji:'🦀', cost:80,  rare:false, owned:false, desc:'Sideways'},
-  {id:'octopus',   name:'Octopus',     emoji:'🐙', cost:150, rare:false, owned:false, desc:'8 arms'},
-  {id:'dolphin',   name:'Dolphin',     emoji:'🐬', cost:200, rare:false, owned:false, desc:'Friendly'},
-  {id:'turtle',    name:'Sea turtle',  emoji:'🐢', cost:180, rare:false, owned:false, desc:'Ancient'},
-  {id:'whale',     name:'Blue whale',  emoji:'🐳', cost:0,   rare:true,  owned:false, desc:'Chest only'},
-  {id:'mermaid',   name:'Mermaid',     emoji:'🧜', cost:0,   rare:true,  owned:false, desc:'Chest only'},
-  {id:'narwhal',   name:'Narwhal',     emoji:'🦄', cost:0,   rare:true,  owned:false, desc:'Chest only'},
-  {id:'anglerfish',name:'Anglerfish',  emoji:'🎣', cost:0,   rare:true,  owned:false, desc:'Chest only'},
-  {id:'dragon',    name:'Sea dragon',  emoji:'🐉', cost:0,   rare:true,  owned:false, desc:'Mythic'},
+  {id:'clownfish', name:'Clown fish',  emoji:'🐠', cost:0,   rare:false, owned:true },
+  {id:'blowfish',  name:'Blowfish',    emoji:'🐡', cost:60,  rare:false, owned:false},
+  {id:'shark',     name:'Baby shark',  emoji:'🦈', cost:120, rare:false, owned:false},
+  {id:'crab',      name:'Crab',        emoji:'🦀', cost:80,  rare:false, owned:false},
+  {id:'octopus',   name:'Octopus',     emoji:'🐙', cost:150, rare:false, owned:false},
+  {id:'dolphin',   name:'Dolphin',     emoji:'🐬', cost:200, rare:false, owned:false},
+  {id:'turtle',    name:'Sea turtle',  emoji:'🐢', cost:180, rare:false, owned:false},
+  {id:'whale',     name:'Blue whale',  emoji:'🐳', cost:0,   rare:true,  owned:false},
+  {id:'mermaid',   name:'Mermaid',     emoji:'🧜', cost:0,   rare:true,  owned:false},
+  {id:'narwhal',   name:'Narwhal',     emoji:'🦄', cost:0,   rare:true,  owned:false},
+  {id:'anglerfish',name:'Anglerfish',  emoji:'🎣', cost:0,   rare:true,  owned:false},
+  {id:'dragon',    name:'Sea dragon',  emoji:'🐉', cost:0,   rare:true,  owned:false},
 ];
 
 const FACTS = [
-  'Over 70% of Earth is covered by ocean!',
-  'The ocean produces 50% of all our oxygen.',
-  'Less than 20% of the ocean has been explored.',
-  'Coral reefs support 25% of all marine life.',
-  'Plastic pollution kills over 1 million seabirds every year.',
-  'The blue whale is the largest animal to have ever lived.',
-  'Sea turtles have existed for over 100 million years.',
-  'The Mariana Trench is 11 kilometres deep.',
-  'Sharks are essential for keeping ocean ecosystems healthy.',
-  'Dolphins communicate using unique whistles — like names!',
-  'The Great Barrier Reef is visible from space.',
-  'Oceans absorb around 30% of the CO2 we produce.',
+  {fact:'Over 70% of Earth is covered by ocean.', tip:'That makes it the largest habitat on the planet!'},
+  {fact:'The ocean produces around 50% of all our oxygen.', tip:'Most of it comes from tiny ocean plants called phytoplankton.'},
+  {fact:'Less than 20% of the ocean has been explored by humans.', tip:'We know more about the surface of the Moon than our own ocean floor.'},
+  {fact:'Coral reefs cover less than 1% of the ocean but support 25% of all marine species.', tip:'They are often called the rainforests of the sea.'},
+  {fact:'Over 8 million tonnes of plastic enter the ocean every year.', tip:'That is roughly one lorry-load every minute.'},
+  {fact:'The blue whale is the largest animal ever to have lived on Earth.', tip:'Its heart alone is the size of a small car.'},
+  {fact:'Sea turtles have existed for over 100 million years.', tip:'They survived the extinction event that killed the dinosaurs.'},
+  {fact:'The Mariana Trench is the deepest point in the ocean — about 11 km down.', tip:'It is deeper than Mount Everest is tall.'},
+  {fact:'Sharks have existed for around 450 million years.', tip:'They are older than trees, and essential for healthy ocean ecosystems.'},
+  {fact:'Dolphins have unique signature whistles — like names.', tip:'They use them to call to each other across long distances.'},
+  {fact:'The Great Barrier Reef is the largest living structure on Earth.', tip:'It is so big it can be seen from space.'},
+  {fact:'Oceans absorb around 30% of the CO2 humans produce.', tip:'Without this, climate change would be happening even faster.'},
+  {fact:'Ocean temperatures have been rising due to climate change.', tip:'Warmer water causes coral bleaching — the reef turns white and can die.'},
+  {fact:'Dead zones in the ocean are areas with so little oxygen that little can survive.', tip:'They are mostly caused by fertiliser runoff from farms.'},
 ];
 
-const GRAVITY = 0.38;
-const FLAP_V  = -7.2;
-const PIPE_W  = 52;
-const GAP     = 148;
-const SPEED   = 2.4;
-const PIPE_INT = 210;
+const GRAVITY = 0.38, FLAP_V = -7.2, PIPE_W = 52, GAP = 148, SPEED = 2.4, PIPE_INT = 210;
 
-function loadInt(k, def) { return parseInt(localStorage.getItem(k) || def); }
-function saveInt(k, v)   { localStorage.setItem(k, v); }
+function loadInt(k,d){return parseInt(localStorage.getItem(k)||d);}
+function saveInt(k,v){localStorage.setItem(k,v);}
 
-SKINS.forEach(s => {
-  if (localStorage.getItem('own_' + s.id) === '1') s.owned = true;
-  if (s.id === 'clownfish') s.owned = true;
+SKINS.forEach(s=>{
+  if(localStorage.getItem('own_'+s.id)==='1') s.owned=true;
+  if(s.id==='clownfish') s.owned=true;
 });
 
-let coins  = loadInt('oceanCoins', 0);
-let best   = loadInt('oceanBest', 0);
-let activeSkin = localStorage.getItem('oceanSkin') || 'clownfish';
+let coins=loadInt('oceanCoins',0), best=loadInt('oceanBest',0);
+let activeSkin=localStorage.getItem('oceanSkin')||'clownfish';
 
-function saveCoins(c) {
-  coins = c;
-  saveInt('oceanCoins', c);
-  document.getElementById('coinDisplay').textContent = c;
+function saveCoins(c){coins=c;saveInt('oceanCoins',c);document.getElementById('coinDisplay').textContent=c;}
+function saveBest(b){best=b;saveInt('oceanBest',b);document.getElementById('bestDisplay').textContent=b;}
+function saveSkin(id){activeSkin=id;localStorage.setItem('oceanSkin',id);}
+function saveOwned(id){localStorage.setItem('own_'+id,'1');updateOwnedCount();}
+function updateOwnedCount(){
+  const n=SKINS.filter(s=>s.owned).length;
+  document.getElementById('ownedCount').textContent=n+'/'+SKINS.length;
 }
-function saveBest(b) {
-  best = b;
-  saveInt('oceanBest', b);
-  document.getElementById('bestDisplay').textContent = b;
-}
-function saveSkin(id) {
-  activeSkin = id;
-  localStorage.setItem('oceanSkin', id);
-}
-function saveOwned(id) {
-  localStorage.setItem('own_' + id, '1');
-  updateOwnedCount();
-}
-function updateOwnedCount() {
-  const owned = SKINS.filter(s => s.owned).length;
-  document.getElementById('ownedCount').textContent = owned + '/' + SKINS.length;
-}
-
-document.getElementById('coinDisplay').textContent = coins;
-document.getElementById('bestDisplay').textContent = best;
+document.getElementById('coinDisplay').textContent=coins;
+document.getElementById('bestDisplay').textContent=best;
 updateOwnedCount();
 
-let G = {
-  phase: 'title',
-  fish: { x:90, y:220, vy:0 },
-  pipes: [], corals: [], trash: [], chests: [], particles: [],
-  score: 0, frame: 0, scrollX: 0,
-  trashCount: 0, chestCooldown: 0,
-  factText: '', factAlpha: 0,
-  flashMsg: '', flashAlpha: 0,
+let G={
+  phase:'title',
+  fish:{x:90,y:220,vy:0},
+  pipes:[],corals:[],trash:[],chests:[],particles:[],
+  score:0,frame:0,scrollX:0,
+  trashCount:0,chestCooldown:0,
+  factText:'',factAlpha:0,
+  flashMsg:'',flashAlpha:0,
+  deathFact:null,
 };
 
-function getSkin() { return SKINS.find(s => s.id === activeSkin) || SKINS[0]; }
+function getSkin(){return SKINS.find(s=>s.id===activeSkin)||SKINS[0];}
+function randFact(){return FACTS[Math.floor(Math.random()*FACTS.length)];}
 
-function spawnPipe() {
-  const top = 80 + Math.random() * (H - 160 - GAP);
-  G.pipes.push({ x: W + 10, topH: top, scored: false });
+function spawnPipe(){
+  const top=80+Math.random()*(H-160-GAP);
+  G.pipes.push({x:W+10,topH:top,scored:false});
 }
-
-function spawnCoral(x) {
-  const colors = ['#ff6b6b','#ff9f43','#ffd32a','#c8d6e5','#ff78c4'];
-  G.corals.push({ x, h: 30 + Math.random()*60, w: 10 + Math.random()*22, color: colors[Math.floor(Math.random()*colors.length)] });
+function spawnCoral(x){
+  const cols=['#ff6b6b','#ff9f43','#ffd32a','#c8d6e5','#ff78c4'];
+  G.corals.push({x,h:30+Math.random()*60,w:10+Math.random()*22,color:cols[Math.floor(Math.random()*cols.length)]});
 }
-
-function spawnTrash() {
-  const types = ['🥤','🛍️','🪣','🧴','🍶'];
-  G.trash.push({ x: W+20, y: 80 + Math.random()*(H-160), type: types[Math.floor(Math.random()*types.length)], collected: false });
+function spawnTrash(){
+  const types=['🥤','🛍️','🪣','🧴','🍶'];
+  G.trash.push({x:W+20,y:80+Math.random()*(H-160),type:types[Math.floor(Math.random()*types.length)],collected:false});
 }
-
-function spawnChest() {
-  G.chests.push({ x: W+20, y: 100 + Math.random()*(H-200), glow: 0, glowDir: 1, collected: false });
+function spawnChest(){
+  G.chests.push({x:W+20,y:100+Math.random()*(H-200),glow:0,glowDir:1,collected:false});
 }
-
-function spawnParticles(x, y, color, n) {
-  for (let i = 0; i < n; i++) {
-    const a = (Math.PI*2*i)/n;
-    G.particles.push({ x, y, vx: Math.cos(a)*3*(0.5+Math.random()), vy: Math.sin(a)*3*(0.5+Math.random()), alpha:1, color, r:4+Math.random()*4 });
+function spawnParticles(x,y,color,n){
+  for(let i=0;i<n;i++){
+    const a=(Math.PI*2*i)/n;
+    G.particles.push({x,y,vx:Math.cos(a)*3*(0.5+Math.random()),vy:Math.sin(a)*3*(0.5+Math.random()),alpha:1,color,r:4+Math.random()*4});
   }
 }
 
-function openChestReward() {
-  const rare = SKINS.filter(s => s.rare && !s.owned);
-  if (rare.length > 0 && Math.random() < 0.18) {
-    const skin = rare[Math.floor(Math.random()*rare.length)];
-    skin.owned = true;
-    saveOwned(skin.id);
-    G.flashMsg = 'RARE! ' + skin.emoji + ' ' + skin.name + ' unlocked!';
-    G.flashAlpha = 1;
+function openChestReward(){
+  const rare=SKINS.filter(s=>s.rare&&!s.owned);
+  if(rare.length>0&&Math.random()<0.18){
+    const skin=rare[Math.floor(Math.random()*rare.length)];
+    skin.owned=true; saveOwned(skin.id);
+    G.flashMsg='RARE! '+skin.emoji+' '+skin.name+' unlocked!';
+    G.flashAlpha=1;
   } else {
-    const bonus = 20 + Math.floor(Math.random()*40);
-    saveCoins(coins + bonus);
-    G.flashMsg = '+' + bonus + ' shells!';
-    G.flashAlpha = 1;
+    const bonus=20+Math.floor(Math.random()*40);
+    saveCoins(coins+bonus);
+    G.flashMsg='+'+bonus+' shells!';
+    G.flashAlpha=1;
   }
 }
 
-function showFact() {
-  G.factText = FACTS[Math.floor(Math.random()*FACTS.length)];
-  G.factAlpha = 1;
+function showInGameFact(){
+  const f=randFact();
+  G.factText=f.fact;
+  G.factAlpha=1;
 }
 
-function dist(a, b) { return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2); }
+function dist(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);}
 
-function collidePipe(fish, p) {
-  const r = 11;
-  if (fish.x+r > p.x && fish.x-r < p.x+PIPE_W) {
-    if (fish.y-r < p.topH || fish.y+r > p.topH+GAP) return true;
+function collidePipe(fish,p){
+  const r=11;
+  if(fish.x+r>p.x&&fish.x-r<p.x+PIPE_W){
+    if(fish.y-r<p.topH||fish.y+r>p.topH+GAP) return true;
   }
   return false;
 }
 
-function drawBg() {
-  const g = ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0, '#0077b6');
-  g.addColorStop(1, '#023e8a');
-  ctx.fillStyle = g;
-  ctx.fillRect(0,0,W,H);
-
-  ctx.fillStyle = 'rgba(255,255,255,0.04)';
-  for (let i = 0; i < 7; i++) {
-    const wx = ((G.scrollX*0.25 + i*85) % (W+100)) - 50;
-    ctx.beginPath();
-    ctx.ellipse(wx, 30+i*68, 55+i*8, 10, 0, 0, Math.PI*2);
-    ctx.fill();
+function drawBg(){
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#0077b6'); g.addColorStop(1,'#023e8a');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,255,255,0.04)';
+  for(let i=0;i<7;i++){
+    const wx=((G.scrollX*0.25+i*85)%(W+100))-50;
+    ctx.beginPath(); ctx.ellipse(wx,30+i*68,55+i*8,10,0,0,Math.PI*2); ctx.fill();
   }
-
-  ctx.fillStyle = '#001a33';
-  ctx.fillRect(0, H-40, W, 40);
-
-  for (let c of G.corals) {
-    const cx = (c.x - G.scrollX*0.08 + W*4) % (W + c.w*2) - c.w;
-    ctx.fillStyle = c.color;
+  ctx.fillStyle='#001a33'; ctx.fillRect(0,H-40,W,40);
+  for(let c of G.corals){
+    const cx=(c.x-G.scrollX*0.08+W*4)%(W+c.w*2)-c.w;
+    ctx.fillStyle=c.color;
     ctx.beginPath();
-    ctx.moveTo(cx, H-40);
-    ctx.lineTo(cx - c.w/2, H-40-c.h);
-    ctx.lineTo(cx - c.w/4, H-40-c.h*0.72);
-    ctx.lineTo(cx,         H-40-c.h*0.9);
-    ctx.lineTo(cx + c.w/4, H-40-c.h*0.72);
-    ctx.lineTo(cx + c.w/2, H-40-c.h);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(cx, H-40-c.h, c.w/2.4, 0, Math.PI*2);
-    ctx.fill();
+    ctx.moveTo(cx,H-40); ctx.lineTo(cx-c.w/2,H-40-c.h);
+    ctx.lineTo(cx-c.w/4,H-40-c.h*0.72); ctx.lineTo(cx,H-40-c.h*0.9);
+    ctx.lineTo(cx+c.w/4,H-40-c.h*0.72); ctx.lineTo(cx+c.w/2,H-40-c.h);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,H-40-c.h,c.w/2.4,0,Math.PI*2); ctx.fill();
   }
 }
 
-function drawPipe(p) {
-  ctx.fillStyle = '#1b4332';
-  ctx.fillRect(p.x, 0, PIPE_W, p.topH);
-  ctx.fillStyle = '#2d6a4f';
-  ctx.fillRect(p.x-5, p.topH-22, PIPE_W+10, 22);
-
-  ctx.fillStyle = '#1b4332';
-  ctx.fillRect(p.x, p.topH+GAP, PIPE_W, H-(p.topH+GAP));
-  ctx.fillStyle = '#2d6a4f';
-  ctx.fillRect(p.x-5, p.topH+GAP, PIPE_W+10, 22);
-
-  ctx.fillStyle = 'rgba(100,255,160,0.07)';
-  ctx.beginPath();
-  ctx.arc(p.x+PIPE_W/2, p.topH+GAP/2, GAP/2-14, 0, Math.PI*2);
-  ctx.fill();
+function drawPipe(p){
+  ctx.fillStyle='#1b4332'; ctx.fillRect(p.x,0,PIPE_W,p.topH);
+  ctx.fillStyle='#2d6a4f'; ctx.fillRect(p.x-5,p.topH-22,PIPE_W+10,22);
+  ctx.fillStyle='#1b4332'; ctx.fillRect(p.x,p.topH+GAP,PIPE_W,H-(p.topH+GAP));
+  ctx.fillStyle='#2d6a4f'; ctx.fillRect(p.x-5,p.topH+GAP,PIPE_W+10,22);
+  ctx.fillStyle='rgba(100,255,160,0.07)';
+  ctx.beginPath(); ctx.arc(p.x+PIPE_W/2,p.topH+GAP/2,GAP/2-14,0,Math.PI*2); ctx.fill();
 }
 
-function drawFish() {
-  const skin = getSkin();
-  const wobble = Math.sin(G.frame*0.18)*2.5;
-  const tilt = Math.max(-38, Math.min(38, G.fish.vy*3.5));
+function drawFish(){
+  const skin=getSkin();
+  const wobble=Math.sin(G.frame*0.18)*2.5;
+  const tilt=Math.max(-38,Math.min(38,G.fish.vy*3.5));
   ctx.save();
-  ctx.translate(G.fish.x, G.fish.y + wobble);
-  ctx.rotate(tilt * Math.PI/180);
-  ctx.font = '28px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(skin.emoji, 0, 0);
+  ctx.translate(G.fish.x,G.fish.y+wobble);
+  ctx.rotate(tilt*Math.PI/180);
+  ctx.scale(-1,1);
+  ctx.beginPath(); ctx.arc(0,0,24,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.82)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(0,0,26,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=4; ctx.stroke();
+  ctx.font='32px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(skin.emoji,0,0);
   ctx.restore();
 }
 
-function drawTrash(t) {
-  if (t.collected) return;
-  ctx.font = '22px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(t.type, t.x, t.y);
+function drawTrash(t){
+  if(t.collected) return;
+  ctx.font='22px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(t.type,t.x,t.y);
 }
 
-function drawChest(c) {
-  if (c.collected) return;
-  c.glow += 0.05 * c.glowDir;
-  if (c.glow > 1) { c.glow=1; c.glowDir=-1; }
-  if (c.glow < 0) { c.glow=0; c.glowDir=1; }
-  ctx.globalAlpha = 0.25 + c.glow*0.45;
-  ctx.fillStyle = '#ffd700';
+function drawChest(c){
+  if(c.collected) return;
+  c.glow+=0.05*c.glowDir;
+  if(c.glow>1){c.glow=1;c.glowDir=-1;} if(c.glow<0){c.glow=0;c.glowDir=1;}
+  ctx.globalAlpha=0.25+c.glow*0.45; ctx.fillStyle='#ffd700';
+  ctx.beginPath(); ctx.arc(c.x,c.y,22,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha=1;
+  ctx.font='24px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('📦',c.x,c.y);
+}
+
+function drawParticles(){
+  for(let p of G.particles){
+    ctx.globalAlpha=p.alpha; ctx.fillStyle=p.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+
+function wrapText(text, maxW, fontSize){
+  ctx.font=fontSize+'px "Atkinson Hyperlegible",sans-serif';
+  const words=text.split(' ');
+  const lines=[];
+  let line='';
+  for(let w of words){
+    const test=line+(line?' ':'')+w;
+    if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=w;}
+    else line=test;
+  }
+  if(line) lines.push(line);
+  return lines;
+}
+
+function roundRect(x,y,w,h,r){
   ctx.beginPath();
-  ctx.arc(c.x, c.y, 22, 0, Math.PI*2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-  ctx.font = '24px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('📦', c.x, c.y);
-}
-
-function drawParticles() {
-  for (let p of G.particles) {
-    ctx.globalAlpha = p.alpha;
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
-
-function drawHUD() {
-  ctx.fillStyle = 'white';
-  ctx.font = 'bold 26px "Atkinson Hyperlegible",sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-  ctx.fillText(G.score, W/2, 14);
-
-  ctx.font = '13px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,.75)';
-  ctx.textAlign = 'left';
-  ctx.fillText('🐚 ' + coins, 12, 14);
-  ctx.textAlign = 'right';
-  ctx.fillText('♻️ ' + G.trashCount, W-12, 14);
-
-  if (G.factAlpha > 0) {
-    ctx.globalAlpha = Math.min(G.factAlpha, 0.92);
-    ctx.fillStyle = 'rgba(0,20,50,0.82)';
-    roundRect(ctx, 16, H-82, W-32, 46, 8);
-    ctx.fill();
-    ctx.globalAlpha = G.factAlpha;
-    ctx.fillStyle = 'white';
-    ctx.font = '11px "Atkinson Hyperlegible",sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const words = G.factText.split(' ');
-    let line='', lines=[];
-    ctx.font = '11px sans-serif';
-    for (let w of words) {
-      const t = line + (line?' ':'')+w;
-      if (ctx.measureText(t).width > W-50 && line) { lines.push(line); line=w; }
-      else line=t;
-    }
-    if (line) lines.push(line);
-    const baseY = lines.length > 1 ? H-70 : H-59;
-    lines.forEach((l,i) => ctx.fillText(l, W/2, baseY+i*14));
-    ctx.globalAlpha = 1;
-    G.factAlpha -= 0.004;
-  }
-
-  if (G.flashAlpha > 0) {
-    ctx.globalAlpha = G.flashAlpha;
-    ctx.fillStyle = '#ffd700';
-    ctx.font = 'bold 15px "Atkinson Hyperlegible",sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(G.flashMsg, W/2, H/2 - 70);
-    ctx.globalAlpha = 1;
-    G.flashAlpha -= 0.016;
-  }
-}
-
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.lineTo(x+w-r, y);
-  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-  ctx.lineTo(x+w, y+h-r);
-  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-  ctx.lineTo(x+r, y+h);
-  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-  ctx.lineTo(x, y+r);
-  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
   ctx.closePath();
 }
 
-function drawTitle() {
-  drawBg();
-  ctx.fillStyle = 'rgba(0,15,40,0.55)';
-  ctx.fillRect(0,0,W,H);
+function drawHUD(){
+  ctx.fillStyle='white';
+  ctx.font='bold 26px "Atkinson Hyperlegible",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText(G.score,W/2,14);
+  ctx.font='13px "Atkinson Hyperlegible",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.75)';
+  ctx.textAlign='left'; ctx.fillText('🐚 '+coins,12,14);
+  ctx.textAlign='right'; ctx.fillText('♻️ '+G.trashCount,W-12,14);
 
-  ctx.fillStyle = 'white';
-  ctx.font = 'bold 32px "Atkinson Hyperlegible",sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('🌊 Ocean Day', W/2, H/2-90);
+  if(G.factAlpha>0){
+    ctx.globalAlpha=Math.min(G.factAlpha,0.92);
+    ctx.fillStyle='rgba(0,20,50,0.85)';
+    roundRect(16,H-82,W-32,46,8); ctx.fill();
+    ctx.globalAlpha=G.factAlpha; ctx.fillStyle='white';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    const lines=wrapText(G.factText,W-52,11);
+    const baseY=lines.length>1?H-70:H-59;
+    lines.forEach((l,i)=>ctx.fillText(l,W/2,baseY+i*14));
+    ctx.globalAlpha=1; G.factAlpha-=0.004;
+  }
 
-  ctx.fillStyle = 'rgba(255,255,255,.75)';
-  ctx.font = '15px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillText('Swim through the ocean.', W/2, H/2-52);
-  ctx.fillText('Collect trash. Avoid the coral walls!', W/2, H/2-30);
-
-  ctx.font = '30px serif';
-  ctx.fillText(getSkin().emoji, W/2, H/2+18);
-
-  ctx.fillStyle = 'rgba(255,255,255,.9)';
-  ctx.font = 'bold 14px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillText('Click · Tap · Space to start', W/2, H/2+60);
-
-  ctx.fillStyle = 'rgba(255,210,0,.8)';
-  ctx.font = '12px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillText('Earn 🐚 shells · Open 📦 chests · Unlock cosmetics', W/2, H/2+88);
-
-  if (best > 0) {
-    ctx.fillStyle = 'rgba(255,210,0,.7)';
-    ctx.fillText('Best score: ' + best, W/2, H/2+112);
+  if(G.flashAlpha>0){
+    ctx.globalAlpha=G.flashAlpha; ctx.fillStyle='#ffd700';
+    ctx.font='bold 15px "Atkinson Hyperlegible",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(G.flashMsg,W/2,H/2-70);
+    ctx.globalAlpha=1; G.flashAlpha-=0.016;
   }
 }
 
-function drawDead() {
+function drawTitle(){
   drawBg();
-  for (let p of G.pipes) drawPipe(p);
-  drawFish();
-  drawParticles();
-
-  ctx.fillStyle = 'rgba(0,10,30,.7)';
-  ctx.fillRect(0,0,W,H);
-
-  ctx.fillStyle = 'white';
-  ctx.font = 'bold 30px "Atkinson Hyperlegible",sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('Score: ' + G.score, W/2, H/2-64);
-
-  if (G.score > 0 && G.score >= best) {
-    ctx.fillStyle = '#ffd700';
-    ctx.font = '14px "Atkinson Hyperlegible",sans-serif';
-    ctx.fillText('🏆 New best!', W/2, H/2-34);
-  }
-
-  ctx.fillStyle = 'rgba(255,255,255,.75)';
-  ctx.font = '13px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillText('Trash collected: ' + G.trashCount, W/2, H/2-4);
-
-  const earned = G.score * 2 + G.trashCount * 5;
-  ctx.fillStyle = '#ffd700';
-  ctx.font = '14px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillText('+' + earned + ' shells earned', W/2, H/2+22);
-
-  ctx.fillStyle = 'rgba(255,255,255,.5)';
-  ctx.font = '11px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillText('(2 per pipe + 5 per trash item)', W/2, H/2+44);
-
-  ctx.fillStyle = 'rgba(255,255,255,.9)';
-  ctx.font = 'bold 14px "Atkinson Hyperlegible",sans-serif';
-  ctx.fillText('Click to try again', W/2, H/2+76);
+  ctx.fillStyle='rgba(0,15,40,0.55)'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='white';
+  ctx.font='bold 32px "Atkinson Hyperlegible",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('🌊 Ocean Day',W/2,H/2-90);
+  ctx.fillStyle='rgba(255,255,255,.75)';
+  ctx.font='15px "Atkinson Hyperlegible",sans-serif';
+  ctx.fillText('Swim through the ocean.',W/2,H/2-52);
+  ctx.fillText('Collect trash. Avoid the seaweed walls!',W/2,H/2-30);
+  ctx.beginPath(); ctx.arc(W/2,H/2+18,24,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.82)'; ctx.fill();
+  ctx.font='32px serif'; ctx.fillText(getSkin().emoji,W/2,H/2+18);
+  ctx.fillStyle='rgba(255,255,255,.9)';
+  ctx.font='bold 14px "Atkinson Hyperlegible",sans-serif';
+  ctx.fillText('Click · Tap · Space to start',W/2,H/2+60);
+  ctx.fillStyle='rgba(255,210,0,.8)';
+  ctx.font='12px "Atkinson Hyperlegible",sans-serif';
+  ctx.fillText('Earn 🐚 shells · Open 📦 chests · Unlock cosmetics',W/2,H/2+88);
+  if(best>0){ctx.fillStyle='rgba(255,210,0,.7)'; ctx.fillText('Best score: '+best,W/2,H/2+112);}
 }
 
-function resetGame() {
-  G.phase = 'playing';
-  G.fish = { x:90, y:220, vy:0 };
-  G.pipes = []; G.trash = []; G.chests = []; G.particles = [];
-  G.score = 0; G.frame = 0; G.scrollX = 0;
-  G.trashCount = 0; G.chestCooldown = 0;
-  G.factAlpha = 0; G.flashAlpha = 0;
-  for (let i = 0; i < 5; i++) spawnCoral(Math.random()*W);
+function drawDead(){
+  drawBg();
+  for(let p of G.pipes) drawPipe(p);
+  drawFish(); drawParticles();
+  ctx.fillStyle='rgba(0,10,30,.75)'; ctx.fillRect(0,0,W,H);
+
+  const earned=G.score*2+G.trashCount*5;
+  const isNewBest=G.score>0&&G.score>=best;
+
+  let topY=60;
+
+  ctx.fillStyle='white';
+  ctx.font='bold 30px "Atkinson Hyperlegible",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('Score: '+G.score,W/2,topY); topY+=36;
+
+  if(isNewBest){
+    ctx.fillStyle='#ffd700';
+    ctx.font='bold 14px "Atkinson Hyperlegible",sans-serif';
+    ctx.fillText('🏆 New best!',W/2,topY); topY+=24;
+  }
+
+  ctx.fillStyle='rgba(255,255,255,.72)';
+  ctx.font='13px "Atkinson Hyperlegible",sans-serif';
+  ctx.fillText('Trash collected: '+G.trashCount,W/2,topY); topY+=20;
+
+  ctx.fillStyle='#ffd700';
+  ctx.font='14px "Atkinson Hyperlegible",sans-serif';
+  ctx.fillText('+'+earned+' shells earned',W/2,topY); topY+=18;
+  ctx.fillStyle='rgba(255,255,255,.4)';
+  ctx.font='11px "Atkinson Hyperlegible",sans-serif';
+  ctx.fillText('(2 per gap + 5 per trash item)',W/2,topY); topY+=28;
+
+  if(G.deathFact){
+    const cardX=24, cardW=W-48;
+    const factLines=wrapText(G.deathFact.fact, cardW-28, 13);
+    const tipLines=wrapText('💡 '+G.deathFact.tip, cardW-28, 11);
+    const cardH=20+(factLines.length*18)+(tipLines.length*14)+18;
+
+    ctx.fillStyle='rgba(0,90,160,0.75)';
+    roundRect(cardX, topY, cardW, cardH, 10); ctx.fill();
+    ctx.strokeStyle='rgba(100,200,255,0.4)'; ctx.lineWidth=1.5;
+    roundRect(cardX, topY, cardW, cardH, 10); ctx.stroke();
+
+    ctx.fillStyle='rgba(100,210,255,0.85)';
+    ctx.font='bold 9px "Atkinson Hyperlegible",sans-serif';
+    ctx.textAlign='left'; ctx.textBaseline='top';
+    ctx.fillText('🌊  OCEAN FACT',cardX+12,topY+10);
+
+    ctx.fillStyle='white';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    let ty=topY+26;
+    const fl=wrapText(G.deathFact.fact, cardW-28, 13);
+    fl.forEach(l=>{ctx.font='bold 13px "Atkinson Hyperlegible",sans-serif';ctx.fillText(l,W/2,ty);ty+=18;});
+    ty+=4;
+    const tl=wrapText('💡 '+G.deathFact.tip, cardW-28, 11);
+    tl.forEach(l=>{ctx.fillStyle='rgba(180,230,255,0.85)';ctx.font='11px "Atkinson Hyperlegible",sans-serif';ctx.fillText(l,W/2,ty);ty+=14;});
+
+    topY+=cardH+14;
+  }
+
+  ctx.fillStyle='rgba(255,255,255,.88)';
+  ctx.font='bold 14px "Atkinson Hyperlegible",sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('Tap to try again',W/2,topY);
+}
+
+function resetGame(){
+  G.phase='playing';
+  G.fish={x:90,y:220,vy:0};
+  G.pipes=[];G.trash=[];G.chests=[];G.particles=[];
+  G.score=0;G.frame=0;G.scrollX=0;
+  G.trashCount=0;G.chestCooldown=0;
+  G.factAlpha=0;G.flashAlpha=0;G.deathFact=null;
+  for(let i=0;i<5;i++) spawnCoral(Math.random()*W);
   spawnPipe();
 }
 
-function flap() {
-  if (G.phase === 'title' || G.phase === 'dead') { resetGame(); return; }
-  if (G.phase === 'playing') G.fish.vy = FLAP_V;
+function flap(){
+  if(G.phase==='title'||G.phase==='dead'){resetGame();return;}
+  if(G.phase==='playing') G.fish.vy=FLAP_V;
 }
 
-function die() {
-  G.phase = 'dead';
-  const earned = G.score * 2 + G.trashCount * 5;
-  saveCoins(coins + earned);
-  spawnParticles(G.fish.x, G.fish.y, '#e74c3c', 12);
+function die(){
+  G.phase='dead';
+  const earned=G.score*2+G.trashCount*5;
+  saveCoins(coins+earned);
+  spawnParticles(G.fish.x,G.fish.y,'#e74c3c',12);
+  G.deathFact=randFact();
 }
 
-function gameLoop() {
+function gameLoop(){
   requestAnimationFrame(gameLoop);
   G.frame++;
+  if(G.phase==='title'){drawTitle();return;}
+  if(G.phase==='dead'){drawDead();return;}
 
-  if (G.phase === 'title') { drawTitle(); return; }
-  if (G.phase === 'dead')  { drawDead(); return; }
+  G.scrollX+=SPEED;
+  G.fish.vy+=GRAVITY;
+  G.fish.vy=Math.min(G.fish.vy,12);
+  G.fish.y+=G.fish.vy;
 
-  G.scrollX += SPEED;
-  G.fish.vy += GRAVITY;
-  G.fish.vy = Math.min(G.fish.vy, 12);
-  G.fish.y  += G.fish.vy;
+  if(G.fish.y>H-46){die();return;}
+  if(G.fish.y<0){G.fish.y=0;G.fish.vy=0;}
 
-  if (G.fish.y > H - 46) { die(); return; }
-  if (G.fish.y < 0) { G.fish.y = 0; G.fish.vy = 0; }
-
-  if (G.frame % PIPE_INT === 0) spawnPipe();
-  if (G.frame % 190 === 60)     spawnTrash();
+  if(G.frame%PIPE_INT===0) spawnPipe();
+  if(G.frame%190===60) spawnTrash();
 
   G.chestCooldown--;
-  if (G.chestCooldown <= 0 && G.score > 2 && Math.random() < 0.004) {
-    spawnChest();
-    G.chestCooldown = 420;
+  if(G.chestCooldown<=0&&G.score>2&&Math.random()<0.004){
+    spawnChest(); G.chestCooldown=420;
   }
 
-  for (let p of G.pipes) {
-    p.x -= SPEED;
-    if (!p.scored && G.fish.x > p.x + PIPE_W) {
-      p.scored = true;
-      G.score++;
-      if (G.score > best) saveBest(G.score);
-      if (G.score % 5 === 0) showFact();
+  for(let p of G.pipes){
+    p.x-=SPEED;
+    if(!p.scored&&G.fish.x>p.x+PIPE_W){
+      p.scored=true; G.score++;
+      if(G.score>best) saveBest(G.score);
+      if(G.score%5===0) showInGameFact();
     }
-    if (collidePipe(G.fish, p)) { die(); return; }
+    if(collidePipe(G.fish,p)){die();return;}
   }
-  G.pipes = G.pipes.filter(p => p.x > -PIPE_W - 10);
+  G.pipes=G.pipes.filter(p=>p.x>-PIPE_W-10);
 
-  for (let t of G.trash) {
-    t.x -= SPEED * 0.6;
-    if (!t.collected && dist(G.fish, t) < 22) {
-      t.collected = true;
-      G.trashCount++;
-      spawnParticles(t.x, t.y, '#2ecc71', 8);
-      G.flashMsg = '♻️ Trash collected!';
-      G.flashAlpha = 0.85;
+  for(let t of G.trash){
+    t.x-=SPEED*0.6;
+    if(!t.collected&&dist(G.fish,t)<22){
+      t.collected=true; G.trashCount++;
+      spawnParticles(t.x,t.y,'#2ecc71',8);
+      G.flashMsg='♻️ Trash collected!'; G.flashAlpha=0.85;
     }
   }
-  G.trash = G.trash.filter(t => t.x > -40 && !t.collected);
+  G.trash=G.trash.filter(t=>t.x>-40&&!t.collected);
 
-  for (let c of G.chests) {
-    c.x -= SPEED * 0.5;
-    if (!c.collected && dist(G.fish, c) < 26) {
-      c.collected = true;
-      openChestReward();
-      spawnParticles(c.x, c.y, '#ffd700', 14);
+  for(let c of G.chests){
+    c.x-=SPEED*0.5;
+    if(!c.collected&&dist(G.fish,c)<26){
+      c.collected=true; openChestReward();
+      spawnParticles(c.x,c.y,'#ffd700',14);
     }
   }
-  G.chests = G.chests.filter(c => c.x > -40 && !c.collected);
+  G.chests=G.chests.filter(c=>c.x>-40&&!c.collected);
 
-  for (let p of G.particles) {
-    p.x += p.vx; p.y += p.vy; p.vy += 0.1;
-    p.alpha -= 0.024; p.r *= 0.97;
+  for(let p of G.particles){
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.alpha-=0.024;p.r*=0.97;
   }
-  G.particles = G.particles.filter(p => p.alpha > 0);
+  G.particles=G.particles.filter(p=>p.alpha>0);
 
-  if (G.frame % 130 === 0) spawnCoral(G.scrollX + W + Math.random()*60);
+  if(G.frame%130===0) spawnCoral(G.scrollX+W+Math.random()*60);
 
   drawBg();
-  for (let p of G.pipes) drawPipe(p);
-  for (let t of G.trash) drawTrash(t);
-  for (let c of G.chests) drawChest(c);
-  drawFish();
-  drawParticles();
-  drawHUD();
+  for(let p of G.pipes) drawPipe(p);
+  for(let t of G.trash) drawTrash(t);
+  for(let c of G.chests) drawChest(c);
+  drawFish(); drawParticles(); drawHUD();
 }
 
-canvas.addEventListener('click', flap);
-canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); }, { passive:false });
-document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); flap(); } });
+canvas.addEventListener('click',flap);
+canvas.addEventListener('touchstart',e=>{e.preventDefault();flap();},{passive:false});
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();flap();}});
 
-function renderShop() {
-  const grid = document.getElementById('shopGrid');
-  grid.innerHTML = '';
-  SKINS.forEach(skin => {
-    const isActive = activeSkin === skin.id;
-    const card = document.createElement('div');
-    card.className = 'skin-card' + (isActive?' active':'') + (skin.rare&&!skin.owned?' locked-rare':'');
-
-    let actionText = '';
-    if (skin.owned) {
-      actionText = isActive ? 'equipped' : 'tap to use';
-    } else if (skin.rare) {
-      actionText = '✨ chest only';
-    } else {
-      actionText = (coins >= skin.cost ? '' : '🔒 ') + '🐚 ' + skin.cost;
-    }
-
-    card.innerHTML =
-      (skin.rare ? '<span class="rare-badge">RARE</span>' : '') +
-      '<span class="skin-emoji">' + skin.emoji + '</span>' +
-      '<span class="skin-name">' + skin.name + '</span>' +
-      '<span class="skin-action">' + actionText + '</span>';
-
-    card.addEventListener('click', () => {
-      if (skin.owned) {
-        saveSkin(skin.id);
-        renderShop();
-      } else if (!skin.rare && coins >= skin.cost) {
-        saveCoins(coins - skin.cost);
-        skin.owned = true;
-        saveOwned(skin.id);
-        saveSkin(skin.id);
-        renderShop();
+function renderShop(){
+  const grid=document.getElementById('shopGrid');
+  grid.innerHTML='';
+  SKINS.forEach(skin=>{
+    const isActive=activeSkin===skin.id;
+    const card=document.createElement('div');
+    card.className='skin-card'+(isActive?' active':'')+(skin.rare&&!skin.owned?' locked-rare':'');
+    let action='';
+    if(skin.owned) action=isActive?'equipped':'tap to use';
+    else if(skin.rare) action='✨ chest only';
+    else action=(coins>=skin.cost?'':'🔒 ')+'🐚 '+skin.cost;
+    card.innerHTML=(skin.rare?'<span class="rare-badge">RARE</span>':'')+
+      '<span class="skin-emoji">'+skin.emoji+'</span>'+
+      '<span class="skin-name">'+skin.name+'</span>'+
+      '<span class="skin-action">'+action+'</span>';
+    card.addEventListener('click',()=>{
+      if(skin.owned){saveSkin(skin.id);renderShop();}
+      else if(!skin.rare&&coins>=skin.cost){
+        saveCoins(coins-skin.cost);skin.owned=true;
+        saveOwned(skin.id);saveSkin(skin.id);renderShop();
       }
     });
     grid.appendChild(card);
   });
 }
 
-function openShop() {
-  document.getElementById('shopPanel').style.display = 'block';
-  renderShop();
-}
-function closeShop() {
-  document.getElementById('shopPanel').style.display = 'none';
-}
+function openShop(){document.getElementById('shopPanel').style.display='block';renderShop();}
+function closeShop(){document.getElementById('shopPanel').style.display='none';}
 
 gameLoop();
 </script>
