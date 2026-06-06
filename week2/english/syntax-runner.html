@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Syntax Runner: Chilton City Uplink · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#070916; --panel:#11172a; --panel2:#171f38; --panel3:#0c1020;
+    --cyan:#18d8ff; --cyan2:#8ff2ff; --pink:#ff3df2; --violet:#8b5cff; --lime:#92ff64;
+    --amber:#ffbf4d; --red:#ff4e6a; --green:#52e6a0; --text:#f5fbff; --muted:#aab7d4;
+    --line:rgba(143,242,255,.25); --shadow:0 0 24px rgba(24,216,255,.18);
+    --radius:18px; --font:'Atkinson Hyperlegible',Arial,sans-serif;
+  }
+  body{font-family:var(--font);background:
+    radial-gradient(circle at 15% 10%, rgba(139,92,255,.28), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(255,61,242,.2), transparent 28%),
+    radial-gradient(circle at 50% 85%, rgba(24,216,255,.14), transparent 34%),
+    linear-gradient(180deg,#04050d,#080b18 35%,#060713);color:var(--text);min-height:100vh;line-height:1.55;}
+  body.calm{--shadow:none} body.calm .glitch,body.calm .scanline,body.calm .pulse{animation:none!important} body.support{font-size:18px} body.support p,body.support button,body.support input{line-height:1.7}
+  .scanline{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 6px);mix-blend-mode:screen;opacity:.32;animation:scan 7s linear infinite;z-index:0}@keyframes scan{from{transform:translateY(-20px)}to{transform:translateY(20px)}}
+  .wrap{position:relative;z-index:1}.topbar{background:rgba(7,9,22,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:.75rem 1rem;display:flex;gap:.7rem;align-items:center;justify-content:space-between;flex-wrap:wrap;position:sticky;top:0;z-index:10}.back-link{color:var(--cyan2);font-weight:700;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.45rem .8rem;background:rgba(24,216,255,.08)}.top-actions{display:flex;gap:.5rem;flex-wrap:wrap}.tiny-btn{font-family:var(--font);font-weight:700;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06);color:var(--text);padding:.45rem .75rem;cursor:pointer}.tiny-btn.active{background:rgba(146,255,100,.15);border-color:var(--lime);color:var(--lime)}
+  header{padding:2.3rem 1.2rem 1.5rem;text-align:center;border-bottom:1px solid rgba(143,242,255,.14);background:linear-gradient(135deg,rgba(24,216,255,.13),rgba(255,61,242,.08),rgba(139,92,255,.12))}.tag{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--cyan2);margin-bottom:.35rem}.glitch{font-size:clamp(2rem,5vw,4rem);line-height:1.05;text-shadow:0 0 10px rgba(24,216,255,.65),2px 0 rgba(255,61,242,.65);animation:glitch 4s infinite}@keyframes glitch{0%,94%,100%{transform:none}95%{transform:skewX(2deg) translateX(1px)}97%{transform:skewX(-2deg) translateX(-1px)}}header p{color:var(--muted);max-width:820px;margin:.7rem auto 0}.target{display:inline-block;margin-top:1rem;background:rgba(146,255,100,.1);border:1px solid rgba(146,255,100,.4);border-radius:14px;color:#d9ffd0;padding:.7rem 1rem;font-weight:700}
+  .hud{max-width:1120px;margin:1rem auto 0;padding:0 1rem;display:grid;grid-template-columns:1.1fr 1fr;gap:1rem}.card{background:linear-gradient(180deg,rgba(23,31,56,.95),rgba(12,16,32,.95));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem}.name-card{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}.name-card label{font-weight:700;color:var(--cyan2)}.name-card input{flex:1;min-width:220px;background:#050711;border:2px solid rgba(143,242,255,.35);border-radius:12px;color:var(--text);font-family:var(--font);font-weight:700;padding:.65rem .8rem}.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:.45rem}.stat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.55rem;text-align:center}.stat b{display:block;color:var(--cyan2);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}.stat span{font-size:1.05rem;font-weight:700;color:#fff}.bar-track{height:10px;background:#050711;border:1px solid rgba(143,242,255,.25);border-radius:999px;overflow:hidden;margin-top:.7rem}.bar-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));width:0%;transition:.35s}.section-nav{max-width:1120px;margin:1rem auto;padding:0 1rem;display:flex;gap:.55rem;overflow-x:auto}.nav-btn{flex:0 0 auto;border:1px solid var(--line);background:rgba(17,23,42,.95);color:var(--muted);border-radius:999px;padding:.55rem .85rem;font-family:var(--font);font-weight:700;cursor:pointer}.nav-btn.active{color:#041018;background:var(--cyan);border-color:var(--cyan)}.nav-btn.done{color:#06140d;background:var(--lime);border-color:var(--lime)}
+  main{max-width:1120px;margin:0 auto;padding:0 1rem 4rem}.section{display:none}.section.active{display:block}.title-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:1rem 0}.section-title{font-size:1.7rem;color:#fff;text-shadow:0 0 12px rgba(24,216,255,.35)}.badge{display:inline-flex;align-items:center;gap:.35rem;border:1px solid rgba(255,191,77,.45);background:rgba(255,191,77,.12);color:#ffe1a0;border-radius:999px;padding:.35rem .7rem;font-weight:700;font-size:.85rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}.choice{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.045);padding:1rem;cursor:pointer;transition:.18s}.choice:hover{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 0 18px rgba(24,216,255,.15)}.choice.selected{border-color:var(--lime);background:rgba(146,255,100,.1)}.choice h3{color:var(--cyan2);margin-bottom:.35rem}.choice p{color:var(--muted);font-size:.94rem}.btn-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}.btn{border:none;border-radius:13px;padding:.78rem 1.1rem;font-family:var(--font);font-size:1rem;font-weight:700;cursor:pointer;transition:.15s}.btn:hover{transform:translateY(-2px)}.primary{background:linear-gradient(135deg,var(--cyan),#3ee9c8);color:#031016}.secondary{background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff}.outline{background:transparent;color:var(--cyan2);border:2px solid var(--cyan)}.danger{background:var(--red);color:#fff}.success{background:var(--lime);color:#06140d}.muted-btn{background:#26304e;color:#fff}.split{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem}.terminal{background:#03050b;border:1px solid rgba(146,255,100,.35);border-radius:16px;padding:1rem;box-shadow:inset 0 0 18px rgba(146,255,100,.05);font-family:var(--font)}.terminal .prompt{color:var(--lime);font-weight:700}.terminal .code{margin-top:.6rem;color:#d7ffe0;background:rgba(146,255,100,.06);border-left:4px solid var(--lime);border-radius:10px;padding:.8rem;white-space:pre-wrap}.rule{background:rgba(24,216,255,.08);border-left:4px solid var(--cyan);border-radius:12px;padding:.8rem;margin:.7rem 0;color:#dffbff}.district-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}.district{min-height:160px;position:relative;overflow:hidden}.district::after{content:"";position:absolute;inset:auto -30px -40px auto;width:140px;height:140px;background:radial-gradient(circle,rgba(24,216,255,.18),transparent 70%);border-radius:50%}.district.locked{opacity:.5;filter:grayscale(.5)}.district h3{color:#fff}.district .status{font-weight:700;color:var(--amber);margin-top:.4rem}.event-box{border:1px solid rgba(255,61,242,.42);background:rgba(255,61,242,.08);border-radius:16px;padding:1rem;margin:1rem 0}.event-box h3{color:#ffc8fb}.battle{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.fighter{min-height:245px;text-align:center;position:relative;overflow:hidden}.avatar{font-size:4.8rem;margin:.3rem 0;filter:drop-shadow(0 0 14px rgba(24,216,255,.25))}.enemy .avatar{filter:drop-shadow(0 0 16px rgba(255,78,106,.3))}.hp-label{display:flex;justify-content:space-between;font-weight:700;font-size:.85rem;color:var(--muted);margin-top:.5rem}.hp-track{height:15px;background:#050711;border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden}.hp-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--lime));width:100%;transition:.35s}.mana-fill{height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));width:100%;transition:.35s}.question-panel{margin-top:1rem}.question-text{font-size:1.15rem;font-weight:700;margin-bottom:.75rem}.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.65rem}.option{border:2px solid rgba(143,242,255,.22);background:rgba(255,255,255,.055);color:var(--text);border-radius:14px;padding:.85rem;font-family:var(--font);font-weight:700;text-align:left;cursor:pointer}.option:hover{border-color:var(--cyan);background:rgba(24,216,255,.1)}.option.correct{border-color:var(--lime);background:rgba(146,255,100,.16);color:#eaffdf}.option.wrong{border-color:var(--red);background:rgba(255,78,106,.15);color:#ffd6dd}.battle-data{background:rgba(24,216,255,.07);border:1px solid rgba(143,242,255,.32);border-radius:16px;padding:.9rem;margin:.8rem 0}.bar-chart{display:flex;align-items:flex-end;gap:.55rem;height:170px;border-left:3px solid var(--muted);border-bottom:3px solid var(--muted);padding:.5rem .5rem 0}.bar-col{flex:1;display:flex;height:100%;align-items:center;justify-content:flex-end;flex-direction:column;gap:.25rem}.bar{width:100%;max-width:58px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--cyan),var(--violet));min-height:8px}.bar-val{font-weight:700;color:#fff}.bar-lab{font-size:.8rem;color:var(--muted);font-weight:700;text-align:center}.counter-bag{display:flex;gap:.5rem;flex-wrap:wrap}.counter{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid rgba(255,255,255,.35)}.counter.red{background:#8f1e35}.counter.blue{background:#1f5dcc}.counter.green{background:#247e50}.log{max-height:210px;overflow:auto;background:#03050b;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:.8rem;color:#dbe7ff}.log p{margin:.35rem 0}.inventory{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem}.gear-card{background:rgba(255,255,255,.05);border:1px solid rgba(143,242,255,.18);border-radius:14px;padding:.8rem}.gear-card.equipped{border-color:var(--lime);box-shadow:0 0 12px rgba(146,255,100,.12)}.gear-card h4{color:var(--cyan2)}.skill-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem}.skill{border:1px solid rgba(255,61,242,.25);background:rgba(255,61,242,.07);border-radius:14px;padding:.8rem}.skill h4{color:#ffc8fb}.skill.locked{opacity:.55}.mini-table{width:100%;border-collapse:collapse;margin:.8rem 0}.mini-table th,.mini-table td{border-bottom:1px solid rgba(143,242,255,.17);padding:.5rem;text-align:left}.mini-table th{color:var(--cyan2)}.feedback{margin-top:.8rem;padding:.8rem;border-radius:12px;font-weight:700;display:none}.feedback.good{display:block;background:rgba(146,255,100,.12);color:#dcffd5;border:1px solid rgba(146,255,100,.35)}.feedback.bad{display:block;background:rgba(255,78,106,.12);color:#ffd4dc;border:1px solid rgba(255,78,106,.35)}.footerbar{position:relative;z-index:1;border-top:1px solid var(--line);background:rgba(7,9,22,.92);padding:1rem;display:flex;gap:.75rem;align-items:center;justify-content:center;flex-wrap:wrap}.small{font-size:.86rem;color:var(--muted)}.hidden{display:none!important}.toast{position:fixed;right:1rem;bottom:1rem;max-width:360px;background:#050711;border:1px solid var(--cyan);color:#fff;border-radius:16px;padding:1rem;box-shadow:0 0 25px rgba(24,216,255,.25);z-index:20;display:none}.toast.show{display:block}.pulse{animation:pulse 1.5s infinite}@keyframes pulse{50%{box-shadow:0 0 28px rgba(255,61,242,.35)}}
+  @media(max-width:760px){.hud,.split,.battle{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.bar-chart{height:130px}.avatar{font-size:3.8rem}}
+  @media print{.topbar,.section-nav,.footerbar,.btn-row,.tiny-btn,.scanline{display:none!important}body{background:white;color:#111}.section{display:block}.card{box-shadow:none;border:1px solid #aaa;background:white;color:#111}.terminal{background:#fff;color:#111}.small,p{color:#111!important}}
+
+  .avatar-builder{display:grid;grid-template-columns:220px 1fr;gap:1rem;align-items:start}
+  .avatar-preview-card{text-align:center;background:linear-gradient(160deg,rgba(24,216,255,.08),rgba(255,61,242,.08));border:1px solid rgba(143,242,255,.3);border-radius:18px;padding:1rem}
+  .custom-avatar{position:relative;display:inline-flex;align-items:center;justify-content:center;width:130px;height:130px;border-radius:28px;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.12),rgba(0,0,0,.12));border:2px solid var(--avatarAccent,var(--cyan));box-shadow:0 0 26px var(--avatarGlow,rgba(24,216,255,.22));font-size:4rem;margin:.35rem auto .75rem}
+  .custom-avatar .companion{position:absolute;right:-14px;bottom:8px;font-size:1.9rem;filter:drop-shadow(0 0 8px rgba(255,255,255,.25))}
+  .custom-avatar .badge-chip{position:absolute;left:-10px;top:10px;border-radius:999px;background:#050711;border:1px solid currentColor;padding:.18rem .35rem;font-size:.8rem;font-weight:700;z-index:3}
+  .custom-avatar.style-hood::before{content:"";position:absolute;inset:8px 14px 44px;border-radius:42px 42px 18px 18px;background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.18));border:1px solid rgba(255,255,255,.18);z-index:0}
+  .custom-avatar.style-visor::after{content:"";position:absolute;width:72px;height:12px;top:45px;border-radius:999px;background:linear-gradient(90deg,transparent,var(--avatarAccent),transparent);box-shadow:0 0 18px var(--avatarAccent);z-index:2}
+  .custom-avatar.style-mask .style-effect{position:absolute;bottom:37px;width:58px;height:24px;border-radius:8px 8px 16px 16px;background:rgba(5,7,17,.72);border:1px solid var(--avatarAccent);box-shadow:0 0 10px var(--avatarAccent);z-index:2}
+  .custom-avatar.style-chrome{background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.03) 35%,rgba(0,0,0,.18)),radial-gradient(circle at 50% 35%,rgba(255,255,255,.12),rgba(0,0,0,.12))}
+  .custom-avatar.style-chrome::after{content:"";position:absolute;inset:10px;border-radius:22px;background:linear-gradient(120deg,transparent 15%,rgba(255,255,255,.24) 28%,transparent 42%);pointer-events:none}
+  .custom-avatar .base-icon{position:relative;z-index:1}.branch-card{border:1px solid rgba(255,61,242,.28);background:rgba(255,61,242,.07);border-radius:15px;padding:.8rem;margin:.65rem 0}.branch-card.selected{border-color:var(--lime);background:rgba(146,255,100,.1)}.branch-card.locked{opacity:.78}.branch-head{display:flex;justify-content:space-between;gap:.5rem;align-items:start}.branch-card h4{color:#ffc8fb;margin-bottom:.25rem}.branch-card.selected h4{color:#dcffd5}.branch-tag{font-size:.78rem;font-weight:700;color:var(--amber)}.branch-note{border-left:4px solid var(--amber);background:rgba(255,191,77,.1);border-radius:10px;padding:.65rem;margin:.65rem 0;color:#ffe7b8}
+
+  .avatar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.65rem;margin:.6rem 0 1rem}
+  .avatar-choice{border:1px solid rgba(143,242,255,.22);background:rgba(255,255,255,.045);border-radius:14px;padding:.7rem;cursor:pointer;color:var(--text);font-family:var(--font);font-weight:700;text-align:left}
+  .avatar-choice:hover{border-color:var(--cyan);background:rgba(24,216,255,.09)}
+  .avatar-choice.selected{border-color:var(--lime);background:rgba(146,255,100,.12);color:#efffe9}
+  .swatch{display:inline-block;width:18px;height:18px;border-radius:6px;margin-right:.4rem;vertical-align:-3px;border:1px solid rgba(255,255,255,.35)}
+  @media(max-width:720px){.avatar-builder{grid-template-columns:1fr}.custom-avatar{width:112px;height:112px}}
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+<div class="wrap">
+  <div class="topbar">
+    <a class="back-link" href="../index.html">← Week 2</a>
+    <div class="top-actions">
+      <button class="tiny-btn" id="calmBtn" onclick="toggleCalm()">Calm mode</button>
+      <button class="tiny-btn" id="supportBtn" onclick="toggleSupport()">Support mode</button>
+      <button class="tiny-btn" onclick="saveGame()">Save</button>
+      <button class="tiny-btn" onclick="resetGame()">Reset</button>
+    </div>
+  </div>
+  <header>
+    <p class="tag">English · Standard English Protocol</p>
+    <h1 class="glitch">Syntax Runner: Chilton City Uplink</h1>
+    <p>Hack a dystopian city’s corrupted broadcasts. Repair verb forms, break firewalls, outsmart drones and restore clear Standard English.</p>
+    <div class="target">Target: I can use Standard English forms for verb inflections instead of local spoken forms.</div>
+  </header>
+
+  <section class="hud">
+    <div class="card name-card">
+      <label for="studentName">Hacker codename:</label>
+      <input id="studentName" placeholder="Type your name or codename..." oninput="saveGame(false)">
+    </div>
+    <div class="card">
+      <div class="stats">
+        <div class="stat"><b>Level</b><span id="levelStat">1</span></div>
+        <div class="stat"><b>XP</b><span id="xpStat">0</span></div>
+        <div class="stat"><b>Credits</b><span id="creditsStat">0</span></div>
+        <div class="stat"><b>HP</b><span id="hpStat">30</span></div>
+        <div class="stat"><b>Mana</b><span id="manaStat">10</span></div>
+        <div class="stat"><b>Repairs</b><span id="correctStat">0</span></div>
+        <div class="stat" id="streakStat" style="border-color:rgba(255,191,77,.35);background:rgba(255,191,77,.07);"><b>🔥 Streak</b><span id="streakDisplay">0</span></div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="progressFill"></div></div>
+      <p class="small" id="progressText">0 / 7 districts secured</p>
+    </div>
+  </section>
+
+  <nav class="section-nav">
+    <button class="nav-btn active" id="nav0" onclick="goSection(0)">1. Login</button>
+    <button class="nav-btn" id="nav1" onclick="goSection(1)">2. City Map</button>
+    <button class="nav-btn" id="nav2" onclick="goSection(2)">3. Hack</button>
+    <button class="nav-btn" id="nav3" onclick="goSection(3)">4. Battle</button>
+    <button class="nav-btn" id="nav4" onclick="goSection(4)">5. Gear</button>
+    <button class="nav-btn" id="nav5" onclick="goSection(5)">6. Break Room</button>
+    <button class="nav-btn" id="nav6" onclick="goSection(6)">7. Final Report</button>
+  </nav>
+
+  <main>
+    <section class="section active" id="section0">
+      <div class="title-row"><h2 class="section-title">Chilton Login Gate</h2><span class="badge">⏱ 5 minutes</span></div>
+      <div class="split">
+        <div class="card terminal">
+          <div class="prompt">> BOOTING STANDARD ENGLISH PROTOCOL...</div>
+          <div class="code">CHILTON CITY ALERT: The central AI has corrupted official broadcasts.
+
+Local spoken forms are leaking into public records:
+- "we was" instead of "we were"
+- "I done" instead of "I did"
+- "I seen" instead of "I saw"
+- "he don't" instead of "he doesn't"
+
+Your mission: scan, patch and broadcast the Standard English forms.</div>
+          <div class="rule"><strong>Rule card:</strong> In formal writing and Standard English, choose the verb form that matches the subject: <strong>we were</strong>, <strong>I did</strong>, <strong>I saw</strong>, <strong>he does not / doesn’t</strong>.</div>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--cyan2);margin-bottom:.7rem;">Customise your hacker</h3>
+          <p class="small">Choose the look of your runner. The style chip now changes the avatar visually. Later, choose one skill branch for this playthrough.</p>
+          <div class="avatar-builder">
+            <div class="avatar-preview-card">
+              <div id="avatarPreview"></div>
+              <p class="small" id="avatarSummary">Appearance not loaded yet.</p>
+            </div>
+            <div id="avatarChoices"></div>
+          </div>
+          <div class="btn-row"><button class="btn primary" onclick="startMission()">Enter Chilton City →</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="section1">
+      <div class="title-row"><h2 class="section-title">Chilton City Districts</h2><span class="badge">Random events active</span></div>
+      <div class="card">
+        <p>Pick a district. Each visit may trigger a different cyber event, enemy or puzzle. The sentence banks are randomised, so replaying the mission gives fresh practice.</p>
+      </div>
+      <div id="eventBox" class="event-box hidden"></div>
+      <div class="district-map" id="districtMap"></div>
+    </section>
+
+    <section class="section" id="section2">
+      <div class="title-row"><h2 class="section-title" id="hackTitle">Hacking Terminal</h2><span class="badge" id="hackBadge">Puzzle</span></div>
+      <div class="split">
+        <div class="card terminal">
+          <div class="prompt" id="hackPrompt">> Awaiting district uplink...</div>
+          <div class="code" id="hackCode">Choose a district from the map to begin a hack.</div>
+          <div class="rule" id="ruleCard">Tip: Find the subject first. Then choose the Standard English verb form.</div>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--cyan2);margin-bottom:.65rem;" id="puzzleName">Puzzle console</h3>
+          <div id="puzzleArea"></div>
+          <div id="puzzleFeedback" class="feedback"></div>
+          <div class="btn-row" id="afterPuzzleBtns" style="display:none;"><button class="btn primary" onclick="startBattleFromPuzzle()">Continue to battle →</button><button class="btn outline" onclick="goSection(1)">Return to map</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="section3">
+      <div class="title-row"><h2 class="section-title">Cyber Battle</h2><span class="badge" id="battleBadge">No enemy loaded</span></div>
+      <div class="battle">
+        <div class="card fighter">
+          <h3 id="heroName">Runner</h3><div class="avatar" id="heroAvatar">🧑‍💻</div>
+          <p class="small" id="heroClassText">Custom hacker</p>
+          <div class="hp-label"><span>HP</span><span id="heroHpTxt">30/30</span></div><div class="hp-track"><div class="hp-fill" id="heroHpFill"></div></div>
+          <div class="hp-label"><span>Mana</span><span id="heroManaTxt">10/10</span></div><div class="hp-track"><div class="mana-fill" id="heroManaFill"></div></div>
+        </div>
+        <div class="card fighter enemy">
+          <h3 id="enemyName">No enemy</h3><div class="avatar" id="enemyAvatar">🛰️</div>
+          <p class="small" id="enemyText">Choose a district to encounter a threat.</p>
+          <div class="hp-label"><span>Integrity</span><span id="enemyHpTxt">0/0</span></div><div class="hp-track"><div class="hp-fill" id="enemyHpFill"></div></div>
+        </div>
+      </div>
+      <div class="split" style="margin-top:1rem;">
+        <div class="card question-panel">
+          <div id="battleData"></div>
+          <p class="question-text" id="battleQuestion">No battle question loaded.</p>
+          <div class="options" id="battleOptions"></div>
+          <div class="btn-row" id="skillButtons"></div>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--cyan2);">Battle log</h3>
+          <div class="log" id="battleLog"></div>
+          <div class="btn-row"><button class="btn outline" onclick="useHint()">Use hint token</button><button class="btn muted-btn" onclick="fleeBattle()">Return to map</button></div>
+        </div>
+      </div>
+      <div id="battleDebrief"></div>
+    </section>
+
+    <section class="section" id="section4">
+      <div class="title-row"><h2 class="section-title">Blackout Market: Gear & Skill Branch</h2><span class="badge">Spend credits</span></div>
+      <div class="split">
+        <div class="card"><h3 style="color:var(--cyan2);">Gear</h3><p class="small">Equip gear to change how battles feel.</p><div class="inventory" id="gearList"></div></div>
+        <div class="card"><h3 style="color:#ffc8fb;">Skill branch</h3><p class="small">Choose one branch per playthrough. Your branch changes skills, strengths and synergies. Reset the game to try another route.</p><div id="branchChooser"></div><div class="skill-list" id="skillList"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="section5">
+      <div class="title-row"><h2 class="section-title">Chilton Break Room</h2><span class="badge">Regulation break</span></div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:4rem;">☕</div><h3 style="font-size:1.5rem;color:var(--cyan2);">Pause the uplink</h3>
+        <p>Choose one reset. No points are lost.</p>
+        <div class="grid" style="margin-top:1rem;">
+          <div class="choice"><h3>Breathing reset</h3><p>Breathe in for 4, hold for 2, breathe out for 4. Repeat three times.</p></div>
+          <div class="choice"><h3>Movement reset</h3><p>Stand up, roll your shoulders, stretch your hands, then sit back down.</p></div>
+          <div class="choice"><h3>Visual reset</h3><p>Look away from the screen and find three blue or green objects nearby.</p></div>
+        </div>
+        <div class="btn-row" style="justify-content:center;"><button class="btn primary" onclick="goSection(1)">Ready — return to city →</button></div>
+      </div>
+    </section>
+
+    <section class="section" id="section6">
+      <div class="title-row"><h2 class="section-title">Final Report</h2><span class="badge">Teacher summary</span></div>
+      <div class="card" id="reportCard"></div>
+      <div class="btn-row"><button class="btn primary" onclick="buildReport()">Refresh report</button><button class="btn secondary" onclick="sendGmail()">Open Gmail results</button><button class="btn outline" onclick="window.print()">Print / Save PDF</button></div>
+    </section>
+  </main>
+</div>
+<div class="footerbar"><span class="small">Syntax Runner · Chilton Bridge School · English target: Standard English verb inflections</span></div>
+<div class="toast" id="toast"></div>
+<script>
+const SAVE_KEY='syntaxRunnerChiltonCitySkillTreeV3';
+const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+const sections=7;
+const avatarOptions={
+  base:[
+    {id:'runner',label:'Street Runner',icon:'🧑‍💻'},
+    {id:'rebel',label:'Neon Rebel',icon:'🕶️'},
+    {id:'android',label:'Android Coder',icon:'🤖'},
+    {id:'scout',label:'Signal Scout',icon:'🧑‍🚀'}
+  ],
+  style:[
+    {id:'hood',label:'Shadow hood',chip:'HD'},
+    {id:'visor',label:'Neon visor',chip:'VR'},
+    {id:'mask',label:'Breather mask',chip:'MK'},
+    {id:'chrome',label:'Chrome shell',chip:'CH'}
+  ],
+  accent:[
+    {id:'cyan',label:'Cyan circuit',color:'#18d8ff',glow:'rgba(24,216,255,.35)'},
+    {id:'magenta',label:'Magenta pulse',color:'#ff3df2',glow:'rgba(255,61,242,.35)'},
+    {id:'lime',label:'Lime signal',color:'#92ff64',glow:'rgba(146,255,100,.32)'},
+    {id:'amber',label:'Amber warning',color:'#ffbf4d',glow:'rgba(255,191,77,.32)'},
+    {id:'violet',label:'Violet hack',color:'#8b5cff',glow:'rgba(139,92,255,.35)'}
+  ],
+  companion:[
+    {id:'none',label:'No companion',icon:''},
+    {id:'drone',label:'Mini drone',icon:'🛸'},
+    {id:'cat',label:'Cyber cat',icon:'🐈‍⬛'},
+    {id:'spark',label:'Data spark',icon:'✨'}
+  ]
+};
+const hackerBase={name:'Custom Hacker',maxHp:34,maxMana:12,starter:'Syntax Strike'};
+const skillBranches={
+  runner:{name:'Ghost Runner',icon:'🏃‍♂️',tag:'Speed / streaks',starter:'Glitch Dash',desc:'Fast, aggressive route. Correct streaks build extra damage and credits.',bonus:'Streaks give stronger attacks.',skills:[
+    {name:'Glitch Dash',level:1,cost:0,type:'strike',desc:'Quick direct hit. Stronger when your streak is 2 or more.'},
+    {name:'Combo Loop',level:2,cost:2,type:'combo',desc:'Adds damage equal to your current streak.'},
+    {name:'Neon Evade',level:3,cost:3,type:'evade',desc:'Reduces the next counterattack.'},
+    {name:'Overdrive Sprint',level:5,cost:5,type:'burst',desc:'Large strike that becomes powerful after three correct answers in a row.'}
+  ]},
+  guardian:{name:'Firewall Guardian',icon:'🛡️',tag:'Defence / safety',starter:'Shield Bash',desc:'Safer route. More HP, stronger protection and better recovery after mistakes.',bonus:'+8 max HP and reduced damage from mistakes.',skills:[
+    {name:'Shield Bash',level:1,cost:0,type:'strike',desc:'Reliable attack with a small defensive boost.'},
+    {name:'Grammar Shield',level:2,cost:2,type:'shield',desc:'Restore HP and reduce the next counterattack.'},
+    {name:'Safe Retry',level:3,cost:3,type:'retry',desc:'Cancels one wrong answer in the current battle.'},
+    {name:'Firewall Fortress',level:5,cost:5,type:'fortress',desc:'Big heal and strong protection for the next two attacks.'}
+  ]},
+  analyst:{name:'Syntax Analyst',icon:'🔍',tag:'Hints / accuracy',starter:'Subject Scan',desc:'Precise route. A corruption map highlights suspect words before you answer. Damage scales with your accuracy.',bonus:'Corruption map overlay in battle + accuracy-scaled damage + extra hint tokens.',skills:[
+    {name:'Subject Scan',level:1,cost:0,type:'hint',desc:'Shows the rule and highlights what to check.'},
+    {name:'Code Cleanse',level:2,cost:2,type:'cleanse',desc:'Removes a wrong option from the current question.'},
+    {name:'Rule Exploit',level:3,cost:3,type:'rule',desc:'Uses the rule card to deal direct damage.'},
+    {name:'Perfect Patch',level:5,cost:5,type:'perfect',desc:'Big damage if your accuracy is 70% or higher.'}
+  ]},
+  engineer:{name:'Overclock Engineer',icon:'🛠️',tag:'Gear / mana',starter:'Gadget Strike',desc:'Technical route. Turns gear, mana and repairs into powerful synergies.',bonus:'+4 max mana and gear skills become stronger.',skills:[
+    {name:'Gadget Strike',level:1,cost:0,type:'strike',desc:'Attack boosted by equipped gear.'},
+    {name:'Repair Bot',level:2,cost:2,type:'repair',desc:'Restores HP and mana.'},
+    {name:'Gear Overclock',level:3,cost:3,type:'overclock',desc:'Damage scales with how much gear you own.'},
+    {name:'System Reboot',level:5,cost:5,type:'reboot',desc:'Restore mana and deal a strong repair burst.'}
+  ]}
+};
+const districts=[
+  {id:'alley',name:'Glitch Alley',icon:'🌆',desc:'Basic corrupted logs: we was, they was, you was.',focus:'was/were',enemyTier:0},
+  {id:'market',name:'Blackout Market',icon:'🏪',desc:'Password hacks using did/done and saw/seen.',focus:'did/done',enemyTier:1},
+  {id:'rail',name:'Ghost Rail Station',icon:'🚇',desc:'Subject and verb agreement under pressure.',focus:'does/don’t',enemyTier:1},
+  {id:'lab',name:'Syntax Lab',icon:'🧪',desc:'Full sentence repairs and CCTV transcript cleanup.',focus:'mixed repairs',enemyTier:2},
+  {id:'tower',name:'Broadcast Tower',icon:'📡',desc:'Final corrupted broadcast from the city AI.',focus:'final boss',enemyTier:3,boss:true}
+];
+const enemies=[
+  {name:'Glitch Rat',icon:'🐀',hp:18,damage:4,desc:'Feeds on we was and they was errors.',tags:['waswere']},
+  {name:'Syntax Spider',icon:'🕷️',hp:22,damage:5,desc:'Traps subjects and verbs in sticky code.',tags:['waswere','dont']},
+  {name:'Patrol Drone',icon:'🛸',hp:26,damage:5,desc:'Scans for did/done and saw/seen glitches.',tags:['done','seen']},
+  {name:'Firewall Warden',icon:'🤖',hp:32,damage:6,desc:'Blocks the city grid with agreement errors.',tags:['dont','mixed']},
+  {name:'Data Wraith',icon:'👾',hp:38,damage:7,desc:'Uses mixed corrupted memories.',tags:['mixed','seen','done']},
+  {name:'GRAM-MA Core',icon:'🧠',hp:58,damage:8,desc:'The central AI broadcasting corrupted language.',tags:['mixed'],boss:true}
+];
+const questionBank=[
+  {tag:'waswere',type:'repair',bad:'We was waiting by the signal tower.',correct:'We were waiting by the signal tower.',options:['We were waiting by the signal tower.','We is waiting by the signal tower.','We be waiting by the signal tower.','We done waiting by the signal tower.'],rule:'Use were with we, you and they in Standard English.'},
+  {tag:'waswere',type:'repair',bad:'They was hiding in Glitch Alley.',correct:'They were hiding in Glitch Alley.',options:['They were hiding in Glitch Alley.','They is hiding in Glitch Alley.','They done hiding in Glitch Alley.','They was hiding in Glitch Alley.'],rule:'They goes with were, not was, in Standard English.'},
+  {tag:'waswere',type:'repair',bad:'You was logged into the terminal.',correct:'You were logged into the terminal.',options:['You were logged into the terminal.','You was logged into the terminal.','You is logged into the terminal.','You be logged into the terminal.'],rule:'Use you were, not you was.'},
+  {tag:'waswere',type:'repair',bad:'The guards was watching the gate.',correct:'The guards were watching the gate.',options:['The guards were watching the gate.','The guards was watching the gate.','The guards is watching the gate.','The guards done watching the gate.'],rule:'Plural subjects usually take were in this past-tense form.'},
+  {tag:'done',type:'repair',bad:'I done the override yesterday.',correct:'I did the override yesterday.',options:['I did the override yesterday.','I done the override yesterday.','I does the override yesterday.','I doing the override yesterday.'],rule:'Use I did for the past tense, not I done.'},
+  {tag:'done',type:'repair',bad:'She done the scan before midnight.',correct:'She did the scan before midnight.',options:['She did the scan before midnight.','She done the scan before midnight.','She do the scan before midnight.','She does the scan before midnight yesterday.'],rule:'Use did for a completed past action.'},
+  {tag:'done',type:'repair',bad:'We done the firewall check.',correct:'We did the firewall check.',options:['We did the firewall check.','We done the firewall check.','We does the firewall check.','We doing the firewall check.'],rule:'Use did, not done, as the main past-tense verb.'},
+  {tag:'seen',type:'repair',bad:'I seen the drone above the rail line.',correct:'I saw the drone above the rail line.',options:['I saw the drone above the rail line.','I seen the drone above the rail line.','I sees the drone above the rail line.','I seeing the drone above the rail line.'],rule:'Use I saw for the simple past tense.'},
+  {tag:'seen',type:'repair',bad:'They seen the code before we did.',correct:'They saw the code before we did.',options:['They saw the code before we did.','They seen the code before we did.','They sees the code before we did.','They was seeing the code before we did.'],rule:'Use saw for simple past. Seen usually needs have: have seen.'},
+  {tag:'dont',type:'repair',bad:'He don’t control the drones.',correct:'He doesn’t control the drones.',options:['He doesn’t control the drones.','He don’t control the drones.','He do not control the drones.','He done control the drones.'],rule:'Use he doesn’t, she doesn’t and it doesn’t.'},
+  {tag:'dont',type:'repair',bad:'The system don’t recognise the password.',correct:'The system doesn’t recognise the password.',options:['The system doesn’t recognise the password.','The system don’t recognise the password.','The system do not recognise the password.','The system done recognise the password.'],rule:'A singular subject like the system uses doesn’t.'},
+  {tag:'dont',type:'repair',bad:'She don’t trust the broadcast.',correct:'She doesn’t trust the broadcast.',options:['She doesn’t trust the broadcast.','She don’t trust the broadcast.','She do not trust the broadcast.','She done trust the broadcast.'],rule:'Use she doesn’t, not she don’t.'},
+  {tag:'mixed',type:'full',bad:'We was at the gate. I done the scan. Then I seen the drone.',correct:'We were at the gate. I did the scan. Then I saw the drone.',options:['We were at the gate. I did the scan. Then I saw the drone.','We was at the gate. I done the scan. Then I seen the drone.','We were at the gate. I done the scan. Then I saw the drone.','We was at the gate. I did the scan. Then I seen the drone.'],rule:'Repair every corrupted verb form: were, did and saw.'},
+  {tag:'mixed',type:'full',bad:'They was ready, but he don’t know the code.',correct:'They were ready, but he doesn’t know the code.',options:['They were ready, but he doesn’t know the code.','They was ready, but he don’t know the code.','They were ready, but he don’t know the code.','They was ready, but he doesn’t know the code.'],rule:'They were. He doesn’t.'},
+  {tag:'mixed',type:'full',bad:'You was right: the system don’t work.',correct:'You were right: the system doesn’t work.',options:['You were right: the system doesn’t work.','You was right: the system don’t work.','You were right: the system don’t work.','You was right: the system doesn’t work.'],rule:'You were. The system doesn’t.'}
+];
+const randomEvents=[
+  {name:'Drone Sweep',icon:'🚨',type:'quickFix',text:'A patrol drone blocks the street. Repair one sentence to pass.',qtag:'waswere',reward:{xp:8,credits:6}},
+  {name:'Data Cache',icon:'💾',type:'reward',text:'You find an abandoned cache under a neon sign.',reward:{xp:4,credits:14,hints:1}},
+  {name:'Signal Jam',icon:'📶',type:'modifier',text:'Signal jam! The next battle starts with one option hidden.',modifier:'hideOption'},
+  {name:'Mira the Signal Runner',icon:'🧑‍🎤',type:'ally',text:'Mira patches your kit and gives you a hint token.',reward:{hints:1,hp:6}},
+  {name:'Locked Data Vault',icon:'🔐',type:'choice',text:'A vault hums nearby. Try a safe hack or a deep hack for greater rewards.'},
+  {name:'Blackout Surge',icon:'⚡',type:'modifier',text:'Power surge! Your next correct first try gives bonus credits.',modifier:'firstTryBonus'}
+];
+const gearShop=[
+  {id:'visor',name:'Syntax Visor',cost:20,slot:'head',desc:'Hints mention the subject more clearly.',effect:'betterHints'},
+  {id:'jacket',name:'Firewall Jacket',cost:24,slot:'body',desc:'Take 1 less damage after a wrong answer.',effect:'reduceDamage'},
+  {id:'chip',name:'Verb Chip',cost:30,slot:'chip',desc:'Once per battle, a wrong answer becomes a retry.',effect:'retryOnce'},
+  {id:'boots',name:'Neon Boots',cost:18,slot:'feet',desc:'+2 credits after a 3-correct streak.',effect:'streakCredits'},
+  {id:'scanner',name:'Echo Scanner',cost:16,slot:'tool',desc:'Start with one extra hint token.',effect:'extraHint'}
+];
+let state={section:0,completed:Array(sections).fill(false),appearance:{base:'runner',style:'visor',accent:'cyan',companion:'drone'},branch:null,level:1,xp:0,credits:10,hints:2,correct:0,attempted:0,streak:0,secured:{},inventory:['scanner'],equipped:{tool:'scanner'},hp:34,maxHp:34,mana:12,maxMana:12,currentDistrict:null,currentPuzzle:null,currentEnemy:null,enemyHp:0,battleQ:null,log:[],modifier:null,retryUsed:false,shieldTurns:0,evade:false};
+function $(id){return document.getElementById(id)}
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+function toast(msg){const t=$('toast');t.innerHTML=msg;t.className='toast show';setTimeout(()=>t.className='toast',3600)}
+function toggleCalm(){document.body.classList.toggle('calm');$('calmBtn').classList.toggle('active');}
+function toggleSupport(){document.body.classList.toggle('support');$('supportBtn').classList.toggle('active');}
+function init(){renderAvatarCustomizer();renderMap();renderGear();renderBranchChooser();renderSkills();loadGame();updateHUD();buildReport();}
+function optionBy(type,id){return (avatarOptions[type]||[]).find(x=>x.id===id)||avatarOptions[type][0];}
+function avatarHTML(){const a=state.appearance||{};const base=optionBy('base',a.base||'runner');const style=optionBy('style',a.style||'visor');const accent=optionBy('accent',a.accent||'cyan');const comp=optionBy('companion',a.companion||'none');return `<div class="custom-avatar style-${style.id}" title="${style.label}" style="--avatarAccent:${accent.color};--avatarGlow:${accent.glow};color:${accent.color}"><span class="badge-chip">${style.chip}</span><span class="style-effect"></span><span class="base-icon">${base.icon}</span>${comp.icon?`<span class="companion">${comp.icon}</span>`:''}</div>`;}
+function avatarText(){const a=state.appearance||{};return `${optionBy('base',a.base).label} · ${optionBy('style',a.style).label} · ${optionBy('accent',a.accent).label}${a.companion&&a.companion!=='none'?' · '+optionBy('companion',a.companion).label:''}`;}
+function renderAvatarCustomizer(){const preview=$('avatarPreview');if(preview)preview.innerHTML=avatarHTML();const summary=$('avatarSummary');if(summary)summary.textContent=avatarText();const box=$('avatarChoices');if(!box)return;const groups=[['base','Body'],['style','Style chip'],['accent','Neon colour'],['companion','Companion']];box.innerHTML=groups.map(([type,title])=>`<h4 style="color:var(--cyan2);margin:.25rem 0;">${title}</h4><div class="avatar-grid">${avatarOptions[type].map(o=>{const selected=(state.appearance?.[type]||avatarOptions[type][0].id)===o.id;const sw=o.color?`<span class="swatch" style="background:${o.color}"></span>`:'';return `<button class="avatar-choice ${selected?'selected':''}" onclick="setAppearance('${type}','${o.id}')">${sw}${o.icon||''} ${o.label}</button>`;}).join('')}</div>`).join('');}
+function setAppearance(type,id){state.appearance={...(state.appearance||{}),[type]:id};renderAvatarCustomizer();updateHUD();saveGame(false);}
+function startMission(){applyBranchStats();state.hp=Math.min(state.hp||state.maxHp,state.maxHp);state.mana=Math.min(state.mana||state.maxMana,state.maxMana);completeSection(0);goSection(1);toast('Uplink accepted. Welcome to Chilton City. Choose your first district.');}
+function goSection(i){
+  if(i===4 && !state.completed[1]){ toast('Complete at least one district first to unlock the Blackout Market.'); return; }
+  state.section=i;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  $('section'+i).classList.add('active');
+  $('nav'+i).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(i===1)renderMap();
+  if(i===4){renderGear();renderBranchChooser();renderSkills();}
+  if(i===6)buildReport();
+  saveGame(false);
+}
+function completeSection(i){state.completed[i]=true;$('nav'+i).classList.add('done');updateHUD();}
+function updateHUD(){applyBranchStats();$('levelStat').textContent=state.level;$('xpStat').textContent=state.xp;$('creditsStat').textContent=state.credits;$('hpStat').textContent=state.hp;$('manaStat').textContent=state.mana;$('correctStat').textContent=state.correct;
+  const streakEl=$('streakDisplay');
+  if(streakEl){streakEl.textContent=state.streak;const pill=$('streakStat');if(pill){pill.style.borderColor=state.streak>=3?'rgba(255,191,77,.7)':'rgba(255,191,77,.35)';pill.style.background=state.streak>=3?'rgba(255,191,77,.18)':'rgba(255,191,77,.07)';}}const secured=Object.keys(state.secured).length;$('progressFill').style.width=(secured/districts.length*100)+'%';$('progressText').textContent=secured+' / '+districts.length+' districts secured · Hint tokens: '+state.hints;$('heroName').textContent=getName();$('heroAvatar').innerHTML=avatarHTML();$('heroClassText').textContent=avatarText();$('heroHpTxt').textContent=state.hp+'/'+state.maxHp;$('heroHpFill').style.width=(state.hp/state.maxHp*100)+'%';$('heroManaTxt').textContent=state.mana+'/'+state.maxMana;$('heroManaFill').style.width=(state.mana/state.maxMana*100)+'%';renderAvatarCustomizer();}
+function getName(){return $('studentName')?.value.trim()||'Runner'}
+function renderMap(){const box=$('districtMap');box.innerHTML='';districts.forEach((d,idx)=>{const unlocked=idx===0||state.secured[districts[idx-1].id];const div=document.createElement('div');div.className='card district '+(!unlocked?'locked':'');div.innerHTML=`<h3>${d.icon} ${d.name}</h3><p>${d.desc}</p><p class="status">${state.secured[d.id]?'SECURED':unlocked?'UNLOCKED':'LOCKED'}</p><div class="btn-row"><button class="btn ${unlocked?'primary':'muted-btn'}" ${unlocked?'':'disabled'} onclick="enterDistrict('${d.id}')">${state.secured[d.id]?'Replay':'Enter'}</button></div>`;box.appendChild(div);});}
+function enterDistrict(id){state.currentDistrict=id;triggerEvent(id);completeSection(1);}
+function triggerEvent(id){
+  // Smart event weighting based on current state
+  let pool=[...randomEvents];
+  if(state.hp<=state.maxHp*0.4) pool=pool.map(e=>e.id==='ally'||e.type==='ally'?{...e,weight:4}:{...e,weight:1});
+  if(state.streak>=3) pool=pool.map(e=>e.modifier==='firstTryBonus'?{...e,weight:3}:{...e,weight:1});
+  if(state.credits<15) pool=pool.map(e=>e.type==='reward'?{...e,weight:3}:{...e,weight:1});
+  const weightedPool=pool.flatMap(e=>Array(e.weight||1).fill(e));
+  const ev=rand(weightedPool);const box=$('eventBox');box.className='event-box';box.innerHTML=`<h3>${ev.icon} Random event: ${ev.name}</h3><p>${ev.text}</p>`;if(ev.type==='reward'||ev.type==='ally'){applyReward(ev.reward);box.innerHTML+=`<p><strong>Reward received.</strong></p><div class="btn-row"><button class="btn primary" onclick="startPuzzle('${id}')">Continue to terminal →</button></div>`;}else if(ev.type==='modifier'){state.modifier=ev.modifier;box.innerHTML+=`<p><strong>Effect:</strong> ${ev.modifier==='hideOption'?'One wrong option may be hidden in the next battle.':'First-try success gives extra credits.'}</p><div class="btn-row"><button class="btn primary" onclick="startPuzzle('${id}')">Continue to terminal →</button></div>`;}else if(ev.type==='quickFix'){const q=rand(questionBank.filter(x=>x.tag===ev.qtag));box.innerHTML+=`<div class="terminal" style="margin-top:.8rem;"><div class="prompt">> QUICK PATCH REQUIRED</div><div class="code">${q.bad}</div></div><div class="options" style="margin-top:.8rem;">${shuffle(q.options).map(o=>`<button class="option" onclick="quickFix(this,'${encodeURIComponent(o)}','${encodeURIComponent(q.correct)}','${id}',${JSON.stringify(ev.reward).replace(/"/g,'&quot;')})">${o}</button>`).join('')}</div>`;}else if(ev.type==='choice'){box.innerHTML+=`<div class="btn-row"><button class="btn primary" onclick="vaultHack('${id}','safe')">Safe hack</button><button class="btn secondary" onclick="vaultHack('${id}','deep')">Deep hack</button><button class="btn outline" onclick="startPuzzle('${id}')">Walk away</button></div>`;}goSection(1);saveGame(false);}
+function quickFix(btn,ans,correct,id,reward){const a=decodeURIComponent(ans),c=decodeURIComponent(correct);btn.classList.add(a===c?'correct':'wrong');if(a===c){applyReward(reward);toast('Drone sweep avoided. Bonus reward gained.');}else{state.hp=Math.max(1,state.hp-3);toast('The drone clips your signal. -3 HP, but the mission continues.');}updateHUD();setTimeout(()=>startPuzzle(id),700);}
+function vaultHack(id,mode){const q=rand(questionBank);let reward=mode==='deep'?{xp:18,credits:24,hints:1}:{xp:8,credits:10};$('eventBox').innerHTML=`<h3>🔐 ${mode==='deep'?'Deep':'Safe'} vault hack</h3><p>Repair the sentence to open the vault.</p><div class="terminal"><div class="code">${q.bad}</div></div><div class="options" style="margin-top:.8rem;">${shuffle(q.options).map(o=>`<button class="option" onclick="vaultAnswer(this,'${encodeURIComponent(o)}','${encodeURIComponent(q.correct)}','${id}',${JSON.stringify(reward).replace(/"/g,'&quot;')})">${o}</button>`).join('')}</div>`;}
+function vaultAnswer(btn,ans,correct,id,reward){const ok=decodeURIComponent(ans)===decodeURIComponent(correct);btn.classList.add(ok?'correct':'wrong');if(ok){applyReward(reward);toast('Vault opened. Rewards uploaded.');}else{state.hp=Math.max(1,state.hp-(reward.credits>10?6:3));toast('Vault shock! You take signal damage.');}updateHUD();setTimeout(()=>startPuzzle(id),800);}
+function startPuzzle(id){
+  state.currentDistrict=id;
+  const d=districts.find(x=>x.id===id);
+  // Show broadcast preview first
+  showBroadcastPreview(d, id);
+}
+function showBroadcastPreview(d, id){
+  // Pull 2 corrupted sentences relevant to this district
+  const tag=d.enemyTier===0?'waswere':d.enemyTier===1?rand(['done','seen','dont']):'mixed';
+  const preview=shuffle(questionBank.filter(x=>x.tag===tag||tag==='mixed')).slice(0,2);
+  const box=$('eventBox');
+  box.className='event-box';
+  box.innerHTML='<h3>📡 Incoming broadcast from '+d.icon+' '+d.name+'</h3>'
+    +'<p style="margin-bottom:.75rem;">A corrupted transmission is coming through. Read it and spot the errors before you hack the terminal.</p>'
+    +preview.map((q,i)=>'<div style="background:#03050b;border-left:4px solid var(--red);border-radius:10px;padding:.65rem .9rem;margin-bottom:.5rem;font-family:monospace;">'
+      +'<span style="color:var(--amber);font-size:.75rem;font-weight:700;">LINE '+(i+1)+':</span> '
+      +'<span style="color:#ffd0d0;">'+q.bad+'</span></div>').join('')
+    +'<p style="color:var(--muted);font-size:.88rem;margin:.6rem 0;">How many errors can you spot? Check the Rule card in the terminal, then repair them.</p>'
+    +'<div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.75rem;">'
+    +'<button class="btn primary" id="proceedBtn" data-id="'+id+'">Enter terminal →</button>'
+    +'</div>';
+  goSection(1);
+  setTimeout(()=>{const btn=document.getElementById('proceedBtn');if(btn)btn.onclick=()=>proceedToPuzzle(btn.dataset.id);},50);
+}
+function proceedToPuzzle(id){
+  const d=districts.find(x=>x.id===id);
+  const types=d.boss?['broadcastHack']:['terminalRepair','passwordCracker','firewallGates','glitchScanner','transcriptCleanup','packetDecrypt'];
+  const type=rand(types);
+  const tag=d.enemyTier===0?'waswere':d.enemyTier===1?rand(['done','seen','dont']):'mixed';
+  let q=rand(questionBank.filter(x=>x.tag===tag||tag==='mixed'&&x.tag==='mixed'));
+  state.currentPuzzle={type,q,solved:false};
+  $('hackTitle').textContent=d.name+' Terminal';
+  $('hackBadge').textContent=prettyPuzzle(type);
+  $('hackPrompt').textContent='> DISTRICT UPLINK: '+d.name.toUpperCase();
+  $('hackCode').textContent=buildPuzzleCode(type,q);
+  $('ruleCard').innerHTML='<strong>Rule card:</strong> '+q.rule;
+  $('puzzleName').textContent=prettyPuzzle(type);
+  $('puzzleFeedback').className='feedback';
+  $('puzzleFeedback').textContent='';
+  $('afterPuzzleBtns').style.display='none';
+  renderPuzzle(type,q);
+  completeSection(2);
+  goSection(2);
+}
+
+function prettyPuzzle(type){return {terminalRepair:'Terminal Repair',passwordCracker:'Password Cracker',firewallGates:'Firewall Logic Gates',glitchScanner:'Glitch Scanner',transcriptCleanup:'CCTV Transcript Cleanup',packetDecrypt:'Data Packet Decryption',broadcastHack:'Broadcast Tower Hack'}[type]||'Puzzle'}
+function buildPuzzleCode(type,q){if(type==='passwordCracker')return 'ACCESS PHRASE CORRUPTED:\n'+q.bad+'\n\nChoose the correct protocol to build the password.';if(type==='firewallGates')return 'FIREWALL HAS THREE GATES.\nEach gate opens with Standard English only.';if(type==='glitchScanner')return 'SCAN THE LINE.\nFind the corrupted phrase, then patch it.\n\n'+q.bad;if(type==='transcriptCleanup')return 'CCTV TRANSCRIPT NEEDS FORMAL REPAIR:\n'+q.bad;if(type==='packetDecrypt')return 'ENCRYPTED DATA PACKET:\nCorrect the verb form to reveal the message.\n\n'+q.bad;if(type==='broadcastHack')return 'FINAL BROADCAST CORRUPTED:\n'+q.bad+'\n\nPatch it before GRAM-MA sends it citywide.';return 'SYSTEM LINE CORRUPTED:\n'+q.bad;}
+function renderPuzzle(type,q){const area=$('puzzleArea');let opts=shuffle(q.options);if(type==='firewallGates'){const gateQs=shuffle(questionBank.filter(x=>['waswere','done','seen','dont'].includes(x.tag))).slice(0,3);area.innerHTML=gateQs.map((g,i)=>`<div class="gear-card"><h4>Gate ${i+1}</h4><p>${g.bad}</p><div class="options">${shuffle([g.correct,g.bad]).map(o=>`<button class="option" onclick="gateAnswer(this,'${encodeURIComponent(o)}','${encodeURIComponent(g.correct)}')">${o}</button>`).join('')}</div></div>`).join('')+'<div class="btn-row"><button class="btn primary" onclick="checkGates()">Run gate check</button></div>';return;}
+if(type==='glitchScanner'){area.innerHTML=`<p class="question-text">Which is the Standard English repair?</p><div class="options">${opts.map(o=>`<button class="option" onclick="answerPuzzle(this,'${encodeURIComponent(o)}')">${o}</button>`).join('')}</div>`;return;}
+area.innerHTML=`<p class="question-text">Choose the clean Standard English patch:</p><div class="options">${opts.map(o=>`<button class="option" onclick="answerPuzzle(this,'${encodeURIComponent(o)}')">${o}</button>`).join('')}</div>`;}
+function gateAnswer(btn,ans,correct){btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('selected','correct','wrong'));const ok=decodeURIComponent(ans)===decodeURIComponent(correct);btn.dataset.ok=ok?'1':'0';btn.classList.add('selected');}
+function checkGates(){let selected=[...$('puzzleArea').querySelectorAll('.option.selected')];if(selected.length<3){showPuzzleFeedback(false,'Open all three gates by choosing one option for each.');return;}const ok=selected.every(b=>b.dataset.ok==='1');if(ok)solvePuzzle('Firewall open. Three Standard English repairs accepted.');else failPuzzle('One gate rejected the patch. Review the subjects and verb forms, then try again.');}
+function answerPuzzle(btn,ans){const q=state.currentPuzzle.q;const a=decodeURIComponent(ans);if(a===q.correct){btn.classList.add('correct');solvePuzzle('Patch accepted: '+q.correct);}else{btn.classList.add('wrong');[...btn.parentElement.children].forEach(b=>{if(b.textContent===q.correct)b.classList.add('correct')});failPuzzle('Patch rejected. Correct repair: '+q.correct+' '+q.rule);}}
+function solvePuzzle(msg){state.currentPuzzle.solved=true;state.correct++;state.attempted++;state.streak++;applyReward({xp:10,credits:8});showPuzzleFeedback(true,msg+' +10 XP, +8 credits.');$('afterPuzzleBtns').style.display='flex';updateHUD();saveGame(false);}
+function failPuzzle(msg){
+  state.attempted++;state.streak=0;state.hp=Math.max(1,state.hp-3);
+  const q=state.currentPuzzle?.q;
+  const extra=q?(' '+explainError(q)):'';
+  showPuzzleFeedback(false,msg+' Signal damage: -3 HP.'+extra);
+  updateHUD();saveGame(false);
+}
+function showPuzzleFeedback(good,msg){const fb=$('puzzleFeedback');fb.className='feedback '+(good?'good':'bad');fb.textContent=msg;}
+function startBattleFromPuzzle(){
+  const d=districts.find(x=>x.id===state.currentDistrict);
+  if(d.boss){startGrammaBoss();return;}
+  let pool=enemies.filter(e=>!e.boss&&(e.hp<=22+d.enemyTier*8));
+  const enemy=JSON.parse(JSON.stringify(rand(pool)));
+  if(d.enemyTier===2&&enemy.hp<30)enemy.hp+=8;
+  state.currentEnemy=enemy;state.enemyHp=enemy.hp;
+  state.retryUsed=false;state.shieldTurns=0;state.evade=false;
+  state.log=[];state.battleUsedQs=[];
+  loadBattleQuestion();renderBattle();completeSection(3);goSection(3);
+}
+function startGrammaBoss(){
+  const boss=JSON.parse(JSON.stringify(enemies.find(e=>e.boss)));
+  state.currentEnemy=boss;state.enemyHp=boss.hp;
+  state.retryUsed=false;state.shieldTurns=0;state.evade=false;
+  state.log=[];state.battleUsedQs=[];state.bossStage=1;state.bossRepairs=[];
+  completeSection(3);goSection(3);renderGrammaBossStage1();
+}
+function renderGrammaBossStage1(){
+  const boss=state.currentEnemy;
+  $('battleBadge').textContent='GRAM-MA Core — Stage 1 of 3';
+  $('enemyName').textContent=boss.name;$('enemyAvatar').textContent=boss.icon;
+  $('enemyText').textContent='Stage 1: Repair the corrupted broadcast before it transmits citywide.';
+  $('enemyHpTxt').textContent=state.enemyHp+'/'+boss.hp;
+  $('enemyHpFill').style.width=(state.enemyHp/boss.hp*100)+'%';updateHUD();
+  const mixedQs=shuffle(questionBank.filter(x=>x.tag==='mixed')).slice(0,3);
+  state.bossStage1Qs=mixedQs;state.bossStage1Correct=0;
+  $('battleData').innerHTML='<div class="battle-data"><h4 style="color:var(--red);">Stage 1 — Repair 3 corrupted broadcasts</h4><p>Fix all three to weaken GRAM-MA before the main battle.</p></div>';
+  $('battleOptions').innerHTML='';$('battleQuestion').textContent='';$('skillButtons').innerHTML='';
+  $('battleLog').innerHTML='<p>⚠️ GRAM-MA is broadcasting corrupted language. Repair three transmissions.</p>';
+  renderBossStage1Question(0);
+}
+function renderBossStage1Question(idx){
+  if(idx>=state.bossStage1Qs.length){advanceBossStage2();return;}
+  const q=state.bossStage1Qs[idx];
+  $('battleQuestion').textContent='Repair '+(idx+1)+'/3: '+q.bad;
+  const opts=shuffle(q.options);
+  $('battleOptions').innerHTML=opts.map(function(o){return '<button class="option" data-ans="'+encodeURIComponent(o)+'" data-correct="'+encodeURIComponent(q.correct)+'" data-idx="'+idx+'">'+o+'</button>';}).join('');
+  $('battleOptions').querySelectorAll('.option').forEach(function(b){b.onclick=function(){answerBossStage1(b,b.dataset.ans,b.dataset.correct,parseInt(b.dataset.idx));};});
+}
+function answerBossStage1(btn,ans,correct,idx){
+  const ok=decodeURIComponent(ans)===decodeURIComponent(correct);
+  btn.classList.add(ok?'correct':'wrong');
+  btn.parentElement.querySelectorAll('button').forEach(function(b){b.disabled=true;});
+  if(ok){state.bossStage1Correct++;state.correct++;state.bossRepairs.push(decodeURIComponent(correct));$('battleLog').innerHTML='<p>✅ Repair '+(idx+1)+' accepted.</p>'+$('battleLog').innerHTML;}
+  else{state.hp=Math.max(1,state.hp-4);$('battleLog').innerHTML='<p>❌ Signal bounced. -4 HP. Correct: '+decodeURIComponent(correct)+'</p>'+$('battleLog').innerHTML;updateHUD();}
+  setTimeout(function(){renderBossStage1Question(idx+1);},700);
+}
+function advanceBossStage2(){
+  state.enemyHp=Math.max(1,state.enemyHp-Math.floor(state.enemyHp*0.35));
+  $('battleLog').innerHTML='<p>📡 Stage 1 complete. '+state.bossStage1Correct+'/3 repairs. GRAM-MA at '+state.enemyHp+' integrity.</p>'+$('battleLog').innerHTML;
+  $('enemyHpTxt').textContent=state.enemyHp+'/'+state.currentEnemy.hp;
+  $('enemyHpFill').style.width=(state.enemyHp/state.currentEnemy.hp*100)+'%';
+  $('battleBadge').textContent='GRAM-MA Core — Stage 2 of 3';
+  $('enemyText').textContent='Stage 2: Answer questions to deal damage.';
+  state.bossStage=2;loadBattleQuestion();renderBattleQuestion();renderSkillsButtons();renderLog();
+}
+function advanceBossStage3(){
+  state.bossStage=3;
+  $('battleBadge').textContent='GRAM-MA Core — FINAL STAGE';
+  $('enemyText').textContent='Final stage: Write one corrected sentence.';
+  $('battleLog').innerHTML='<p>⚡ Final broadcast incoming. Override it with Standard English.</p>'+$('battleLog').innerHTML;
+  const finalQ=rand(questionBank.filter(x=>x.tag==='mixed'));
+  state.bossFinalQ=finalQ;
+  $('battleQuestion').textContent='FINAL TRANSMISSION — type the correct Standard English version:';
+  $('battleData').innerHTML='<div class="battle-data"><h4>GRAM-MA Final Broadcast</h4><p style="color:var(--red);font-family:monospace;">'+finalQ.bad+'</p><p style="margin-top:.4rem;color:var(--muted);">Type the corrected sentence below.</p></div>';
+  $('battleOptions').innerHTML='<div style="margin-top:.6rem;"><input id="bossFinalInput" style="width:100%;background:#050711;border:2px solid var(--cyan);border-radius:10px;padding:.7rem;color:var(--text);font-family:var(--font);font-size:1rem;" placeholder="Type the Standard English version here..." /><div style="margin-top:.5rem;"><button class="btn primary" id="bossSubmitBtn">Transmit correction →</button></div></div>';
+  $('skillButtons').innerHTML='';
+  setTimeout(function(){var btn=$('bossSubmitBtn');if(btn)btn.onclick=submitBossFinal;},50);
+}
+function submitBossFinal(){
+  const input=$('bossFinalInput');
+  const val=input?input.value.trim():'';
+  if(!val){alert('Type a corrected sentence first.');return;}
+  const q=state.bossFinalQ;
+  const repairWords=q.correct.toLowerCase().split(' ').filter(function(w){return w.length>3;});
+  const matches=repairWords.filter(function(w){return val.toLowerCase().includes(w);}).length;
+  const ok=matches>=Math.floor(repairWords.length*0.6);
+  state.bossRepairs.push(val);
+  if(ok){
+    state.enemyHp=0;
+    $('battleOptions').innerHTML='<p style="color:var(--lime);font-weight:700;">✅ Transmission overridden. GRAM-MA silenced.</p><p style="color:var(--muted);margin-top:.4rem;">Your sentence: <em>'+val+'</em></p><p style="color:var(--muted);">Model answer: <em>'+q.correct+'</em></p>';
+    setTimeout(function(){winBattle();},1200);
+  } else {
+    state.hp=Math.max(1,state.hp-6);
+    $('battleOptions').innerHTML='<p style="color:var(--red);font-weight:700;">❌ Broadcast got through. -6 HP.</p><p style="color:var(--muted);">Your attempt: <em>'+val+'</em></p><p style="color:var(--muted);">Check: '+q.rule+'</p><div style="margin-top:.6rem;"><input id="bossFinalInput" style="width:100%;background:#050711;border:2px solid var(--red);border-radius:10px;padding:.7rem;color:var(--text);font-family:var(--font);font-size:1rem;" placeholder="Try again..." /><div style="margin-top:.5rem;"><button class="btn secondary" id="bossRetryBtn">Retry →</button></div></div>';
+    setTimeout(function(){var btn=$('bossRetryBtn');if(btn)btn.onclick=submitBossFinal;},50);
+    updateHUD();
+  }
+}
+function loadBattleQuestion(){
+  let tags=state.currentEnemy.tags||['mixed'];
+  let pool=questionBank.filter(x=>tags.includes(x.tag)||tags.includes('mixed')&&x.tag==='mixed');
+  if(!state.battleUsedQs) state.battleUsedQs=[];
+  if(state.battleUsedQs.length>=pool.length) state.battleUsedQs=[];
+  const unused=pool.filter((_,i)=>!state.battleUsedQs.includes(i));
+  const q=rand(unused);
+  state.battleUsedQs.push(pool.indexOf(q));
+  state.battleQ=q;
+}
+function renderBattle(){const e=state.currentEnemy;if(!e)return;$('battleBadge').textContent=e.name;$('enemyName').textContent=e.name;$('enemyAvatar').textContent=e.icon;$('enemyText').textContent=e.desc;$('enemyHpTxt').textContent=state.enemyHp+'/'+e.hp;$('enemyHpFill').style.width=(state.enemyHp/e.hp*100)+'%';renderBattleQuestion();renderSkillsButtons();renderLog();updateHUD();}
+function renderCorruptionMap(q){
+  var corruptWords=["was","done","seen"];
+  const mapped=q.bad.split(' ').map(function(w){
+    var clean=w.replace(/[^a-z]/gi,"").toLowerCase();
+    return corruptWords.includes(clean)
+      ?'<span style="background:rgba(255,78,106,.22);color:var(--red);border:1px solid rgba(255,78,106,.4);border-radius:5px;padding:1px 5px;" title="Possible error">'+w+'</span>'
+      :'<span>'+w+'</span>';
+  }).join(' ');
+  return '<div style="background:rgba(139,92,255,.1);border:1px solid rgba(139,92,255,.4);border-radius:12px;padding:.75rem;margin-bottom:.75rem;">'
+    +'<p style="color:#c8b4ff;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">🔍 Analyst Corruption Map — highlighted words may need repair</p>'
+    +'<p style="font-size:1.05rem;line-height:1.7;">'+mapped+'</p></div>';
+}
+function renderBattleQuestion(){const q=state.battleQ;$('battleData').innerHTML=buildBattleData(q);var corruptMapHtml=(state.branch==='analyst')?renderCorruptionMap(q):'';
+  $('battleQuestion').innerHTML=corruptMapHtml+'<span>PATCH COMMAND: '+q.bad+'</span>';let opts=shuffle(q.options);if(state.modifier==='hideOption'){const wrong=opts.find(o=>o!==q.correct);opts=opts.filter(o=>o!==wrong);state.modifier=null;toast('Signal Jam resolved: one wrong option hidden.');}
+$('battleOptions').innerHTML=opts.map(o=>`<button class="option" onclick="answerBattle(this,'${encodeURIComponent(o)}')">${o}</button>`).join('');}
+function buildBattleData(q){let title=q.tag==='waswere'?'Subject scan':'Protocol data';let rows='';if(q.tag==='waswere')rows='<table class="mini-table"><tr><th>Subject</th><th>Standard English form</th></tr><tr><td>I / he / she / it</td><td>was</td></tr><tr><td>we / you / they</td><td>were</td></tr></table>';else if(q.tag==='done')rows='<table class="mini-table"><tr><th>Spoken/local form</th><th>Standard English</th></tr><tr><td>I done</td><td>I did</td></tr><tr><td>we done</td><td>we did</td></tr></table>';else if(q.tag==='seen')rows='<table class="mini-table"><tr><th>For simple past</th><th>Use</th></tr><tr><td>I seen</td><td>I saw</td></tr><tr><td>They seen</td><td>They saw</td></tr></table>';else if(q.tag==='dont')rows='<table class="mini-table"><tr><th>Subject</th><th>Standard English</th></tr><tr><td>he / she / it</td><td>doesn’t</td></tr><tr><td>I / we / you / they</td><td>don’t</td></tr></table>';else rows='<p>Mixed repair mode: check every verb form before you patch the broadcast.</p><table class="mini-table"><tr><th>Corrupted</th><th>Repair</th></tr><tr><td>we was</td><td>we were</td></tr><tr><td>I done</td><td>I did</td></tr><tr><td>I seen</td><td>I saw</td></tr><tr><td>he don’t</td><td>he doesn’t</td></tr></table>';return `<div class="battle-data"><h4>${title}</h4>${rows}</div>`;}
+function explainError(q){
+  const explanations={
+    waswere:'<strong>Rule:</strong> "was" is for I / he / she / it. "were" is for we / you / they. The correct form is: <strong>'+q.correct+'</strong>',
+    done:'<strong>Rule:</strong> "done" cannot stand alone as a past tense verb. Use <strong>did</strong> for the simple past (I did, we did). "Done" only works with have: <em>have done</em>. Correct: <strong>'+q.correct+'</strong>',
+    seen:'<strong>Rule:</strong> "seen" cannot stand alone as a past tense verb. Use <strong>saw</strong> for simple past (I saw, they saw). "Seen" needs have: <em>have seen</em>. Correct: <strong>'+q.correct+'</strong>',
+    dont:'<strong>Rule:</strong> he / she / it uses <strong>doesn\'t</strong>, not "don\'t". I / we / you / they use "don\'t". Correct: <strong>'+q.correct+'</strong>',
+    mixed:'<strong>Rule:</strong> Check every verb. were (not was) · did (not done) · saw (not seen) · doesn\'t (not don\'t). Correct: <strong>'+q.correct+'</strong>'
+  };
+  return explanations[q.tag]||'Correct repair: <strong>'+q.correct+'</strong>';
+}
+function answerBattle(btn,ans){const a=decodeURIComponent(ans),q=state.battleQ;state.attempted++;if(a===q.correct){btn.classList.add('correct');state.correct++;state.streak++;let dmg=calcDamage();state.enemyHp=Math.max(0,state.enemyHp-dmg);state.log.unshift(`<p>✅ ${getSkillVerb()} hit for <strong>${dmg}</strong>. ${q.rule}</p>`);if(state.modifier==='firstTryBonus'){state.credits+=8;state.modifier=null;state.log.unshift('<p>⚡ Blackout Surge bonus: +8 credits.</p>');}if(hasEffect('streakCredits')&&state.streak>0&&state.streak%3===0){state.credits+=2;state.log.unshift('<p>👟 Neon Boots streak bonus: +2 credits.</p>');}if(state.enemyHp<=0){
+    if(state.currentEnemy?.boss && state.bossStage===2){advanceBossStage3();return;}
+    winBattle();return;
+  }loadBattleQuestion();}else{btn.classList.add('wrong');state.streak=0;if(hasEffect('retryOnce')&&!state.retryUsed){state.retryUsed=true;state.log.unshift('<p>💿 Verb Chip activated: wrong answer cancelled. Try again.</p>');renderBattle();return;}let dmg=Math.max(1,state.currentEnemy.damage-(hasEffect('reduceDamage')?1:0)-(state.branch==='guardian'?1:0)-(state.shieldTurns>0?3:0)-(state.evade?4:0));state.evade=false;if(state.shieldTurns>0)state.shieldTurns--;state.hp=Math.max(0,state.hp-dmg);state.log.unshift('<p>❌ Counterattack! -'+dmg+' HP.</p><p style="color:#ffd6dd;">'+explainError(q)+'</p>');if(state.hp<=0){state.hp=1;state.log.unshift('<p>🛟 Emergency reboot restored you to 1 HP. Use a break or buy gear if needed.</p>');}}
+renderBattle();saveGame(false);}
+function getBranch(){return state.branch?skillBranches[state.branch]:null;}
+function applyBranchStats(){let oldMaxHp=state.maxHp||hackerBase.maxHp,oldMaxMana=state.maxMana||hackerBase.maxMana;state.maxHp=hackerBase.maxHp+(state.branch==='guardian'?8:0);state.maxMana=hackerBase.maxMana+(state.branch==='engineer'?4:0);if(state.hp>state.maxHp)state.hp=state.maxHp;if(state.mana>state.maxMana)state.mana=state.maxMana;if(!state.hp)state.hp=state.maxHp;if(!state.mana)state.mana=state.maxMana;}
+function calcDamage(){let base=8+state.level*2;if(state.streak>=3)base+=3;if(state.branch==='runner')base+=Math.min(6,state.streak*2);if(state.branch==='engineer')base+=Object.keys(state.equipped||{}).length;if(state.branch==='analyst' && state.battleQ)base+=2;if(state.branch==='guardian')base+=1;return base;}
+function getSkillVerb(){return getBranch()?.starter||hackerBase.starter;}
+function winBattle(){
+  const e=state.currentEnemy;
+  state.log.unshift('<p>🏆 '+e.name+' defeated. District signal stabilised.</p>');
+  let d=districts.find(x=>x.id===state.currentDistrict);
+  state.secured[d.id]=true;
+  applyReward({xp:e.boss?45:20,credits:e.boss?35:15,hints:e.boss?2:0});
+  let lootMsg='';
+  if(Math.random()<.45){
+    const unowned=gearShop.filter(g=>!state.inventory.includes(g.id));
+    if(unowned.length){let loot=rand(unowned);state.inventory.push(loot.id);lootMsg=loot.name;state.log.unshift('<p>🎁 Loot found: <strong>'+loot.name+'</strong>.</p>');}
+  }
+  completeSection(4);renderBattle();renderMap();renderGear();renderBranchChooser();renderSkills();saveGame(false);
+  // Show debrief panel
+  showDebrief(e, lootMsg);
+}
+function showDebrief(enemy, lootName){
+  // Collect what forms were practiced in this battle based on enemy tags
+  const tagLabels={'waswere':'we were / they were / you were','done':'I did / she did / we did','seen':'I saw / they saw / she saw','dont':"he doesn't / she doesn't / it doesn't",'mixed':'all forms: were, did, saw, doesn\'t'};
+  const tags=enemy.tags||['mixed'];
+  const practiced=tags.map(t=>tagLabels[t]||t).join(' and ');
+  const debriefEl=$('battleDebrief');
+  if(!debriefEl) return;
+  debriefEl.innerHTML='<div style="border:1px solid rgba(146,255,100,.4);background:rgba(146,255,100,.08);border-radius:16px;padding:1rem;margin-top:1rem;">'
+    +'<h3 style="color:var(--lime);margin-bottom:.6rem;">🎯 Battle debrief</h3>'
+    +'<p style="margin-bottom:.5rem;"><strong>Enemy defeated:</strong> '+enemy.name+'</p>'
+    +'<p style="margin-bottom:.5rem;"><strong>Standard English forms practised:</strong> '+practiced+'</p>'
+    +'<div style="background:rgba(24,216,255,.08);border-left:4px solid var(--cyan);border-radius:10px;padding:.75rem;margin:.6rem 0;">'
+    +'<strong>Quick rule reminder:</strong><br>'
+    +buildDebriefRuleReminder(tags)
+    +'</div>'
+    +(lootName?'<p style="color:var(--amber);margin-top:.5rem;">🎁 Loot dropped: '+lootName+'</p>':'')
+    +'<div style="margin-top:.75rem;display:flex;gap:.6rem;flex-wrap:wrap;">'
+    +'<button class="btn primary" onclick="$(\'battleDebrief\').innerHTML=\'\';goSection(1)">Back to city map →</button>'
+    +'<button class="btn outline" onclick="$(\'battleDebrief\').innerHTML=\'\'">Close</button>'
+    +'</div></div>';
+  debriefEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function buildDebriefRuleReminder(tags){
+  let rules=[];
+  if(tags.includes('waswere'))rules.push('<strong>was/were:</strong> I/he/she/it was · we/you/they were');
+  if(tags.includes('done'))rules.push('<strong>did:</strong> use did for simple past (I did, she did) — not done on its own');
+  if(tags.includes('seen'))rules.push('<strong>saw:</strong> use saw for simple past (I saw, they saw) — seen needs have');
+  if(tags.includes('dont'))rules.push("<strong>doesn't:</strong> he/she/it doesn't — I/we/you/they don't");
+  if(tags.includes('mixed'))rules=['<strong>was/were</strong> · <strong>did</strong> · <strong>saw</strong> · <strong>doesn\'t</strong> — all Standard English past and present forms.'];
+  return rules.join('<br>');
+}
+function renderLog(){$('battleLog').innerHTML=state.log.length?state.log.join(''):'<p>Battle systems ready.</p>'}
+function activeSkills(){const b=getBranch();return b?b.skills:[{name:'Syntax Strike',level:1,cost:0,type:'strike',desc:'Basic attack powered by correct Standard English repairs.'},{name:'Use a branch first',level:99,cost:0,type:'none',desc:'Choose a skill branch in the market to unlock advanced skills.'}];}
+function renderSkillsButtons(){const skills=activeSkills();$('skillButtons').innerHTML=skills.map(s=>`<button class="btn ${state.level>=s.level&&s.type!=='none'?'secondary':'muted-btn'}" ${state.level>=s.level&&s.type!=='none'?'':'disabled'} onclick="useSkill('${s.name}')">${s.name} ${state.level<s.level?'(Lvl '+s.level+')':s.cost?`(${s.cost} mana)`:''}</button>`).join('');}
+function useSkill(name){const skill=activeSkills().find(s=>s.name===name);if(!skill){toast('Skill unavailable.');return;}if(skill.cost&&state.mana<skill.cost){toast('Not enough mana for '+name+'.');return;}state.mana=Math.max(0,state.mana-(skill.cost||0));
+  if(skill.type==='hint'){useHint();return;}
+  if(skill.type==='cleanse'){state.modifier='hideOption';state.log.unshift('<p>🧼 Code Cleanse armed: one wrong option will be removed.</p>');renderBattleQuestion();renderLog();updateHUD();return;}
+  if(skill.type==='shield'){state.hp=Math.min(state.maxHp,state.hp+8);state.shieldTurns=1;state.log.unshift('<p>🛡️ Grammar Shield restored HP and reduced the next counterattack.</p>');}
+  else if(skill.type==='retry'){state.retryUsed=false;state.log.unshift('<p>🔁 Safe Retry primed: the next wrong answer can be cancelled.</p>');}
+  else if(skill.type==='fortress'){state.hp=Math.min(state.maxHp,state.hp+14);state.shieldTurns=2;state.log.unshift('<p>🏰 Firewall Fortress: big heal and two protected turns.</p>');}
+  else if(skill.type==='evade'){state.evade=true;state.log.unshift('<p>💨 Neon Evade: next counterattack reduced heavily.</p>');}
+  else if(skill.type==='combo'){let dmg=5+state.streak;state.enemyHp=Math.max(0,state.enemyHp-dmg);state.log.unshift(`<p>🔗 Combo Loop dealt ${dmg} damage from your streak synergy.</p>`);}
+  else if(skill.type==='burst'){let dmg=state.streak>=3?22:12;state.enemyHp=Math.max(0,state.enemyHp-dmg);state.log.unshift(`<p>⚡ Overdrive Sprint dealt ${dmg} damage.</p>`);}
+  else if(skill.type==='repair'){state.hp=Math.min(state.maxHp,state.hp+8);state.mana=Math.min(state.maxMana,state.mana+3);state.log.unshift('<p>🔧 Repair Bot restored HP and mana.</p>');}
+  else if(skill.type==='overclock'){let dmg=8+state.inventory.length*2;state.enemyHp=Math.max(0,state.enemyHp-dmg);state.log.unshift(`<p>🛠️ Gear Overclock dealt ${dmg} damage using your kit.</p>`);}
+  else if(skill.type==='reboot'){state.mana=Math.min(state.maxMana,state.mana+6);state.enemyHp=Math.max(0,state.enemyHp-16);state.log.unshift('<p>🔄 System Reboot restored mana and dealt 16 damage.</p>');}
+  else if(skill.type==='rule'){state.enemyHp=Math.max(0,state.enemyHp-12);state.log.unshift('<p>📘 Rule Exploit dealt 12 damage using the rule card.</p>');}
+  else if(skill.type==='perfect'){const acc=state.attempted?state.correct/state.attempted:0;let dmg=acc>=.7?24:12;state.enemyHp=Math.max(0,state.enemyHp-dmg);state.log.unshift(`<p>🎯 Perfect Patch dealt ${dmg} damage${acc>=.7?' with accuracy synergy':''}.</p>`);}
+  else {let dmg=6+(state.branch==='engineer'?Object.keys(state.equipped||{}).length:0);state.enemyHp=Math.max(0,state.enemyHp-dmg);state.log.unshift(`<p>⚔️ ${name} dealt ${dmg} damage.</p>`);}
+  if(state.enemyHp<=0){
+    if(state.currentEnemy?.boss && state.bossStage===2){advanceBossStage3();return;}
+    winBattle();return;
+  }renderBattle();saveGame(false);} 
+function useHint(){if(state.hints<=0){toast('No hint tokens left.');return;}state.hints--;let hint=state.battleQ?state.battleQ.rule:(state.currentPuzzle?.q.rule||'Find the subject, then choose the Standard English verb.');if(hasEffect('betterHints'))hint+=' The Syntax Visor says: look for who is doing the action.';toast('<strong>Hint:</strong> '+hint);updateHUD();saveGame(false);}
+function fleeBattle(){
+  if(!confirm('Return to the city map? You will lose this battle but keep any XP earned so far.')) return;
+  const partialXp = Math.max(0, Math.floor((1 - state.enemyHp/(state.currentEnemy?.hp||1)) * (state.currentEnemy?.boss?20:8)));
+  if(partialXp>0){ applyReward({xp:partialXp}); state.log.unshift('<p>🚪 Retreated. Partial reward: +'+partialXp+' XP.</p>'); }
+  state.currentEnemy=null; state.enemyHp=0; goSection(1);
+}
+function applyReward(r={}){state.xp+=r.xp||0;state.credits+=r.credits||0;state.hints+=r.hints||0;if(r.hp)state.hp=Math.min(state.maxHp,state.hp+r.hp);if(state.xp>=state.level*40){state.xp-=state.level*40;state.level++;state.maxHp+=4;state.maxMana+=2;state.hp=state.maxHp;state.mana=state.maxMana;toast('Level up! New skills may be available.');}updateHUD();}
+function hasEffect(effect){return Object.values(state.equipped).some(id=>gearShop.find(g=>g.id===id)?.effect===effect)}
+function renderGear(){const box=$('gearList');box.innerHTML='';gearShop.forEach(g=>{const owned=state.inventory.includes(g.id);const equipped=state.equipped[g.slot]===g.id;const div=document.createElement('div');div.className='gear-card '+(equipped?'equipped':'');div.innerHTML=`<h4>${g.name}</h4><p>${g.desc}</p><p class="small">Slot: ${g.slot} · ${owned?'Owned':'Cost: '+g.cost+' credits'}</p><div class="btn-row"><button class="btn ${owned?'primary':'secondary'}" onclick="${owned?`equipGear('${g.id}')`:`buyGear('${g.id}')`}">${owned?(equipped?'Equipped':'Equip'):'Buy'}</button></div>`;box.appendChild(div);});}
+function buyGear(id){const g=gearShop.find(x=>x.id===id);if(state.credits<g.cost){toast('Not enough credits.');return;}state.credits-=g.cost;state.inventory.push(id);equipGear(id);}
+function equipGear(id){const g=gearShop.find(x=>x.id===id);state.equipped[g.slot]=id;if(g.effect==='extraHint')state.hints=Math.max(state.hints,3);renderGear();updateHUD();saveGame(false);}
+
+function renderBranchChooser(){const box=$('branchChooser');if(!box)return;const chosen=getBranch();let html='';if(chosen){html+=`<div class="branch-note"><strong>Locked branch:</strong> ${chosen.icon} ${chosen.name}. This playthrough is now built around ${chosen.tag.toLowerCase()}. Reset the game to try a different branch.</div>`;}else{html+='<div class="branch-note"><strong>Choose carefully:</strong> you can only pick one branch per playthrough. Each route unlocks different skills and synergies.</div>';}
+  html+=Object.entries(skillBranches).map(([id,b])=>`<div class="branch-card ${state.branch===id?'selected':''} ${state.branch&&state.branch!==id?'locked':''}"><div class="branch-head"><div><h4>${b.icon} ${b.name}</h4><p>${b.desc}</p><p class="small"><strong>Synergy:</strong> ${b.bonus}</p></div><span class="branch-tag">${b.tag}</span></div><div class="btn-row"><button class="btn ${state.branch===id?'success':state.branch?'muted-btn':'secondary'}" ${state.branch?'disabled':''} onclick="chooseBranch('${id}')">${state.branch===id?'Chosen':state.branch?'Locked':'Choose branch'}</button></div></div>`).join('');box.innerHTML=html;}
+function chooseBranch(id){if(state.branch){toast('Branch already chosen for this playthrough. Reset to try another path.');return;}state.branch=id;applyBranchStats();state.hp=state.maxHp;state.mana=state.maxMana;if(id==='analyst')state.hints+=2;toast(skillBranches[id].name+' branch locked in. New skills are available as you level up.');renderBranchChooser();renderSkills();updateHUD();saveGame(false);}
+function renderSkills(){const box=$('skillList');box.innerHTML='';const b=getBranch();if(!b){box.innerHTML='<div class="skill locked"><h4>🔒 No branch selected</h4><p>Choose one skill branch above to unlock branch-specific abilities. This encourages replaying with a different route later.</p></div>';return;}b.skills.forEach(s=>{const unlocked=state.level>=s.level;const div=document.createElement('div');div.className='skill '+(unlocked?'':'locked');div.innerHTML=`<h4>${unlocked?'🔓':'🔒'} ${s.name}</h4><p>${s.desc}</p><p class="small">${s.cost?`Mana cost: ${s.cost} · `:''}Unlocks at level ${s.level}</p>`;box.appendChild(div);});}
+function skillDesc(s){if(s.includes('Scan'))return 'Shows a clearer rule hint about the subject and verb.';if(s.includes('Cleanse'))return 'Removes one wrong option from the next battle question.';if(s.includes('Shield')||s.includes('Guard')||s.includes('Safe'))return 'Restores HP and helps you stay in the fight.';if(s.includes('Repair'))return 'Restores HP and mana using a support drone.';if(s.includes('Burst')||s.includes('Surge')||s.includes('Dash'))return 'Uses energy for a direct damage burst.';return 'A hacker attack powered by correct Standard English repairs.';}
+function buildReport(){const secured=Object.keys(state.secured).map(id=>districts.find(d=>d.id===id)?.name).filter(Boolean);const pct=state.attempted?Math.round(state.correct/state.attempted*100):0;$('reportCard').innerHTML=`<h3 style="color:var(--cyan2);">Mission report for ${getName()}</h3><table class="mini-table"><tr><th>Target</th><td>Use Standard English verb inflections instead of local spoken forms.</td></tr><tr><th>Avatar</th><td>${avatarText()}</td></tr><tr><th>Skill branch</th><td>${getBranch()?getBranch().name:'Not chosen yet'}</td></tr><tr><th>Level</th><td>${state.level}</td></tr><tr><th>Correct repairs</th><td>${state.correct} / ${state.attempted} (${pct}%)</td></tr><tr><th>Districts secured</th><td>${secured.length?secured.join(', '):'None yet'}</td></tr><tr><th>Gear</th><td>${state.inventory.map(id=>gearShop.find(g=>g.id===id)?.name).filter(Boolean).join(', ')||'None'}</td></tr></table><div class="rule"><strong>Practised forms:</strong> we were / they were / you were; I did / we did; I saw / they saw; he doesn’t / she doesn’t / it doesn’t.</div>`;}
+function sendGmail(){buildReport();const pct=state.attempted?Math.round(state.correct/state.attempted*100):0;const subject=encodeURIComponent('Syntax Runner results - '+getName());const secured=Object.keys(state.secured).map(id=>districts.find(d=>d.id===id)?.name).filter(Boolean).join(', ')||'None yet';const body=encodeURIComponent(`Syntax Runner: Chilton City Uplink\n\nStudent: ${getName()}\nAvatar: ${avatarText()}\nSkill branch: ${getBranch()?getBranch().name:'Not chosen yet'}\nLevel: ${state.level}\nCorrect repairs: ${state.correct}/${state.attempted} (${pct}%)\nDistricts secured: ${secured}\nTarget: I can use Standard English forms for verb inflections instead of local spoken forms.\n\nPractised examples: we were, they were, I did, I saw, he doesn’t.`);window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TEACHER_EMAIL)}&su=${subject}&body=${body}`,'_blank');}
+function saveGame(show=true){try{state.name=$('studentName')?.value||'';localStorage.setItem(SAVE_KEY,JSON.stringify(state));if(show)toast('Game saved on this device.');}catch(e){if(show)toast('Save failed: browser storage unavailable.');}}
+function loadGame(){try{const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;const loaded=JSON.parse(raw);state={...state,...loaded};if(state.name)$('studentName').value=state.name;state.appearance={base:'runner',style:'visor',accent:'cyan',companion:'drone',...(state.appearance||{})};state.branch=state.branch||null;applyBranchStats();renderAvatarCustomizer();renderMap();renderGear();renderBranchChooser();renderSkills();goSection(state.section||0);}catch(e){console.warn(e)}}
+function resetGame(){if(!confirm('Reset this game progress?'))return;localStorage.removeItem(SAVE_KEY);location.reload();}
+init();
+</script>
+</body>
+</html>
