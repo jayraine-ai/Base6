@@ -1,1 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinosaur Research Lab · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #1a1008; color: #fef8f4; min-height: 100vh; }
 
+  /* HEADER */
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.6; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(180deg, #2a1a04 0%, #1a1008 100%);
+    padding: 3rem 1.5rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 2px solid #3a2808;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(192,57,43,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c0392b;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    font-weight: 700;
+    color: #fef8f4;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .hero h1 span { color: #e8a020; }
+  .hero p {
+    font-size: 1.05rem;
+    color: #c8b898;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.6;
+  }
+  .hero-fossils {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    font-size: 2.5rem;
+    margin-top: 1rem;
+    opacity: 0.7;
+  }
+
+  /* INSTRUCTION STRIP */
+  .instruction-strip {
+    background: #2a1a04;
+    border-bottom: 2px solid #3a2808;
+    padding: 1rem 1.5rem;
+    text-align: center;
+  }
+  .instruction-strip p {
+    color: #c8b898;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .instruction-strip strong { color: #e8a020; }
+
+  /* MAIN */
+  main { max-width: 1000px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+  .section-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a6040;
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+
+  /* DINO CARDS GRID */
+  .dino-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+  }
+
+  a.dino-card {
+    background: #241608;
+    border: 2px solid #3a2808;
+    border-radius: 20px;
+    padding: 1.5rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s, background 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  a.dino-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.18s;
+    border-radius: inherit;
+  }
+  a.dino-card:hover { transform: translateY(-4px); }
+
+  /* Per-dino colour themes */
+  a.dino-card.trex { --dino-accent: #c0392b; --dino-glow: rgba(192,57,43,0.25); }
+  a.dino-card.trex::before { background: radial-gradient(ellipse at 50% 0%, rgba(192,57,43,0.15), transparent 70%); }
+  a.dino-card.trex:hover { border-color: #c0392b; box-shadow: 0 8px 28px rgba(192,57,43,0.3); background: #2c1208; }
+  a.dino-card.trex:hover::before { opacity: 1; }
+
+  a.dino-card.trike { --dino-accent: #2e8b57; --dino-glow: rgba(46,139,87,0.25); }
+  a.dino-card.trike::before { background: radial-gradient(ellipse at 50% 0%, rgba(46,139,87,0.15), transparent 70%); }
+  a.dino-card.trike:hover { border-color: #2e8b57; box-shadow: 0 8px 28px rgba(46,139,87,0.3); background: #0c2018; }
+  a.dino-card.trike:hover::before { opacity: 1; }
+
+  a.dino-card.stego { --dino-accent: #7a3fa8; --dino-glow: rgba(122,63,168,0.25); }
+  a.dino-card.stego::before { background: radial-gradient(ellipse at 50% 0%, rgba(122,63,168,0.15), transparent 70%); }
+  a.dino-card.stego:hover { border-color: #7a3fa8; box-shadow: 0 8px 28px rgba(122,63,168,0.3); background: #1c0e28; }
+  a.dino-card.stego:hover::before { opacity: 1; }
+
+  a.dino-card.raptor { --dino-accent: #2f6fbd; --dino-glow: rgba(47,111,189,0.25); }
+  a.dino-card.raptor::before { background: radial-gradient(ellipse at 50% 0%, rgba(47,111,189,0.15), transparent 70%); }
+  a.dino-card.raptor:hover { border-color: #2f6fbd; box-shadow: 0 8px 28px rgba(47,111,189,0.3); background: #081828; }
+  a.dino-card.raptor:hover::before { opacity: 1; }
+
+  .dino-emoji { font-size: 3.2rem; margin-bottom: 0.25rem; line-height: 1; }
+
+  .dino-name { font-size: 1.3rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .dino-latin { font-size: 0.8rem; color: #8a7050; font-style: italic; margin-top: 0.1rem; }
+
+  .dino-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.07);
+    color: #b0906a;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .dino-desc { font-size: 0.88rem; color: #a08060; line-height: 1.5; margin-top: 0.25rem; flex: 1; }
+
+  .dino-arrow {
+    margin-top: auto;
+    padding-top: 1rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #8a7050;
+    transition: color 0.15s, gap 0.15s;
+  }
+  a.dino-card.trex:hover .dino-arrow { color: #c0392b; gap: 0.65rem; }
+  a.dino-card.trike:hover .dino-arrow { color: #2e8b57; gap: 0.65rem; }
+  a.dino-card.stego:hover .dino-arrow { color: #7a3fa8; gap: 0.65rem; }
+  a.dino-card.raptor:hover .dino-arrow { color: #2f6fbd; gap: 0.65rem; }
+
+  /* INFO BOX */
+  .info-box {
+    background: #241608;
+    border: 2px solid #3a2808;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .info-box h2 { font-size: 1.1rem; color: #e8a020; margin-bottom: 0.75rem; }
+  .info-box p { font-size: 0.92rem; color: #a08060; line-height: 1.65; }
+  .info-box p + p { margin-top: 0.6rem; }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: #5a4020;
+    border-top: 1px solid #2a1a04;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    .dino-grid { grid-template-columns: 1fr 1fr; }
+    .hero h1 { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../index.html">← History</a>
+  <span class="breadcrumb">/ Dinosaur Research Lab</span>
+</header>
+
+<div class="hero">
+  <p class="hero-tag">🦴 Chilton Bridge School · History</p>
+  <h1>Dinosaur<br><span>Research Lab</span></h1>
+  <p>You have built the model. Now find out the real science behind it — and turn your research into a poster.</p>
+  <div class="hero-fossils">🦴 🦖 🔍 🦕 🪶</div>
+</div>
+
+<div class="instruction-strip">
+  <p><strong>Choose your dinosaur below.</strong> Each one has its own research guide, fact-check warm-up, and poster builder. Pick the one that matches the model you built.</p>
+</div>
+
+<main>
+
+  <p class="section-label">Choose your dinosaur to begin</p>
+
+  <div class="dino-grid">
+
+    <a class="dino-card trex" href="trex-research.html">
+      <div class="dino-emoji">🦖</div>
+      <div class="dino-name">Tyrannosaurus rex</div>
+      <div class="dino-latin">Tyrannosaurus rex</div>
+      <div class="dino-tags">
+        <span class="tag">Carnivore</span>
+        <span class="tag">Late Cretaceous</span>
+        <span class="tag">North America</span>
+      </div>
+      <p class="dino-desc">The most famous predator that ever lived — but how much of what you know is actually true?</p>
+      <div class="dino-arrow">Start researching →</div>
+    </a>
+
+    <a class="dino-card trike" href="triceratops-research.html">
+      <div class="dino-emoji">🦏</div>
+      <div class="dino-name">Triceratops</div>
+      <div class="dino-latin">Triceratops horridus</div>
+      <div class="dino-tags">
+        <span class="tag">Herbivore</span>
+        <span class="tag">Late Cretaceous</span>
+        <span class="tag">North America</span>
+      </div>
+      <p class="dino-desc">Three horns, a giant frill, and a neighbour to T. rex — but what were those horns really for?</p>
+      <div class="dino-arrow">Start researching →</div>
+    </a>
+
+    <a class="dino-card stego" href="stegosaurus-research.html">
+      <div class="dino-emoji">🦕</div>
+      <div class="dino-name">Stegosaurus</div>
+      <div class="dino-latin">Stegosaurus stenops</div>
+      <div class="dino-tags">
+        <span class="tag">Herbivore</span>
+        <span class="tag">Late Jurassic</span>
+        <span class="tag">Multi-continent</span>
+      </div>
+      <p class="dino-desc">Iconic back plates and a spiked tail — but did it really have a second brain? Time to find out.</p>
+      <div class="dino-arrow">Start researching →</div>
+    </a>
+
+    <a class="dino-card raptor" href="velociraptor-research.html">
+      <div class="dino-emoji">🪶</div>
+      <div class="dino-name">Velociraptor</div>
+      <div class="dino-latin">Velociraptor mongoliensis</div>
+      <div class="dino-tags">
+        <span class="tag">Carnivore</span>
+        <span class="tag">Late Cretaceous</span>
+        <span class="tag">Central Asia</span>
+      </div>
+      <p class="dino-desc">Jurassic Park made it famous — but the real Velociraptor was very different to the film version.</p>
+      <div class="dino-arrow">Start researching →</div>
+    </a>
+
+  </div>
+
+  <div class="info-box">
+    <h2>📋 What happens in each activity?</h2>
+    <p>Each guide takes you through six steps: a research mission, a warm-up fact check (some claims are myths!), guided research notes with hints, a poster design stage, a quality check, and finally a PDF download of your finished poster.</p>
+    <p>Your progress saves automatically on this device, so you can come back and continue where you left off.</p>
+  </div>
+
+</main>
+
+<footer>
+  Dinosaur Research Lab · Base 6 · Chilton Bridge School
+</footer>
+
+</body>
+</html>
