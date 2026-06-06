@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Data Realms: Shadow Defenders RPG · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --teal:#007291;--teal-dark:#005a72;--teal-deep:#004a60;--orange:#ef7724;--cream:#fef8f4;--dark:#1a1a1a;--muted:#555;--line:#e0d8d0;--white:#fff;
+    --teal-light:#e6f5f8;--orange-light:#fff3eb;--green:#2e8b57;--green-light:#eaf7f0;--red:#c0392b;--red-light:#fdecea;--purple:#7a3fa8;--purple-light:#f5eeff;--yellow:#e8a020;--yellow-light:#fdf5e0;--blue:#2f6fc0;--blue-light:#eef5ff;--steel:#566573;--steel-light:#f1f4f6;
+    --shadow:0 10px 28px rgba(0,0,0,.09);--glow:0 0 0 4px rgba(239,119,36,.18)
+  }
+  html{scroll-behavior:smooth} body{font-family:'Atkinson Hyperlegible',Arial,sans-serif;background:radial-gradient(circle at top left,#fff 0,#fef8f4 30%,#f7efe8 100%);color:var(--dark);line-height:1.55;min-height:100vh} body.calm *{transition:none!important;animation:none!important}
+  a{color:inherit}.site-header{background:linear-gradient(135deg,var(--teal),#00394a);color:var(--cream);padding:1rem 1.25rem 1.25rem;text-align:center;position:relative;overflow:hidden}.site-header::before{content:"";position:absolute;inset:-7rem auto auto -7rem;width:18rem;height:18rem;border-radius:50%;background:rgba(255,255,255,.08)}.site-header::after{content:"🦇 ⚔️ 📊 🎲 🐉";position:absolute;right:1rem;bottom:.3rem;font-size:3.5rem;opacity:.12}.top-links{max-width:1120px;margin:0 auto .85rem;display:flex;justify-content:space-between;gap:.75rem;align-items:center;flex-wrap:wrap;position:relative;z-index:1}.back-link,.header-pill{display:inline-flex;align-items:center;gap:.45rem;border-radius:999px;padding:.5rem .82rem;font-weight:700;font-size:.84rem}.back-link{background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.25);text-decoration:none}.header-pill{background:rgba(255,255,255,.12);color:#c8e8f0;border:1px solid rgba(255,255,255,.16)}.tag{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a8dce8;position:relative;z-index:1}.site-header h1{font-size:clamp(1.8rem,4.8vw,3.1rem);line-height:1.08;margin:.2rem 0;position:relative;z-index:1}.subtitle{color:#d5eef4;position:relative;z-index:1;max-width:850px;margin:.3rem auto 0}.name-bar,.hud-bar{background:var(--teal-dark);padding:.65rem 1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}.name-bar label,.hud-label,.timer-label{font-weight:700;color:#fef8f4;font-size:.84rem}.name-bar input,.select-field{padding:.48rem .75rem;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.16);color:#fff;font-family:inherit;font-weight:700}.name-bar input{flex:1;max-width:280px}.name-bar input::placeholder{color:rgba(255,255,255,.6)}.select-field option{color:var(--dark)}.toggle{display:inline-flex;align-items:center;gap:.4rem;color:#fde0c0;font-weight:700;font-size:.84rem;cursor:pointer}.toggle input{width:1.05rem;height:1.05rem;accent-color:var(--orange)}.hud-bar{background:var(--teal-deep)}.progress-track,.xp-track{height:10px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.2);min-width:160px}.progress-track{flex:1}.progress-fill,.xp-fill{height:100%;width:0%;background:var(--orange);border-radius:999px;transition:width .35s}.xp-fill{background:#77d6ec}.pill-stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.35rem .7rem;color:#fff;font-weight:700;font-size:.83rem}.nav{display:flex;gap:.5rem;overflow-x:auto;background:white;border-bottom:2px solid var(--line);padding:.9rem 1.25rem;position:sticky;top:0;z-index:20}.nav::-webkit-scrollbar{display:none}.nav button{flex-shrink:0;border:2px solid #ccc;background:white;border-radius:999px;padding:.5rem .85rem;font-family:inherit;font-weight:700;color:#777;cursor:pointer}.nav button.active{border-color:var(--teal);background:var(--teal-light);color:var(--teal)}.nav button.done{border-color:var(--green);background:var(--green-light);color:var(--green)}.nav button.battle{border-color:var(--orange);color:var(--orange)}.nav button.boss{border-color:var(--red);color:var(--red)}.nav button.break{border-color:var(--purple);color:var(--purple)}
+  .main{max-width:1120px;margin:0 auto;padding:1.5rem 1.25rem 4rem}.screen{display:none}.screen.active{display:block}.section-title{font-size:clamp(1.45rem,3vw,2.05rem);color:var(--teal);margin-bottom:1rem}.badge{display:inline-flex;align-items:center;gap:.4rem;border-radius:999px;padding:.32rem .8rem;font-size:.8rem;font-weight:700;margin-bottom:.8rem}.badge.time{background:var(--orange-light);border:1.5px solid var(--orange);color:var(--orange)}.badge.quest{background:var(--teal-light);border:1.5px solid var(--teal);color:var(--teal)}.badge.break{background:var(--purple-light);border:1.5px solid var(--purple);color:var(--purple)}.grid{display:grid;gap:1rem}.grid.two{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}.grid.three{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}.card{background:white;border:2px solid var(--teal-light);border-radius:18px;padding:1.3rem;box-shadow:var(--shadow);margin-bottom:1rem}.card h2{color:var(--teal);font-size:1.2rem;margin-bottom:.6rem}.card p{margin-bottom:.65rem}.callout{background:var(--teal-light);border-left:5px solid var(--teal);border-radius:12px;padding:1rem;margin:.85rem 0;font-weight:700;color:var(--teal)}.warn{background:var(--yellow-light);border-left:5px solid var(--yellow);border-radius:12px;padding:1rem;margin:.85rem 0;font-weight:700;color:#7a5500}.btn-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-top:1rem}.btn{border:0;border-radius:12px;padding:.78rem 1.15rem;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s}.btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.15)}.btn:focus{outline:none;box-shadow:var(--glow)}.primary{background:var(--teal);color:#fff}.secondary{background:var(--orange);color:#fff}.purple{background:var(--purple);color:#fff}.danger{background:var(--red);color:#fff}.outline{background:#fff;color:var(--teal);border:2px solid var(--teal)}.small{font-size:.86rem;padding:.55rem .8rem}.skip{border:0;background:transparent;text-decoration:underline;color:var(--muted);font-family:inherit;cursor:pointer;font-weight:700}.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem}.avatar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.8rem}.avatar{border:2px solid var(--line);border-radius:16px;background:#fff;padding:1rem;text-align:center;cursor:pointer;font-family:inherit}.avatar:hover,.avatar.selected{border-color:var(--orange);background:var(--orange-light);transform:translateY(-2px)}.avatar .icon{font-size:2.6rem;display:block}.avatar strong{display:block;margin:.25rem 0;color:var(--dark)}.avatar span{font-size:.8rem;color:var(--muted)}.stat-board{background:linear-gradient(135deg,var(--teal-light),white);border:2px solid #c7e5ed;border-radius:18px;padding:1rem}.stat-row{display:flex;justify-content:space-between;gap:.8rem;border-bottom:1px solid #d7edf3;padding:.47rem 0}.stat-row:last-child{border-bottom:0}.stat-row strong{color:var(--teal)}.map{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:.8rem}.map-node{min-height:132px;border:3px solid var(--line);background:#fff;border-radius:18px;padding:.9rem;text-align:left;cursor:pointer;font-family:inherit;box-shadow:var(--shadow);position:relative;overflow:hidden}.map-node::after{content:"";position:absolute;right:-2rem;bottom:-2rem;width:5rem;height:5rem;border-radius:50%;background:rgba(0,114,145,.07)}.map-node .icon{font-size:2rem;display:block;margin-bottom:.35rem}.map-node strong{display:block;font-size:.92rem;line-height:1.2}.map-node span{font-size:.77rem;color:var(--muted)}.map-node.active{border-color:var(--teal);background:var(--teal-light)}.map-node.locked{opacity:.58;cursor:not-allowed;background:#f7f4f1}.map-node.done{border-color:var(--green);background:var(--green-light)}.party-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.7rem}.gear-card,.skill-card,.loot-card{border:2px solid var(--line);background:#fff;border-radius:16px;padding:.9rem}.gear-card.equipped,.skill-card.unlocked{border-color:var(--green);background:var(--green-light)}.gear-card strong,.skill-card strong{display:block;color:var(--teal)}.gear-card span,.skill-card span,.loot-card span{font-size:.82rem;color:var(--muted)}.gear-slot{background:var(--steel-light);border:2px solid #cfd6da;border-radius:14px;padding:.75rem;margin:.5rem 0}.battle-arena{background:linear-gradient(180deg,#ffffff,#f5fbfd);border:3px solid var(--teal-light);border-radius:22px;padding:1rem;box-shadow:var(--shadow)}.battle-top{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.fighter{border-radius:20px;border:2px solid var(--line);background:#fff;padding:1rem;position:relative;overflow:hidden}.fighter.hero{border-color:#a8dce8;background:linear-gradient(135deg,#fff,var(--teal-light))}.fighter.enemy{border-color:#f3c5a7;background:linear-gradient(135deg,#fff,var(--orange-light))}.sprite{font-size:4rem;text-align:center;margin:.3rem 0}.fighter h3{font-size:1.2rem;text-align:center;color:var(--dark)}.hp-track{height:18px;border-radius:999px;background:#eadfda;overflow:hidden;border:2px solid rgba(0,0,0,.06);margin:.6rem 0}.hp-fill{height:100%;width:100%;background:var(--green);transition:width .35s}.enemy .hp-fill{background:var(--red)}.mana-fill{height:100%;width:100%;background:var(--blue);transition:width .35s}.fighter-stats{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap}.mini-stat{font-size:.78rem;font-weight:700;border-radius:999px;padding:.25rem .55rem;background:white;border:1px solid var(--line)}.battle-log{background:#102b34;color:#eafaff;border-radius:14px;padding:1rem;min-height:92px;max-height:170px;overflow:auto;margin:1rem 0;font-size:.92rem}.battle-log p{margin:.25rem 0}.question-card{background:#fff;border:2px solid var(--teal-light);border-radius:18px;padding:1rem;margin-top:1rem}.question-card h3{color:var(--teal);font-size:1.1rem}.question-text{font-size:1.15rem;font-weight:700;margin:.75rem 0}.option-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.65rem}.option{border:2px solid var(--line);border-radius:13px;background:#fff;padding:.78rem;font-family:inherit;font-weight:700;cursor:pointer;text-align:left}.option:hover:not(:disabled){border-color:var(--teal);background:var(--teal-light)}.option.correct{border-color:var(--green);background:var(--green-light);color:var(--green)}.option.wrong{border-color:var(--red);background:var(--red-light);color:var(--red)}.option:disabled{cursor:default}.action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.7rem;margin-top:1rem}.action{border:2px solid var(--line);background:#fff;border-radius:16px;padding:.9rem;text-align:left;font-family:inherit;cursor:pointer}.action:hover:not(:disabled),.action.selected{border-color:var(--orange);background:var(--orange-light)}.action:disabled{opacity:.5;cursor:not-allowed}.action strong{display:block;color:var(--teal)}.action span{font-size:.82rem;color:var(--muted)}.chart-box{background:#fff;border:2px solid var(--line);border-radius:16px;padding:1rem;margin:.8rem 0}.bar-chart{display:flex;align-items:flex-end;gap:.6rem;height:190px;border-left:3px solid #222;border-bottom:3px solid #222;padding:.5rem}.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:.25rem}.bar{width:100%;border-radius:8px 8px 0 0;min-height:4px}.bar-val,.bar-label{font-weight:700;font-size:.8rem;text-align:center}.pie-wrap{display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap}.pie{width:170px;height:170px;border-radius:50%;flex-shrink:0}.legend{display:flex;flex-direction:column;gap:.45rem}.legend-item{display:flex;gap:.5rem;align-items:center;font-weight:700;font-size:.9rem}.dot{width:16px;height:16px;border-radius:4px}.prob-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem;margin:.8rem 0}.prob-cell{border:2px solid var(--line);border-radius:14px;background:#fff;padding:.75rem;text-align:center;font-weight:700}.prob-cell strong{display:block;color:var(--teal)}.inventory-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem}.reward{background:linear-gradient(135deg,var(--yellow-light),#fff);border:2px solid var(--yellow);border-radius:18px;padding:1rem;margin:.8rem 0}.companion-panel{background:linear-gradient(180deg,#1d1b25,#141220);border:2px solid #5b4060;border-radius:16px;padding:1rem;margin:.8rem 0;display:flex;gap:.9rem;align-items:center;flex-wrap:wrap;}.companion-icon{font-size:2.8rem;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(182,136,255,.3));}.companion-info strong{color:#e0caff;display:block;margin-bottom:.2rem;}.companion-info span{font-size:.82rem;color:var(--muted);}.companion-assist{background:#241a35;border:1px solid #7a52b0;border-radius:10px;padding:.6rem .9rem;margin-top:.5rem;font-size:.88rem;color:#e0caff;font-style:italic;}
+.break-card{text-align:center;background:linear-gradient(135deg,var(--purple-light),#fff);border:2px solid var(--purple);border-radius:22px;padding:1.5rem;box-shadow:var(--shadow)}.break-card .big{font-size:3.5rem}.break-timer{font-size:3rem;font-weight:700;color:var(--purple);margin:.6rem 0}.score-box{background:var(--teal);color:white;border-radius:18px;padding:1.4rem;text-align:center}.score-box .score{font-size:3rem;font-weight:700}.export-bar{background:var(--teal-light);border-top:2px solid #c0dce8;padding:1rem;display:flex;justify-content:center;align-items:center;gap:.75rem;flex-wrap:wrap}.export-bar span{font-weight:700;color:var(--teal)}.journal-entry{background:linear-gradient(180deg,#1d171d,#151218);border:1px solid #5b4639;border-radius:12px;padding:.9rem 1rem;margin-bottom:.65rem;}.journal-entry .je-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#f0c35a;margin-bottom:.35rem;}.journal-entry .je-text{font-size:.9rem;color:#f3eadb;line-height:1.55;}
+footer{text-align:center;color:#777;font-size:.8rem;padding:1.4rem;border-top:1px solid var(--line)}.shake{animation:shake .35s}.float{animation:float 2.4s ease-in-out infinite}@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}@keyframes float{50%{transform:translateY(-8px)}}@media(max-width:760px){.hero-grid,.battle-top{grid-template-columns:1fr}.map{grid-template-columns:repeat(2,1fr)}.bar-chart{height:150px}.prob-scale{grid-template-columns:1fr}.sprite{font-size:3.2rem}}@media(max-width:420px){.map{grid-template-columns:1fr}.option-grid,.action-grid{grid-template-columns:1fr}.site-header h1{font-size:1.75rem}}
+
+
+/* ===== DARK FANTASY THEME OVERRIDE v3 =====
+   Keeps the game accessible while changing the atmosphere.
+   All panels remain high contrast; calm mode still removes animation.
+*/
+:root{
+  --teal:#34c6d3;
+  --teal-dark:#132f3a;
+  --teal-deep:#071820;
+  --orange:#d9903d;
+  --cream:#f5ead8;
+  --dark:#f3eadb;
+  --muted:#cdbfaa;
+  --line:#4f3b34;
+  --white:#1b1518;
+  --teal-light:#122f38;
+  --orange-light:#382615;
+  --green:#68d391;
+  --green-light:#123320;
+  --red:#ef6b5d;
+  --red-light:#3a1718;
+  --purple:#b688ff;
+  --purple-light:#241a35;
+  --yellow:#f0c35a;
+  --yellow-light:#35280e;
+  --blue:#73a7ff;
+  --blue-light:#18283f;
+  --steel:#a99a8a;
+  --steel-light:#201d21;
+  --shadow:0 18px 40px rgba(0,0,0,.48);
+  --glow:0 0 0 4px rgba(240,195,90,.22),0 0 28px rgba(182,136,255,.18);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(circle at 10% 0%,rgba(52,198,211,.16),transparent 28%),
+    radial-gradient(circle at 90% 5%,rgba(182,136,255,.13),transparent 30%),
+    linear-gradient(180deg,#08070b 0%,#121017 34%,#211713 100%);
+  color:var(--dark);
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:42px 42px;
+  opacity:.32;
+  z-index:-1;
+}
+.site-header{
+  background:
+    linear-gradient(135deg,rgba(9,9,14,.95),rgba(32,18,28,.94) 45%,rgba(7,24,32,.96)),
+    radial-gradient(circle at 50% 0%,rgba(240,195,90,.25),transparent 34%);
+  border-bottom:3px solid #5f4329;
+  box-shadow:0 10px 36px rgba(0,0,0,.5);
+}
+.site-header::before{
+  background:radial-gradient(circle,rgba(182,136,255,.22),transparent 65%);
+}
+.site-header::after{
+  content:"🦇 ⚔️ 📊 🎲 🐉";
+  opacity:.18;
+  filter:drop-shadow(0 0 10px rgba(240,195,90,.35));
+}
+.tag{color:#e8c77a;text-shadow:0 1px 12px rgba(240,195,90,.18)}
+.site-header h1{color:#fff6df;text-shadow:0 3px 18px rgba(0,0,0,.7),0 0 22px rgba(182,136,255,.25)}
+.subtitle{color:#decfb9}
+.back-link,.header-pill{background:rgba(245,234,216,.08);border-color:rgba(240,195,90,.33);color:#f5ead8}
+.back-link:hover{background:rgba(240,195,90,.16)}
+.name-bar,.hud-bar{
+  background:linear-gradient(90deg,#070b11,#14131d,#0b1820);
+  border-bottom:1px solid #4f3b34;
+}
+.name-bar input,.select-field{
+  background:#16131a;
+  border-color:#67503d;
+  color:#fff7e7;
+}
+.select-field option{color:#151015;background:#fff7e7}
+.toggle{color:#f0c35a}.toggle input{accent-color:#f0c35a}
+.pill-stat{background:#17131b;border-color:#5b4839;color:#f8ead2}
+.progress-track,.xp-track{background:#2b2528;border:1px solid #4d3d34}
+.progress-fill{background:linear-gradient(90deg,#7b2d2d,#d9903d,#f0c35a)}
+.xp-fill{background:linear-gradient(90deg,#512b7a,#73a7ff,#34c6d3)}
+.nav{
+  background:#100e14;
+  border-bottom:2px solid #4f3b34;
+  box-shadow:0 10px 28px rgba(0,0,0,.28);
+}
+.nav button{
+  background:#19151d;
+  border-color:#4f3b34;
+  color:#d6c8b7;
+}
+.nav button.active{border-color:#34c6d3;background:#102f38;color:#9ef6ff}
+.nav button.done{border-color:#68d391;background:#123320;color:#b7ffd0}
+.nav button.battle{border-color:#d9903d;color:#ffd7a0;background:#25180d}
+.nav button.boss{border-color:#ef6b5d;color:#ffc5bf;background:#2a1010}
+.nav button.break{border-color:#b688ff;color:#dfccff;background:#1d142c}
+.section-title{color:#f0c35a;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.badge.time{background:#382615;border-color:#d9903d;color:#ffd49a}
+.badge.quest{background:#122f38;border-color:#34c6d3;color:#aaf9ff}
+.badge.break{background:#241a35;border-color:#b688ff;color:#e0caff}
+.card,.fighter,.question-card,.chart-box,.gear-card,.skill-card,.loot-card,.avatar,.map-node,.action,.option,.prob-cell{
+  background:linear-gradient(180deg,#211920,#171319);
+  border-color:#5b4639;
+  color:#f3eadb;
+  box-shadow:var(--shadow);
+}
+.card h2,.question-card h3,.gear-card strong,.skill-card strong,.action strong,.stat-row strong,.prob-cell strong{color:#f0c35a}
+.card p,.avatar span,.map-node span,.gear-card span,.skill-card span,.loot-card span,.action span{color:#d3c6b5}
+.callout{
+  background:linear-gradient(180deg,#122f38,#0c2027);
+  border-left-color:#34c6d3;
+  color:#b8fbff;
+}
+.warn{
+  background:linear-gradient(180deg,#3a2711,#25190b);
+  border-left-color:#f0c35a;
+  color:#ffe0a0;
+}
+.primary{background:linear-gradient(180deg,#0f7180,#0b4d58);color:#fff}.secondary{background:linear-gradient(180deg,#b76523,#7a3817);color:#fff}.purple{background:linear-gradient(180deg,#7c52c6,#513080);color:#fff}.danger{background:linear-gradient(180deg,#9d2e29,#671a18);color:#fff}.outline{background:#171319;color:#9ef6ff;border-color:#34c6d3}.skip{color:#d8c2a2}
+.avatar:hover,.avatar.selected{border-color:#f0c35a;background:#30200f;box-shadow:0 0 0 4px rgba(240,195,90,.12),var(--shadow)}
+.avatar strong{color:#fff6df}.avatar .icon{filter:drop-shadow(0 0 10px rgba(240,195,90,.24))}
+.stat-board{
+  background:linear-gradient(135deg,#14131d,#211920);
+  border-color:#5b4639;
+}
+.stat-row{border-bottom-color:#4b3a31;color:#f3eadb}
+.map-node::after{background:radial-gradient(circle,rgba(182,136,255,.14),transparent 65%)}
+.map-node.active{border-color:#34c6d3;background:linear-gradient(180deg,#14323c,#171319)}
+.map-node.locked{background:#141216;opacity:.52}.map-node.done{border-color:#68d391;background:#123320}
+.gear-card.equipped,.skill-card.unlocked{border-color:#68d391;background:#123320}.gear-slot{background:#17151a;border-color:#5b4639}
+.battle-arena{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(239,107,93,.13),transparent 28%),
+    linear-gradient(180deg,#17121a,#0e1016 55%,#1f1413);
+  border-color:#68472f;
+  box-shadow:0 22px 55px rgba(0,0,0,.58),inset 0 0 45px rgba(0,0,0,.25);
+}
+.fighter.hero{border-color:#34c6d3;background:linear-gradient(135deg,#111923,#122f38)}
+.fighter.enemy{border-color:#b64e39;background:linear-gradient(135deg,#1a1012,#341617)}
+.fighter h3{color:#fff6df}.sprite{filter:drop-shadow(0 0 18px rgba(239,107,93,.26))}
+.hp-track{background:#2e2527;border-color:#514035}.hp-fill{background:linear-gradient(90deg,#1f8a4d,#68d391)}.enemy .hp-fill{background:linear-gradient(90deg,#6d1717,#ef6b5d)}.mana-fill{background:linear-gradient(90deg,#513080,#73a7ff)}
+.mini-stat{background:#141217;border-color:#5b4639;color:#f3eadb}
+.battle-log{
+  background:linear-gradient(180deg,#06080d,#111827);
+  border:1px solid #3c4d5a;
+  color:#eafaff;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.42);
+}
+.question-card{border-color:#34c6d3}.question-text{color:#fff4d6}
+.option:hover:not(:disabled){border-color:#34c6d3;background:#122f38;color:#ccfbff}.option.correct{border-color:#68d391;background:#123320;color:#c9ffdc}.option.wrong{border-color:#ef6b5d;background:#3a1718;color:#ffd1cc}
+.action:hover:not(:disabled),.action.selected{border-color:#f0c35a;background:#382615}
+.chart-box{background:linear-gradient(180deg,#1d171d,#151218);border-color:#6a5140}.bar-chart{border-left-color:#e8d9c1;border-bottom-color:#e8d9c1}.bar-val,.bar-label{color:#f3eadb}
+.prob-scale{background:transparent}.pie{box-shadow:0 0 22px rgba(0,0,0,.32)}
+.reward{background:linear-gradient(135deg,#35280e,#1c1710);border-color:#f0c35a;color:#ffedbe}
+.break-card{background:linear-gradient(135deg,#241a35,#171319);border-color:#b688ff;color:#f3eadb}.break-timer{color:#e0caff;text-shadow:0 0 18px rgba(182,136,255,.35)}
+.score-box{background:linear-gradient(135deg,#0b4d58,#241a35);border:2px solid #34c6d3;color:#fff}
+.export-bar{background:#100e14;border-top-color:#4f3b34}.export-bar span{color:#f0c35a}
+footer{background:#09080d;border-top-color:#4f3b34;color:#b9aa96}
+body.calm .sprite,body.calm .site-header h1{text-shadow:none;filter:none}
+body.calm::before{opacity:.12}
+@media (prefers-reduced-motion: reduce){body::before{opacity:.12}}
+</style>
+</head>
+<body>
+<div style="background:#007291;padding:.65rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+  <a href="../index.html" style="color:rgba(255,255,255,.85);font-size:.85rem;font-weight:700;text-decoration:none;">← Week 2</a>
+  <span style="color:rgba(255,255,255,.4);font-size:.85rem;">/</span>
+  <a href="../maths/index.html" style="color:rgba(255,255,255,.65);font-size:.85rem;font-weight:700;text-decoration:none;">Maths</a>
+  <span style="color:rgba(255,255,255,.4);font-size:.85rem;">/</span>
+  <span style="color:rgba(255,255,255,.4);font-size:.85rem;">Data Realms RPG</span>
+</div>
+<header class="site-header">
+  <div class="top-links">
+    <span class="header-pill">Dark Fantasy RPG · Data + Probability · ~60 mins</span>
+  </div>
+  <p class="tag">Week 2 · Maths Adventure</p>
+  <h1>🛡️ Data Realms: Shadow Defenders RPG</h1>
+  <p class="subtitle">Enter the shadow realms, battle monsters with chart interpretation and probability language, forge gear, unlock class powers and defeat the Uncertainty Dragon.</p>
+</header>
+<div class="name-bar">
+  <label for="studentName">Hero name:</label><input id="studentName" placeholder="Type your name..." />
+  <label for="focusSelect">Support:</label><select id="focusSelect" class="select-field"><option>Guided</option><option>Challenge</option><option>Extra calm</option></select>
+  <label class="toggle"><input id="calmToggle" type="checkbox" onchange="toggleCalm()"> Calm mode</label>
+  <label class="toggle"><input id="supportToggle" type="checkbox" checked onchange="renderState()"> Show hints</label>
+</div>
+<div class="hud-bar">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span class="hud-label" id="progressLabel">0 / 9 quests</span>
+  <span class="pill-stat" id="levelPill">Lvl 1</span><span class="pill-stat" id="xpPill">XP 0/100</span><span class="pill-stat" id="coinPill">💰 0</span><span class="timer-label">⏱ ~60 mins</span>
+</div>
+<nav class="nav" id="nav"></nav>
+<main class="main">
+<section class="screen active" id="screen0">
+  <span class="badge quest">🧭 Quest hub</span><h2 class="section-title">Choose your defender and enter the Data Realms</h2>
+  <div class="hero-grid">
+    <div class="card"><h2>1. Pick a hero class</h2><p>Each class now has unique starter skills, unlockable abilities and a different battle style. You can still answer every question whichever hero you choose.</p><div class="avatar-grid" id="avatarGrid"></div><div class="callout">Goal: use maths to decide, defend and explain. Correct answers power your attacks. Hints are allowed.</div></div>
+    <div class="card"><h2>Your hero sheet</h2><div class="stat-board" id="heroSheet"></div><div class="btn-row"><button class="btn primary" onclick="completeQuest(0)">Begin adventure →</button><button class="btn outline" onclick="resetGame()">Reset saved game</button></div></div>
+  </div>
+  <div class="card"><h2>Adventure map</h2><p>Unlock each realm by completing quests. Battles are short, but the full adventure is designed for a rich 60-minute session.</p><div class="map" id="worldMap"></div></div>
+</section>
+<section class="screen" id="screen1"><span class="badge time">⏱ 8 minutes</span><h2 class="section-title">Training Ground: chart-reading warm up</h2><div class="card"><h2>Read the training chart</h2><p>The scouts recorded how many clues were found in five rooms.</p><div class="chart-box"><p style="font-weight:700;text-align:center">Clues found by room</p><div class="bar-chart" id="trainingChart"></div><p style="font-size:.82rem;text-align:center;color:var(--muted)">Vertical scale: 0 to 20 clues</p></div><div class="question-card" id="trainingQuestions"></div></div></section>
+<section class="screen" id="screen2"><span class="badge time">⏱ 8 minutes</span><h2 class="section-title">The Goblin of Graphs</h2><div class="battle-arena" id="battle1"></div></section>
+<section class="screen" id="screen3"><span class="badge time">⏱ 8 minutes</span><h2 class="section-title">Gear Forge: choose the right chart</h2><div class="card"><h2>Forge equipment by choosing the best chart</h2><p>Each correct choice creates a new piece of gear. Choose carefully: different data needs different charts.</p><div id="forgeArea"></div></div></section>
+<section class="screen" id="screen4"><span class="badge break">☕ 4 minute regulation break</span><h2 class="section-title">The Calm Campfire</h2><div class="break-card"><div class="big">🔥</div><h2>Pause, regulate, continue</h2><p>Pick one: wall push-ups, 4-count breathing, or draw a tiny monster with a chart on its shield.</p><div class="break-timer" id="breakTimer1">4:00</div><button class="btn purple" id="breakBtn1" onclick="startBreak('breakTimer1',240,'breakBtn1')">▶ Start timer</button><div class="btn-row" style="justify-content:center"><button class="btn primary" onclick="completeQuest(4)">Continue to the probability realm →</button></div></div></section>
+<section class="screen" id="screen5"><span class="badge time">⏱ 9 minutes</span><h2 class="section-title">The Probability Marsh</h2><div class="card"><h2>Explore the language of probability</h2><p>Place events on the probability scale. You will use words like impossible, unlikely, even chance, likely and certain.</p><div class="prob-scale"><div class="prob-cell"><strong>Impossible</strong>0</div><div class="prob-cell"><strong>Unlikely</strong>less than half</div><div class="prob-cell"><strong>Even chance</strong>half</div><div class="prob-cell"><strong>Likely</strong>more than half</div><div class="prob-cell"><strong>Certain</strong>1</div></div><div id="probArea"></div></div></section>
+<section class="screen" id="screen6"><span class="badge time">⏱ 8 minutes</span><h2 class="section-title">The Spinner Serpent</h2><div class="battle-arena" id="battle2"></div></section>
+<section class="screen" id="screen7"><span class="badge time">⏱ 8 minutes</span><h2 class="section-title">Skill Shrine: unlock special attacks</h2><div class="card"><h2>Spend crystals to unlock skills</h2><p>Skills give different battle effects. You can unlock all of them by answering the shrine puzzles.</p><div id="skillShrine"></div></div></section>
+<section class="screen" id="screen8"><span class="badge boss">🐉 Final boss · 10 minutes</span><h2 class="section-title">The Uncertainty Dragon</h2><div class="battle-arena" id="bossBattle"></div></section>
+<section class="screen" id="screen9"><span class="badge quest">🏆 Results</span><h2 class="section-title">Quest complete</h2><div class="score-box"><div class="score" id="finalScore">0</div><p>Adventure score</p></div><div class="grid two"><div class="card"><h2>Badges earned</h2><div id="badgeList" class="inventory-list"></div></div><div class="card"><h2>Teacher summary</h2><div id="summaryBox"></div></div></div><div class="btn-row"><button class="btn primary" onclick="sendGmail()">📧 Send results with Gmail</button><button class="btn secondary" onclick="window.print()">🖨️ Save as PDF</button><button class="btn outline" onclick="goToScreen(0)">Return to map</button></div></section>
+<section class="screen" id="screen10">
+  <span class="badge quest">📖 Data Journal</span>
+  <h2 class="section-title">Your Data Journal</h2>
+  <div class="card"><h2>What this is</h2><p>Your journal fills in automatically as you play. It records the chart types you chose, the probability words you used, your reflections after each battle, and key answers. Use it to review what you have learned.</p></div>
+  <div id="journalContent"></div>
+</section>
+</main>
+<div class="export-bar"><span>Save progress:</span><button class="btn small primary" onclick="saveGame()">💾 Save now</button><button class="btn small secondary" onclick="sendGmail()">📧 Gmail results</button><button class="btn small outline" onclick="window.print()">🖨️ Print/PDF</button></div><footer>Base 6 · Chilton Bridge School · Week 2 Maths · Original RPG learning activity</footer>
+<script>
+const quests=["Hero","Training","Goblin","Forge","Break","Probability","Serpent","Skills","Dragon","Results"];
+const heroes=[
+  {id:"analyst",icon:"🧙",name:"Chart Mage",bonus:"Pattern reader",desc:"Spots values, labels and trends.",ability:"Hints are clearer and chart skills hit harder.",starter:"Pattern Bolt"},
+  {id:"ranger",icon:"🏹",name:"Data Ranger",bonus:"Comparison expert",desc:"Fast, accurate attacks using differences and totals.",ability:"Chart comparison attacks gain bonus damage.",starter:"Compare Shot"},
+  {id:"guardian",icon:"🛡️",name:"Probability Guard",bonus:"Calm defender",desc:"More HP and protective probability powers.",ability:"Defensive skills block more damage and restore confidence.",starter:"Guard Bash"},
+  {id:"inventor",icon:"⚙️",name:"Graph Inventor",bonus:"Gear specialist",desc:"Builds gadgets from charts, scales and probability tools.",ability:"Earns extra coins and gear-powered skills scale up.",starter:"Gadget Strike"}
+];
+const skillMeta={
+  "Pattern Bolt":{icon:"✨",cost:0,flavour:"The Chart Mage channels the energy of a perfectly labelled axis into a bolt of pure data.",desc:"Starter skill — steady magic attack fuelled by pattern recognition.",tags:["chart","starter"]},
+  "Axis Insight":{icon:"🔍",cost:8,flavour:"Time slows as the Mage reads the scale, the labels, the title — seeing what others miss.",desc:"Spend 8 mana to reveal the chart's hidden structure. Hits hard on chart questions.",tags:["chart","support"]},
+  "Scale Shield":{icon:"🛡️",cost:8,flavour:"A shimmering barrier of consistent scale steps absorbs the incoming blow.",desc:"Spend 8 mana to block the next enemy counterattack entirely.",tags:["defence","chart"]},
+  "Data Heal":{icon:"💚",cost:12,flavour:"The answer flows through the Mage like healing light — mending wounds with clarity.",desc:"Spend 12 mana. A correct answer restores 18 HP.",tags:["heal","support"]},
+  "Chart Breaker":{icon:"💥",cost:14,flavour:"The Mage shatters the misleading graph — exposing the truth beneath the distorted scale.",desc:"Spend 14 mana for a heavy hit. Extra powerful against misleading chart problems.",tags:["chart","breaker","mixed"]},
+  "Compare Shot":{icon:"🏹",cost:0,flavour:"The Ranger draws back and fires — the arrow always finds the largest difference.",desc:"Starter skill — swift attack. Extra strong when comparing values.",tags:["chart","starter"]},
+  "Rapid Tally":{icon:"🗡️",cost:8,flavour:"Mark, mark, mark — the Ranger tallies and strikes before the enemy can react.",desc:"Spend 8 mana to add a quick follow-up strike after a correct answer.",tags:["chart","count"]},
+  "Difference Arrow":{icon:"➖",cost:10,flavour:"The Ranger measures the gap between two values and fires straight down the middle.",desc:"Spend 10 mana for bonus damage on questions that use more, less or difference.",tags:["chart","compare"]},
+  "Probability Pulse":{icon:"🎲",cost:12,flavour:"The Ranger reads the odds in an instant and fires when the chances are best.",desc:"Spend 12 mana for a surge of extra damage on probability questions.",tags:["prob","mixed"]},
+  "Guard Bash":{icon:"🛡️",cost:0,flavour:"The Guard steps forward and shoves — slow but steady, and the shield always catches the return blow.",desc:"Starter skill — a solid attack that reduces counterattack damage.",tags:["defence","starter"]},
+  "Probability Wall":{icon:"🧱",cost:12,flavour:"An unbreakable wall rises — built from certainty, possibility and the knowledge that some things are impossible.",desc:"Spend 12 mana to block and counter probability-type enemies.",tags:["defence","prob"]},
+  "Certain Strike":{icon:"✅",cost:12,flavour:"When the answer is certain, the blow lands with it — no doubt, no deflection.",desc:"Spend 12 mana. Extra damage when the answer uses probability language.",tags:["prob","mixed"]},
+  "Gadget Strike":{icon:"⚙️",cost:0,flavour:"The Inventor fires a gear-powered gadget that hums with rechargeable energy.",desc:"Starter skill — deals damage and restores 4 mana on use.",tags:["starter","gear"]},
+  "Gear Overclock":{icon:"🔧",cost:12,flavour:"Every piece of gear ignites at once — the more equipped, the more devastating the blast.",desc:"Spend 12 mana. Damage scales up with each piece of gear you have equipped.",tags:["gear","mixed"]},
+  "Repair Bot":{icon:"🤖",cost:12,flavour:"A small mechanical ally scuttles out to patch wounds and top up energy reserves.",desc:"Spend 12 mana to heal 12 HP and restore 6 mana after a correct answer.",tags:["heal","gear"]}
+};
+const classSkillQs={
+  analyst:[
+    {skill:"Axis Insight",q:"A bar chart has clear labels, equal scale steps and a title. What does this help us do?",a:"Interpret the data accurately",opts:["Interpret the data accurately","Make the bars colourful","Avoid reading the values"]},
+    {skill:"Scale Shield",q:"A graph axis counts 0, 5, 10, 15, 20. Is the scale consistent?",a:"Yes",opts:["Yes","No","Only on a pie chart"]},
+    {skill:"Data Heal",q:"A chart shows 11, 9 and 10 pupils. What is the total?",a:"30",opts:["20","29","30","31"]},
+    {skill:"Chart Breaker",q:"A graph with no labels is hard to trust because...",a:"You do not know what is being measured",opts:["It has too many colours","You do not know what is being measured","Bars should always be circles","It is always impossible"]}
+  ],
+  ranger:[
+    {skill:"Rapid Tally",q:"Tally marks are useful when you need to...",a:"Record results as you count",opts:["Show change over time","Record results as you count","Show parts of a whole","Measure probability"]},
+    {skill:"Difference Arrow",q:"A bar chart shows Red = 18 and Blue = 11. How many more chose Red?",a:"7",opts:["6","7","8","29"]},
+    {skill:"Chart Breaker",q:"A bar chart starts at 90 instead of 0 to make a small change look huge. This can be...",a:"Misleading",opts:["Certain","Misleading","A tally","Even chance"]},
+    {skill:"Probability Pulse",q:"A spinner has 1 red and 3 blue sections. Landing on red is...",a:"Unlikely",opts:["Certain","Likely","Unlikely","Impossible"]}
+  ],
+  guardian:[
+    {skill:"Scale Shield",q:"Which chart feature helps readers understand the numbers on an axis?",a:"A clear scale",opts:["A clear scale","A monster picture","No title","Random colours"]},
+    {skill:"Data Heal",q:"A chart shows 5, 6, 7 and 8. What is the total?",a:"26",opts:["20","24","26","28"]},
+    {skill:"Probability Wall",q:"Which probability word means it has a 100% chance?",a:"Certain",opts:["Impossible","Unlikely","Even chance","Certain"]},
+    {skill:"Certain Strike",q:"A bag has only green counters. Picking green is...",a:"Certain",opts:["Certain","Even chance","Unlikely","Impossible"]}
+  ],
+  inventor:[
+    {skill:"Scale Shield",q:"A fair comparison chart should use...",a:"A consistent scale",opts:["A consistent scale","No labels","A hidden axis","Only pictures"]},
+    {skill:"Chart Breaker",q:"What should you check first if a graph seems dramatic?",a:"The scale",opts:["The scale","The font","The page number","The monster name"]},
+    {skill:"Gear Overclock",q:"Which chart is best for choosing equipment by comparing attack values?",a:"Bar chart",opts:["Bar chart","Pie chart","Line graph","Probability scale"]},
+    {skill:"Repair Bot",q:"A pie chart is best when showing...",a:"Parts of a whole",opts:["Change over time","Parts of a whole","A list of raw scores","A single dice roll"]}
+  ]
+};
+const baseState={hero:heroes[0],level:1,xp:0,coins:0,crystals:0,maxHp:100,hp:100,mana:50,maxMana:50,attack:12,focus:1,accuracy:1,completed:Array(10).fill(false),badges:[],gear:{weapon:null,armour:null,charm:null},inventory:[],skills:[heroes[0].starter],current:0,correct:0,attempts:0,battles:{},reflections:{}};
+let state=JSON.parse(localStorage.getItem("dataDefendersRpg")||"null")||structuredClone(baseState);normalizeState();let selectedAction=state.skills[0]||state.hero.starter;let currentBattle=null;
+
+// Randomised chart data — regenerated each session so students must read rather than memorise
+function generateChartData() {
+  const rooms = [
+    {name:'Library', color:'#34c6d3'},
+    {name:'Lab',     color:'#d9903d'},
+    {name:'Hall',    color:'#68d391'},
+    {name:'Garden',  color:'#b688ff'},
+    {name:'Tower',   color:'#ef6b5d'}
+  ];
+  // Guarantee no two rooms have the same value, max is always Tower for narrative consistency
+  const vals = [];
+  while(vals.length < 5) {
+    const v = 3 + Math.floor(Math.random() * 17); // 3–19
+    if(!vals.includes(v)) vals.push(v);
+  }
+  vals.sort((a,b) => a-b); // ascending
+  // Shuffle into rooms but force Tower to be the highest
+  const shuffled = vals.slice(0,4).sort(() => Math.random()-0.5);
+  return rooms.map((r,i) => [r.name, i===4 ? vals[4] : shuffled[i], r.color]);
+}
+let trainingData = generateChartData();
+function refreshChartData() { trainingData = generateChartData(); }
+
+const forgeQs=[
+  {q:"The shadow scouts surveyed favourite weapons across four factions and want to compare totals side by side.",a:"Bar chart",hint:"When comparing totals across separate categories, bars work best.",opts:["Bar chart","Line graph","Pie chart","Scatter graph"],gear:{slot:"weapon",name:"Axe of Comparison",icon:"🪓",effect:"+4 attack"}},
+  {q:"A ranger records dungeon temperatures at sunrise each day for two weeks and wants to see how they changed over time.",a:"Line graph",hint:"Change over time is best shown with a connected line.",opts:["Pie chart","Line graph","Tally chart","Pictogram"],gear:{slot:"armour",name:"Cloak of Trends",icon:"🧥",effect:"+10 HP"}},
+  {q:"The guild has 40 members: 20 warriors, 10 mages, 6 rangers and 4 healers. You want to show each group as a share of the whole guild.",a:"Pie chart",hint:"Parts of a whole — like shares of a group — suit a pie chart.",opts:["Pie chart","Bar chart","Line graph","Scatter graph"],gear:{slot:"charm",name:"Amulet of Proportion",icon:"🔮",effect:"+10 mana"}},
+  {q:"Defenders are voting for their next quest as they enter the fortress. You need to record each vote quickly as they arrive.",a:"Tally chart",hint:"Tally charts let you record results one by one as they happen.",opts:["Line graph","Tally chart","Pie chart","Scatter graph"],gear:{slot:"weapon",name:"Tally Dagger",icon:"🗡️",effect:"+2 focus"}}
+];
+const probQs=[
+  {q:"A dragon breathes fire every single day without fail. The chance it breathes fire tomorrow is...",a:"Certain",opts:["Impossible","Unlikely","Even chance","Likely","Certain"],explain:"It happens every day with no exceptions — that makes it certain."},
+  {q:"A goblin tries to roll a 9 on a standard six-sided dice. The chance of this happening is...",a:"Impossible",opts:["Impossible","Unlikely","Even chance","Likely","Certain"],explain:"A standard dice only goes up to 6 — so a 9 is impossible."},
+  {q:"A wizard flips a fair enchanted coin to decide which portal to enter. The chance of heads is...",a:"Even chance",opts:["Impossible","Unlikely","Even chance","Likely","Certain"],explain:"A fair coin has two equal sides — so heads is exactly half."},
+  {q:"A treasure chest contains 8 gold coins and 2 cursed coins. Picking a gold coin is...",a:"Likely",opts:["Impossible","Unlikely","Even chance","Likely","Certain"],explain:"8 out of 10 is more than half — so gold is likely."},
+  {q:"A magic bag holds 1 phoenix feather and 9 dragon scales. Picking a phoenix feather is...",a:"Unlikely",opts:["Impossible","Unlikely","Even chance","Likely","Certain"],explain:"Only 1 out of 10 is a phoenix feather — that is less than half, so unlikely."}
+];
+const battleQuestions={
+  chart:[
+    {visual:"trainingBar",q:"Use the battle chart. Which room had the most clues?",a:"Tower",opts:["Library","Hall","Tower","Garden"],hint:"Look for the tallest bar."},
+    {visual:"trainingBar",q:"Use the battle chart. How many more clues were in the Tower than the Lab?",a:"13",opts:["7","11","13","20"],hint:"Tower is 20 and Lab is 7. Find 20 − 7."},
+    {visual:"trainingBar",q:"Use the battle chart. Which two rooms together made 21 clues?",a:"Library and Garden",opts:["Library and Garden","Lab and Hall","Tower and Lab","Hall and Garden"],hint:"Library has 12 and Garden has 9."},
+    {visual:"trainingBar",q:"Use the battle chart. What is the total number of clues?",a:"64",opts:["54","60","64","70"],hint:"Add 12 + 7 + 16 + 9 + 20."},
+    {visual:"trainingBar",q:"Use the battle chart. Which room had fewer clues than the Garden?",a:"Lab",opts:["Tower","Hall","Lab","Library"],hint:"Garden is 9. Find the bar below 9."}
+  ],
+  prob:[
+    {visual:"spinner",q:"The battle spinner has 3 red, 3 blue and 3 green sections. The Serpent says blue is certain. Is it?",a:"No — blue is 1 out of 3",opts:["Yes — blue is certain","No — blue is 1 out of 3","No — blue is impossible","Yes — blue is likely"],hint:"Blue is 3 sections out of 9 total, which simplifies to 1 out of 3."},
+    {visual:"bagYellow",q:"The Serpent's loot bag holds 9 gold and 1 cursed orb. What is the probability of grabbing gold?",a:"Likely",opts:["Impossible","Unlikely","Likely","Even chance"],hint:"9 out of 10 is well above half — that is likely."},
+    {q:"The Serpent guards a door that is permanently sealed. The chance of it opening is...",a:"Impossible",opts:["Certain","Likely","Even chance","Impossible"],hint:"If it can never happen, it is impossible — probability is 0."},
+    {q:"A fair enchanted coin decides who attacks first. The chance of your side winning the toss is...",a:"Even chance",opts:["Unlikely","Even chance","Certain","Impossible"],hint:"Fair coin: two equal outcomes, so exactly half."},
+    {q:"The Serpent has 9 poison fangs and 1 golden fang. Striking with the golden fang is...",a:"Unlikely",opts:["Certain","Likely","Even chance","Unlikely"],hint:"1 out of 10 is less than half — that is unlikely."}
+  ],
+  mixed:[
+    {q:"A pie chart shows the Dragon's hoard: 50% gold, 30% jewels, 20% bones. A defender reaches in without looking. What is the probability of grabbing gold?",a:"Likely",opts:["Certain","Likely","Even chance","Unlikely"],hint:"50% means half — more than half is likely. It is not certain because it is not 100%."},
+    {q:"The Dragon shows a bar chart where the vertical axis starts at 90 to make a tiny increase look enormous. This chart is...",a:"Misleading",opts:["Certain","Accurate","Misleading","Impossible"],hint:"When an axis does not start at 0, small differences can look dramatic. Always check the scale."},
+    {q:"The Dragon's defeat log shows daily wins across 7 days. Which chart shows how the wins changed over time?",a:"Line graph",opts:["Bar chart","Pie chart","Line graph","Tally chart"],hint:"Change over time — days in a row — is best shown with a connected line graph."},
+    {q:"A pie chart of the Dragon's spell types has one massive slice. Which probability word fits picking that spell type?",a:"Likely",opts:["Impossible","Unlikely","Even chance","Likely"],hint:"A large slice means more than half — that is likely, not certain."},
+    {q:"The Dragon rolls a fair six-sided dice. The chance of rolling a number greater than 6 is...",a:"Impossible",opts:["Certain","Likely","Even chance","Impossible"],hint:"A standard dice only goes up to 6 — nothing higher exists on it."},
+    {q:"A bar chart scale reads 0, 5, 10, 15, 20, ___. What comes next?",a:"25",opts:["22","24","25","30"],hint:"The scale increases by 5 each time."},
+    {q:"The Dragon's lair survey found: Fire — 40, Ice — 40, Lightning — 40 defenders. Which chart shows parts of this whole team?",a:"Pie chart",opts:["Line graph","Tally chart","Pie chart","Scatter graph"],hint:"Equal shares of a whole are clearest in a pie chart. Each colour would be one third."},
+    {q:"A bag contains 3 fire gems, 3 ice gems and 3 lightning gems. What is the probability of picking a fire gem?",a:"1 out of 3",opts:["Certain","1 out of 3","Impossible","3 out of 3"],hint:"3 fire gems out of 9 total simplifies to 1 out of 3 — the same as 1/3."}
+  ]
+};
+const enemies={
+  goblin:{id:"goblin",name:"Goblin of Graphs",icon:"👺",maxHp:86,hp:86,atk:10,type:"chart",weak:"chart skills",weakType:"chart",reward:{xp:55,coins:8,crystals:1,badge:"Chart Defender"}},
+  serpent:{id:"serpent",name:"Spinner Serpent",icon:"🐍",maxHp:96,hp:96,atk:12,type:"prob",weak:"probability skills",weakType:"prob",reward:{xp:65,coins:10,crystals:2,badge:"Probability Explorer"}},
+  dragon:{id:"dragon",name:"Uncertainty Dragon",icon:"🐉",maxHp:160,hp:160,atk:15,type:"mixed",weak:"breaker / mixed skills",weakType:"mixed",reward:{xp:120,coins:25,crystals:4,badge:"Data Realms Champion"}}
+};
+function $(id){return document.getElementById(id)}
+function normalizeState(){
+  if(!state.hero||!heroes.some(h=>h.id===state.hero.id))state.hero=heroes[0];
+  state.hero=heroes.find(h=>h.id===state.hero.id)||heroes[0];
+  if(!Array.isArray(state.skills))state.skills=[];
+  const starter=state.hero.starter;
+  const oldCommon=["Bar Strike"];
+  state.skills=state.skills.filter(sk=>skillMeta[sk]&&!oldCommon.includes(sk));
+  if(!state.skills.includes(starter))state.skills.unshift(starter);
+  state.skills=[...new Set(state.skills)];
+  if(!state.gear)state.gear={weapon:null,armour:null,charm:null};
+  if(!state.battles)state.battles={};
+}
+function heroStarter(){return state.hero.starter||"Pattern Bolt"}
+function skillCost(sk){return skillMeta[sk]?.cost||0}
+function skillHasTag(sk,tag){return (skillMeta[sk]?.tags||[]).includes(tag)}
+function classSkillList(){return classSkillQs[state.hero.id]||classSkillQs.analyst}
+function saveGame(){localStorage.setItem("dataDefendersRpg",JSON.stringify(state));renderState();toast("Progress saved.")}
+function resetGame(){if(confirm("Reset this RPG progress on this device?")){localStorage.removeItem("dataDefendersRpg");state=structuredClone(baseState);renderAll();goToScreen(0)}}
+function toast(msg){console.log(msg)}
+function toggleCalm(){document.body.classList.toggle('calm',$('calmToggle').checked)}
+function rebuildChartQuestions() {
+  const d = trainingData;
+  const maxRoom = d.reduce((a,b) => b[1]>a[1]?b:a);
+  const minRoom = d.reduce((a,b) => b[1]<a[1]?b:a);
+  const total = d.reduce((s,r) => s+r[1], 0);
+  const sorted = [...d].sort((a,b) => b[1]-a[1]);
+  // Find a pair that sums correctly
+  let pairSum = d[0][1]+d[3][1];
+  let pairName = d[0][0]+' and '+d[3][0];
+  // build dynamic questions
+  battleQuestions.chart = [
+    {visual:'trainingBar',q:'Use the battle chart. Which room had the most clues?',a:maxRoom[0],opts:[d[0][0],d[1][0],d[2][0],maxRoom[0]].filter((v,i,a)=>a.indexOf(v)===i).sort(()=>Math.random()-.5),hint:'Look for the tallest bar.'},
+    {visual:'trainingBar',q:'Use the battle chart. How many more clues were in the '+sorted[0][0]+' than the '+sorted[4][0]+'?',a:String(sorted[0][1]-sorted[4][1]),opts:[String(sorted[0][1]-sorted[4][1]-2),String(sorted[0][1]-sorted[4][1]-1),String(sorted[0][1]-sorted[4][1]),String(sorted[0][1]-sorted[4][1]+3)].sort(()=>Math.random()-.5),hint:sorted[0][0]+' is '+sorted[0][1]+' and '+sorted[4][0]+' is '+sorted[4][1]+'. Find the difference.'},
+    {visual:'trainingBar',q:'Use the battle chart. What is the total number of clues across all rooms?',a:String(total),opts:[String(total-4),String(total-2),String(total),String(total+3)].sort(()=>Math.random()-.5),hint:'Add all five values together.'},
+    {visual:'trainingBar',q:'Use the battle chart. How many clues did the '+d[2][0]+' find?',a:String(d[2][1]),opts:[String(d[2][1]-1),String(d[2][1]),String(d[2][1]+2),String(d[2][1]+5)].sort(()=>Math.random()-.5),hint:'Find the '+d[2][0]+' bar and read the value.'},
+    {visual:'trainingBar',q:'Use the battle chart. Which room found fewer clues than '+d[2][0]+'?',a:minRoom[0],opts:[sorted[0][0],sorted[1][0],minRoom[0],d[2][0]].filter((v,i,a)=>a.indexOf(v)===i&&v!==d[2][0]).slice(0,3).concat([minRoom[0]]).filter((v,i,a)=>a.indexOf(v)===i).sort(()=>Math.random()-.5),hint:d[2][0]+' has '+d[2][1]+' clues. Find a room with less.'}
+  ];
+}
+
+// ── PARTY COMPANION SYSTEM ────────────────────────────────────────────────
+const companions = {
+  analyst:  {id:'analyst',  icon:'🧙', name:'Sage the Chart Mage',    specialty:'chart', assist:'Sage studies the chart carefully. "Check the tallest bar," she whispers.',    bonus:'chart question hints become more detailed.'},
+  ranger:   {id:'ranger',   icon:'🏹', name:'Swift the Data Ranger',  specialty:'chart', assist:'Swift notches an arrow. "Compare the values — find the difference."',         bonus:'comparison questions gain a second chance.'},
+  guardian: {id:'guardian', icon:'🛡️', name:'Ward the Prob Guard',    specialty:'prob',  assist:'Ward raises a shield. "Remember — impossible means zero. Certain means one."', bonus:'probability questions deal reduced damage on wrong answers.'},
+  inventor: {id:'inventor', icon:'⚙️', name:'Cog the Graph Inventor', specialty:'mixed', assist:'Cog pulls out a gadget. "Check the scale before you decide."',                 bonus:'restores 3 mana when you answer correctly.'}
+};
+function getCompanion() {
+  // companion is the hero class you did NOT choose
+  const others = heroes.filter(h => h.id !== state.hero.id);
+  const idx = (state.level - 1) % others.length;
+  return companions[others[idx].id];
+}
+function triggerCompanionAssist(enemyId, correct) {
+  if (!correct) return; // companion only assists on correct answers, occasionally
+  const c = getCompanion();
+  if (Math.random() > 0.35) return; // 35% chance
+  const logEl = $('log'+enemyId);
+  if (logEl) {
+    logEl.innerHTML += '<p style="color:#e0caff;font-style:italic;">'+c.icon+' '+c.assist+'</p>';
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  // Apply companion bonus
+  if (c.specialty === 'mixed') { state.mana = Math.min(state.maxMana, state.mana + 3); renderState(); }
+}
+function renderCompanionPanel(enemyId) {
+  const c = getCompanion();
+  return '<div class="companion-panel"><div class="companion-icon">'+c.icon+'</div><div class="companion-info"><strong>'+c.name+' — Party Companion</strong><span>Companion bonus: '+c.bonus+'</span><div class="companion-assist">'+c.assist+'</div></div></div>';
+}
+
+function renderAll(){renderNav();renderHeroes();renderState();renderMap();renderTraining();renderForge();renderProbability();renderSkills();renderBattle('battle1','goblin');renderBattle('battle2','serpent');renderBattle('bossBattle','dragon')}
+function renderNav(){const nav=$('nav');nav.innerHTML='';quests.forEach((q,i)=>{const b=document.createElement('button');b.textContent=(i+1)+'. '+q;b.onclick=()=>goToScreen(i);if(i===2||i===6)b.classList.add('battle');if(i===8)b.classList.add('boss');if(i===4)b.classList.add('break');b.id='nav'+i;nav.appendChild(b)});const jb=document.createElement('button');jb.textContent='📖 Journal';jb.onclick=()=>goToScreen(10);jb.id='nav10';nav.appendChild(jb)}
+function renderHeroes(){const grid=$('avatarGrid');grid.innerHTML='';heroes.forEach(h=>{const b=document.createElement('button');b.className='avatar'+(state.hero.id===h.id?' selected':'');b.innerHTML='<span class="icon">'+h.icon+'</span><strong>'+h.name+'</strong><span>'+h.desc+'<br><strong>Starter:</strong> '+h.starter+'<br>'+h.ability+'</span>';b.onclick=()=>{state.hero=h;state.skills=[h.starter];selectedAction=h.starter;state.battles={};applyHeroBonus();renderHeroes();renderState();renderSkills();saveGame()};grid.appendChild(b)})}
+function applyHeroBonus(){const levelHp=(state.level-1)*8;const levelMana=(state.level-1)*5;const levelAtk=(state.level-1)*2;state.maxHp=(state.hero.id==='guardian'?115:100)+levelHp;state.maxMana=(state.hero.id==='analyst'?60:50)+levelMana;state.attack=(state.hero.id==='ranger'?14:12)+levelAtk;state.focus=state.hero.id==='analyst'?2:1;state.accuracy=state.hero.id==='ranger'?2:1;if(state.hero.id==='inventor')state.maxMana+=5;if(state.hp>state.maxHp)state.hp=state.maxHp;if(state.mana>state.maxMana)state.mana=state.maxMana}
+function renderState(){applyHeroBonus();if(state.gear.weapon&&state.gear.weapon.includes('Axe'))state.attack+=4;if(state.gear.armour)state.maxHp+=10;if(state.gear.charm)state.maxMana=60;const done=state.completed.filter(Boolean).length;$('progressFill').style.width=(done/9*100)+'%';$('progressLabel').textContent=done+' / 9 quests';$('levelPill').textContent='Lvl '+state.level;$('xpPill').textContent='XP '+state.xp+'/100';$('coinPill').textContent='💰 '+state.coins+' · 🔷 '+state.crystals;const sheet=$('heroSheet');if(sheet)sheet.innerHTML='<div class="stat-row"><strong>Class</strong><span>'+state.hero.icon+' '+state.hero.name+'</span></div><div class="stat-row"><strong>HP</strong><span>'+state.hp+'/'+state.maxHp+'</span></div><div class="stat-row"><strong>Mana</strong><span>'+state.mana+'/'+state.maxMana+'</span></div><div class="stat-row"><strong>Attack</strong><span>'+state.attack+'</span></div><div class="stat-row"><strong>Skills</strong><span>'+state.skills.length+'</span></div><div class="stat-row"><strong>Gear</strong><span>'+Object.values(state.gear).filter(Boolean).length+'/3</span></div>';document.querySelectorAll('.nav button').forEach((b,i)=>{b.classList.toggle('active',i===state.current);b.classList.toggle('done',!!state.completed[i])});renderMap();saveLight()}
+function saveLight(){localStorage.setItem("dataDefendersRpg",JSON.stringify(state))}
+function renderJournal(){
+  const jc=$('journalContent');if(!jc)return;
+  const entries=[];
+  // Chart answers from training
+  if(state.badges.includes('Chart Reader'))entries.push({label:'Training Ground — charts',text:'Completed the training chart section. Read values, totals and comparisons from a bar chart.'});
+  // Forge gear choices
+  const gearItems=Object.values(state.gear).filter(Boolean);
+  if(gearItems.length)entries.push({label:'Gear Forge — chart types chosen',text:'You forged: '+gearItems.join(', ')+'. Each piece was earned by choosing the right chart for the data.'});
+  // Probability section
+  if(state.badges.includes('Probability Linguist'))entries.push({label:'Probability Marsh — language used',text:'Completed probability language section. Used: Impossible, Unlikely, Even chance, Likely, Certain.'});
+  // Battle reflections
+  const reflectLabels={reflect_goblin:'After the Goblin of Graphs battle',reflect_serpent:'After the Spinner Serpent battle',reflect_dragon:'After the Uncertainty Dragon battle'};
+  if(state.reflections){Object.entries(state.reflections).forEach(([k,v])=>{if(v)entries.push({label:reflectLabels[k]||k,text:v});})}
+  // Skills unlocked
+  if(state.skills.length>1)entries.push({label:'Skills unlocked',text:state.skills.join(', ')});
+  // Badges
+  if(state.badges.length)entries.push({label:'Badges earned',text:state.badges.join(', ')});
+  if(!entries.length){jc.innerHTML='<div class="card"><p>Your journal is empty for now. Complete quests and battles to fill it in.</p></div>';return;}
+  jc.innerHTML=entries.map(e=>'<div class="journal-entry"><div class="je-label">'+e.label+'</div><div class="je-text">'+e.text+'</div></div>').join('');
+}
+function goToScreen(i){if(i>0&&i!==10&&!state.completed[i-1]&&i!==9){alert('Complete the previous quest to unlock this realm.');return}state.current=i;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$('screen'+i).classList.add('active');renderState();window.scrollTo({top:0,behavior:'smooth'});if(i===9)renderResults();if(i===10)renderJournal()}
+function completeQuest(i){state.completed[i]=true;award(15,2,0);if(i===0&&!state.badges.includes('Defender Recruited'))state.badges.push('Defender Recruited');levelCheck();saveGame();goToScreen(Math.min(i+1,9))}
+function award(xp,coins,crystals){state.xp+=xp;state.coins+=coins+(state.hero.id==='inventor'?1:0);state.crystals+=crystals||0}
+function levelCheck(){while(state.xp>=100){state.xp-=100;state.level++;state.maxHp+=8;state.hp=state.maxHp;state.maxMana+=5;state.mana=state.maxMana;state.attack+=2}}
+function renderMap(){const map=$('worldMap');if(!map)return;map.innerHTML='';const nodes=[['🧭','Hero Hall','Choose class'],['📊','Training Ground','Read a chart'],['👺','Goblin Gate','Monster battle'],['⚒️','Gear Forge','Choose charts'],['🔥','Calm Camp','Break'],['🎲','Probability Marsh','Language'],['🐍','Spinner Cave','Monster battle'],['✨','Skill Shrine','Unlock skills'],['🐉','Dragon Tower','Final boss']];nodes.forEach((n,i)=>{const b=document.createElement('button');b.className='map-node';if(state.current===i)b.classList.add('active');if(state.completed[i])b.classList.add('done');if(i>0&&!state.completed[i-1])b.classList.add('locked');b.innerHTML='<span class="icon">'+n[0]+'</span><strong>'+n[1]+'</strong><span>'+n[2]+'</span>';b.onclick=()=>goToScreen(i);map.appendChild(b)})}
+function renderTraining(){
+  refreshChartData();
+  // Rebuild battle question answers from fresh chart data
+  rebuildChartQuestions();
+  const chart=$('trainingChart');chart.innerHTML='';trainingData.forEach(d=>{const col=document.createElement('div');col.className='bar-col';col.innerHTML='<div class="bar-val">'+d[1]+'</div><div class="bar" style="height:'+(d[1]/20*100)+'%;background:'+d[2]+'"></div><div class="bar-label">'+d[0]+'</div>';chart.appendChild(col)});const box=$('trainingQuestions');box.innerHTML='<h3>Answer 4 chart questions</h3><div id="trainQList"></div><div class="btn-row"><button class="btn secondary" onclick="checkTraining()">Check answers</button><button class="btn outline" onclick="renderTraining()">Clear</button></div><div id="trainFeedback"></div>';const maxRoom=trainingData.reduce((a,b)=>b[1]>a[1]?b:a);
+      const sorted=[...trainingData].sort((a,b)=>b[1]-a[1]);
+      const qs=[
+        ['Which room had the most clues?',maxRoom[0]],
+        ['How many clues were found in the '+trainingData[2][0]+'?',String(trainingData[2][1])],
+        ['How many more clues in '+sorted[0][0]+' than '+sorted[4][0]+'?',String(sorted[0][1]-sorted[4][1])],
+        ['Total clues in '+trainingData[0][0]+' and '+trainingData[3][0]+'?',String(trainingData[0][1]+trainingData[3][1])]
+      ];const list=$('trainQList');qs.forEach((q,i)=>{const div=document.createElement('div');div.className='chart-box';div.innerHTML='<p><strong>'+(i+1)+'. '+q[0]+'</strong></p><input id="tr'+i+'" data-answer="'+q[1].toLowerCase()+'" style="width:100%;max-width:260px;padding:.6rem;border:2px solid var(--line);border-radius:10px;font-family:inherit;font-weight:700" placeholder="Type answer...">';list.appendChild(div)})}
+function checkTraining(){let c=0;for(let i=0;i<4;i++){const inp=$('tr'+i);const val=inp.value.trim().toLowerCase();const ok=val===inp.dataset.answer;inp.style.borderColor=ok?'var(--green)':'var(--red)';inp.style.background=ok?'var(--green-light)':'var(--red-light)';if(ok)c++}state.correct+=c;state.attempts+=4;$('trainFeedback').innerHTML='<div class="reward"><strong>'+c+'/4 correct.</strong> '+(c>=3?'Training complete. You earned the Compass of Data!':'Try again. Use the labels and values on the chart.')+'</div>';if(c>=3){if(!state.inventory.includes('Compass of Data'))state.inventory.push('Compass of Data');if(!state.badges.includes('Chart Reader'))state.badges.push('Chart Reader');state.completed[1]=true;award(30,5,1);levelCheck();renderState();$('trainFeedback').innerHTML+='<button class="btn primary" onclick="goToScreen(2)">Enter the Goblin Gate →</button>'}}
+function renderForge(){const area=$('forgeArea');area.innerHTML='';
+  area.innerHTML='<div class="callout">Each correct answer forges gear for your hero. <strong>Weapon slot:</strong> two options — answer both and Jay will see which you chose. Choose wisely.</div>';
+  forgeQs.forEach((fq,i)=>{const div=document.createElement('div');div.className='question-card';const showHints=$('supportToggle').checked;
+    const hintHtml=showHints&&fq.hint?'<div class="callout">Forge hint: '+fq.hint+'</div>':'';
+    div.innerHTML='<h3>Forge puzzle '+(i+1)+'</h3><p class="question-text">'+fq.q+'</p>'+hintHtml+'<div class="option-grid">'+fq.opts.map(o=>'<button class="option" onclick="answerForge(this,'+i+',\''+o+'\')">'+o+'</button>').join('')+'</div><div id="forgeFb'+i+'"></div>';area.appendChild(div)});area.innerHTML+='<div id="forgeDone" class="btn-row"></div>'}
+function answerForge(btn,i,choice){const fq=forgeQs[i];const ok=choice===fq.a;btn.classList.add(ok?'correct':'wrong');btn.parentElement.querySelectorAll('button').forEach(b=>b.disabled=true);state.attempts++;if(ok){state.correct++;state.gear[fq.gear.slot]=fq.gear.icon+' '+fq.gear.name;if(!state.inventory.includes(fq.gear.name))state.inventory.push(fq.gear.name);award(20,4,1);$('forgeFb'+i).innerHTML='<div class="reward"><strong>Forged:</strong> '+fq.gear.icon+' '+fq.gear.name+' — '+fq.gear.effect+'</div>'}else{$('forgeFb'+i).innerHTML='<div class="warn">Not quite. Best answer: '+fq.a+'.</div>'}levelCheck();renderState();if([...document.querySelectorAll('#forgeArea .question-card')].every(card=>card.querySelector('button:disabled'))){if(!state.badges.includes('Chart Chooser'))state.badges.push('Chart Chooser');state.completed[3]=true;$('forgeDone').innerHTML='<button class="btn primary" onclick="goToScreen(4)">Travel to the Calm Campfire →</button>';renderState()}}
+function renderProbability(){const area=$('probArea');area.innerHTML='';probQs.forEach((pq,i)=>{const div=document.createElement('div');div.className='question-card';div.innerHTML='<h3>Probability language '+(i+1)+'</h3><p class="question-text">'+pq.q+'</p><div class="option-grid">'+pq.opts.map(o=>'<button class="option" onclick="answerProb(this,'+i+',\''+o+'\')">'+o+'</button>').join('')+'</div><div id="probFb'+i+'"></div>';area.appendChild(div)});area.innerHTML+='<div id="probDone" class="btn-row"></div>'}
+function answerProb(btn,i,choice){const pq=probQs[i];const ok=choice===pq.a;btn.classList.add(ok?'correct':'wrong');btn.parentElement.querySelectorAll('button').forEach(b=>b.disabled=true);state.attempts++;if(ok){state.correct++;award(16,3,1);$('probFb'+i).innerHTML='<div class="reward">Correct — '+choice+' is the best probability word.</div>'}else{$('probFb'+i).innerHTML='<div class="warn">Best answer: '+pq.a+'.</div>'}levelCheck();renderState();if([...document.querySelectorAll('#probArea .question-card')].every(card=>card.querySelector('button:disabled'))){if(!state.badges.includes('Probability Linguist'))state.badges.push('Probability Linguist');state.completed[5]=true;$('probDone').innerHTML='<button class="btn primary" onclick="goToScreen(6)">Enter the Spinner Cave →</button>';renderState()}}
+function renderSkills(){const shrine=$('skillShrine');const list=classSkillList();shrine.innerHTML='<div class="callout"><strong>Class shrine:</strong> '+state.hero.icon+' '+state.hero.name+' learns a unique set of abilities. Your starter skill is already unlocked: '+heroStarter()+'.</div><div class="grid two" id="skillCards"></div><div id="skillDone" class="btn-row"></div>';const cards=$('skillCards');list.forEach((sq,i)=>{const meta=skillMeta[sq.skill]||{};const div=document.createElement('div');div.className='skill-card '+(state.skills.includes(sq.skill)?'unlocked':'');div.innerHTML='<strong>'+(meta.icon||'✨')+' '+sq.skill+'</strong><span>'+(meta.desc||'Special class skill.')+' Cost: '+skillCost(sq.skill)+' mana</span><p class="question-text" style="font-size:1rem">'+sq.q+'</p><div class="option-grid">'+sq.opts.map(o=>'<button class="option" '+(state.skills.includes(sq.skill)?'disabled':'')+' onclick="answerSkill(this,'+i+',\''+escapeAttr(o)+'\')">'+o+'</button>').join('')+'</div><div id="skillFb'+i+'"></div>';cards.appendChild(div)});if(list.every(sq=>state.skills.includes(sq.skill))){state.completed[7]=true;$('skillDone').innerHTML='<button class="btn primary" onclick="goToScreen(8)">Climb Dragon Tower →</button>'}}
+function answerSkill(btn,i,choice){choice=choice.replace(/&#39;/g,"'");const sq=classSkillList()[i];const ok=choice===sq.a;btn.classList.add(ok?'correct':'wrong');btn.parentElement.querySelectorAll('button').forEach(b=>b.disabled=true);state.attempts++;if(ok){state.correct++;if(!state.skills.includes(sq.skill))state.skills.push(sq.skill);award(22,3,1);$('skillFb'+i).innerHTML='<div class="reward">Skill unlocked: '+skillIcon(sq.skill)+' '+sq.skill+'</div>'}else{$('skillFb'+i).innerHTML='<div class="warn">Best answer: '+sq.a+'.</div>'}if(!state.badges.includes('Class Skill Master')&&classSkillList().every(s=>state.skills.includes(s.skill)))state.badges.push('Class Skill Master');levelCheck();renderState();renderSkills()}
+function renderBattle(containerId,enemyId){const e=state.battles[enemyId]||structuredClone(enemies[enemyId]);state.battles[enemyId]=e;if(!state.skills.includes(heroStarter()))state.skills.unshift(heroStarter());if(!state.skills.includes(selectedAction))selectedAction=state.skills[0];const container=$(containerId);const heroHp=Math.max(0,Math.min(100,state.hp/state.maxHp*100));const enemyHp=Math.max(0,Math.min(100,e.hp/e.maxHp*100));const compPanel = renderCompanionPanel(enemyId);
+  container.innerHTML='<div class="battle-top"><div class="fighter hero"><h3>'+state.hero.icon+' '+getName()+'</h3><div class="sprite float">'+state.hero.icon+'</div><div class="hp-track"><div class="hp-fill" style="width:'+heroHp+'%"></div></div><div class="hp-track"><div class="mana-fill" style="width:'+(state.mana/state.maxMana*100)+'%"></div></div><div class="fighter-stats"><span class="mini-stat">HP '+state.hp+'/'+state.maxHp+'</span><span class="mini-stat">Mana '+state.mana+'/'+state.maxMana+'</span><span class="mini-stat">ATK '+state.attack+'</span><span class="mini-stat">Class: '+state.hero.name+'</span></div></div><div class="fighter enemy" id="enemyBox'+enemyId+'"><h3>'+e.name+'</h3><div class="sprite">'+e.icon+'</div><div class="hp-track"><div class="hp-fill" style="width:'+enemyHp+'%"></div></div><div class="fighter-stats"><span class="mini-stat">HP '+Math.max(0,e.hp)+'/'+e.maxHp+'</span><span class="mini-stat">Weak: '+e.weak+'</span></div></div></div><div class="battle-log" id="log'+enemyId+'"><p>⚔️ '+e.name+' blocks the path. Choose a class skill, read the data panel, then answer to attack.</p></div>'+compPanel+'<div class="action-grid" id="actions'+enemyId+'"></div><div class="question-card" id="question'+enemyId+'"></div>';renderActions(enemyId);nextBattleQuestion(enemyId)}
+function renderActions(enemyId){const actions=$('actions'+enemyId);actions.innerHTML='';if(!state.skills.includes(selectedAction))selectedAction=state.skills[0];state.skills.forEach(sk=>{const cost=skillCost(sk);const disabled=state.mana<cost;const b=document.createElement('button');b.className='action'+(selectedAction===sk?' selected':'');b.disabled=disabled;const skMeta=skillMeta[sk]||{};
+    b.innerHTML='<strong>'+skillIcon(sk)+' '+sk+'</strong>'+(skMeta.flavour?'<em style="font-size:.75rem;color:var(--muted);display:block;margin:.2rem 0;">'+skMeta.flavour+'</em>':'')+'<span>'+skillDesc(sk)+' '+(cost?'Cost '+cost+' mana':'Free')+'</span>';b.onclick=()=>{selectedAction=sk;renderActions(enemyId)};actions.appendChild(b)})}
+function skillIcon(sk){return skillMeta[sk]?.icon||'✨'}
+function skillDesc(sk){return skillMeta[sk]?.desc||'Special skill.'}
+function battleDataPanel(q,e){if(q.visual==='trainingBar'||e.type==='chart'){return '<div class="chart-box"><p style="font-weight:700;text-align:center">Battle chart: Clues found by room</p><div class="bar-chart">'+trainingData.map(d=>'<div class="bar-col"><div class="bar-val">'+d[1]+'</div><div class="bar" style="height:'+(d[1]/20*100)+'%;background:'+d[2]+'"></div><div class="bar-label">'+d[0]+'</div></div>').join('')+'</div><p style="font-size:.82rem;text-align:center;color:var(--muted)">Vertical scale: 0 to 20 clues. Use this chart to answer the Goblin.</p></div>'}if(q.visual==='spinner'){return '<div class="chart-box"><p style="font-weight:700">Battle data: Spinner sections</p><div class="prob-scale"><div class="prob-cell"><strong>Red</strong>3 sections</div><div class="prob-cell"><strong>Blue</strong>3 sections</div><div class="prob-cell"><strong>Green</strong>3 sections</div></div></div>'}if(q.visual==='bagYellow'){return '<div class="chart-box"><p style="font-weight:700">Battle data: Counter bag</p><div class="prob-scale"><div class="prob-cell"><strong>Yellow</strong>9 counters</div><div class="prob-cell"><strong>Black</strong>1 counter</div></div></div>'}return ''}
+function nextBattleQuestion(enemyId){const e=state.battles[enemyId];if(e.hp<=0)return winBattle(enemyId);if(state.hp<=0)return loseBattle(enemyId);const pool=battleQuestions[e.type];if(!e.usedQs)e.usedQs=[];if(e.usedQs.length>=pool.length)e.usedQs=[];const unused=pool.filter((_,i)=>!e.usedQs.includes(i));const idx=pool.indexOf(unused[Math.floor(Math.random()*unused.length)]);e.usedQs.push(idx);const q=pool[idx];let hint=$('supportToggle').checked?'<div class="callout">Hint: '+q.hint+'</div>':'';if($('supportToggle').checked&&selectedAction==='Axis Insight')hint+='<div class="callout">Axis Insight: check the title, labels, scale and tallest/smallest values before choosing.</div>';$('question'+enemyId).innerHTML='<h3>Maths power question</h3>'+battleDataPanel(q,e)+'<p class="question-text">'+q.q+'</p>'+hint+'<div class="option-grid">'+q.opts.map(o=>'<button class="option" onclick="battleAnswer(this,\''+enemyId+'\',\''+escapeAttr(o)+'\',\''+escapeAttr(q.a)+'\')">'+o+'</button>').join('')+'</div>'}
+function escapeAttr(s){return String(s).replace(/'/g,"&#39;")}
+function battleAnswer(btn,enemyId,choice,ans){choice=choice.replace(/&#39;/g,"'");ans=ans.replace(/&#39;/g,"'");const ok=choice===ans;btn.classList.add(ok?'correct':'wrong');btn.parentElement.querySelectorAll('button').forEach(b=>b.disabled=true);state.attempts++;if(ok){state.correct++;heroAttack(enemyId);triggerCompanionAssist(enemyId,true);}else{log(enemyId,'❌ Not quite. Correct answer: '+ans+'. The enemy attacks.');enemyAttack(enemyId)}setTimeout(()=>{renderState();renderBattle(enemyId==='goblin'?'battle1':enemyId==='serpent'?'battle2':'bossBattle',enemyId)},900)}
+function heroAttack(enemyId){const e=state.battles[enemyId];const sk=selectedAction;let dmg=state.attack+state.level*2+Math.floor(Math.random()*6);let shield=false;let extra='';if(skillHasTag(sk,e.weakType))dmg+=12;if(sk==='Pattern Bolt')dmg+=state.focus*3;if(sk==='Axis Insight'){dmg+=e.type==='chart'?14:6;extra=' Axis Insight found the pattern.'}if(sk==='Compare Shot'&&e.type==='chart')dmg+=10;if(sk==='Rapid Tally'){dmg+=8;extra=' Rapid Tally adds a second quick hit.'}if(sk==='Difference Arrow'){dmg+=e.type==='chart'?14:5}if(sk==='Guard Bash'){shield=true;dmg+=3;extra=' Guard Bash braces for the counterattack.'}if(sk==='Scale Shield'){shield=true;dmg+=2}if(sk==='Probability Wall'){shield=true;dmg+=e.type==='prob'?16:6}if(sk==='Certain Strike'){dmg+=e.type==='prob'||e.type==='mixed'?14:4}if(sk==='Probability Pulse'&&e.type==='prob')dmg+=16;if(sk==='Data Heal'){const heal=18;state.hp=Math.min(state.maxHp,state.hp+heal);dmg+=4;extra=' You healed '+heal+' HP.'}if(sk==='Chart Breaker')dmg+=18;if(sk==='Gadget Strike'){state.mana=Math.min(state.maxMana,state.mana+4);extra=' Gadget Strike restored 4 mana.'}if(sk==='Gear Overclock'){const gearCount=Object.values(state.gear).filter(Boolean).length;dmg+=8+gearCount*6;extra=' Gear Overclock used '+gearCount+' equipped items.'}if(sk==='Repair Bot'){state.hp=Math.min(state.maxHp,state.hp+12);state.mana=Math.min(state.maxMana,state.mana+6);dmg+=4;extra=' Repair Bot restored HP and mana.'}const cost=skillCost(sk);if(cost)state.mana=Math.max(0,state.mana-cost);e.hp-=dmg;$('enemyBox'+enemyId)?.classList.add('shake');log(enemyId,'✅ Correct! '+skillIcon(sk)+' '+sk+' hits for '+dmg+' damage.'+extra);if(e.hp>0)enemyAttack(enemyId,shield)}
+function enemyAttack(enemyId,shield){const e=state.battles[enemyId];if(shield){log(enemyId,'🛡️ Your defensive ability blocks the enemy attack.');return}let dmg=Math.max(4,e.atk+Math.floor(Math.random()*5)-state.level);if(state.hero.id==='guardian')dmg=Math.max(3,dmg-2);state.hp=Math.max(0,state.hp-dmg);log(enemyId,'💢 '+e.name+' hits for '+dmg+' damage.')}
+function log(enemyId,msg){const l=$('log'+enemyId);if(l){l.innerHTML+='<p>'+msg+'</p>';l.scrollTop=l.scrollHeight}}
+function winBattle(enemyId){const e=state.battles[enemyId];if(!e.won){e.won=true;award(e.reward.xp,e.reward.coins,e.reward.crystals);if(!state.badges.includes(e.reward.badge))state.badges.push(e.reward.badge);const idx=enemyId==='goblin'?2:enemyId==='serpent'?6:8;state.completed[idx]=true;levelCheck()}const next=enemyId==='goblin'?3:enemyId==='serpent'?7:9;
+  const reflectKey='reflect_'+enemyId;
+  const topic=enemyId==='goblin'?'reading charts and finding values':enemyId==='serpent'?'probability language':enemyId==='dragon'?'combining charts and probability':'data and probability';
+  $('question'+enemyId).innerHTML='<div class="reward"><h3>⚔️ Victory! '+e.name+' defeated.</h3><p>You earned the <strong>'+e.reward.badge+'</strong> badge.</p></div>'
+    +'<div class="question-card" style="margin-top:.8rem;"><h3>📖 Quick reflection</h3><p style="margin-bottom:.6rem;">Before you move on — what is one thing you learned or noticed during this battle about <strong>'+topic+'</strong>?</p>'
+    +'<textarea id="'+reflectKey+'" style="width:100%;min-height:72px;padding:.65rem;border:2px solid var(--line);border-radius:10px;font-family:inherit;font-size:.95rem;background:var(--steel-light);color:var(--dark);resize:vertical;" placeholder="Write anything — even one word is fine..."></textarea>'
+    +'<div class="btn-row" style="margin-top:.75rem;">'
+    +'<button class="btn primary" id="saveBtn_'+enemyId+'" data-key="'+reflectKey+'" data-next="'+next+'">Save and continue →</button>'
+    +'<button class="btn outline small" onclick="goToScreen('+next+')">Skip</button>'
+    +'</div></div>';
+  // Wire up save button after innerHTML is set
+  setTimeout(()=>{const sb=$('saveBtn_'+enemyId);if(sb)sb.onclick=()=>{saveReflection(sb.dataset.key);goToScreen(parseInt(sb.dataset.next));}},0);
+  saveGame();renderState()}
+function saveReflection(key){const val=$( key)?.value?.trim();if(val){if(!state.reflections)state.reflections={};state.reflections[key]=val;saveGame()}}
+function loseBattle(enemyId){$('question'+enemyId).innerHTML='<div class="warn"><h3>You need a camp reset.</h3><p>Your HP reached 0. Restore your hero and try this battle again.</p><button class="btn primary" onclick="restoreHero(\''+enemyId+'\')">Restore and retry</button></div>'}
+function restoreHero(enemyId){state.hp=state.maxHp;state.mana=state.maxMana;state.battles[enemyId]=structuredClone(enemies[enemyId]);renderState();renderBattle(enemyId==='goblin'?'battle1':enemyId==='serpent'?'battle2':'bossBattle',enemyId)}
+function startBreak(elId,seconds,btnId){const btn=$(btnId);btn.disabled=true;let remaining=seconds;const el=$(elId);const int=setInterval(()=>{remaining--;const m=Math.floor(remaining/60);const s=String(remaining%60).padStart(2,'0');el.textContent=m+':'+s;if(remaining<=0){clearInterval(int);el.textContent='Done 🎉';btn.disabled=false}},1000)}
+function getName(){return $('studentName').value.trim()||'Defender'}
+function renderResults(){const done=state.completed.filter(Boolean).length;const accuracy=state.attempts?Math.round(state.correct/state.attempts*100):0;const score=state.level*100+state.coins*4+state.badges.length*50+accuracy;$('finalScore').textContent=score;$('badgeList').innerHTML=state.badges.length?state.badges.map(b=>'<div class="loot-card"><strong>🏅 '+b+'</strong><span>Earned during the adventure</span></div>').join(''):'<p>No badges yet.</p>';const reflectHtml=state.reflections?Object.entries(state.reflections).filter(([k,v])=>v).map(([k,v])=>{const labels={reflect_goblin:'After Goblin battle',reflect_serpent:'After Serpent battle',reflect_dragon:'After Dragon battle'};return '<p><strong>'+(labels[k]||k)+':</strong> '+v+'</p>'}).join(''):'';
+  $('summaryBox').innerHTML='<p><strong>Hero:</strong> '+getName()+' — '+state.hero.name+'</p><p><strong>Quest progress:</strong> '+done+'/9 quests complete</p><p><strong>Accuracy:</strong> '+accuracy+'% ('+state.correct+'/'+state.attempts+')</p><p><strong>Level:</strong> '+state.level+'</p><p><strong>Gear:</strong> '+(Object.values(state.gear).filter(Boolean).join(', ')||'No gear yet')+'</p><p><strong>Skills:</strong> '+state.skills.join(', ')+'</p><p><strong>Class ability:</strong> '+state.hero.ability+'</p>'+(reflectHtml?'<hr style="border-color:var(--line);margin:.75rem 0;"><p><strong>Battle reflections:</strong></p>'+reflectHtml:'')}
+function sendGmail(){renderResults();const subject=encodeURIComponent('Data Realms RPG results — '+getName());const reflectionLines=state.reflections?Object.entries(state.reflections).filter(([k,v])=>v).map(([k,v])=>{const labels={reflect_goblin:'After Goblin battle',reflect_serpent:'After Serpent battle',reflect_dragon:'After Dragon battle'};return (labels[k]||k)+': '+v}).join('\n'):'None recorded';
+  const body=encodeURIComponent('Data Realms: Shadow Defenders RPG results\n\nName: '+getName()+'\nClass: '+state.hero.name+'\nLevel: '+state.level+'\nQuests complete: '+state.completed.filter(Boolean).length+'/9\nAccuracy: '+(state.attempts?Math.round(state.correct/state.attempts*100):0)+'% ('+state.correct+'/'+state.attempts+')\nCoins: '+state.coins+'\nCrystals: '+state.crystals+'\nBadges: '+(state.badges.join(', ')||'None yet')+'\nGear: '+(Object.values(state.gear).filter(Boolean).join(', ')||'None yet')+'\nSkills: '+state.skills.join(', ')+'\n\nBATTLE REFLECTIONS:\n'+reflectionLines+'\n\nTeacher note: This activity consolidates interpretation of data and appropriate charts, and explores language of probability. Reflections above are the student\'s own words after each major battle.');window.open('https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk&su='+subject+'&body='+body,'_blank')}
+renderAll();
+</script>
+</body>
+</html>
