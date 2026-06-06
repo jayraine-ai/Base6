@@ -25,13 +25,10 @@
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
   .resource-card { background: #ffffff; border: 2px solid #ef7724; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
   .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(239,119,36,0.15); }
-  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
   .resource-name { font-size: 1.05rem; font-weight: 700; color: #c05a10; line-height: 1.3; }
-  .resource-name.muted { color: #999; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
   .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #c05a10; }
-  .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -74,6 +71,13 @@
       <span class="resource-name">Slang Sandbox</span>
       <span class="resource-desc">Explore tone, style and register — translate between slang and standard English.</span>
       <span class="resource-arrow">Open activity →</span>
+    </a>
+
+    <a class="resource-card" href="syntax-runner.html">
+      <div class="resource-icon">🧑‍💻</div>
+      <span class="resource-name">Syntax Runner: Chilton City Uplink</span>
+      <span class="resource-desc">Hack a dystopian city's corrupted broadcasts. Repair Standard English verb forms, battle enemies, forge gear and unlock skill branches.</span>
+      <span class="resource-arrow">Play game →</span>
     </a>
 
   </div>
