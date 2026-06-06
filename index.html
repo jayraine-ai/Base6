@@ -3,96 +3,171 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maths · Week 2 · Base 6</title>
+<title>Base 6</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
-  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
-  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem; }
-  .back-link:hover { opacity: 1; }
-  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
-  .subject-hero { background-color: #007291; padding: 0 2rem 2rem; text-align: center; }
-  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fde0c0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .site-header { background-color: #007291; padding: 2rem 2rem 1.5rem; text-align: center; }
+  .site-header h1 { font-size: 2.8rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .driving-question { background-color: #ef7724; padding: 1.5rem 2rem; text-align: center; }
+  .driving-question p.label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .driving-question p.question { font-size: 1.25rem; font-weight: 700; color: #fef8f4; line-height: 1.5; max-width: 700px; margin: 0 auto; }
   .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
-  .focus-card { background: #e6f5f8; border-left: 4px solid #007291; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
-  .focus-card p.label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #007291; margin-bottom: 0.5rem; }
-  .focus-card ul { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
-  .focus-card ul li { font-size: 0.95rem; color: #1a1a1a; line-height: 1.5; }
-  .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card { background: #ffffff; border: 2px solid #007291; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-  .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,114,145,0.15); }
-  .resource-card.recap { border-color: #e8a020; background: #fffbf0; }
-  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
-  .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
-  .resource-name { font-size: 1.05rem; font-weight: 700; color: #007291; line-height: 1.3; }
-  .resource-name.amber { color: #b07010; }
-  .resource-name.muted { color: #999; }
-  .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
-  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #007291; }
-  .resource-arrow.amber { color: #b07010; }
-  .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; width: fit-content; }
-  .tag-recap { background-color: #fdecc8; color: #b07010; }
-  .tag-extra { background-color: #e6f5f8; color: #007291; }
+  .weeks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+  .week-card { background: #ffffff; border: 2px solid #007291; border-radius: 14px; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.4rem; transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: pointer; }
+  .week-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,114,145,0.15); }
+  .week-card .week-number { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ef7724; }
+  .week-card .week-title { font-size: 1.05rem; font-weight: 700; color: #007291; line-height: 1.3; }
+  .week-card .week-desc { font-size: 0.9rem; color: #444; line-height: 1.5; }
+  .week-card .week-status { margin-top: 0.5rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; width: fit-content; }
+  .status-available { background-color: #e6f5f8; color: #007291; }
+  .status-current { background-color: #fdeee0; color: #c05a10; }
+  .status-soon { background-color: #f0ede8; color: #888; }
+  .week-card.current { border-color: #ef7724; }
+  .week-card.current .week-title { color: #c05a10; }
+  .week-card.coming-soon { border-color: #ccc; opacity: 0.65; cursor: default; pointer-events: none; }
+  .week-card.coming-soon .week-title { color: #555; }
+  .tools-section { margin-top: 1rem; margin-bottom: 2.5rem; }
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+  .tool-card { background: #fff7f0; border: 1.5px solid #ef7724; border-radius: 12px; padding: 1rem 1.25rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; font-weight: 700; color: #c05a10; transition: transform 0.15s ease; }
+  .tool-card:hover { transform: translateY(-2px); }
+  .tool-icon { font-size: 1.4rem; }
+  .milestones-section { margin-top: 1rem; }
+  .milestones-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; }
+  .milestone-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 1rem 1.1rem; text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; transition: transform 0.15s ease, border-color 0.15s ease; }
+  .milestone-card:hover { transform: translateY(-2px); }
+  .milestone-emoji { font-size: 1.5rem; }
+  .milestone-name { font-size: 0.95rem; font-weight: 700; line-height: 1.2; }
+  .milestone-card.layden  { border-color: #aed6f1; } .milestone-card.layden  .milestone-name { color: #1565C0; }
+  .milestone-card.leon    { border-color: #fcd8bc; } .milestone-card.leon    .milestone-name { color: #BF5000; }
+  .milestone-card.leo     { border-color: #a9dfbf; } .milestone-card.leo     .milestone-name { color: #2E7D32; }
+  .milestone-card.archie  { border-color: #f5b7b1; } .milestone-card.archie  .milestone-name { color: #880E4F; }
+  .milestone-card.harrison{ border-color: #d2b4de; } .milestone-card.harrison.milestone-name { color: #4527A0; }
+  .milestone-sub { font-size: 0.78rem; color: #888; font-weight: 700; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <a class="back-link" href="../index.html">← Week 2</a>
-  <span class="breadcrumb">/ Maths</span>
+  <h1>Base 6</h1>
 </header>
 
-<div class="subject-hero">
-  <p class="subject-label">Week 2 · Maths</p>
-  <h1>🔢 Maths</h1>
+<div class="driving-question">
+  <p class="label">Our driving question</p>
+  <p class="question">How do our choices today shape the worlds of tomorrow?</p>
 </div>
 
 <main class="main">
 
-  <div class="focus-card">
-    <p class="label">This week we are focusing on</p>
-    <ul>
-      <li>Interpreting data and choosing appropriate charts</li>
-      <li>Exploring the language of probability</li>
-    </ul>
+  <p class="section-label">Project weeks</p>
+  <div class="weeks-grid">
+
+    <a class="week-card" href="week1/index.html">
+      <span class="week-number">Week 1</span>
+      <span class="week-title">Getting Started</span>
+      <span class="week-desc">Introducing the project and exploring our big question.</span>
+      <span class="week-status status-available">Available</span>
+    </a>
+
+    <a class="week-card current" href="week2/index.html">
+      <span class="week-number">Week 2</span>
+      <span class="week-title">This Week</span>
+      <span class="week-desc">This week's activities are ready for you.</span>
+      <span class="week-status status-current">We are here</span>
+    </a>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 3</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 4</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 5</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 6</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
+    <div class="week-card coming-soon">
+      <span class="week-number">Week 7</span>
+      <span class="week-title">Coming Soon</span>
+      <span class="week-desc">This week's activities will appear here.</span>
+      <span class="week-status status-soon">Coming soon</span>
+    </div>
+
   </div>
 
-  <p class="section-label">Resources</p>
-  <div class="resources-grid">
-
-    <a class="resource-card recap" href="area-el2-activity.html">
-      <div class="resource-icon">📐</div>
-      <span class="resource-name amber">Area Explorer — Recap</span>
-      <span class="resource-desc">A recap of area from last week. Entry Level 2.</span>
-      <span class="resource-tag tag-recap">Recap activity</span>
-    </a>
-
-    <a class="resource-card" href="data-and-charts.html">
-      <div class="resource-icon">📊</div>
-      <span class="resource-name">Data and Charts</span>
-      <span class="resource-desc">Explore bar charts and pie charts through interactive activities, games and mini breaks. Includes email and PDF results.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
-
-    <a class="resource-card" href="probability-language.html">
-      <div class="resource-icon">🎲</div>
-      <span class="resource-name">Language of Probability</span>
-      <span class="resource-desc">Explore impossible, unlikely, even chance, likely and certain — with a spinner, coin flip, dice and word games. Includes email and PDF results.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
-
-    <a class="resource-card" href="times-tables-60-min.html">
-      <div class="resource-icon">✖️</div>
-      <span class="resource-name">Times Tables Mission</span>
-      <span class="resource-desc">A 60-minute session using arrays, skip counting, fact families, a match game and a quiz. Choose any times table from 2 to 12. Includes calm mode and movement breaks.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
-
+  <div class="tools-section">
+    <p class="section-label">Tools &amp; resources</p>
+    <div class="tools-grid">
+      <a class="tool-card" href="tools/getting-to-know-me.html">
+        <span class="tool-icon">👤</span> Getting to Know Me
+      </a>
+      <a class="tool-card" href="tools/vocabulary.html">
+        <span class="tool-icon">📖</span> Vocabulary
+      </a>
+      <a class="tool-card" href="tools/brainstorm-tool.html">
+        <span class="tool-icon">💡</span> Brainstorm
+      </a>
+    </div>
   </div>
+
+  <div class="milestones-section">
+    <p class="section-label">My milestones</p>
+    <div class="milestones-grid">
+
+      <a class="milestone-card layden" href="milestones/milestones-layden.html">
+        <span class="milestone-emoji">🧁</span>
+        <span class="milestone-name">Layden</span>
+        <span class="milestone-sub">Summer 2 · 15 milestones</span>
+      </a>
+
+      <a class="milestone-card leon" href="milestones/milestones-leon.html">
+        <span class="milestone-emoji">🎬</span>
+        <span class="milestone-name">Leon</span>
+        <span class="milestone-sub">Summer 2 · 15 milestones</span>
+      </a>
+
+      <a class="milestone-card leo" href="milestones/milestones-leo.html">
+        <span class="milestone-emoji">🌱</span>
+        <span class="milestone-name">Leo</span>
+        <span class="milestone-sub">Summer 2 · 15 milestones</span>
+      </a>
+
+      <a class="milestone-card archie" href="milestones/milestones-archie.html">
+        <span class="milestone-emoji">🎭</span>
+        <span class="milestone-name">Archie</span>
+        <span class="milestone-sub">Summer 2 · 15 milestones</span>
+      </a>
+
+      <a class="milestone-card harrison" href="milestones/milestones-harrison.html">
+        <span class="milestone-emoji">🎣</span>
+        <span class="milestone-name">Harrison</span>
+        <span class="milestone-sub">Summer 2 · 15 milestones</span>
+      </a>
+
+    </div>
+  </div>
+
 </main>
 
 <footer>
