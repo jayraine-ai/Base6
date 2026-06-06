@@ -24,13 +24,10 @@
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
   .resource-card { background: #ffffff; border: 2px solid #006994; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
   .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,105,148,0.15); }
-  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
   .resource-name { font-size: 1.05rem; font-weight: 700; color: #006994; line-height: 1.3; }
-  .resource-name.muted { color: #999; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
   .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #006994; }
-  .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -64,12 +61,12 @@
       <span class="resource-arrow">Open activity →</span>
     </a>
 
-    <div class="resource-card placeholder">
-      <div class="resource-icon">➕</div>
-      <span class="resource-name muted">More coming soon</span>
-      <span class="resource-desc">Additional resources will appear here.</span>
-      <span class="resource-tag">Coming soon</span>
-    </div>
+    <a class="resource-card" href="ocean-day-game.html">
+      <div class="resource-icon">🐠</div>
+      <span class="resource-name">Ocean Day — Flappy Fish</span>
+      <span class="resource-desc">Swim through the ocean, collect trash, and avoid the coral walls. Earn shells, open treasure chests, and unlock rare cosmetic skins.</span>
+      <span class="resource-arrow">Play game →</span>
+    </a>
 
   </div>
 </main>
