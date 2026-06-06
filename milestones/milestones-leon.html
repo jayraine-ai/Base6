@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leon — Summer 2 Milestones · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #BF5000;
+    --bg-soft: #FFF4E8;
+    --bg: #FFFBF3;
+    --card: #FFFFFF;
+    --text: #1C1C1C;
+    --muted: #5A5A5A;
+    --accent-hover: #BF5000;
+    --done-text: #1B5E20;
+    --done-bg: #EBF5EB;
+    --tip-bg: #FFF9E6;
+    --tip-border: #F5A623;
+    --shadow: 0 2px 10px rgba(0,0,0,0.07);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  body {
+    font-family: 'Atkinson Hyperlegible', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.75;
+    letter-spacing: 0.025em;
+    word-spacing: 0.06em;
+    min-height: 100vh;
+  }
+  .site-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 22px 28px 18px;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .site-header h1 { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+  .site-header p { font-size: 0.9rem; opacity: 0.85; margin-top: 3px; }
+  .header-share { margin-left: auto; }
+  .btn-share {
+    background: #fff; color: var(--accent); border: none;
+    border-radius: var(--radius-sm); padding: 10px 20px;
+    font-family: inherit; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; transition: background 0.15s, transform 0.1s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-share:hover { background: #FFF4E8; transform: translateY(-1px); }
+
+  .progress-strip {
+    padding: 14px 24px; display: flex; align-items: center; gap: 14px;
+    max-width: 860px; margin: 0 auto;
+  }
+  .progress-label { font-size: 0.88rem; color: var(--muted); white-space: nowrap; }
+  .progress-track { flex: 1; height: 10px; background: #DDD; border-radius: 20px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 20px; background: var(--accent); transition: width 0.4s ease; width: 0%; }
+  .progress-pct { font-size: 0.88rem; font-weight: 700; color: var(--accent); min-width: 56px; text-align: right; }
+
+  .panel { padding: 12px 20px 60px; max-width: 860px; margin: 0 auto; }
+
+  .pillar-card {
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); margin-bottom: 18px; overflow: hidden;
+  }
+  .pillar-header {
+    padding: 14px 18px; display: flex; align-items: center;
+    gap: 12px; cursor: pointer; user-select: none;
+  }
+  .pillar-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; flex-shrink: 0; background: #FFF4E8;
+  }
+  .pillar-titles { flex: 1; }
+  .pillar-subject { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .pillar-name { font-size: 1rem; font-weight: 700; line-height: 1.3; }
+  .pillar-chevron { font-size: 1.1rem; color: var(--muted); transition: transform 0.25s; flex-shrink: 0; }
+  .pillar-card.open .pillar-chevron { transform: rotate(90deg); }
+  .pillar-status {
+    font-size: 0.78rem; color: var(--muted);
+    background: #F0F0F0; border-radius: 20px; padding: 2px 8px; white-space: nowrap;
+  }
+  .pillar-status.done-badge { background: #EBF5EB; color: var(--done-text); font-weight: 700; }
+
+  .pillar-body { display: none; padding: 0 18px 16px; }
+  .pillar-card.open .pillar-body { display: block; }
+
+  .milestone-box {
+    background: #F7F7F7; border-left: 4px solid #CCC; border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px; font-size: 0.9rem; color: var(--muted);
+  }
+  .milestone-box strong {
+    display: block; font-size: 0.77rem; text-transform: uppercase;
+    letter-spacing: 0.07em; margin-bottom: 3px; color: #999;
+  }
+
+  .target-item { padding: 10px 0; }
+  .target-row { display: flex; align-items: flex-start; gap: 12px; }
+  .custom-check {
+    width: 26px; height: 26px; border: 2.5px solid #BBB; border-radius: 6px;
+    flex-shrink: 0; margin-top: 2px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; background: #fff;
+  }
+  .custom-check.checked { border-color: var(--done-text); background: var(--done-text); color: #fff; }
+  .custom-check.checked::after { content: "✓"; font-size: 14px; font-weight: 700; }
+  .target-content { flex: 1; }
+  .target-text {
+    font-size: 0.96rem; line-height: 1.6; cursor: pointer; transition: color 0.15s;
+  }
+  .target-item.done .target-text {
+    color: var(--done-text);
+    text-decoration: line-through;
+    text-decoration-color: rgba(27,94,32,0.35);
+    text-decoration-thickness: 2px;
+  }
+  .tip-toggle {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.8rem; color: var(--accent); background: none; border: none;
+    cursor: pointer; font-family: inherit; padding: 4px 0;
+    margin-top: 2px; font-weight: 700; letter-spacing: 0.03em;
+  }
+  .tip-box {
+    display: none; background: var(--tip-bg);
+    border-left: 4px solid var(--tip-border); border-radius: 0 8px 8px 0;
+    padding: 10px 14px; margin-top: 8px; font-size: 0.88rem; line-height: 1.65;
+  }
+  .tip-box.open { display: block; }
+  .tip-label {
+    font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em;
+    font-weight: 700; color: #a07000; margin-bottom: 4px;
+  }
+
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: #1C1C1C; color: #fff; padding: 12px 22px;
+    border-radius: var(--radius); font-size: 0.9rem; font-weight: 700;
+    transition: transform 0.3s ease; z-index: 999;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 500;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--card); border-radius: var(--radius); padding: 28px;
+    max-width: 540px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  }
+  .modal-box h2 { font-size: 1.2rem; margin-bottom: 6px; }
+  .modal-box p { font-size: 0.9rem; color: var(--muted); margin-bottom: 16px; }
+  .modal-textarea {
+    width: 100%; height: 200px; border: 1.5px solid #DDD;
+    border-radius: var(--radius-sm); padding: 12px; font-family: inherit;
+    font-size: 0.85rem; line-height: 1.6; resize: vertical; color: var(--text);
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius-sm); padding: 10px 20px;
+    font-family: inherit; font-size: 0.92rem; font-weight: 700; cursor: pointer;
+  }
+  .btn-secondary {
+    background: transparent; color: var(--muted); border: 1.5px solid #DDD;
+    border-radius: var(--radius-sm); padding: 10px 20px;
+    font-family: inherit; font-size: 0.92rem; cursor: pointer;
+  }
+  .btn-secondary:hover { background: #F5F5F5; }
+
+  @media (max-width: 600px) {
+    .site-header { padding: 16px 16px 14px; }
+    .panel { padding: 10px 12px 60px; }
+    .pillar-header { padding: 12px 14px; }
+    .pillar-body { padding: 0 14px 14px; }
+  }
+
+  .back-link { color:rgba(255,255,255,.85);font-size:.85rem;font-weight:700;text-decoration:none; }
+  .site-header { background:#007291;padding:.8rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap; }
+  #lockScreen { position:fixed;inset:0;background:#BF5000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;padding:2rem;text-align:center; }
+  #lockScreen h1 { font-size:1.8rem;font-weight:700;color:white;margin-bottom:.5rem;font-family:'Atkinson Hyperlegible',sans-serif; }
+  #lockScreen p { font-size:1rem;color:rgba(255,255,255,.85);margin-bottom:2rem;line-height:1.5;font-family:'Atkinson Hyperlegible',sans-serif; }
+  #passwordInput { padding:.75rem 1.25rem;border-radius:12px;border:3px solid rgba(255,255,255,.4);background:rgba(255,255,255,.2);color:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;text-align:center;width:100%;max-width:280px;margin-bottom:1rem; }
+  #passwordInput::placeholder { color:rgba(255,255,255,.5); }
+  #passwordInput:focus { outline:none;border-color:white; }
+  #unlockBtn { padding:.75rem 2rem;background:white;color:#BF5000;border:none;border-radius:12px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer; }
+  #lockError { color:white;background:rgba(0,0,0,.2);border-radius:8px;padding:.5rem 1rem;font-size:.9rem;font-weight:700;margin-top:.75rem;display:none; }
+  #mainContent { display:none; }
+</style>
+</head>
+<body>
+<div id="lockScreen">
+  <div style="font-size:3.5rem;margin-bottom:1rem;">🎬</div>
+  <h1>Leon's Milestones</h1>
+  <p>This is your personal milestone tracker.<br>Enter your password to get started.</p>
+  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock &#8594;</button>
+  <div id="lockError">That password does not match &#8212; try again.</div>
+</div>
+<div id="mainContent">
+
+
+<header class="site-header" id="siteNav" style="display:none;">
+  <a class="back-link" href="../index.html">← Base 6</a>
+  <span style="color:rgba(255,255,255,.4);font-size:.85rem;margin-left:.5rem;">/ Milestones / Leon</span>
+  <button onclick="emailProgress()" style="margin-left:auto;padding:.5rem 1rem;background:white;color:#007291;border:none;border-radius:8px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;">📧 Email Jay</button>
+</header>
+
+<div class="progress-strip">
+  <span class="progress-label">Progress</span>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <span class="progress-pct" id="prog-pct">0 / 15</span>
+</div>
+
+<div class="panel" id="panel"></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="shareModal">
+  <div class="modal-box">
+    <h2>📤 Share Progress — Leon</h2>
+    <p>Copy this summary to paste into an email, message, or document.</p>
+    <textarea class="modal-textarea" id="shareText" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="copyShareText()">Copy to clipboard</button>
+      <button class="btn-primary" onclick="emailShareText()">Open in email</button>
+      <button class="btn-secondary" onclick="closeShareModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STUDENT_ID = "LW";
+const STUDENT_NAME = "Leon";
+const STORE_KEY = "chilton_s2_" + STUDENT_ID;
+const TOTAL = 15;
+
+const PILLARS = [{"id": "fashion", "subject": "Aesthetic & Creative Design", "name": "Fashion Design", "icon": "👗", "milestone": "I can use a template to create a simple fashion design, considering the materials, colours, or patterns to use.", "target": "I can make choices about materials, colours, or patterns that I would like to use in a design, and say why I chose them.", "tip": "Pick three materials or colours you like. For each one, write one word about why you chose it — for example: 'warm', 'bright', 'soft', or 'cheerful'."}, {"id": "history", "subject": "Human & Social History", "name": "Bias in Historical Sources", "icon": "📜", "milestone": "I can discuss ideas of interpretation of sources, artefacts, and historical events, including bias.", "target": "I can identify where bias might appear in a source or account — for example, when someone only tells one side of a story, or leaves out information that doesn't suit them.", "tip": "Find one thing in a source that might be showing only one side. Write a sentence about what the other side of the story might say."}, {"id": "pshe", "subject": "Relational (PSHE & RSE)", "name": "Personal Hygiene & Grooming", "icon": "🪥", "milestone": "I can understand the importance of personal hygiene and grooming.", "target": "I can identify everyday hygiene and grooming routines — for example, washing, brushing teeth, or changing clothes — and say why each one matters.", "tip": "Make a list of five hygiene routines. Next to each one, write one sentence about why that routine is important."}, {"id": "yoga", "subject": "Preparation for Adulthood", "name": "Yoga & Wellbeing", "icon": "🧘", "milestone": "I can identify and describe basic yoga poses and their benefits for physical and mental well-being.", "target": "I can connect specific yoga poses to their benefits — for example, that child's pose can help with relaxation, or that a standing pose can help with balance and strength.", "tip": "Match each pose to its main benefit. For example: Child's pose → relaxation. Warrior pose → strength and focus. Can you think of more pairings?"}, {"id": "business", "subject": "Community Impact & Enterprise", "name": "Starting a Small Business", "icon": "💼", "milestone": "I can explore how to start a small business.", "target": "I can explore what starting a small business involves and put together a simple plan — including my idea, who it is for, what it would cost, and how I would make it happen.", "tip": "Write a simple plan with four sections: My idea | Who it's for | What it would cost | How I would make it work. Keep each section to a sentence or two."}, {"id": "wildlife", "subject": "Physical World & Exploration", "name": "Wildlife & Conservation", "icon": "🦋", "milestone": "I can create a mini-conservation area and record/analyse changes in biodiversity.", "target": "I can help to create or set up a mini-conservation area — for example, a bug hotel, a small wildlife patch, or a container pond — and say what I did and why.", "tip": "Create your mini-habitat step by step. Write down what you did at each step and explain why that step matters for the wildlife you're trying to attract."}, {"id": "fitness", "subject": "Physical Education", "name": "Strength & Fitness Training", "icon": "🏋️", "milestone": "I can perform simple strength-building activities like bodyweight exercises and simple dumbbell/kettlebell exercises.", "target": "I can identify examples of bodyweight exercises — for example, squats, lunges, press-ups, or wall sits — and say which part of the body each one works.", "tip": "Write a list of four bodyweight exercises. Next to each one, write which part of the body it works and whether it builds strength, endurance, or both."}, {"id": "forces", "subject": "Scientific & Environmental", "name": "Forces & Motion", "icon": "⚡", "milestone": "I can explore how the motion of objects can be affected by applying specific forces.", "target": "I can predict what might happen to an object when a force is applied to it — for example, whether it will speed up, slow down, change direction, or stop.", "tip": "Before doing an experiment, write a prediction: 'I think that if I push the object harder, it will...' Then test it and see if you were right."}, {"id": "ai", "subject": "Digital Media & Computing", "name": "Artificial Intelligence (AI)", "icon": "🤖", "milestone": "I can explain what AI is and give simple examples of how it is used in everyday life.", "target": "I can talk about how AI is helpful in everyday life and also begin to ask questions about it — for example, thinking about what it can and cannot do, or whether it is always reliable.", "tip": "Think of one way AI is helpful and one question you have about it. For example: 'AI can recommend music, but I wonder if it always gets it right...'"}, {"id": "wpurpose", "subject": "English — Writing", "name": "Writing with Purpose", "icon": "✏️", "milestone": "I can show an awareness of purpose when creating a basic text.", "target": "I can write a basic text and explain how it shows what I wanted it to do.", "tip": "Write your text, then underline the part that best shows your purpose. Can you explain in one sentence why you chose those particular words?"}, {"id": "wcomm", "subject": "English — Communication", "name": "Communication & Listening", "icon": "💬", "milestone": "I can clearly express straightforward information and communicate feelings and opinions on a range of straightforward topics.", "target": "I can clearly share information and tell someone how I feel or what I think about a range of straightforward topics — and I can ask for support when I need it.", "tip": "Practise sharing your thoughts in three steps: say what you think → say why → ask for support if you need it. Try it with a topic you know well."}, {"id": "wse", "subject": "English — Grammar", "name": "Standard English Verb Forms", "icon": "📝", "milestone": "I can use Standard English forms for verb inflections instead of local spoken forms.", "target": "I can use the formal written English verb form in my own writing when I have a list or reminder to help me.", "tip": "Keep a checklist of standard English verb forms to look at when you're writing. Tick each one off as you use it correctly in a piece of work."}, {"id": "area", "subject": "Maths — Measure & Shape", "name": "Area & Multiplication", "icon": "📐", "milestone": "I can understand the concept of area by counting squares and connect the area of rectangles with multiplication arrays.", "target": "I can find the area of a rectangle by counting all the squares inside it on a grid.", "tip": "Draw three different rectangles on squared paper. Count the squares inside each one carefully to find their areas. Label each rectangle with its area."}, {"id": "data", "subject": "Maths — Statistics", "name": "Collecting & Recording Data", "icon": "📊", "milestone": "I can collect, organise, and record data using both paper-based methods and digital tools.", "target": "I can organise the data I have collected so that it is easy to read and understand — for example, sorting it into categories or putting it into a table.", "tip": "Sort your data into groups or categories. Label each one clearly so that someone else could understand it without needing to ask you any questions."}, {"id": "place", "subject": "Maths — Place Value", "name": "Place Value & Calculation", "icon": "🔢", "milestone": "I can recap the key aspects of place value and calculation.", "target": "I can use my understanding of place value to help me add and subtract — for example, knowing that 30 + 4 = 34 helps me break numbers apart to calculate.", "tip": "Use place value to break apart a number before adding. For example: 47 + 26 → (40+20) + (7+6) = 60 + 13 = 73. Try this with your own examples."}];
+
+let state = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; } })();
+
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+function toggle(pillarId) {
+  state[pillarId] = !state[pillarId];
+  save();
+  updateItem(pillarId);
+  updateProgress();
+}
+
+function buildAll() {
+  const panel = document.getElementById("panel");
+  PILLARS.forEach(p => {
+    const done = !!state[p.id];
+    const card = document.createElement("div");
+    card.className = "pillar-card" + (done ? " open" : "");
+    card.id = "card-" + p.id;
+    card.innerHTML = `
+      <div class="pillar-header" onclick="toggleCard('${p.id}')">
+        <div class="pillar-icon">${p.icon}</div>
+        <div class="pillar-titles">
+          <div class="pillar-subject">${p.subject}</div>
+          <div class="pillar-name">${p.name}</div>
+        </div>
+        <span class="pillar-status ${done ? 'done-badge' : ''}" id="badge-${p.id}">${done ? '✓ Done' : 'To do'}</span>
+        <span class="pillar-chevron">›</span>
+      </div>
+      <div class="pillar-body">
+        <div class="milestone-box">
+          <strong>Overall milestone</strong>
+          ${p.milestone}
+        </div>
+        <div class="target-item ${done ? 'done' : ''}" id="ti-${p.id}">
+          <div class="target-row">
+            <div class="custom-check ${done ? 'checked' : ''}" id="chk-${p.id}"
+                 onclick="toggle('${p.id}')" role="checkbox" aria-checked="${done}" tabindex="0"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){toggle('${p.id}')}"></div>
+            <div class="target-content">
+              <div class="target-text" onclick="toggle('${p.id}')">${p.target}</div>
+              <button class="tip-toggle" onclick="toggleTip('tip-${p.id}', this)">💡 Show tip</button>
+              <div class="tip-box" id="tip-${p.id}">
+                <div class="tip-label">Teaching tip</div>
+                ${p.tip}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    panel.appendChild(card);
+  });
+  updateProgress();
+}
+
+function toggleCard(id) {
+  document.getElementById("card-" + id).classList.toggle("open");
+}
+
+function toggleTip(tipId, btn) {
+  const tip = document.getElementById(tipId);
+  const isOpen = tip.classList.toggle("open");
+  btn.textContent = isOpen ? "💡 Hide tip" : "💡 Show tip";
+}
+
+function updateItem(pillarId) {
+  const done = !!state[pillarId];
+  const chk = document.getElementById("chk-" + pillarId);
+  const ti  = document.getElementById("ti-" + pillarId);
+  const badge = document.getElementById("badge-" + pillarId);
+  if (chk) { chk.classList.toggle("checked", done); chk.setAttribute("aria-checked", done); }
+  if (ti)  { ti.classList.toggle("done", done); }
+  if (badge) {
+    badge.textContent = done ? "✓ Done" : "To do";
+    badge.classList.toggle("done-badge", done);
+  }
+}
+
+function updateProgress() {
+  const done = PILLARS.filter(p => !!state[p.id]).length;
+  const pct  = Math.round((done / TOTAL) * 100);
+  document.getElementById("prog-fill").style.width = pct + "%";
+  document.getElementById("prog-pct").textContent = done + " / " + TOTAL;
+}
+
+function openShareModal() {
+  const now = new Date().toLocaleDateString("en-GB", {day:"numeric",month:"long",year:"numeric"});
+  const lines = [
+    "CHILTON BRIDGE SCHOOL — SUMMER 2 MILESTONES",
+    "Student: " + STUDENT_NAME,
+    "Generated: " + now,
+    "─".repeat(48)
+  ];
+  PILLARS.forEach(p => {
+    lines.push((!!state[p.id] ? "✓" : "○") + "  " + p.name);
+  });
+  const done = PILLARS.filter(p => !!state[p.id]).length;
+  lines.push("", "Total achieved: " + done + " / " + TOTAL);
+  document.getElementById("shareText").value = lines.join("\n");
+  document.getElementById("shareModal").classList.add("open");
+}
+
+function closeShareModal() { document.getElementById("shareModal").classList.remove("open"); }
+
+function copyShareText() {
+  const ta = document.getElementById("shareText");
+  ta.select();
+  document.execCommand("copy");
+  showToast("✓ Copied to clipboard!");
+}
+
+function emailShareText() {
+  const text = document.getElementById("shareText").value;
+  const subject = encodeURIComponent("Summer 2 Milestones — " + STUDENT_NAME);
+  const body = encodeURIComponent(text);
+  window.location.href = "mailto:?subject=" + subject + "&body=" + body;
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+document.getElementById("shareModal").addEventListener("click", function(e) {
+  if (e.target === this) closeShareModal();
+});
+
+buildAll();
+
+function tryUnlock() {
+  var p = document.getElementById("passwordInput").value.trim().toLowerCase();
+  if (p === "leon") {
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("siteNav").style.display = "flex";
+    document.getElementById("mainContent").style.display = "block";
+    buildAll();
+  } else {
+    document.getElementById("lockError").style.display = "block";
+    document.getElementById("passwordInput").value = "";
+  }
+}
+
+function emailProgress() {
+  var now = new Date().toLocaleDateString("en-GB", {day:"numeric",month:"long",year:"numeric"});
+  var rows = [
+    "CHILTON BRIDGE SCHOOL - SUMMER 2 MILESTONES",
+    "Student: Leon",
+    "Generated: " + now,
+    "------------------------------------------------"
+  ];
+  PILLARS.forEach(function(p) {
+    rows.push((state[p.id] ? "[done] " : "[    ] ") + p.name);
+  });
+  var done = PILLARS.filter(function(p) { return !!state[p.id]; }).length;
+  rows.push("", "Total: " + done + " / " + TOTAL);
+  var subj = encodeURIComponent("Summer 2 Milestones - Leon - " + now);
+  var body = encodeURIComponent(rows.join("\n"));
+  window.open("https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=" + subj + "&body=" + body, "_blank");
+}
+
+</script>
+</div>
+</body>
+</html>
