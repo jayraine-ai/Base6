@@ -24,7 +24,8 @@
   .wrap{position:relative;z-index:1}.topbar{background:rgba(7,9,22,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:.75rem 1rem;display:flex;gap:.7rem;align-items:center;justify-content:space-between;flex-wrap:wrap;position:sticky;top:0;z-index:10}.back-link{color:var(--cyan2);font-weight:700;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.45rem .8rem;background:rgba(24,216,255,.08)}.top-actions{display:flex;gap:.5rem;flex-wrap:wrap}.tiny-btn{font-family:var(--font);font-weight:700;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06);color:var(--text);padding:.45rem .75rem;cursor:pointer}.tiny-btn.active{background:rgba(146,255,100,.15);border-color:var(--lime);color:var(--lime)}
   header{padding:2.3rem 1.2rem 1.5rem;text-align:center;border-bottom:1px solid rgba(143,242,255,.14);background:linear-gradient(135deg,rgba(24,216,255,.13),rgba(255,61,242,.08),rgba(139,92,255,.12))}.tag{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--cyan2);margin-bottom:.35rem}.glitch{font-size:clamp(2rem,5vw,4rem);line-height:1.05;text-shadow:0 0 10px rgba(24,216,255,.65),2px 0 rgba(255,61,242,.65);animation:glitch 4s infinite}@keyframes glitch{0%,94%,100%{transform:none}95%{transform:skewX(2deg) translateX(1px)}97%{transform:skewX(-2deg) translateX(-1px)}}header p{color:var(--muted);max-width:820px;margin:.7rem auto 0}.target{display:inline-block;margin-top:1rem;background:rgba(146,255,100,.1);border:1px solid rgba(146,255,100,.4);border-radius:14px;color:#d9ffd0;padding:.7rem 1rem;font-weight:700}
   .hud{max-width:1120px;margin:1rem auto 0;padding:0 1rem;display:grid;grid-template-columns:1.1fr 1fr;gap:1rem}.card{background:linear-gradient(180deg,rgba(23,31,56,.95),rgba(12,16,32,.95));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem}.name-card{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}.name-card label{font-weight:700;color:var(--cyan2)}.name-card input{flex:1;min-width:220px;background:#050711;border:2px solid rgba(143,242,255,.35);border-radius:12px;color:var(--text);font-family:var(--font);font-weight:700;padding:.65rem .8rem}.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:.45rem}.stat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.55rem;text-align:center}.stat b{display:block;color:var(--cyan2);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}.stat span{font-size:1.05rem;font-weight:700;color:#fff}.bar-track{height:10px;background:#050711;border:1px solid rgba(143,242,255,.25);border-radius:999px;overflow:hidden;margin-top:.7rem}.bar-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));width:0%;transition:.35s}.section-nav{max-width:1120px;margin:1rem auto;padding:0 1rem;display:flex;gap:.55rem;overflow-x:auto}.nav-btn{flex:0 0 auto;border:1px solid var(--line);background:rgba(17,23,42,.95);color:var(--muted);border-radius:999px;padding:.55rem .85rem;font-family:var(--font);font-weight:700;cursor:pointer}.nav-btn.active{color:#041018;background:var(--cyan);border-color:var(--cyan)}.nav-btn.done{color:#06140d;background:var(--lime);border-color:var(--lime)}
-  main{max-width:1120px;margin:0 auto;padding:0 1rem 4rem}.section{display:none}.section.active{display:block}.title-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:1rem 0}.section-title{font-size:1.7rem;color:#fff;text-shadow:0 0 12px rgba(24,216,255,.35)}.badge{display:inline-flex;align-items:center;gap:.35rem;border:1px solid rgba(255,191,77,.45);background:rgba(255,191,77,.12);color:#ffe1a0;border-radius:999px;padding:.35rem .7rem;font-weight:700;font-size:.85rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}.choice{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.045);padding:1rem;cursor:pointer;transition:.18s}.choice:hover{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 0 18px rgba(24,216,255,.15)}.choice.selected{border-color:var(--lime);background:rgba(146,255,100,.1)}.choice h3{color:var(--cyan2);margin-bottom:.35rem}.choice p{color:var(--muted);font-size:.94rem}.btn-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}.btn{border:none;border-radius:13px;padding:.78rem 1.1rem;font-family:var(--font);font-size:1rem;font-weight:700;cursor:pointer;transition:.15s}.btn:hover{transform:translateY(-2px)}.primary{background:linear-gradient(135deg,var(--cyan),#3ee9c8);color:#031016}.secondary{background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff}.outline{background:transparent;color:var(--cyan2);border:2px solid var(--cyan)}.danger{background:var(--red);color:#fff}.success{background:var(--lime);color:#06140d}.muted-btn{background:#26304e;color:#fff}.split{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem}.terminal{background:#03050b;border:1px solid rgba(146,255,100,.35);border-radius:16px;padding:1rem;box-shadow:inset 0 0 18px rgba(146,255,100,.05);font-family:var(--font)}.terminal .prompt{color:var(--lime);font-weight:700}.terminal .code{margin-top:.6rem;color:#d7ffe0;background:rgba(146,255,100,.06);border-left:4px solid var(--lime);border-radius:10px;padding:.8rem;white-space:pre-wrap}.rule{background:rgba(24,216,255,.08);border-left:4px solid var(--cyan);border-radius:12px;padding:.8rem;margin:.7rem 0;color:#dffbff}.district-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}.district{min-height:160px;position:relative;overflow:hidden}.district::after{content:"";position:absolute;inset:auto -30px -40px auto;width:140px;height:140px;background:radial-gradient(circle,rgba(24,216,255,.18),transparent 70%);border-radius:50%}.district.locked{opacity:.5;filter:grayscale(.5)}.district h3{color:#fff}.district .status{font-weight:700;color:var(--amber);margin-top:.4rem}.event-box{border:1px solid rgba(255,61,242,.42);background:rgba(255,61,242,.08);border-radius:16px;padding:1rem;margin:1rem 0}.event-box h3{color:#ffc8fb}.battle{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.fighter{min-height:245px;text-align:center;position:relative;overflow:hidden}.avatar{font-size:4.8rem;margin:.3rem 0;filter:drop-shadow(0 0 14px rgba(24,216,255,.25))}.enemy .avatar{filter:drop-shadow(0 0 16px rgba(255,78,106,.3))}.hp-label{display:flex;justify-content:space-between;font-weight:700;font-size:.85rem;color:var(--muted);margin-top:.5rem}.hp-track{height:15px;background:#050711;border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden}.hp-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--lime));width:100%;transition:.35s}.mana-fill{height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));width:100%;transition:.35s}.question-panel{margin-top:1rem}.question-text{font-size:1.15rem;font-weight:700;margin-bottom:.75rem}.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.65rem}.option{border:2px solid rgba(143,242,255,.22);background:rgba(255,255,255,.055);color:var(--text);border-radius:14px;padding:.85rem;font-family:var(--font);font-weight:700;text-align:left;cursor:pointer}.option:hover{border-color:var(--cyan);background:rgba(24,216,255,.1)}.option.correct{border-color:var(--lime);background:rgba(146,255,100,.16);color:#eaffdf}.option.wrong{border-color:var(--red);background:rgba(255,78,106,.15);color:#ffd6dd}.battle-data{background:rgba(24,216,255,.07);border:1px solid rgba(143,242,255,.32);border-radius:16px;padding:.9rem;margin:.8rem 0}.bar-chart{display:flex;align-items:flex-end;gap:.55rem;height:170px;border-left:3px solid var(--muted);border-bottom:3px solid var(--muted);padding:.5rem .5rem 0}.bar-col{flex:1;display:flex;height:100%;align-items:center;justify-content:flex-end;flex-direction:column;gap:.25rem}.bar{width:100%;max-width:58px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--cyan),var(--violet));min-height:8px}.bar-val{font-weight:700;color:#fff}.bar-lab{font-size:.8rem;color:var(--muted);font-weight:700;text-align:center}.counter-bag{display:flex;gap:.5rem;flex-wrap:wrap}.counter{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid rgba(255,255,255,.35)}.counter.red{background:#8f1e35}.counter.blue{background:#1f5dcc}.counter.green{background:#247e50}.log{max-height:210px;overflow:auto;background:#03050b;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:.8rem;color:#dbe7ff}.log p{margin:.35rem 0}.inventory{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem}.gear-card{background:rgba(255,255,255,.05);border:1px solid rgba(143,242,255,.18);border-radius:14px;padding:.8rem}.gear-card.equipped{border-color:var(--lime);box-shadow:0 0 12px rgba(146,255,100,.12)}.gear-card h4{color:var(--cyan2)}.skill-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem}.skill{border:1px solid rgba(255,61,242,.25);background:rgba(255,61,242,.07);border-radius:14px;padding:.8rem}.skill h4{color:#ffc8fb}.skill.locked{opacity:.55}.mini-table{width:100%;border-collapse:collapse;margin:.8rem 0}.mini-table th,.mini-table td{border-bottom:1px solid rgba(143,242,255,.17);padding:.5rem;text-align:left}.mini-table th{color:var(--cyan2)}.feedback{margin-top:.8rem;padding:.8rem;border-radius:12px;font-weight:700;display:none}.feedback.good{display:block;background:rgba(146,255,100,.12);color:#dcffd5;border:1px solid rgba(146,255,100,.35)}.feedback.bad{display:block;background:rgba(255,78,106,.12);color:#ffd4dc;border:1px solid rgba(255,78,106,.35)}.footerbar{position:relative;z-index:1;border-top:1px solid var(--line);background:rgba(7,9,22,.92);padding:1rem;display:flex;gap:.75rem;align-items:center;justify-content:center;flex-wrap:wrap}.small{font-size:.86rem;color:var(--muted)}.hidden{display:none!important}.toast{position:fixed;right:1rem;bottom:1rem;max-width:360px;background:#050711;border:1px solid var(--cyan);color:#fff;border-radius:16px;padding:1rem;box-shadow:0 0 25px rgba(24,216,255,.25);z-index:20;display:none}.toast.show{display:block}.pulse{animation:pulse 1.5s infinite}@keyframes pulse{50%{box-shadow:0 0 28px rgba(255,61,242,.35)}}
+  main{max-width:1120px;margin:0 auto;padding:0 1rem 4rem}.section{display:none}.section.active{display:block}.title-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:1rem 0}.section-title{font-size:1.7rem;color:#fff;text-shadow:0 0 12px rgba(24,216,255,.35)}.badge{display:inline-flex;align-items:center;gap:.35rem;border:1px solid rgba(255,191,77,.45);background:rgba(255,191,77,.12);color:#ffe1a0;border-radius:999px;padding:.35rem .7rem;font-weight:700;font-size:.85rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}.choice{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.045);padding:1rem;cursor:pointer;transition:.18s}.choice:hover{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 0 18px rgba(24,216,255,.15)}.choice.selected{border-color:var(--lime);background:rgba(146,255,100,.1)}.choice h3{color:var(--cyan2);margin-bottom:.35rem}.choice p{color:var(--muted);font-size:.94rem}.btn-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}.btn{border:none;border-radius:13px;padding:.78rem 1.1rem;font-family:var(--font);font-size:1rem;font-weight:700;cursor:pointer;transition:.15s}.btn:hover{transform:translateY(-2px)}.primary{background:linear-gradient(135deg,var(--cyan),#3ee9c8);color:#031016}.secondary{background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff}.outline{background:transparent;color:var(--cyan2);border:2px solid var(--cyan)}.danger{background:var(--red);color:#fff}.success{background:var(--lime);color:#06140d}.muted-btn{background:#26304e;color:#fff}.split{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem}.terminal{background:#03050b;border:1px solid rgba(146,255,100,.35);border-radius:16px;padding:1rem;box-shadow:inset 0 0 18px rgba(146,255,100,.05);font-family:var(--font)}.terminal .prompt{color:var(--lime);font-weight:700}.terminal .code{margin-top:.6rem;color:#d7ffe0;background:rgba(146,255,100,.06);border-left:4px solid var(--lime);border-radius:10px;padding:.8rem;white-space:pre-wrap}.rule{background:rgba(24,216,255,.08);border-left:4px solid var(--cyan);border-radius:12px;padding:.8rem;margin:.7rem 0;color:#dffbff}.district-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}.district{min-height:160px;position:relative;overflow:hidden}.district::after{content:"";position:absolute;inset:auto -30px -40px auto;width:140px;height:140px;background:radial-gradient(circle,rgba(24,216,255,.18),transparent 70%);border-radius:50%}.district.locked{opacity:.5;filter:grayscale(.5)}.district h3{color:#fff}.district .status{font-weight:700;color:var(--amber);margin-top:.4rem}.event-box{border:1px solid rgba(255,61,242,.42);background:rgba(255,61,242,.08);border-radius:16px;padding:1rem;margin:1rem 0}.event-box h3{color:#ffc8fb}.battle{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.fighter{min-height:245px;text-align:center;position:relative;overflow:hidden}.avatar{font-size:4.8rem;margin:.3rem 0;filter:drop-shadow(0 0 14px rgba(24,216,255,.25))}.enemy .avatar{filter:drop-shadow(0 0 16px rgba(255,78,106,.3))}.hp-label{display:flex;justify-content:space-between;font-weight:700;font-size:.85rem;color:var(--muted);margin-top:.5rem}.hp-track{height:15px;background:#050711;border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden}.hp-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--lime));width:100%;transition:.35s}.mana-fill{height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));width:100%;transition:.35s}.question-panel{margin-top:1rem}.question-text{font-size:1.15rem;font-weight:700;margin-bottom:.75rem}.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.65rem}.option{border:2px solid rgba(143,242,255,.22);background:rgba(255,255,255,.055);color:var(--text);border-radius:14px;padding:.85rem;font-family:var(--font);font-weight:700;text-align:left;cursor:pointer}.option:hover{border-color:var(--cyan);background:rgba(24,216,255,.1)}.option.correct{border-color:var(--lime);background:rgba(146,255,100,.16);color:#eaffdf}.option.wrong{border-color:var(--red);background:rgba(255,78,106,.15);color:#ffd6dd}.battle-data{background:rgba(24,216,255,.07);border:1px solid rgba(143,242,255,.32);border-radius:16px;padding:.9rem;margin:.8rem 0}.bar-chart{display:flex;align-items:flex-end;gap:.55rem;height:170px;border-left:3px solid var(--muted);border-bottom:3px solid var(--muted);padding:.5rem .5rem 0}.bar-col{flex:1;display:flex;height:100%;align-items:center;justify-content:flex-end;flex-direction:column;gap:.25rem}.bar{width:100%;max-width:58px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--cyan),var(--violet));min-height:8px}.bar-val{font-weight:700;color:#fff}.bar-lab{font-size:.8rem;color:var(--muted);font-weight:700;text-align:center}.counter-bag{display:flex;gap:.5rem;flex-wrap:wrap}.counter{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid rgba(255,255,255,.35)}.counter.red{background:#8f1e35}.counter.blue{background:#1f5dcc}.counter.green{background:#247e50}.log{max-height:210px;overflow:auto;background:#03050b;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:.8rem;color:#dbe7ff}.log p{margin:.35rem 0}.inventory{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem}.gear-card{background:rgba(255,255,255,.05);border:1px solid rgba(143,242,255,.18);border-radius:14px;padding:.8rem}.gear-card.equipped{border-color:var(--lime);box-shadow:0 0 12px rgba(146,255,100,.12)}.gear-card h4{color:var(--cyan2)}.skill-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem}.skill{border:1px solid rgba(255,61,242,.25);background:rgba(255,61,242,.07);border-radius:14px;padding:.8rem}.skill h4{color:#ffc8fb}.skill.locked{opacity:.55}.mini-table{width:100%;border-collapse:collapse;margin:.8rem 0}.mini-table th,.mini-table td{border-bottom:1px solid rgba(143,242,255,.17);padding:.5rem;text-align:left}.mini-table th{color:var(--cyan2)}.feedback{margin-top:.8rem;padding:.8rem;border-radius:12px;font-weight:700;display:none}.feedback.good{display:block;background:rgba(146,255,100,.12);color:#dcffd5;border:1px solid rgba(146,255,100,.35)}.feedback.bad{display:block;background:rgba(255,78,106,.12);color:#ffd4dc;border:1px solid rgba(255,78,106,.35)}.footerbar{position:relative;z-index:1;border-top:1px solid var(--line);background:rgba(7,9,22,.92);padding:1rem;display:flex;gap:.75rem;align-items:center;justify-content:center;flex-wrap:wrap}.small{font-size:.86rem;color:var(--muted)}.hidden{display:none!important}.lvlup-btn{background:rgba(255,61,242,.07);border:1.5px solid rgba(255,61,242,.3);border-radius:14px;padding:1rem;text-align:left;cursor:pointer;font-family:var(--font);color:var(--text);transition:.15s;width:100%;}.lvlup-btn:hover{border-color:#18d8ff;background:rgba(24,216,255,.1);}
+  .toast{position:fixed;right:1rem;bottom:1rem;max-width:360px;background:#050711;border:1px solid var(--cyan);color:#fff;border-radius:16px;padding:1rem;box-shadow:0 0 25px rgba(24,216,255,.25);z-index:20;display:none}.toast.show{display:block}.pulse{animation:pulse 1.5s infinite}@keyframes pulse{50%{box-shadow:0 0 28px rgba(255,61,242,.35)}}
   @media(max-width:760px){.hud,.split,.battle{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.bar-chart{height:130px}.avatar{font-size:3.8rem}}
   @media print{.topbar,.section-nav,.footerbar,.btn-row,.tiny-btn,.scanline{display:none!important}body{background:white;color:#111}.section{display:block}.card{box-shadow:none;border:1px solid #aaa;background:white;color:#111}.terminal{background:#fff;color:#111}.small,p{color:#111!important}}
 
@@ -571,22 +572,35 @@ function winBattle(){
   let d=districts.find(x=>x.id===state.currentDistrict);
   state.secured[d.id]=true;
   applyReward({xp:e.boss?45:20,credits:e.boss?35:15,hints:e.boss?2:0});
-  let lootMsg='';
+  let lootItem=null;
   if(Math.random()<.45){
     const unowned=gearShop.filter(g=>!state.inventory.includes(g.id));
-    if(unowned.length){let loot=rand(unowned);state.inventory.push(loot.id);lootMsg=loot.name;state.log.unshift('<p>🎁 Loot found: <strong>'+loot.name+'</strong>.</p>');}
+    if(unowned.length){lootItem=rand(unowned);state.inventory.push(lootItem.id);state.log.unshift('<p>🎁 Loot found: <strong>'+lootItem.name+'</strong>.</p>');}
   }
   completeSection(4);renderBattle();renderMap();renderGear();renderBranchChooser();renderSkills();saveGame(false);
-  // Show debrief panel
-  showDebrief(e, lootMsg);
+  showDebrief(e, lootItem);
 }
-function showDebrief(enemy, lootName){
-  // Collect what forms were practiced in this battle based on enemy tags
+function showDebrief(enemy, lootItem){
   const tagLabels={'waswere':'we were / they were / you were','done':'I did / she did / we did','seen':'I saw / they saw / she saw','dont':"he doesn't / she doesn't / it doesn't",'mixed':'all forms: were, did, saw, doesn\'t'};
   const tags=enemy.tags||['mixed'];
-  const practiced=tags.map(t=>tagLabels[t]||t).join(' and ');
+  const practiced=tags.map(function(t){return tagLabels[t]||t;}).join(' and ');
   const debriefEl=$('battleDebrief');
   if(!debriefEl) return;
+
+  // Build loot section
+  let lootHtml='';
+  if(lootItem){
+    const isEquipped=state.equipped[lootItem.slot]===lootItem.id;
+    lootHtml='<div style="background:rgba(255,191,77,.1);border:1px solid rgba(255,191,77,.4);border-radius:12px;padding:.85rem 1rem;margin:.75rem 0;">'
+      +'<p style="color:var(--amber);font-weight:700;margin-bottom:.35rem;">🎁 Loot dropped: '+lootItem.name+'</p>'
+      +'<p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem;">'+lootItem.desc+' <em>(Slot: '+lootItem.slot+')</em></p>'
+      +(isEquipped
+        ?'<p style="color:var(--lime);font-size:.85rem;font-weight:700;">✓ Already equipped</p>'
+        :'<button class="btn" style="background:linear-gradient(135deg,var(--amber),#c87a00);color:#07091a;font-size:.85rem;padding:.5rem .9rem;" id="equipLootBtn">Equip now</button>'
+      )
+      +'</div>';
+  }
+
   debriefEl.innerHTML='<div style="border:1px solid rgba(146,255,100,.4);background:rgba(146,255,100,.08);border-radius:16px;padding:1rem;margin-top:1rem;">'
     +'<h3 style="color:var(--lime);margin-bottom:.6rem;">🎯 Battle debrief</h3>'
     +'<p style="margin-bottom:.5rem;"><strong>Enemy defeated:</strong> '+enemy.name+'</p>'
@@ -595,11 +609,26 @@ function showDebrief(enemy, lootName){
     +'<strong>Quick rule reminder:</strong><br>'
     +buildDebriefRuleReminder(tags)
     +'</div>'
-    +(lootName?'<p style="color:var(--amber);margin-top:.5rem;">🎁 Loot dropped: '+lootName+'</p>':'')
+    +lootHtml
     +'<div style="margin-top:.75rem;display:flex;gap:.6rem;flex-wrap:wrap;">'
     +'<button class="btn primary" onclick="$(\'battleDebrief\').innerHTML=\'\';goSection(1)">Back to city map →</button>'
     +'<button class="btn outline" onclick="$(\'battleDebrief\').innerHTML=\'\'">Close</button>'
     +'</div></div>';
+
+  // Wire up equip button after render
+  if(lootItem){
+    setTimeout(function(){
+      var btn=$('equipLootBtn');
+      if(btn) btn.onclick=function(){
+        equipGear(lootItem.id);
+        btn.textContent='✓ Equipped!';
+        btn.disabled=true;
+        btn.style.opacity='0.7';
+        toast('Equipped: '+lootItem.name);
+      };
+    }, 50);
+  }
+
   debriefEl.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function buildDebriefRuleReminder(tags){
@@ -612,7 +641,16 @@ function buildDebriefRuleReminder(tags){
   return rules.join('<br>');
 }
 function renderLog(){$('battleLog').innerHTML=state.log.length?state.log.join(''):'<p>Battle systems ready.</p>'}
-function activeSkills(){const b=getBranch();return b?b.skills:[{name:'Syntax Strike',level:1,cost:0,type:'strike',desc:'Basic attack powered by correct Standard English repairs.'},{name:'Use a branch first',level:99,cost:0,type:'none',desc:'Choose a skill branch in the market to unlock advanced skills.'}];}
+function activeSkills(){
+  const b=getBranch();
+  const base=b?b.skills:[{name:'Syntax Strike',level:1,cost:0,type:'strike',desc:'Basic attack powered by correct Standard English repairs.'},{name:'Use a branch first',level:99,cost:0,type:'none',desc:'Choose a skill branch in the market to unlock advanced skills.'}];
+  // Add any extra skills picked at level-up that aren't already in branch
+  const extras=window._extraSkills||{};
+  const extraList=Object.entries(extras)
+    .filter(function(e){return !base.some(function(s){return s.name===e[0];});})
+    .map(function(e){return {name:e[0],level:1,cost:e[1].cost||0,type:e[1].type||'strike',desc:e[1].desc||''};});
+  return base.concat(extraList);
+}
 function renderSkillsButtons(){const skills=activeSkills();$('skillButtons').innerHTML=skills.map(s=>`<button class="btn ${state.level>=s.level&&s.type!=='none'?'secondary':'muted-btn'}" ${state.level>=s.level&&s.type!=='none'?'':'disabled'} onclick="useSkill('${s.name}')">${s.name} ${state.level<s.level?'(Lvl '+s.level+')':s.cost?`(${s.cost} mana)`:''}</button>`).join('');}
 function useSkill(name){const skill=activeSkills().find(s=>s.name===name);if(!skill){toast('Skill unavailable.');return;}if(skill.cost&&state.mana<skill.cost){toast('Not enough mana for '+name+'.');return;}state.mana=Math.max(0,state.mana-(skill.cost||0));
   if(skill.type==='hint'){useHint();return;}
@@ -640,7 +678,132 @@ function fleeBattle(){
   if(partialXp>0){ applyReward({xp:partialXp}); state.log.unshift('<p>🚪 Retreated. Partial reward: +'+partialXp+' XP.</p>'); }
   state.currentEnemy=null; state.enemyHp=0; goSection(1);
 }
-function applyReward(r={}){state.xp+=r.xp||0;state.credits+=r.credits||0;state.hints+=r.hints||0;if(r.hp)state.hp=Math.min(state.maxHp,state.hp+r.hp);if(state.xp>=state.level*40){state.xp-=state.level*40;state.level++;state.maxHp+=4;state.maxMana+=2;state.hp=state.maxHp;state.mana=state.maxMana;toast('Level up! New skills may be available.');}updateHUD();}
+function applyReward(r){
+  if(!r) r={};
+  state.xp+=r.xp||0;
+  state.credits+=r.credits||0;
+  state.hints+=r.hints||0;
+  if(r.hp) state.hp=Math.min(state.maxHp,state.hp+r.hp);
+  if(state.xp>=state.level*40){
+    state.xp-=state.level*40;
+    state.level++;
+    state.maxHp+=4;
+    state.maxMana+=2;
+    state.hp=state.maxHp;
+    state.mana=state.maxMana;
+    updateHUD();
+    showLevelUpPicker();
+  } else {
+    updateHUD();
+  }
+}
+
+function showLevelUpPicker(){
+  var branch=getBranch();
+  var allBranchSkills=branch?branch.skills:[];
+  var genericExtras=[
+    {name:'Signal Surge',type:'burst',cost:4,desc:'A quick burst dealing 10 flat damage. No branch needed.'},
+    {name:'Static Pulse',type:'strike',cost:3,desc:'Deals 8 damage and may skip the enemy counterattack.'},
+    {name:'Uplink Boost',type:'heal',cost:3,desc:'Restore 10 HP and 4 mana from the city uplink.'},
+    {name:'Cache Raid',type:'combo',cost:4,desc:'Deals 5 damage plus credits divided by 10.'}
+  ];
+  var notYetOwned=allBranchSkills.filter(function(s){return !state.skills.includes(s.name)&&state.level>=s.level;});
+  var notYetOwnedGenerics=genericExtras.filter(function(s){return !state.skills.includes(s.name);});
+  var pool=notYetOwned.concat(notYetOwnedGenerics);
+  if(!pool.length){showStatBonusPicker();return;}
+  var choices=shuffle(pool).slice(0,3);
+  var overlay=$('levelUpOverlay');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='levelUpOverlay';
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(3,5,11,.88);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    document.body.appendChild(overlay);
+  }
+  overlay.style.display='flex';
+  var btnHtml=choices.map(function(s){
+    return '<button class="lvlup-btn" data-skillname="'+encodeURIComponent(s.name)+'">'
+      +'<strong style="color:#ffc8fb;display:block;margin-bottom:.35rem;">'+s.name+'</strong>'
+      +'<span style="font-size:.85rem;color:#aab7d4;">'+s.desc+'</span>'
+      +(s.cost?'<span style="display:block;margin-top:.4rem;font-size:.78rem;color:#ffbf4d;">Cost: '+s.cost+' mana</span>':'<span style="display:block;margin-top:.4rem;font-size:.78rem;color:#92ff64;">Free skill</span>')
+      +'</button>';
+  }).join('');
+  overlay.innerHTML='<div style="background:linear-gradient(180deg,#0d1226,#07091a);border:2px solid #18d8ff;border-radius:20px;padding:1.5rem;max-width:680px;width:100%;box-shadow:0 0 40px rgba(24,216,255,.25);">'
+    +'<p style="color:#8ff2ff;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem;">Level '+state.level+' achieved</p>'
+    +'<h2 style="color:#fff;font-size:1.5rem;margin-bottom:.3rem;">&#11014; Choose a new skill</h2>'
+    +'<p style="color:#aab7d4;font-size:.9rem;margin-bottom:1.1rem;">Pick one to add to your skill set for the rest of this run.</p>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;" id="lvlupGrid">'+btnHtml+'</div>'
+    +'<div style="margin-top:1rem;text-align:right;"><button class="btn outline" onclick="closeLevelUpOverlay()">Skip for now</button></div>'
+    +'</div>';
+  // Wire buttons after render
+  setTimeout(function(){
+    var grid=$('lvlupGrid');
+    if(!grid) return;
+    grid.querySelectorAll('.lvlup-btn').forEach(function(btn){
+      var skillName=decodeURIComponent(btn.dataset.skillname);
+      var skillObj=choices.find(function(s){return s.name===skillName;});
+      btn.onclick=function(){pickLevelUpSkill(skillObj);};
+    });
+  },50);
+}
+function showStatBonusPicker(){
+  var bonuses=[
+    {label:'Max HP +8',apply:function(){state.maxHp+=8;state.hp=state.maxHp;}},
+    {label:'Max Mana +4',apply:function(){state.maxMana+=4;state.mana=state.maxMana;}},
+    {label:'+3 Hint tokens',apply:function(){state.hints+=3;}},
+    {label:'+25 Credits',apply:function(){state.credits+=25;}}
+  ];
+  var choices=shuffle(bonuses).slice(0,3);
+  var overlay=$('levelUpOverlay');
+  if(!overlay){overlay=document.createElement('div');overlay.id='levelUpOverlay';overlay.style.cssText='position:fixed;inset:0;background:rgba(3,5,11,.88);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;';document.body.appendChild(overlay);}
+  overlay.style.display='flex';
+  var btnHtml=choices.map(function(b,i){
+    return '<button class="lvlup-btn" data-bonusidx="'+i+'">'+b.label+'</button>';
+  }).join('');
+  overlay.innerHTML='<div style="background:linear-gradient(180deg,#0d1226,#07091a);border:2px solid #18d8ff;border-radius:20px;padding:1.5rem;max-width:520px;width:100%;box-shadow:0 0 40px rgba(24,216,255,.25);">'
+    +'<p style="color:#8ff2ff;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem;">Level '+state.level+' achieved</p>'
+    +'<h2 style="color:#fff;font-size:1.5rem;margin-bottom:.3rem;">&#11014; Choose a stat bonus</h2>'
+    +'<p style="color:#aab7d4;font-size:.9rem;margin-bottom:1.1rem;">All skills unlocked. Pick a permanent stat boost.</p>'
+    +'<div style="display:flex;flex-direction:column;gap:.6rem;" id="statBonusGrid">'+btnHtml+'</div>'
+    +'<div style="margin-top:1rem;text-align:right;"><button class="btn outline" onclick="closeLevelUpOverlay()">Skip</button></div>'
+    +'</div>';
+  overlay._statChoices=choices;
+  // Wire buttons
+  setTimeout(function(){
+    var grid=$('statBonusGrid');
+    if(!grid) return;
+    grid.querySelectorAll('.lvlup-btn').forEach(function(btn){
+      var idx=parseInt(btn.dataset.bonusidx);
+      btn.onclick=function(){pickStatBonus(idx);};
+    });
+  },50);
+}
+
+function pickLevelUpSkill(skillObj){
+  var name=skillObj.name;
+  if(!state.skills.includes(name)) state.skills.push(name);
+  if(!window._extraSkills) window._extraSkills={};
+  window._extraSkills[name]=skillObj;
+  closeLevelUpOverlay();
+  toast('✨ Skill unlocked: '+name);
+  renderSkills();
+  renderSkillsButtons();
+  saveGame(false);
+}
+
+function pickStatBonus(idx){
+  const overlay=$('levelUpOverlay');
+  const choices=overlay&&overlay._statChoices;
+  if(choices&&choices[idx]) choices[idx].apply();
+  closeLevelUpOverlay();
+  toast('⬆️ Stat bonus applied!');
+  updateHUD();
+  saveGame(false);
+}
+
+function closeLevelUpOverlay(){
+  const overlay=$('levelUpOverlay');
+  if(overlay) overlay.style.display='none';
+}
 function hasEffect(effect){return Object.values(state.equipped).some(id=>gearShop.find(g=>g.id===id)?.effect===effect)}
 function renderGear(){const box=$('gearList');box.innerHTML='';gearShop.forEach(g=>{const owned=state.inventory.includes(g.id);const equipped=state.equipped[g.slot]===g.id;const div=document.createElement('div');div.className='gear-card '+(equipped?'equipped':'');div.innerHTML=`<h4>${g.name}</h4><p>${g.desc}</p><p class="small">Slot: ${g.slot} · ${owned?'Owned':'Cost: '+g.cost+' credits'}</p><div class="btn-row"><button class="btn ${owned?'primary':'secondary'}" onclick="${owned?`equipGear('${g.id}')`:`buyGear('${g.id}')`}">${owned?(equipped?'Equipped':'Equip'):'Buy'}</button></div>`;box.appendChild(div);});}
 function buyGear(id){const g=gearShop.find(x=>x.id===id);if(state.credits<g.cost){toast('Not enough credits.');return;}state.credits-=g.cost;state.inventory.push(id);equipGear(id);}
@@ -649,7 +812,31 @@ function equipGear(id){const g=gearShop.find(x=>x.id===id);state.equipped[g.slot
 function renderBranchChooser(){const box=$('branchChooser');if(!box)return;const chosen=getBranch();let html='';if(chosen){html+=`<div class="branch-note"><strong>Locked branch:</strong> ${chosen.icon} ${chosen.name}. This playthrough is now built around ${chosen.tag.toLowerCase()}. Reset the game to try a different branch.</div>`;}else{html+='<div class="branch-note"><strong>Choose carefully:</strong> you can only pick one branch per playthrough. Each route unlocks different skills and synergies.</div>';}
   html+=Object.entries(skillBranches).map(([id,b])=>`<div class="branch-card ${state.branch===id?'selected':''} ${state.branch&&state.branch!==id?'locked':''}"><div class="branch-head"><div><h4>${b.icon} ${b.name}</h4><p>${b.desc}</p><p class="small"><strong>Synergy:</strong> ${b.bonus}</p></div><span class="branch-tag">${b.tag}</span></div><div class="btn-row"><button class="btn ${state.branch===id?'success':state.branch?'muted-btn':'secondary'}" ${state.branch?'disabled':''} onclick="chooseBranch('${id}')">${state.branch===id?'Chosen':state.branch?'Locked':'Choose branch'}</button></div></div>`).join('');box.innerHTML=html;}
 function chooseBranch(id){if(state.branch){toast('Branch already chosen for this playthrough. Reset to try another path.');return;}state.branch=id;applyBranchStats();state.hp=state.maxHp;state.mana=state.maxMana;if(id==='analyst')state.hints+=2;toast(skillBranches[id].name+' branch locked in. New skills are available as you level up.');renderBranchChooser();renderSkills();updateHUD();saveGame(false);}
-function renderSkills(){const box=$('skillList');box.innerHTML='';const b=getBranch();if(!b){box.innerHTML='<div class="skill locked"><h4>🔒 No branch selected</h4><p>Choose one skill branch above to unlock branch-specific abilities. This encourages replaying with a different route later.</p></div>';return;}b.skills.forEach(s=>{const unlocked=state.level>=s.level;const div=document.createElement('div');div.className='skill '+(unlocked?'':'locked');div.innerHTML=`<h4>${unlocked?'🔓':'🔒'} ${s.name}</h4><p>${s.desc}</p><p class="small">${s.cost?`Mana cost: ${s.cost} · `:''}Unlocks at level ${s.level}</p>`;box.appendChild(div);});}
+function renderSkills(){
+  const box=$('skillList');
+  box.innerHTML='';
+  const b=getBranch();
+  if(!b){
+    box.innerHTML='<div class="skill locked"><h4>🔒 No branch selected</h4><p>Choose one skill branch above to unlock branch-specific abilities. This encourages replaying with a different route later.</p></div>';
+    return;
+  }
+  b.skills.forEach(function(s){
+    const unlocked=state.level>=s.level;
+    const div=document.createElement('div');
+    div.className='skill '+(unlocked?'':'locked');
+    div.innerHTML='<h4>'+(unlocked?'🔓':'🔒')+' '+s.name+'</h4><p>'+s.desc+'</p><p class="small">'+(s.cost?'Mana cost: '+s.cost+' · ':'')+'Unlocks at level '+s.level+'</p>';
+    box.appendChild(div);
+  });
+  // Show any extra skills gained from level-up picks
+  const extras=window._extraSkills||{};
+  Object.entries(extras).forEach(function(e){
+    if(b.skills.some(function(s){return s.name===e[0];})) return;
+    const div=document.createElement('div');
+    div.className='skill';
+    div.innerHTML='<h4>✨ '+e[0]+' <span style="font-size:.72rem;color:var(--amber);font-weight:700;">LEVEL-UP PICK</span></h4><p>'+e[1].desc+'</p><p class="small">'+(e[1].cost?'Mana cost: '+e[1].cost:'Free skill')+'</p>';
+    box.appendChild(div);
+  });
+}
 function skillDesc(s){if(s.includes('Scan'))return 'Shows a clearer rule hint about the subject and verb.';if(s.includes('Cleanse'))return 'Removes one wrong option from the next battle question.';if(s.includes('Shield')||s.includes('Guard')||s.includes('Safe'))return 'Restores HP and helps you stay in the fight.';if(s.includes('Repair'))return 'Restores HP and mana using a support drone.';if(s.includes('Burst')||s.includes('Surge')||s.includes('Dash'))return 'Uses energy for a direct damage burst.';return 'A hacker attack powered by correct Standard English repairs.';}
 function buildReport(){const secured=Object.keys(state.secured).map(id=>districts.find(d=>d.id===id)?.name).filter(Boolean);const pct=state.attempted?Math.round(state.correct/state.attempted*100):0;$('reportCard').innerHTML=`<h3 style="color:var(--cyan2);">Mission report for ${getName()}</h3><table class="mini-table"><tr><th>Target</th><td>Use Standard English verb inflections instead of local spoken forms.</td></tr><tr><th>Avatar</th><td>${avatarText()}</td></tr><tr><th>Skill branch</th><td>${getBranch()?getBranch().name:'Not chosen yet'}</td></tr><tr><th>Level</th><td>${state.level}</td></tr><tr><th>Correct repairs</th><td>${state.correct} / ${state.attempted} (${pct}%)</td></tr><tr><th>Districts secured</th><td>${secured.length?secured.join(', '):'None yet'}</td></tr><tr><th>Gear</th><td>${state.inventory.map(id=>gearShop.find(g=>g.id===id)?.name).filter(Boolean).join(', ')||'None'}</td></tr></table><div class="rule"><strong>Practised forms:</strong> we were / they were / you were; I did / we did; I saw / they saw; he doesn’t / she doesn’t / it doesn’t.</div>`;}
 function sendGmail(){buildReport();const pct=state.attempted?Math.round(state.correct/state.attempted*100):0;const subject=encodeURIComponent('Syntax Runner results - '+getName());const secured=Object.keys(state.secured).map(id=>districts.find(d=>d.id===id)?.name).filter(Boolean).join(', ')||'None yet';const body=encodeURIComponent(`Syntax Runner: Chilton City Uplink\n\nStudent: ${getName()}\nAvatar: ${avatarText()}\nSkill branch: ${getBranch()?getBranch().name:'Not chosen yet'}\nLevel: ${state.level}\nCorrect repairs: ${state.correct}/${state.attempted} (${pct}%)\nDistricts secured: ${secured}\nTarget: I can use Standard English forms for verb inflections instead of local spoken forms.\n\nPractised examples: we were, they were, I did, I saw, he doesn’t.`);window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TEACHER_EMAIL)}&su=${subject}&body=${body}`,'_blank');}
