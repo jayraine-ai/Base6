@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Times Tables Mission</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal: #007291; --orange: #ef7724; --cream: #fef8f4;
+    --dark: #1a1a1a; --muted: #555;
+    --teal-light: #e6f5f8; --orange-light: #fff3eb;
+    --green: #2e8b57; --green-light: #eaf7f0;
+    --red: #c0392b; --red-light: #fdecea;
+    --purple: #7a3fa8; --purple-light: #f5eeff;
+    --yellow: #e8a020; --yellow-light: #fdf5e0;
+    --blue-soft: #eef7ff;
+    --border: #e0d8d0;
+  }
+  body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; line-height: 1.5; }
+  button, input, select { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; }
+  .site-header { background: linear-gradient(135deg, var(--teal) 0%, #005a72 100%); padding: 1.5rem 2rem 1.25rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #a8dce8; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .site-header p { font-size: 0.95rem; color: #c8e8f0; margin-top: 0.5rem; }
+  .name-bar { background: #005a72; padding: 0.65rem 2rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .name-bar label { font-size: 0.82rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .name-bar input, .name-bar select { flex: 1; max-width: 280px; padding: 0.45rem 0.75rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: #fef8f4; font-size: 0.9rem; font-weight: 700; }
+  .name-bar select option { color: var(--dark); }
+  .name-bar input::placeholder { color: rgba(255,255,255,0.55); }
+  .progress-bar-wrap { background: #004a60; padding: 0.6rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label, .timer-label { font-size: 0.8rem; font-weight: 700; color: #fef8f4; white-space: nowrap; }
+  .timer-label { color: #fde0c0; }
+  .section-nav { display: flex; overflow-x: auto; gap: 0.5rem; padding: 1rem 1.5rem; background: white; border-bottom: 2px solid var(--border); }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #ccc; background: white; font-size: 0.82rem; font-weight: 700; color: #888; cursor: pointer; transition: all 0.2s; }
+  .nav-btn.active { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .nav-btn.done { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .nav-btn.break-btn { border-color: var(--purple); color: var(--purple); }
+  .nav-btn.break-btn.active { background: var(--purple-light); }
+  .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--teal); margin-bottom: 1.25rem; }
+  .time-badge, .break-badge { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem; }
+  .time-badge { background: var(--orange-light); border: 1.5px solid var(--orange); color: var(--orange); }
+  .break-badge { background: var(--purple-light); border: 1.5px solid var(--purple); color: var(--purple); }
+  .info-card, .activity-card, .quiz-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; border: 2px solid var(--teal-light); }
+  .info-card h2, .activity-card h2 { font-size: 1.2rem; font-weight: 700; color: var(--teal); margin-bottom: 0.75rem; }
+  .info-card p, .activity-card p { font-size: 1rem; line-height: 1.7; color: var(--dark); margin-bottom: 0.75rem; }
+  .info-card p:last-child, .activity-card p:last-child { margin-bottom: 0; }
+  .highlight-box { background: var(--teal-light); border-left: 4px solid var(--teal); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 1rem; font-weight: 700; color: var(--teal); line-height: 1.6; }
+  .support-box { background: var(--yellow-light); border-left: 4px solid var(--yellow); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.95rem; color: #6f4c00; line-height: 1.6; }
+  .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+  .choice-btn { min-height: 64px; border-radius: 14px; border: 2px solid var(--border); background: white; color: var(--dark); font-size: 1rem; font-weight: 700; cursor: pointer; padding: 0.75rem; transition: all 0.15s; }
+  .choice-btn:hover, .choice-btn.selected { border-color: var(--teal); background: var(--teal-light); color: var(--teal); transform: translateY(-1px); }
+  .big-number { font-size: 2.8rem; font-weight: 700; color: var(--teal); text-align: center; margin: 0.75rem 0; }
+  .array-grid { display: grid; gap: 6px; justify-content: center; margin: 1rem auto; max-width: 480px; }
+  .dot { width: 28px; height: 28px; border-radius: 8px; background: var(--orange); display: inline-block; }
+  .skip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+  .skip-pill { background: var(--teal-light); color: var(--teal); border: 2px solid var(--teal); border-radius: 18px; padding: 0.45rem 0.8rem; font-weight: 700; font-size: 0.95rem; }
+  .question-box { background: var(--blue-soft); border: 2px solid #cce4f7; border-radius: 14px; padding: 1rem; margin-top: 1rem; }
+  .question-box label { display: block; font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .answer-input { width: 100%; max-width: 220px; padding: 0.65rem 0.8rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1.1rem; font-weight: 700; }
+  .answer-input.correct { border-color: var(--green); background: var(--green-light); }
+  .answer-input.wrong { border-color: var(--red); background: var(--red-light); }
+  .feedback { margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.92rem; font-weight: 700; display: none; line-height: 1.5; }
+  .feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .feedback.wrong { background: var(--red-light); color: var(--red); display: block; }
+  .feedback.neutral { background: var(--orange-light); color: var(--orange); display: block; }
+  .practice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem; margin: 1rem 0; }
+  .practice-card { background: white; border: 2px solid var(--border); border-radius: 14px; padding: 1rem; text-align: center; }
+  .practice-card .sum { font-size: 1.35rem; font-weight: 700; color: var(--teal); margin-bottom: 0.6rem; }
+  .small-input { width: 90px; text-align: center; padding: 0.55rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-weight: 700; }
+  .small-input.correct { border-color: var(--green); background: var(--green-light); }
+  .small-input.wrong { border-color: var(--red); background: var(--red-light); }
+  .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+  .match-card { border-radius: 12px; border: 2px solid var(--border); background: white; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0.9rem; font-size: 0.98rem; font-weight: 700; color: var(--dark); cursor: pointer; transition: all 0.15s; min-height: 70px; }
+  .match-card:hover:not(.matched):not(.selected) { border-color: var(--teal); background: var(--teal-light); }
+  .match-card.selected { border-color: var(--orange); background: var(--orange-light); color: var(--orange); }
+  .match-card.matched { border-color: var(--green); background: var(--green-light); color: var(--green); cursor: default; }
+  .match-card.wrong-flash { border-color: var(--red) !important; background: var(--red-light) !important; }
+  .break-card { background: linear-gradient(135deg, var(--purple-light), #ede0ff); border: 2px solid var(--purple); border-radius: 20px; padding: 2rem; text-align: center; margin-bottom: 1.25rem; }
+  .break-card .break-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
+  .break-card h2 { font-size: 1.5rem; color: var(--purple); margin-bottom: 0.5rem; }
+  .break-card p { font-size: 1rem; color: #5a3a80; line-height: 1.6; margin-bottom: 1rem; }
+  .break-timer { font-size: 3rem; font-weight: 700; color: var(--purple); margin: 1rem 0; }
+  .break-activity { background: white; border-radius: 14px; padding: 1.25rem; margin-top: 1rem; text-align: left; }
+  .quiz-card { border-color: var(--border); }
+  .quiz-card .q-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.5rem; }
+  .quiz-card .q-text { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn { padding: 0.75rem 1rem; border-radius: 10px; border: 2px solid var(--border); background: white; font-size: 0.95rem; font-weight: 700; color: var(--dark); text-align: left; cursor: pointer; transition: all 0.15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .score-box { background: var(--teal); border-radius: 16px; padding: 1.5rem; text-align: center; color: white; margin-bottom: 1.25rem; }
+  .score-box .score-num { font-size: 3rem; font-weight: 700; line-height: 1; }
+  .score-box .score-label { font-size: 0.9rem; opacity: 0.85; margin-top: 0.25rem; }
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-secondary { background: var(--orange); color: white; }
+  .btn-purple { background: var(--purple); color: white; }
+  .btn-outline { background: white; color: var(--teal); border: 2px solid var(--teal); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .skip-link { display: inline-block; font-size: 0.85rem; color: var(--muted); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; background: none; border: none; font-family: inherit; }
+  .export-bar { background: var(--teal-light); border-top: 2px solid #c0dce8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--teal); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid var(--border); }
+  .calm-mode * { transition: none !important; animation: none !important; }
+  .calm-mode .site-header { background: #005a72; }
+  .calm-toggle { margin-left: auto; background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 0.45rem 0.75rem; font-weight: 700; cursor: pointer; }
+  @media (max-width: 560px) {
+    .site-header h1 { font-size: 1.55rem; }
+    .progress-bar-wrap { flex-wrap: wrap; }
+    .dot { width: 22px; height: 22px; border-radius: 6px; }
+    .break-timer { font-size: 2.4rem; }
+    .match-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div style="background:#007291;padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;">
+  <a href="../index.html" style="color:rgba(255,255,255,.85);font-size:.85rem;font-weight:700;text-decoration:none;">← Week 2</a>
+  <span style="color:rgba(255,255,255,.4);font-size:.85rem;">/ Maths / Times Tables Mission</span>
+</div>
+<header class="site-header">
+  <p class="tag">60 minute session · Maths</p>
+  <h1>✖️ Times Tables Mission</h1>
+  <p>Practise multiplication using patterns, arrays, games, breaks and calm feedback</p>
+</header>
+
+<div class="name-bar">
+  <label for="studentName">Your name:</label>
+  <input id="studentName" type="text" placeholder="Type your name here..." />
+  <label for="focusTable">Focus table:</label>
+  <select id="focusTable" onchange="setFocusTable(this.value)">
+    <option value="2">2 times table</option>
+    <option value="3">3 times table</option>
+    <option value="4">4 times table</option>
+    <option value="5">5 times table</option>
+    <option value="6" selected>6 times table</option>
+    <option value="7">7 times table</option>
+    <option value="8">8 times table</option>
+    <option value="9">9 times table</option>
+    <option value="10">10 times table</option>
+    <option value="11">11 times table</option>
+    <option value="12">12 times table</option>
+  </select>
+  <button class="calm-toggle" onclick="toggleCalmMode()" id="calmBtn">Calm mode</button>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 8 sections</span>
+  <span class="timer-label">⏱ ~60 mins</span>
+</div>
+
+<nav class="section-nav">
+  <button class="nav-btn active" onclick="goToSection(0)" id="nav0">1. Warm Up</button>
+  <button class="nav-btn" onclick="goToSection(1)" id="nav1">2. Arrays</button>
+  <button class="nav-btn" onclick="goToSection(2)" id="nav2">3. Skip Count</button>
+  <button class="nav-btn break-btn" onclick="goToSection(3)" id="nav3">☕ Break 1</button>
+  <button class="nav-btn" onclick="goToSection(4)" id="nav4">4. Fact Families</button>
+  <button class="nav-btn" onclick="goToSection(5)" id="nav5">5. Match Game</button>
+  <button class="nav-btn break-btn" onclick="goToSection(6)" id="nav6">☕ Break 2</button>
+  <button class="nav-btn" onclick="goToSection(7)" id="nav7">6. Quiz</button>
+</nav>
+
+<main class="main">
+  <section class="section active" id="section0">
+    <span class="time-badge">⏱ About 7 minutes</span>
+    <h2 class="section-title">Warm Up: What is a Times Table?</h2>
+    <div class="info-card">
+      <h2>🧠 Small steps first</h2>
+      <p>A times table is a pattern of equal groups. Instead of adding the same number again and again, multiplication helps us count faster.</p>
+      <div class="highlight-box" id="warmRule">6 × 4 means 4 groups of 6. It is the same as 6 + 6 + 6 + 6.</div>
+      <p>This lesson avoids pressure. You can use repeated addition, fingers, dots, drawing, skip counting or known facts. The goal is confidence, not speed.</p>
+      <div class="support-box"><strong>Learning support:</strong> short sections, clear buttons, readable font, repeated structure, optional calm mode, movement breaks and no sudden sounds.</div>
+    </div>
+
+    <div class="activity-card">
+      <h2>🎯 Choose your focus table</h2>
+      <p>Pick the times table you want to practise. The activities will update automatically.</p>
+      <div class="choice-grid" id="tableChoices"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(0)">Ready — next section →</button>
+      <button class="skip-link" onclick="goToSection(1)">Skip ahead</button>
+    </div>
+  </section>
+
+  <section class="section" id="section1">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">Build an Array</h2>
+    <div class="info-card">
+      <h2>🔲 Arrays show equal groups</h2>
+      <p>An array is a set of dots arranged in rows and columns. It helps us see multiplication as a picture.</p>
+      <div class="highlight-box" id="arraySentence">6 rows of 4 dots = 24 dots altogether.</div>
+    </div>
+
+    <div class="activity-card">
+      <h2>🎮 Array Builder</h2>
+      <p>Choose how many groups you want. Count the dots, then check your answer.</p>
+      <div class="choice-grid" id="groupChoices"></div>
+      <div class="big-number" id="arraySum">6 × 4 = ?</div>
+      <div class="array-grid" id="arrayGrid" aria-label="Multiplication array"></div>
+      <div class="question-box">
+        <label for="arrayAnswer" id="arrayQuestion">What is 6 × 4?</label>
+        <input id="arrayAnswer" class="answer-input" inputmode="numeric" placeholder="Answer" />
+        <div class="btn-row" style="margin-top:0.8rem;"><button class="btn btn-secondary" onclick="checkArrayAnswer()">Check</button><button class="btn btn-outline" onclick="newArrayQuestion()">New one</button></div>
+        <div class="feedback" id="arrayFeedback"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection(1)">Next section →</button>
+      <button class="skip-link" onclick="goToSection(2)">Skip ahead</button>
+    </div>
+  </section>
+
+  <section class="section" id="section2">
+    <span class="time-badge">⏱ About 9 minutes</span>
+    <h2 class="section-title">Skip Counting Path</h2>
+    <div class="info-card">
+      <h2>👣 Count in equal jumps</h2>
+      <p>Skip counting is a calm strategy. Start at zero, then add the same number each time.</p>
+      <div class="highlight-box" id="skipRule">For the 6 times table: 0, 6, 12, 18, 24...</div>
+    </div>
+
+    <div class="activity-card">
+      <h2>Fill the missing jumps</h2>
+      <p>Some numbers are missing. Type the missing products.</p>
+      <div class="skip-row" id="skipRow"></div>
+      <div class="practice-grid" id="skipPractice"></div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="checkSkipAnswers()">Check my answers</button><button class="btn btn-outline" onclick="resetSkipPractice()">Reset</button></div>
+      <div class="feedback" id="skipFeedback"></div>
+    </div>
+
+    <div class="btn-row" id="skipNext" style="display:none;"><button class="btn btn-primary" onclick="completeSection(2)">Next →</button></div>
+    <button class="skip-link" onclick="completeSection(2)">Skip ahead</button>
+  </section>
+
+  <section class="section" id="section3">
+    <span class="break-badge">☕ Mini Break — 5 minutes</span>
+    <div class="break-card">
+      <div class="break-icon">🧘</div>
+      <h2>Brain and body break</h2>
+      <p>Multiplication uses working memory. A short reset can help focus return.</p>
+      <div class="break-timer" id="breakTimer1">5:00</div>
+      <button class="btn btn-purple" onclick="startBreakTimer('breakTimer1', 300, 'breakBtn1')" id="breakBtn1">▶ Start timer</button>
+      <div class="break-activity">
+        <h3>Pick one calm activity:</h3>
+        <p><strong>Movement:</strong> Walk to the door and back 3 times.<br><br><strong>Pressure reset:</strong> Press both feet into the floor for 10 seconds, then relax. Repeat 3 times.<br><br><strong>Visual reset:</strong> Look around and name 5 things you can see.</p>
+      </div>
+    </div>
+    <div class="btn-row" style="justify-content:center;"><button class="btn btn-primary" onclick="completeSection(3)">I'm ready — continue →</button></div>
+  </section>
+
+  <section class="section" id="section4">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">Fact Families</h2>
+    <div class="info-card">
+      <h2>🔁 Turn facts around</h2>
+      <p>Multiplication facts can be reversed. This is called the commutative rule.</p>
+      <div class="highlight-box" id="familyRule">6 × 4 = 24, so 4 × 6 = 24 too.</div>
+      <p>Knowing one fact gives you another fact for free.</p>
+    </div>
+
+    <div class="activity-card">
+      <h2>Complete the fact family</h2>
+      <div class="practice-grid" id="familyPractice"></div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="checkFamilyAnswers()">Check facts</button><button class="btn btn-outline" onclick="resetFamilyPractice()">Reset</button></div>
+      <div class="feedback" id="familyFeedback"></div>
+    </div>
+
+    <div class="btn-row" id="familyNext" style="display:none;"><button class="btn btn-primary" onclick="completeSection(4)">Next section →</button></div>
+    <button class="skip-link" onclick="completeSection(4)">Skip ahead</button>
+  </section>
+
+  <section class="section" id="section5">
+    <span class="time-badge">⏱ About 10 minutes</span>
+    <h2 class="section-title">Match Game</h2>
+    <div class="info-card">
+      <p>Match each multiplication question to its answer. Click one card, then click its partner.</p>
+    </div>
+    <div class="match-grid" id="matchGrid"></div>
+    <div class="feedback" id="matchFeedback"></div>
+    <div class="btn-row"><button class="btn btn-outline" onclick="resetMatch()">Restart game</button></div>
+    <div class="btn-row" id="matchNext" style="display:none;"><button class="btn btn-primary" onclick="completeSection(5)">Next →</button></div>
+    <button class="skip-link" onclick="completeSection(5)">Skip ahead</button>
+  </section>
+
+  <section class="section" id="section6">
+    <span class="break-badge">☕ Mini Break — 3 minutes</span>
+    <div class="break-card">
+      <div class="break-icon">🎲</div>
+      <h2>Almost there</h2>
+      <p>One short break before the quiz. You have already practised using pictures, patterns and facts.</p>
+      <div class="break-timer" id="breakTimer2">3:00</div>
+      <button class="btn btn-purple" onclick="startBreakTimer('breakTimer2', 180, 'breakBtn2')" id="breakBtn2">▶ Start timer</button>
+      <div class="break-activity">
+        <h3>Quick choice:</h3>
+        <p><strong>Draw:</strong> Draw 3 rows of stars.<br><br><strong>Move:</strong> Do 10 wall pushes.<br><br><strong>Breathe:</strong> In for 4, hold for 2, out for 4. Repeat 4 times.</p>
+      </div>
+    </div>
+    <div class="btn-row" style="justify-content:center;"><button class="btn btn-primary" onclick="completeSection(6)">Ready for the quiz →</button></div>
+  </section>
+
+  <section class="section" id="section7">
+    <span class="time-badge">⏱ About 9 minutes</span>
+    <h2 class="section-title">Final Quiz</h2>
+    <div class="support-box">This is not a speed test. Use your strategies: skip counting, arrays, known facts, or repeated addition.</div>
+    <div id="quizArea"></div>
+    <div id="quizResult" style="display:none;">
+      <div class="score-box"><div class="score-num" id="quizScore">0/8</div><div class="score-label">Quiz complete — great effort</div></div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="completeSection(7)">🎉 Finish</button><button class="btn btn-outline" onclick="resetQuiz()">Try again</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="export-bar">
+  <span>Save your results:</span>
+  <button onclick="sendEmail()" class="btn btn-primary" style="padding:0.6rem 1.25rem; font-size:0.9rem;">📧 Email to Jay</button>
+  <button onclick="printResults()" class="btn btn-secondary" style="padding:0.6rem 1.25rem; font-size:0.9rem;">🖨️ Save as PDF</button>
+</div>
+<footer>Base 6 · Chilton Bridge School · Times Tables Mission</footer>
+
+<script>
+  const sectionCount = 8;
+  const completed = Array(sectionCount).fill(false);
+  let focus = 6;
+  let currentGroups = 4;
+  let quizAnswered = 0;
+  let quizScore = 0;
+  let skipScore = 0;
+  let familyScore = 0;
+  let matchScore = 0;
+  let selectedMatch = null;
+  let matchedPairs = 0;
+
+  function updateProgress() {
+    const done = completed.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / sectionCount * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + sectionCount + ' sections';
+    completed.forEach((c, i) => {
+      const btn = document.getElementById('nav' + i);
+      if (c) { btn.classList.add('done'); btn.classList.remove('active'); }
+    });
+  }
+  function goToSection(i) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('section' + i).classList.add('active');
+    if (!completed[i]) document.getElementById('nav' + i).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function completeSection(i) {
+    completed[i] = true;
+    updateProgress();
+    const next = i + 1;
+    if (next < sectionCount) goToSection(next);
+    else showFinish();
+  }
+  function showFinish() {
+    alert('Well done! You have finished the Times Tables Mission. Use the buttons at the bottom to save your results.');
+  }
+  function toggleCalmMode() {
+    document.body.classList.toggle('calm-mode');
+    document.getElementById('calmBtn').textContent = document.body.classList.contains('calm-mode') ? 'Calm mode on' : 'Calm mode';
+  }
+
+  function setFocusTable(value) {
+    focus = parseInt(value);
+    document.getElementById('focusTable').value = focus;
+    document.querySelectorAll('.choice-btn[data-table]').forEach(btn => btn.classList.toggle('selected', parseInt(btn.dataset.table) === focus));
+    document.getElementById('warmRule').textContent = focus + ' × 4 means 4 groups of ' + focus + '. It is the same as ' + Array(4).fill(focus).join(' + ') + '.';
+    document.getElementById('skipRule').textContent = 'For the ' + focus + ' times table: 0, ' + focus + ', ' + (focus*2) + ', ' + (focus*3) + ', ' + (focus*4) + '...';
+    document.getElementById('familyRule').textContent = focus + ' × 4 = ' + (focus*4) + ', so 4 × ' + focus + ' = ' + (focus*4) + ' too.';
+    buildGroups();
+    buildArray();
+    buildSkipPractice();
+    buildFamilyPractice();
+    buildMatch();
+    buildQuiz();
+  }
+
+  function buildTableChoices() {
+    const wrap = document.getElementById('tableChoices');
+    wrap.innerHTML = '';
+    [2,3,4,5,6,7,8,9,10,11,12].forEach(n => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn' + (n === focus ? ' selected' : '');
+      btn.textContent = n + '× table';
+      btn.dataset.table = n;
+      btn.onclick = () => setFocusTable(n);
+      wrap.appendChild(btn);
+    });
+  }
+  function buildGroups() {
+    const wrap = document.getElementById('groupChoices');
+    wrap.innerHTML = '';
+    [2,3,4,5,6,7,8,9,10,11,12].forEach(n => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn' + (n === currentGroups ? ' selected' : '');
+      btn.textContent = n + ' groups';
+      btn.onclick = () => { currentGroups = n; buildGroups(); buildArray(); };
+      wrap.appendChild(btn);
+    });
+  }
+  function buildArray() {
+    document.getElementById('arraySentence').textContent = currentGroups + ' rows of ' + focus + ' dots = ' + (focus * currentGroups) + ' dots altogether.';
+    document.getElementById('arraySum').textContent = focus + ' × ' + currentGroups + ' = ?';
+    document.getElementById('arrayQuestion').textContent = 'What is ' + focus + ' × ' + currentGroups + '?';
+    const grid = document.getElementById('arrayGrid');
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = 'repeat(' + Math.min(focus, 12) + ', 28px)';
+    for (let i = 0; i < focus * currentGroups; i++) {
+      const d = document.createElement('span');
+      d.className = 'dot';
+      grid.appendChild(d);
+    }
+    const input = document.getElementById('arrayAnswer');
+    input.value = '';
+    input.classList.remove('correct', 'wrong');
+    document.getElementById('arrayFeedback').className = 'feedback';
+  }
+  function checkArrayAnswer() {
+    const input = document.getElementById('arrayAnswer');
+    const answer = focus * currentGroups;
+    const val = parseInt(input.value);
+    const fb = document.getElementById('arrayFeedback');
+    const correct = val === answer;
+    input.classList.toggle('correct', correct);
+    input.classList.toggle('wrong', !correct);
+    fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+    fb.textContent = correct ? '✅ Correct. ' + focus + ' × ' + currentGroups + ' = ' + answer + '.' : '❌ Not quite. Count ' + currentGroups + ' groups of ' + focus + ': ' + Array(currentGroups).fill(focus).join(' + ') + ' = ' + answer + '.';
+  }
+  function newArrayQuestion() {
+    currentGroups = Math.floor(Math.random() * 11) + 2;
+    buildGroups();
+    buildArray();
+  }
+
+  function buildSkipPractice() {
+    const row = document.getElementById('skipRow');
+    row.innerHTML = '';
+    for (let i = 0; i <= 12; i++) {
+      const pill = document.createElement('span');
+      pill.className = 'skip-pill';
+      pill.textContent = focus * i;
+      row.appendChild(pill);
+    }
+    resetSkipPractice();
+  }
+  function resetSkipPractice() {
+    const wrap = document.getElementById('skipPractice');
+    wrap.innerHTML = '';
+    [3,5,7,9].forEach(n => {
+      const card = document.createElement('div');
+      card.className = 'practice-card';
+      card.innerHTML = '<div class="sum">' + focus + ' × ' + n + ' = ?</div><input class="small-input skip-input" inputmode="numeric" data-answer="' + (focus*n) + '" placeholder="?">';
+      wrap.appendChild(card);
+    });
+    document.getElementById('skipFeedback').className = 'feedback';
+    document.getElementById('skipNext').style.display = 'none';
+  }
+  function checkSkipAnswers() {
+    let correct = 0;
+    document.querySelectorAll('.skip-input').forEach(input => {
+      const ok = parseInt(input.value) === parseInt(input.dataset.answer);
+      input.classList.toggle('correct', ok);
+      input.classList.toggle('wrong', !ok && input.value.trim() !== '');
+      if (ok) correct++;
+    });
+    skipScore = correct;
+    const fb = document.getElementById('skipFeedback');
+    fb.className = 'feedback ' + (correct >= 3 ? 'correct' : 'neutral');
+    fb.textContent = correct + ' out of 4 correct. ' + (correct >= 3 ? 'Great — you can move on.' : 'Try using the skip-counting row above.');
+    if (correct >= 3) document.getElementById('skipNext').style.display = 'flex';
+  }
+
+  function buildFamilyPractice() { resetFamilyPractice(); }
+  function resetFamilyPractice() {
+    const wrap = document.getElementById('familyPractice');
+    wrap.innerHTML = '';
+    [4,6,8,12].forEach(n => {
+      const product = focus * n;
+      const card = document.createElement('div');
+      card.className = 'practice-card';
+      card.innerHTML = '<div class="sum">' + n + ' × ' + focus + ' = ?</div><p style="font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem;">Hint: ' + focus + ' × ' + n + ' = ' + product + '</p><input class="small-input family-input" inputmode="numeric" data-answer="' + product + '" placeholder="?">';
+      wrap.appendChild(card);
+    });
+    document.getElementById('familyFeedback').className = 'feedback';
+    document.getElementById('familyNext').style.display = 'none';
+  }
+  function checkFamilyAnswers() {
+    let correct = 0;
+    document.querySelectorAll('.family-input').forEach(input => {
+      const ok = parseInt(input.value) === parseInt(input.dataset.answer);
+      input.classList.toggle('correct', ok);
+      input.classList.toggle('wrong', !ok && input.value.trim() !== '');
+      if (ok) correct++;
+    });
+    familyScore = correct;
+    const fb = document.getElementById('familyFeedback');
+    fb.className = 'feedback ' + (correct >= 3 ? 'correct' : 'neutral');
+    fb.textContent = correct + ' out of 4 correct. ' + (correct >= 3 ? 'Good fact-family thinking.' : 'Use the hint fact and turn it around.');
+    if (correct >= 3) document.getElementById('familyNext').style.display = 'flex';
+  }
+
+  function buildMatch() {
+    const facts = [2,3,4,5,6].map(n => ({ id: String(n), q: focus + ' × ' + n, a: String(focus*n) }));
+    const cards = [];
+    facts.forEach(f => { cards.push({ id: f.id, text: f.q }); cards.push({ id: f.id, text: f.a }); });
+    const shuffled = cards.sort(() => Math.random() - 0.5);
+    const grid = document.getElementById('matchGrid');
+    grid.innerHTML = '';
+    selectedMatch = null; matchedPairs = 0; matchScore = 0;
+    shuffled.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'match-card';
+      card.textContent = item.text;
+      card.dataset.id = item.id;
+      card.onclick = () => matchClick(card);
+      grid.appendChild(card);
+    });
+    document.getElementById('matchFeedback').className = 'feedback';
+    document.getElementById('matchNext').style.display = 'none';
+  }
+  function matchClick(card) {
+    if (card.classList.contains('matched')) return;
+    if (selectedMatch === card) { card.classList.remove('selected'); selectedMatch = null; return; }
+    if (!selectedMatch) { card.classList.add('selected'); selectedMatch = card; return; }
+    if (selectedMatch.dataset.id === card.dataset.id) {
+      [selectedMatch, card].forEach(c => { c.classList.remove('selected'); c.classList.add('matched'); });
+      selectedMatch = null;
+      matchedPairs++; matchScore = matchedPairs;
+      if (matchedPairs === 5) {
+        document.getElementById('matchFeedback').className = 'feedback correct';
+        document.getElementById('matchFeedback').textContent = '🎉 All 5 pairs matched.';
+        document.getElementById('matchNext').style.display = 'flex';
+      }
+    } else {
+      card.classList.add('wrong-flash'); selectedMatch.classList.add('wrong-flash');
+      const old = selectedMatch;
+      setTimeout(() => { card.classList.remove('wrong-flash','selected'); old.classList.remove('wrong-flash','selected'); selectedMatch = null; }, 650);
+    }
+  }
+  function resetMatch() { buildMatch(); }
+
+  function startBreakTimer(elId, seconds, btnId) {
+    document.getElementById(btnId).disabled = true;
+    let remaining = seconds;
+    const el = document.getElementById(elId);
+    const interval = setInterval(() => {
+      remaining--;
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      el.textContent = m + ':' + String(s).padStart(2, '0');
+      if (remaining <= 0) { clearInterval(interval); el.textContent = 'Done! 🎉'; }
+    }, 1000);
+  }
+
+  function buildQuiz() {
+    quizAnswered = 0; quizScore = 0;
+    document.getElementById('quizResult').style.display = 'none';
+    const facts = [
+      { q: 'What is ' + focus + ' × 2?', a: focus*2, opts: [focus, focus*2, focus*3, focus+2] },
+      { q: 'What is ' + focus + ' × 5?', a: focus*5, opts: [focus*4, focus*5, focus*6, focus+5] },
+      { q: 'Which number comes next? 0, ' + focus + ', ' + focus*2 + ', ' + focus*3 + ', ___', a: focus*4, opts: [focus*3+1, focus*4, focus*5, focus+4] },
+      { q: 'If ' + focus + ' × 4 = ' + focus*4 + ', what is 4 × ' + focus + '?', a: focus*4, opts: [focus+4, focus*3, focus*4, focus*5] },
+      { q: 'What is ' + focus + ' × 10?', a: focus*10, opts: [focus*8, focus*9, focus*10, focus*12] },
+      { q: 'What is ' + focus + ' × 3?', a: focus*3, opts: [focus*2, focus*3, focus*4, focus+3] },
+      { q: 'Which strategy can help with times tables?', a: 'Skip counting', opts: ['Guessing only', 'Skip counting', 'Reading faster', 'Covering the question'] },
+      { q: 'What is ' + focus + ' × 12?', a: focus*12, opts: [focus*10, focus*11, focus*12, focus*13] }
+    ];
+    const area = document.getElementById('quizArea');
+    area.innerHTML = '';
+    facts.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-card';
+      const opts = [...item.opts].sort(() => Math.random() - 0.5);
+      card.innerHTML = '<p class="q-number">Question ' + (idx+1) + ' of 8</p><p class="q-text">' + item.q + '</p><div class="options"></div><div class="feedback" id="quizFb' + idx + '"></div>';
+      const optWrap = card.querySelector('.options');
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => answerQuiz(btn, String(opt) === String(item.a), idx, item.a);
+        optWrap.appendChild(btn);
+      });
+      area.appendChild(card);
+    });
+  }
+  function answerQuiz(btn, correct, idx, answer) {
+    const card = btn.closest('.quiz-card');
+    card.querySelectorAll('.option-btn').forEach(b => {
+      b.disabled = true;
+      if (b.textContent === String(answer)) b.classList.add('correct');
+    });
+    if (!correct) btn.classList.add('wrong');
+    const fb = document.getElementById('quizFb' + idx);
+    fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+    fb.textContent = correct ? '✅ Correct.' : '❌ Not quite. The answer is ' + answer + '.';
+    if (correct) quizScore++;
+    quizAnswered++;
+    if (quizAnswered === 8) {
+      document.getElementById('quizResult').style.display = 'block';
+      document.getElementById('quizScore').textContent = quizScore + '/8';
+    }
+  }
+  function resetQuiz() { buildQuiz(); }
+
+  function getStudentName() { return document.getElementById('studentName').value.trim() || 'Student'; }
+  function buildResultsText() {
+    const sectionsCompleted = completed.filter(Boolean).length;
+    return 'Times Tables Mission Results%0D%0A' +
+      'Student: ' + encodeURIComponent(getStudentName()) + '%0D%0A' +
+      'Focus table: ' + focus + ' times table%0D%0A' +
+      'Sections completed: ' + sectionsCompleted + '/' + sectionCount + '%0D%0A' +
+      'Skip counting score: ' + skipScore + '/4%0D%0A' +
+      'Fact families score: ' + familyScore + '/4%0D%0A' +
+      'Match game score: ' + matchScore + '/5%0D%0A' +
+      'Final quiz score: ' + quizScore + '/8%0D%0A';
+  }
+  function sendEmail() {
+    const subject = encodeURIComponent('Times Tables Mission Results - ' + getStudentName());
+    const body = buildResultsText();
+    const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + subject + '&body=' + body;
+    window.open(gmail, '_blank');
+  }
+  function printResults() { window.print(); }
+
+  buildTableChoices();
+  setFocusTable(6);
+</script>
+</body>
+</html>
