@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grand Theft Routine 6 · Vice Bridge City</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cyan: #00ffff;
+  --cyan-dim: rgba(0,255,255,0.12);
+  --cyan-glow: rgba(0,255,255,0.35);
+  --orange: #ff9900;
+  --orange-dim: rgba(255,153,0,0.14);
+  --orange-glow: rgba(255,153,0,0.4);
+  --pink: #ff007f;
+  --pink-dim: rgba(255,0,127,0.12);
+  --pink-glow: rgba(255,0,127,0.4);
+  --green: #00ff88;
+  --green-glow: rgba(0,255,136,0.35);
+  --yellow: #ffee00;
+  --yellow-glow: rgba(255,238,0,0.4);
+  --bg: #080808;
+  --surface: #111111;
+  --surface2: #181818;
+  --surface3: #202020;
+  --border: #2a2a2a;
+  --border-lit: #3e3e3e;
+  --text: #e0e0e0;
+  --text-dim: #888;
+  --text-faint: #444;
+}
+html { font-size: 16px; }
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 45% at 50% 0%, rgba(255,0,127,.16) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 35% at 100% 100%, rgba(0,255,255,.1) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 0% 80%, rgba(255,153,0,.08) 0%, transparent 50%);
+  color: var(--text);
+  font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
+  min-height: 100vh;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.07) 2px, rgba(0,0,0,.07) 4px);
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* ── TOAST ── */
+#toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-110px); background: var(--surface2); border: 2px solid var(--yellow); border-radius: 12px; padding: 12px 18px; z-index: 9999; display: flex; align-items: center; gap: 10px; transition: transform .38s cubic-bezier(.34,1.4,.64,1); min-width: 240px; max-width: 380px; box-shadow: 0 0 20px var(--yellow-glow), 0 4px 24px rgba(0,0,0,.7); }
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast-icon { font-size: 1.6rem; flex-shrink: 0; }
+#toast-title { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--yellow); }
+#toast-name { font-size: .92rem; font-weight: 700; color: #fff; margin-top: 1px; }
+#toast-desc { font-size: .76rem; color: var(--text-dim); margin-top: 1px; }
+
+/* ── ADVENTURE MODAL ── */
+#adv-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
+#adv-overlay.open { display: flex; }
+#adv-box { background: var(--surface); border: 1px solid rgba(255,153,0,0.35); border-radius: 16px; padding: 20px; width: 100%; max-width: 480px; box-shadow: 0 0 30px rgba(255,153,0,0.1), 0 0 1px rgba(255,153,0,0.5); }
+#adv-icon { font-size: 2rem; margin-bottom: 6px; }
+#adv-station { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--orange); margin-bottom: 3px; }
+#adv-title { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.3; }
+#adv-scene { font-size: .85rem; color: var(--text); line-height: 1.65; margin-bottom: 14px; background: var(--surface2); border-left: 3px solid var(--orange); border-radius: 0 8px 8px 0; padding: 10px 12px; }
+#adv-choices { display: flex; flex-direction: column; gap: 7px; }
+.adv-choice { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; cursor: pointer; transition: border-color .15s, background .15s; text-align: left; font: 700 .84rem 'Atkinson Hyperlegible', Arial; color: var(--text); }
+.adv-choice:hover { border-color: var(--orange); background: var(--orange-dim); color: #fff; }
+.adv-choice .choice-hint { font-size: .72rem; font-weight: 400; color: var(--text-dim); margin-top: 2px; display: block; }
+#adv-result { margin-top: 12px; padding: 11px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border); display: none; }
+#adv-result-text { font-size: .85rem; line-height: 1.6; color: var(--text); }
+#adv-result-stats { font-size: .76rem; font-weight: 700; color: var(--cyan); margin-top: 5px; }
+#adv-close-btn { width: 100%; margin-top: 10px; background: var(--orange); color: #000; border: none; border-radius: 9px; padding: 11px; font: 700 .9rem 'Atkinson Hyperlegible', Arial; cursor: pointer; text-transform: uppercase; display: none; }
+#adv-close-btn:hover { filter: brightness(1.12); }
+
+/* ── MINIGAME MODAL ── */
+#modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 500; display: none; align-items: center; justify-content: center; padding: 14px; }
+#modal-overlay.open { display: flex; }
+#modal-box { background: var(--surface); border: 1px solid rgba(0,255,255,0.3); border-radius: 16px; padding: 18px; width: 100%; max-width: 480px; box-shadow: 0 0 30px rgba(0,255,255,0.1), 0 0 1px rgba(0,255,255,0.4); }
+#modal-title { font-family: 'Permanent Marker', cursive; font-size: 1.3rem; color: var(--cyan); margin-bottom: 3px; text-shadow: 0 0 12px var(--cyan-glow); }
+#modal-subtitle { font-size: .78rem; color: var(--text-dim); margin-bottom: 10px; line-height: 1.45; }
+#modal-timer-bg { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+#modal-timer-bar { height: 100%; background: var(--cyan); border-radius: 3px; transition: width .1s linear; }
+#modal-canvas-wrap { width: 100%; background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+#modal-canvas { display: block; width: 100%; }
+#modal-result { min-height: 28px; font-size: .85rem; font-weight: 700; color: var(--cyan); text-align: center; line-height: 1.4; }
+.modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+.modal-btns button { background: var(--surface2); color: var(--text); border: 1px solid var(--border-lit); padding: 9px; cursor: pointer; font: 700 .78rem 'Atkinson Hyperlegible', Arial; text-transform: uppercase; border-radius: 8px; transition: all .15s; }
+.modal-btns button:hover { background: var(--surface3); border-color: var(--cyan); color: #fff; }
+.modal-btns button.skip-btn { border-color: var(--pink); }
+.modal-btns button.skip-btn:hover { background: rgba(192,48,90,.15); border-color: var(--pink); }
+#skip-note { font-size: .68rem; color: var(--text-faint); text-align: center; margin-top: 5px; }
+/* keyboard hint box */
+.key-hint { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0 10px; justify-content: center; }
+.key-pill { background: var(--surface3); border: 1px solid var(--border-lit); border-radius: 5px; padding: 3px 8px; font: 700 .75rem 'Atkinson Hyperlegible', Arial; color: var(--text-dim); }
+.key-pill.active-key { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); box-shadow: 0 0 8px var(--cyan-glow); text-shadow: 0 0 6px var(--cyan); }
+
+/* ── CHAR SELECT ── */
+#char-select-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 24px; }
+#char-select-screen h1 { font-family: 'Permanent Marker', cursive; font-size: clamp(1.8rem, 6vw, 3.2rem); text-align: center; color: #fff; text-shadow: 0 0 24px var(--cyan), 0 0 48px var(--cyan-glow), 3px 3px 0 var(--cyan), -2px -2px 0 var(--pink), 0 0 70px var(--pink-glow); letter-spacing: 2px; margin-bottom: 4px; line-height: 1.1; }
+.cs-sub { font-size: .84rem; color: var(--text-dim); text-align: center; margin-bottom: 1.6rem; max-width: 440px; line-height: 1.55; }
+.cs-sub strong { color: var(--cyan); }
+.char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 440px; width: 100%; margin-bottom: 1.2rem; }
+.char-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem 1rem; text-align: center; cursor: pointer; transition: border-color .18s, background .18s; }
+.char-card:hover, .char-card.selected { border-color: var(--cyan); background: var(--cyan-dim); box-shadow: 0 0 16px var(--cyan-glow); }
+.char-avatar { font-size: 2.8rem; margin-bottom: .4rem; }
+.char-name { font-weight: 700; font-size: 1.1rem; color: #fff; }
+.char-bio { font-size: .75rem; color: var(--text-dim); margin-top: .3rem; line-height: 1.4; }
+.char-tag { display: inline-block; margin-top: .4rem; font-size: .64rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; padding: 2px 9px; border-radius: 20px; background: var(--surface3); color: var(--cyan); border: 1px solid var(--border-lit); }
+#start-btn { background: var(--cyan); color: #000; border: none; border-radius: 10px; padding: 13px 36px; font: 700 1rem 'Atkinson Hyperlegible', Arial; cursor: pointer; text-transform: uppercase; letter-spacing: .07em; transition: all .18s; opacity: .35; pointer-events: none; }
+#start-btn.ready { opacity: 1; pointer-events: auto; box-shadow: 0 0 20px var(--cyan-glow), 0 0 40px rgba(0,255,255,0.15); }
+#start-btn.ready:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 0 30px var(--cyan-glow), 0 0 60px rgba(0,255,255,0.2); }
+
+/* ── MAIN GAME ── */
+#game-container { background: var(--surface); border: 1px solid rgba(0,255,255,0.25); border-radius: 16px; padding: 18px; width: 100%; max-width: 700px; box-shadow: 0 0 0 1px rgba(0,255,255,0.06), 0 0 40px rgba(255,0,127,0.08), inset 0 0 30px rgba(0,0,0,0.3); }
+
+/* ── HEADER ── */
+.game-header { text-align: center; margin-bottom: 16px; position: relative; border-bottom: 1px solid rgba(0,255,255,0.18); padding-bottom: 14px; }
+.game-header h1 { font-family: 'Permanent Marker', cursive; font-size: clamp(1.5rem, 5vw, 2.4rem); color: #fff; text-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan-glow), 3px 3px 0 var(--cyan), -2px -2px 0 var(--pink), 0 0 60px var(--pink-glow); letter-spacing: 2px; line-height: 1.1; }
+.game-header .tagline { font-size: .72rem; color: var(--text-dim); margin-top: 2px; }
+.char-display { position: absolute; right: 0; top: 0; text-align: center; cursor: pointer; }
+.char-display .c-av { font-size: 1.6rem; }
+.char-display .c-lb { font-size: .58rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: .07em; }
+
+/* ── DAY COUNTER ── */
+.day-banner { background: var(--surface2); border: 1px solid var(--border-lit); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.day-main { font-family: 'Permanent Marker', cursive; font-size: 1.5rem; color: #fff; letter-spacing: 1px; }
+.day-main span { color: var(--cyan); text-shadow: 0 0 12px var(--cyan), 0 0 24px var(--cyan-glow); }
+.day-progress-wrap { flex: 1; min-width: 120px; }
+.day-progress-label { font-size: .62rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+.day-progress-track { height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.day-progress-fill { height: 100%; background: var(--cyan); border-radius: 3px; transition: width .4s ease; box-shadow: 0 0 8px var(--cyan-glow); }
+.day-objective { font-size: .72rem; color: var(--text-dim); font-style: italic; }
+
+/* ── HEAT ── */
+.heat-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.heat-label { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--text-dim); flex-shrink: 0; }
+.heat-stars { display: flex; gap: 4px; }
+.star { width: 18px; height: 18px; border: 1px solid var(--border-lit); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: .68rem; color: var(--text-faint); transition: all .25s; }
+.star.active { border-color: var(--pink); background: rgba(255,0,127,.22); color: var(--pink); box-shadow: 0 0 8px var(--pink-glow), inset 0 0 6px rgba(255,0,127,.15); text-shadow: 0 0 6px var(--pink); }
+.heat-status { font-size: .72rem; color: var(--text-dim); font-style: italic; margin-left: auto; }
+.heat-warning { font-size: .7rem; font-weight: 700; color: var(--pink); }
+
+/* ── DECAY BAR ── */
+.decay-row { padding: 7px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; }
+.decay-labels { display: flex; justify-content: space-between; font-size: .62rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+.decay-track { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.decay-fill { height: 100%; background: var(--orange); border-radius: 3px; transition: width .5s linear; box-shadow: 0 0 8px var(--orange-glow); }
+
+/* ── RADIO ── */
+.radio-row { display: flex; gap: 9px; align-items: flex-start; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; }
+.radio-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.radio-station { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--orange); margin-bottom: 1px; text-shadow: 0 0 8px var(--orange-glow); }
+.radio-text { font-size: .78rem; color: var(--text-dim); line-height: 1.4; font-style: italic; }
+
+/* ── TOP PANEL ── */
+.top-panel { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 12px; }
+.badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 5px; text-align: center; }
+.badge-title { font-size: .58rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .07em; }
+.badge-value { font-size: 1.05rem; font-weight: 700; color: var(--cyan); margin-top: 2px; }
+
+/* ── SECTIONS ── */
+.section { background: var(--surface2); border: 1px solid rgba(0,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.section h2 { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--text-dim); margin-bottom: 9px; }
+
+/* ── STAT BARS ── */
+.stat-row { margin-bottom: 9px; }
+.stat-label { display: flex; justify-content: space-between; font-size: .73rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; color: #aaa; }
+.bar-bg { background: var(--surface3); height: 14px; border-radius: 7px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 7px; transition: width .35s ease; }
+.bar-flash { animation: bFlash .4s ease; }
+@keyframes bFlash { 0%,100%{filter:brightness(1)} 50%{filter:brightness(2)} }
+#health-fill     { background: linear-gradient(90deg,#8a1010,#ff4444); box-shadow: 0 0 8px rgba(255,68,68,0.5); }
+#confidence-fill { background: linear-gradient(90deg,#0a4a58,#00ffff); box-shadow: 0 0 8px var(--cyan-glow); }
+#energy-fill     { background: linear-gradient(90deg,#6a5800,#ffee00); box-shadow: 0 0 8px var(--yellow-glow); }
+#freshness-fill  { background: linear-gradient(90deg,#6a0038,#ff007f); box-shadow: 0 0 8px var(--pink-glow); }
+.flavour-text { margin-top: 7px; padding: 6px 10px; background: var(--surface3); border-left: 2px solid var(--border-lit); border-radius: 0 6px 6px 0; font-size: .76rem; color: var(--text-dim); font-style: italic; line-height: 1.4; min-height: 28px; }
+
+/* ── CHECKLIST ── */
+#checklist { display: grid; grid-template-columns: repeat(2,1fr); gap: 5px; }
+.check-item { background: var(--surface3); padding: 6px 8px; border-radius: 6px; border-left: 2px solid var(--border-lit); font-size: .78rem; transition: all .25s; }
+.check-item.complete { border-left-color: var(--cyan); color: var(--cyan); font-weight: 700; background: var(--cyan-dim); text-shadow: 0 0 6px var(--cyan-glow); box-shadow: -2px 0 8px rgba(0,255,255,0.15); }
+
+/* ── BUTTONS ── */
+.buttons { display: grid; grid-template-columns: repeat(2,1fr); gap: 7px; margin-bottom: 10px; }
+.gtr-btn { background: var(--surface3); color: var(--text); border: 1px solid var(--border-lit); padding: 10px 7px; cursor: pointer; font-weight: 700; text-transform: uppercase; border-radius: 8px; font: 700 .74rem 'Atkinson Hyperlegible', Arial; letter-spacing: .04em; transition: all .15s; line-height: 1.3; }
+.gtr-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--cyan); color: #fff; }
+.gtr-btn:disabled { opacity: .28; cursor: not-allowed; }
+.gtr-btn.accent   { border-color: var(--cyan); color: var(--cyan); text-shadow: 0 0 6px var(--cyan-glow); }
+.gtr-btn.accent:hover:not(:disabled)   { background: var(--cyan); color: #000; box-shadow: 0 0 16px var(--cyan-glow), 0 0 32px rgba(0,255,255,0.2); }
+.gtr-btn.warm     { border-color: var(--orange); color: var(--orange); text-shadow: 0 0 6px var(--orange-glow); }
+.gtr-btn.warm:hover:not(:disabled)     { background: var(--orange); color: #000; box-shadow: 0 0 16px var(--orange-glow), 0 0 32px rgba(255,153,0,0.2); }
+.gtr-btn.danger   { border-color: var(--pink); color: var(--pink); text-shadow: 0 0 6px var(--pink-glow); }
+.gtr-btn.danger:hover:not(:disabled)   { background: var(--pink); color: #fff; box-shadow: 0 0 16px var(--pink-glow), 0 0 32px rgba(255,0,127,0.2); }
+.gtr-btn.positive { border-color: var(--green); color: var(--green); text-shadow: 0 0 6px var(--green-glow); }
+.gtr-btn.positive:hover:not(:disabled) { background: var(--green); color: #000; box-shadow: 0 0 16px var(--green-glow), 0 0 32px rgba(0,255,136,0.2); }
+.gtr-btn.yellow   { border-color: var(--yellow); color: var(--yellow); text-shadow: 0 0 6px var(--yellow-glow); }
+.gtr-btn.yellow:hover:not(:disabled)   { background: var(--yellow); color: #000; box-shadow: 0 0 16px var(--yellow-glow), 0 0 32px rgba(255,238,0,0.2); }
+.gtr-btn.wide     { grid-column: span 2; }
+.gtr-btn.blocked  { opacity: .4; cursor: not-allowed; border-color: var(--pink)!important; color: var(--pink)!important; }
+
+/* ── LOG ── */
+#log { padding: 10px 13px; background: var(--surface3); border-left: 3px solid var(--cyan); border-radius: 0 7px 7px 0; font-size: .8rem; line-height: 1.55; min-height: 56px; display: flex; align-items: center; transition: border-left-color .25s; box-shadow: -3px 0 12px rgba(0,255,255,0.2); }
+.log-highlight { color: var(--cyan); font-weight: 700; }
+.log-warning    { color: var(--orange); font-weight: 700; }
+.log-success    { color: var(--green); font-weight: 700; }
+.log-danger     { color: var(--pink); font-weight: 700; }
+
+/* ── CHALLENGE ── */
+.challenge-card { background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-size: .8rem; line-height: 1.5; color: var(--text); margin-bottom: 8px; }
+
+/* ── SAFE HOUSE ── */
+.safehouse { background: var(--surface3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center; transition: border-color .3s; }
+.safehouse.upgraded { border-color: var(--cyan); box-shadow: 0 0 14px var(--cyan-glow); }
+.safehouse.maxed    { border-color: var(--yellow); box-shadow: 0 0 18px var(--yellow-glow); }
+.safehouse-visual { font-size: 2.2rem; margin-bottom: 4px; line-height: 1; }
+.safehouse-name { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--text-dim); margin-bottom: 3px; }
+.safehouse-pips { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 5px; }
+.upgrade-pip { font-size: .66rem; padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-faint); transition: all .25s; }
+.upgrade-pip.unlocked { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+.shop-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 6px; }
+.shop-grid .gtr-btn { font-size: .68rem; padding: 8px 5px; }
+
+/* ── ACHIEVEMENTS ── */
+.achievements-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; }
+.ach-pip { background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 7px 4px; text-align: center; transition: border-color .25s; }
+.ach-pip.earned { border-color: var(--yellow); background: rgba(255,238,0,.08); box-shadow: 0 0 10px var(--yellow-glow); }
+.ach-pip .ach-icon { font-size: 1.1rem; }
+.ach-pip .ach-label { font-size: .56rem; color: var(--text-dim); margin-top: 2px; line-height: 1.3; }
+.ach-pip.earned .ach-label { color: var(--yellow); }
+
+/* ── REFLECTION ── */
+#reflection-section { display: none; background: var(--surface2); border: 1px solid var(--yellow); border-radius: 10px; padding: 13px; margin-bottom: 10px; }
+#reflection-section h2 { color: var(--yellow); margin-bottom: 7px; font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; }
+#reflection-section ol { padding-left: 16px; line-height: 1.7; font-size: .83rem; color: var(--text); }
+textarea#reflection-input { width: 100%; margin-top: 8px; background: var(--surface3); border: 1px solid var(--border-lit); border-radius: 7px; color: #fff; font: .82rem 'Atkinson Hyperlegible',Arial; padding: 9px; min-height: 72px; resize: vertical; }
+textarea#reflection-input::placeholder { color: var(--text-faint); }
+
+/* ── WIN / LOSE OVERLAY ── */
+#end-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 800; display: none; align-items: center; justify-content: center; padding: 20px; }
+#end-overlay.open { display: flex; }
+#end-box { background: var(--surface); border: 1px solid var(--border-lit); border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 420px; text-align: center; }
+#end-icon  { font-size: 3rem; margin-bottom: 10px; }
+#end-title { font-family: 'Permanent Marker', cursive; font-size: 2rem; color: #fff; text-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan-glow), 2px 2px 0 var(--cyan); margin-bottom: 8px; }
+#end-body  { font-size: .88rem; color: var(--text); line-height: 1.65; margin-bottom: 18px; }
+#end-restart { background: var(--cyan); color: #000; border: none; border-radius: 9px; padding: 12px 32px; font: 700 .95rem 'Atkinson Hyperlegible',Arial; cursor: pointer; text-transform: uppercase; }
+#end-restart:hover { filter: brightness(1.1); }
+
+@media(max-width:540px) {
+  .top-panel { grid-template-columns: repeat(2,1fr); }
+  .buttons, #checklist, .shop-grid { grid-template-columns: 1fr 1fr; }
+  .achievements-grid { grid-template-columns: repeat(4,1fr); }
+  .char-grid { grid-template-columns: 1fr 1fr; }
+  .gtr-btn.wide { grid-column: span 2; }
+  .char-display { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast"><div id="toast-icon">🏆</div><div id="toast-body"><div id="toast-title">Achievement Unlocked</div><div id="toast-name"></div><div id="toast-desc"></div></div></div>
+
+<!-- WIN/LOSE OVERLAY -->
+<div id="end-overlay">
+  <div id="end-box">
+    <div id="end-icon">🏆</div>
+    <div id="end-title">You Made It</div>
+    <div id="end-body">End text here.</div>
+    <button id="end-restart" onclick="restartGame()">Play Again</button>
+  </div>
+</div>
+
+<!-- ADVENTURE MODAL -->
+<div id="adv-overlay">
+  <div id="adv-box">
+    <div id="adv-icon">🎲</div>
+    <div id="adv-station">Vice Bridge FM</div>
+    <div id="adv-title">Event Title</div>
+    <div id="adv-scene">Scene text here.</div>
+    <div id="adv-choices"></div>
+    <div id="adv-result"><div id="adv-result-text"></div><div id="adv-result-stats"></div></div>
+    <button id="adv-close-btn" onclick="closeAdventure()">Back to Free Roam →</button>
+  </div>
+</div>
+
+<!-- MINIGAME MODAL -->
+<div id="modal-overlay">
+  <div id="modal-box">
+    <div id="modal-title">Mini-Game</div>
+    <div id="modal-subtitle"></div>
+    <div class="key-hint" id="key-hint-row"></div>
+    <div id="modal-timer-bg"><div id="modal-timer-bar" style="width:100%"></div></div>
+    <div id="modal-canvas-wrap"><canvas id="modal-canvas" width="440" height="260"></canvas></div>
+    <div id="modal-result"></div>
+    <div class="modal-btns">
+      <button id="modal-retry-btn" onclick="retryMinigame()">↺ Retry (½ reward)</button>
+      <button id="modal-skip-btn" class="skip-btn" onclick="skipMinigame()">Skip (¼ reward)</button>
+    </div>
+    <div id="skip-note">Skipping still gives a small reward — no judgment.</div>
+  </div>
+</div>
+
+<!-- CHAR SELECT -->
+<div id="char-select-screen">
+  <h1>GRAND THEFT<br>ROUTINE 6</h1>
+  <p class="cs-sub"><strong>Vice Bridge City.</strong> Survive 30 days. Build your routine. Keep the heat down or you won\'t see tomorrow.</p>
+  <div class="char-grid">
+    <div class="char-card" onclick="selectChar('jason')" id="card-jason">
+      <div class="char-avatar">👦</div>
+      <div class="char-name">Jason</div>
+      <div class="char-bio">VBC native. Keeps it low-key but hits different when the routine is locked in.</div>
+      <div class="char-tag">VBC Native</div>
+    </div>
+    <div class="char-card" onclick="selectChar('lucia')" id="card-lucia">
+      <div class="char-avatar">👩</div>
+      <div class="char-name">Lucia</div>
+      <div class="char-bio">Sharp and adaptable. High confidence when the loadout is right.</div>
+      <div class="char-tag">Vice City Transfer</div>
+    </div>
+  </div>
+  <button id="start-btn" onclick="startGame()">Start Day 1 →</button>
+</div>
+
+<!-- MAIN GAME -->
+<div id="game-container" style="display:none">
+
+  <div class="game-header">
+    <h1>GRAND THEFT<br>ROUTINE 6</h1>
+    <p class="tagline">Vice Bridge City · Survive 30 days</p>
+    <div class="char-display">
+      <div class="c-av" id="header-avatar">👦</div>
+      <div class="c-lb" id="header-charname">Jason</div>
+    </div>
+  </div>
+
+  <!-- DAY COUNTER -->
+  <div class="day-banner">
+    <div>
+      <div class="day-main">Day <span id="day-num">1</span> <span style="font-size:.9rem;color:var(--text-dim)">/ 30</span></div>
+      <div class="day-objective" id="day-objective">Complete your routine to advance.</div>
+    </div>
+    <div class="day-progress-wrap">
+      <div class="day-progress-label">Survival progress</div>
+      <div class="day-progress-track"><div class="day-progress-fill" id="day-progress-fill" style="width:3.3%"></div></div>
+    </div>
+  </div>
+
+  <!-- HEAT -->
+  <div class="heat-row">
+    <span class="heat-label">Heat</span>
+    <div class="heat-stars">
+      <div class="star" id="star1">★</div><div class="star" id="star2">★</div>
+      <div class="star" id="star3">★</div><div class="star" id="star4">★</div><div class="star" id="star5">★</div>
+    </div>
+    <span class="heat-status" id="heat-status">Clean record</span>
+    <span class="heat-warning" id="heat-warning"></span>
+  </div>
+
+  <!-- DECAY -->
+  <div class="decay-row">
+    <div class="decay-labels"><span>⏱ Freshness decay</span><span id="decay-time-label">60s</span></div>
+    <div class="decay-track"><div class="decay-fill" id="decay-fill" style="width:100%"></div></div>
+  </div>
+
+  <!-- RADIO -->
+  <div class="radio-row">
+    <div class="radio-icon">📻</div>
+    <div><div class="radio-station" id="radio-station">Vice Bridge FM</div><div class="radio-text" id="radio-text">You\'re live in Vice Bridge City. What\'s the morning move?</div></div>
+  </div>
+
+  <!-- STATS PANEL -->
+  <div class="top-panel">
+    <div class="badge"><div class="badge-title">Level</div><div class="badge-value" id="level-val">1</div></div>
+    <div class="badge"><div class="badge-title">XP</div><div class="badge-value" id="xp-val">0</div></div>
+    <div class="badge"><div class="badge-title">Coins</div><div class="badge-value" id="coins-val">0</div></div>
+    <div class="badge"><div class="badge-title">Streak</div><div class="badge-value" id="streak-val">0</div></div>
+  </div>
+
+  <!-- CHARACTER STATS -->
+  <div class="section">
+    <h2>Character Stats</h2>
+    <div class="stat-row"><div class="stat-label"><span>Health</span><span id="health-val">50/100</span></div><div class="bar-bg"><div id="health-fill" class="bar-fill" style="width:50%"></div></div></div>
+    <div class="stat-row"><div class="stat-label"><span>Confidence</span><span id="confidence-val">50/100</span></div><div class="bar-bg"><div id="confidence-fill" class="bar-fill" style="width:50%"></div></div></div>
+    <div class="stat-row"><div class="stat-label"><span>Energy / Mood</span><span id="energy-val">50/100</span></div><div class="bar-bg"><div id="energy-fill" class="bar-fill" style="width:50%"></div></div></div>
+    <div class="stat-row"><div class="stat-label"><span>Freshness</span><span id="freshness-val">50/100</span></div><div class="bar-bg"><div id="freshness-fill" class="bar-fill" style="width:50%"></div></div></div>
+    <div class="flavour-text" id="flavour-text">Hit the streets when you\'re ready.</div>
+  </div>
+
+  <!-- ROUTINE MAP -->
+  <div class="section">
+    <h2>Routine Map</h2>
+    <div id="checklist">
+      <div id="check-wash"      class="check-item">⬜ Wash / Shower</div>
+      <div id="check-teeth"     class="check-item">⬜ Brush Teeth</div>
+      <div id="check-clothes"   class="check-item">⬜ Clean Clothes</div>
+      <div id="check-deodorant" class="check-item">⬜ Deodorant</div>
+      <div id="check-breakfast" class="check-item">⬜ Breakfast / Water</div>
+      <div id="check-bag"       class="check-item">⬜ Pack Useful Items</div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="section">
+    <h2>Free Roam Actions</h2>
+    <div class="buttons">
+      <button class="gtr-btn accent" id="btn-wash"      onclick="openMinigame('wash')">🚿 Wash / Shower</button>
+      <button class="gtr-btn accent" id="btn-teeth"     onclick="openMinigame('teeth')">🪥 Brush Teeth</button>
+      <button class="gtr-btn accent" id="btn-clothes"   onclick="openMinigame('clothes')">👕 Clean Clothes</button>
+      <button class="gtr-btn accent" id="btn-deodorant" onclick="openMinigame('deodorant')">💨 Deodorant</button>
+      <button class="gtr-btn accent" id="btn-breakfast" onclick="openMinigame('breakfast')">🥣 Breakfast / Water</button>
+      <button class="gtr-btn accent" id="btn-bag"       onclick="openMinigame('bag')">🎒 Pack Useful Items</button>
+      <button class="gtr-btn warm"   onclick="takeBreak()">🎧 Regulate / Break</button>
+      <button class="gtr-btn warm"   onclick="skipMoment()">🛌 Stay in Bed</button>
+      <button class="gtr-btn yellow wide" onclick="triggerAdventure()">🎲 Vice Bridge City Event</button>
+      <button class="gtr-btn positive wide" id="new-day-btn" onclick="tryNewDay()">🌅 End Day — Advance</button>
+    </div>
+  </div>
+
+  <!-- SIDE MISSION -->
+  <div class="section">
+    <h2>Optional Side Mission</h2>
+    <div class="challenge-card" id="challenge-text">Press "New Side Mission" for an optional challenge.</div>
+    <div class="buttons">
+      <button class="gtr-btn danger"  onclick="newChallenge()">🧭 New Side Mission</button>
+      <button class="gtr-btn yellow"  onclick="completeChallenge()">⭐ Claim Reward</button>
+    </div>
+  </div>
+
+  <!-- SAFE HOUSE -->
+  <div class="section">
+    <h2>Safe House Upgrades</h2>
+    <div class="safehouse" id="safehouse">
+      <div class="safehouse-visual" id="safehouse-visual">🏠</div>
+      <div class="safehouse-name" id="safehouse-name">Base Safe House</div>
+      <div class="safehouse-pips">
+        <span class="upgrade-pip" id="pip-playlist">🎵 Playlist</span>
+        <span class="upgrade-pip" id="pip-soap">🧼 Soap</span>
+        <span class="upgrade-pip" id="pip-checklist">📋 Checklist</span>
+        <span class="upgrade-pip" id="pip-alarm">⏰ Alarm</span>
+      </div>
+    </div>
+    <div class="shop-grid">
+      <button class="gtr-btn" onclick="buyUpgrade('playlist')">🎵 Playlist — 8 coins</button>
+      <button class="gtr-btn" onclick="buyUpgrade('soap')">🧼 Fav Soap — 10 coins</button>
+      <button class="gtr-btn" onclick="buyUpgrade('checklist')">📋 Checklist — 12 coins</button>
+      <button class="gtr-btn wide" onclick="buyUpgrade('alarm')">⏰ Early Alarm (slows decay) — 15 coins</button>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="section">
+    <h2>Achievements</h2>
+    <div class="achievements-grid">
+      <div class="ach-pip" id="ach-fullloadout"><div class="ach-icon">🎯</div><div class="ach-label">Full Loadout</div></div>
+      <div class="ach-pip" id="ach-freshprince"><div class="ach-icon">✨</div><div class="ach-label">Fresh Prince</div></div>
+      <div class="ach-pip" id="ach-untouchable"><div class="ach-icon">🚫</div><div class="ach-label">Untouchable</div></div>
+      <div class="ach-pip" id="ach-levelup">   <div class="ach-icon">⬆️</div><div class="ach-label">Level Up</div></div>
+      <div class="ach-pip" id="ach-streakmaster"><div class="ach-icon">🔥</div><div class="ach-label">Streak Master</div></div>
+      <div class="ach-pip" id="ach-sidehustle"> <div class="ach-icon">💼</div><div class="ach-label">Side Hustle</div></div>
+      <div class="ach-pip" id="ach-speedrun">   <div class="ach-icon">⚡</div><div class="ach-label">Speed Run</div></div>
+      <div class="ach-pip" id="ach-survivor">   <div class="ach-icon">🛡️</div><div class="ach-label">Survivor</div></div>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div class="section" style="margin-bottom:10px">
+    <h2>Event Log</h2>
+    <div id="log">Welcome to Vice Bridge City. Tap any action to play the mini-game and build your routine.</div>
+  </div>
+
+  <!-- REFLECTION -->
+  <div id="reflection-section">
+    <h2>🧠 Reflection Unlocked</h2>
+    <ol>
+      <li>Which choices gave your character the biggest boost today?</li>
+      <li>Which parts of the morning routine felt easiest to choose?</li>
+      <li>What one support item would help someone with their morning routine?</li>
+    </ol>
+    <textarea id="reflection-input" placeholder="Write your reflection here…"></textarea>
+    <div class="buttons" style="margin-top:8px">
+      <button class="gtr-btn yellow wide" onclick="emailReflection()">📧 Send Reflection to Jay</button>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="gtr-btn positive" onclick="saveGame()">💾 Save Progress</button>
+    <button class="gtr-btn"          onclick="loadGame()">📂 Load Progress</button>
+  </div>
+
+</div><!-- end game-container -->
+
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let selectedChar = null;
+let currentDay   = 1;
+const MAX_DAYS   = 30;
+const HEAT_BLOCK = 3; // heat level that blocks New Day
+
+let stats = { health:50, confidence:50, energy:50, freshness:50, xp:0, level:1, coins:0, streak:0 };
+let completed  = { wash:false, teeth:false, clothes:false, deodorant:false, breakfast:false, bag:false };
+let upgrades   = { playlist:false, soap:false, checklist:false, alarm:false };
+let heatLevel  = 0;
+let currentChallenge = null, challengeCompleted = false;
+let sideMissionsCompleted = 0, earnedAchievements = {};
+let sessionStart = Date.now(), lastComboTime = 0, comboCount = 0;
+let decayTimer = 0, decayInterval = null;
+let usedAdvIndices = [];
+
+// ═══════════════════════════════════════════════
+// TASK DATA
+// ═══════════════════════════════════════════════
+const taskInfo = {
+  wash:      { checkId:'check-wash',      buttonId:'btn-wash',      label:'Wash / Shower',    health:12, confidence:8,  energy:3,  freshness:24, xp:14, coins:3, heat:-1 },
+  teeth:     { checkId:'check-teeth',     buttonId:'btn-teeth',     label:'Brush Teeth',       health:10, confidence:10, energy:2,  freshness:18, xp:12, coins:3, heat:-1 },
+  clothes:   { checkId:'check-clothes',   buttonId:'btn-clothes',   label:'Clean Clothes',     health:4,  confidence:16, energy:4,  freshness:16, xp:12, coins:3, heat:-1 },
+  deodorant: { checkId:'check-deodorant', buttonId:'btn-deodorant', label:'Deodorant',          health:0,  confidence:12, energy:2,  freshness:15, xp:10, coins:2, heat:0  },
+  breakfast: { checkId:'check-breakfast', buttonId:'btn-breakfast', label:'Breakfast / Water',  health:12, confidence:2,  energy:22, freshness:0,  xp:12, coins:3, heat:0  },
+  bag:       { checkId:'check-bag',       buttonId:'btn-bag',       label:'Pack Useful Items',  health:0,  confidence:12, energy:8,  freshness:0,  xp:10, coins:2, heat:0  }
+};
+
+const radioLines = {
+  wash:      [['Vice Bridge FM','Clean start. Freshness unlocked.'], ['Sunset Blvd Radio','Wash complete. Heat level dropping.']],
+  teeth:     [['Vice Bridge FM','Fresh breath. Confidence up.'],     ['Sunset Blvd Radio','Oral hygiene secured. Health bar cleaner.']],
+  clothes:   [['Sunset Blvd Radio','Clean outfit on. VBC respects the effort.'], ['Vice Bridge FM','Freshest fit on the block.']],
+  deodorant: [['Vice Bridge FM','Support item activated.'],          ['Sunset Blvd Radio','Works best with soap and clean clothes.']],
+  breakfast: [['Vice Bridge FM','Fuel collected. You cannot run VBC on empty.'], ['Sunset Blvd Radio','Breakfast secured. Mood stabilised.']],
+  bag:       [['Sunset Blvd Radio','Inventory checked. Preparedness is a real stat.'], ['Vice Bridge FM','Packed and ready.']],
+  break:     [['Vice Bridge FM','Regulation break. Energy recovered.'], ['Sunset Blvd Radio','Taking a moment. That is a power-up.']],
+  skip:      [['Vice Bridge FM','Bed felt good. Freshness is on the clock.'], ['Sunset Blvd Radio','Still your call. The day continues.']],
+  event:     [['Vice Bridge FM','Something happening out on the streets...'], ['Sunset Blvd Radio','VBC throwing curveballs. How you handle it matters.']]
+};
+
+const challenges = [
+  { text:'Side Mission: Complete any three routine actions — your order, your choice.',                       required:3,                                     rewardXp:25, rewardCoins:6  },
+  { text:'Side Mission: Freshness Combo — Wash, Clean Clothes, and Deodorant.',                              requiredTasks:['wash','clothes','deodorant'],    rewardXp:35, rewardCoins:8  },
+  { text:'Side Mission: Fuel up — complete Breakfast / Water and take a Regulation Break.',                  special:'energy',                               rewardXp:25, rewardCoins:6  },
+  { text:'Side Mission: Brush Teeth plus at least two other routine actions.',                               requiredTasks:['teeth'], required:3,             rewardXp:28, rewardCoins:7  },
+  { text:'Side Mission: Complete all six routine actions in one session.',                                   required:6,                                     rewardXp:50, rewardCoins:12 },
+  { text:'Side Mission: Keep your Heat Level at zero while completing four or more actions.',                special:'heat',                                 rewardXp:40, rewardCoins:10 },
+  { text:'Side Mission: Complete four tasks within 90 seconds of each other.',                               special:'speed',                                rewardXp:45, rewardCoins:11 },
+];
+
+const adventureEvents = [
+  { icon:'🪞', station:'Vice Bridge FM', title:'Mirror Moment',
+    scene:'You catch yourself in the mirror. Hair\'s a mess. You have five minutes.',
+    choices:[
+      { text:'Sort it out — quick fix',          hint:'Effort pays off.',                  result:'You took the time. Confidence boosted stepping outside.', stats:{confidence:12,freshness:6,energy:-4,xp:10,coins:2,heat:-1} },
+      { text:'Leave it — doesn\'t matter',       hint:'Quicker, but how will you feel?',   result:'Felt self-conscious all morning. Confidence dipped.',     stats:{confidence:-8,freshness:0,energy:2,xp:3,coins:0,heat:1}  },
+      { text:'Hood up — compromise',             hint:'Covers it, keeps you moving.',      result:'Hood up, problem solved. You felt okay about it.',         stats:{confidence:4,freshness:2,energy:0,xp:6,coins:1,heat:0}   },
+    ]},
+  { icon:'🚌', station:'Sunset Blvd Radio', title:'Bus in 4 Minutes',
+    scene:'The next bus is in 4 minutes. You haven\'t brushed your teeth yet. Next one is 25 minutes later.',
+    choices:[
+      { text:'Sprint — catch the bus, skip brushing', hint:'Energy hit but you make it.',         result:'You made it. But your mouth felt horrible all morning.',         stats:{health:-5,confidence:-6,energy:-8,freshness:-10,xp:5,coins:1,heat:1}  },
+      { text:'Wait — brush and take the next bus',    hint:'Better prep, later arrival.',          result:'Felt fresher and more confident arriving — even if a bit late.', stats:{health:10,confidence:10,freshness:14,energy:0,xp:14,coins:3,heat:-1} },
+      { text:'30-second brush then run',              hint:'Best of both if you\'re quick.',       result:'Made the bus just in time. Freshness up, energy dipped.',        stats:{health:5,confidence:6,freshness:8,energy:-5,xp:10,coins:2,heat:0}   },
+    ]},
+  { icon:'😤', station:'Vice Bridge FM', title:'Argument Before School',
+    scene:'There\'s been a disagreement at home before you got out the door. Mood dropped. You haven\'t finished your routine.',
+    choices:[
+      { text:'Take 5 minutes alone to reset',    hint:'Regulation first.',        result:'Head cleared enough to finish the routine.',                              stats:{energy:12,confidence:6,health:3,freshness:0,xp:12,coins:2,heat:-1} },
+      { text:'Push through and finish anyway',   hint:'Willpower — costly.',      result:'Routine done but energy crashed by midday. Stress took a toll.',          stats:{health:-6,energy:-8,confidence:4,freshness:8,xp:8,coins:1,heat:0}  },
+      { text:'Leave — too wound up right now',   hint:'Honest, but costly.',      result:'Walked out. Without the routine, the morning felt harder to manage.',     stats:{health:-4,confidence:-8,energy:4,freshness:-12,xp:3,coins:0,heat:2} },
+    ]},
+  { icon:'🍕', station:'Sunset Blvd Radio', title:'Breakfast Disaster',
+    scene:'You open the fridge. Nothing obvious to eat. You have 10 minutes. The convenience store is two minutes away.',
+    choices:[
+      { text:'Go to the store — grab something quick', hint:'Small effort, real payoff.',          result:'Grabbed something small. Energy held up through the morning.',        stats:{health:8,energy:14,confidence:5,freshness:0,xp:10,coins:2,heat:0}  },
+      { text:'Just have water',                        hint:'Something is better than nothing.',   result:'Hydrated and held steady. Not a full breakfast but a smart call.',    stats:{health:4,energy:8,confidence:2,freshness:2,xp:6,coins:1,heat:0}   },
+      { text:'Skip breakfast entirely',                hint:'Fastest option, highest cost.',       result:'By mid-morning energy had dropped hard. Focus gone. Heat crept up.',  stats:{health:-8,energy:-14,confidence:-6,freshness:0,xp:2,coins:0,heat:1} },
+    ]},
+  { icon:'🧦', station:'Vice Bridge FM', title:'The Outfit Problem',
+    scene:'Only clean socks are odd ones. Your top has a stain. You\'re running on schedule.',
+    choices:[
+      { text:'Own it — odd socks are a choice',   hint:'Confidence play.',          result:'Decided odd socks were a statement. Confidence actually went up.',      stats:{confidence:14,freshness:4,energy:4,xp:10,coins:2,heat:-1} },
+      { text:'Find something else — 5 minutes',   hint:'Costs time, pays off.',     result:'Found something cleaner. Freshness and confidence both up. Worth it.',  stats:{confidence:10,freshness:10,energy:-4,xp:8,coins:2,heat:-1} },
+      { text:'Wear it, no time to care',           hint:'Quickest, self-conscious.', result:'Spent the morning hoping no one noticed. Confidence dipped.',           stats:{confidence:-10,freshness:-4,energy:2,xp:3,coins:0,heat:1}  },
+    ]},
+  { icon:'📱', station:'Sunset Blvd Radio', title:'Phone Trap',
+    scene:'You pick up your phone to check the time. Somehow 12 minutes pass.',
+    choices:[
+      { text:'Phone down — push through the routine',  hint:'Discipline move.',      result:'Back on track. Lost some time but finished more than you would have.',  stats:{confidence:8,freshness:6,energy:-4,health:4,xp:10,coins:2,heat:-1} },
+      { text:'Keep scrolling — start in a minute',     hint:'You won\'t.',            result:'Three more minutes gone. Routine cut short. Heat level up.',            stats:{confidence:-8,freshness:-10,energy:2,health:-4,xp:2,coins:0,heat:2} },
+      { text:'Set a 5-minute timer and stop',          hint:'Smart self-control.',    result:'Timer set. Got back on track and felt good about the discipline.',       stats:{confidence:12,energy:5,freshness:4,health:2,xp:12,coins:3,heat:0}  },
+    ]},
+  { icon:'🤒', station:'Vice Bridge FM', title:'Not Feeling Great',
+    scene:'You woke up feeling off. Not ill exactly — just heavy. The routine feels like a mountain.',
+    choices:[
+      { text:'Do the basics — wash and eat only',      hint:'Minimum viable morning.',  result:'Not a full routine, but you got the most important things done.',     stats:{health:10,energy:8,freshness:10,confidence:4,xp:10,coins:2,heat:0}  },
+      { text:'Push through the full routine',          hint:'Sometimes it helps.',      result:'Hard going, but by the end you felt more like yourself.',             stats:{health:10,energy:6,freshness:18,confidence:10,xp:16,coins:4,heat:-1} },
+      { text:'Go back to bed — rest is valid',         hint:'Valid, costly today.',     result:'You rested. Sometimes right. Routine didn\'t happen today.',          stats:{health:6,energy:14,freshness:-12,confidence:-6,xp:4,coins:0,heat:1} },
+    ]},
+  { icon:'👥', station:'Sunset Blvd Radio', title:'Someone Notices',
+    scene:'A friend says "you look tired today" as you arrive. First thing they say.',
+    choices:[
+      { text:'"Yeah, rough morning — getting there"',  hint:'Honest and grounded.',   result:'Straight about it. People respect that. Confidence held steady.',      stats:{confidence:8,energy:6,freshness:0,xp:8,coins:2,heat:0}   },
+      { text:'Shrug and change the subject',           hint:'Deflect and move on.',   result:'Moved on quickly. Neutral outcome.',                                   stats:{confidence:2,energy:2,freshness:0,xp:5,coins:1,heat:0}   },
+      { text:'Feel self-conscious about it',           hint:'Natural but costly.',    result:'The comment sat with you. Confidence and energy both dropped.',         stats:{confidence:-12,energy:-8,freshness:0,xp:3,coins:0,heat:1} },
+    ]},
+  { icon:'🚿', station:'Vice Bridge FM', title:'Cold Water Surprise',
+    scene:'The hot water ran out. You\'re standing there with shampoo in your hair. Cold water only.',
+    choices:[
+      { text:'Power through — cold shower, finish strong', hint:'Shocking but effective.',    result:'Braved it. Freshness maxed. Energy spiked unexpectedly. Respect.',    stats:{freshness:22,energy:14,health:8,confidence:10,xp:14,coins:3,heat:-1} },
+      { text:'Rinse quickly — minimal cold exposure',      hint:'Efficient compromise.',      result:'Quick rinse, job done. Freshness up, energy fine.',                    stats:{freshness:14,energy:4,health:4,confidence:6,xp:9,coins:2,heat:0}   },
+      { text:'Bail — come back later',                     hint:'Avoids discomfort, costly.', result:'Stepped out. Freshness didn\'t happen. Heat crept up.',                 stats:{freshness:-8,energy:4,confidence:-6,xp:3,coins:0,heat:1}            },
+    ]},
+  { icon:'⏰', station:'Sunset Blvd Radio', title:'Alarm Didn\'t Go Off',
+    scene:'You woke up 20 minutes late. That\'s 20 minutes of routine gone.',
+    choices:[
+      { text:'Wash and teeth only — the two biggest',  hint:'Prioritise the essentials.',   result:'Smart prioritisation. The two most impactful tasks done.',            stats:{freshness:18,health:10,confidence:10,energy:2,xp:12,coins:3,heat:0}  },
+      { text:'Rush everything — try to do it all',     hint:'High effort, mixed results.',   result:'Half-done tasks, stressed start. Energy dropped from the panic.',      stats:{freshness:8,health:4,confidence:-4,energy:-10,xp:7,coins:1,heat:1}  },
+      { text:'Take your time properly, accept being late', hint:'Full routine, late arrival.', result:'Full routine done. Felt great but arrived significantly late.',      stats:{freshness:20,health:10,confidence:12,energy:4,xp:10,coins:2,heat:2}  },
+    ]},
+  { icon:'🧴', station:'Vice Bridge FM', title:'Ran Out of Supplies',
+    scene:'No shampoo. No deodorant. Just soap and a spare toothbrush.',
+    choices:[
+      { text:'Work with what you have — soap and teeth', hint:'Make the most of it.',      result:'Adapted. Soap wash and teeth done — you showed up clean. Resilience.',  stats:{freshness:12,health:8,confidence:8,energy:2,xp:10,coins:2,heat:0}  },
+      { text:'Skip washing — not worth it without products', hint:'Avoidance.',           result:'Skipped it. Freshness suffered. Products help but aren\'t everything.', stats:{freshness:-10,confidence:-8,energy:2,xp:3,coins:0,heat:2}          },
+      { text:'Ask someone in the house for supplies',   hint:'Takes confidence, works.',   result:'Asked. Got what you needed. Freshness and confidence both up.',          stats:{freshness:18,confidence:12,health:6,energy:2,xp:12,coins:2,heat:-1} },
+    ]},
+  { icon:'🌧️', station:'Sunset Blvd Radio', title:'Weather Hit Different',
+    scene:'It\'s raining properly. You just got clean. Your coat is at the other end of the house. Leaving in 3 minutes.',
+    choices:[
+      { text:'Get the coat — 2 minutes well spent',   hint:'Worth the extra effort.',   result:'Grabbed it. Stayed dry, stayed fresh.',                                  stats:{freshness:6,confidence:10,energy:-2,health:4,xp:8,coins:2,heat:0}   },
+      { text:'Hood up on your jumper',                hint:'Quick, low-cost solution.', result:'A bit damp by arrival but manageable.',                                   stats:{freshness:-4,confidence:4,energy:0,health:0,xp:5,coins:1,heat:0}    },
+      { text:'Refuse — skip today',                   hint:'Avoidance choice.',         result:'Stayed home. Freshness decayed fast without activity. Heat up.',          stats:{freshness:-14,confidence:-10,energy:6,health:-4,xp:2,coins:0,heat:2} },
+    ]},
+];
+
+const achievements = {
+  fullloadout:  { id:'ach-fullloadout',  icon:'🎯', name:'Full Loadout',   desc:'All six routine actions complete.' },
+  freshprince:  { id:'ach-freshprince',  icon:'✨', name:'Fresh Prince',   desc:'Reach 90+ Freshness.' },
+  untouchable:  { id:'ach-untouchable',  icon:'🚫', name:'Untouchable',    desc:'Zero heat with 4+ tasks done.' },
+  levelup:      { id:'ach-levelup',      icon:'⬆️', name:'Level Up',       desc:'Reach Level 3.' },
+  streakmaster: { id:'ach-streakmaster', icon:'🔥', name:'Streak Master',  desc:'Hit a 3-day streak.' },
+  sidehustle:   { id:'ach-sidehustle',   icon:'💼', name:'Side Hustle',    desc:'Complete 3 side missions.' },
+  speedrun:     { id:'ach-speedrun',     icon:'⚡', name:'Speed Run',      desc:'4 tasks in under 2 minutes.' },
+  survivor:     { id:'ach-survivor',     icon:'🛡️', name:'Survivor',       desc:'Max heat but still fresh.' },
+};
+
+// ═══════════════════════════════════════════════
+// CHAR SELECT + GAME START
+// ═══════════════════════════════════════════════
+function selectChar(n) {
+  selectedChar = n;
+  document.getElementById('card-jason').classList.toggle('selected', n==='jason');
+  document.getElementById('card-lucia').classList.toggle('selected', n==='lucia');
+  document.getElementById('start-btn').classList.add('ready');
+}
+function startGame() {
+  if (!selectedChar) return;
+  document.getElementById('char-select-screen').style.display = 'none';
+  document.getElementById('game-container').style.display = 'block';
+  document.getElementById('header-avatar').textContent  = selectedChar==='jason' ? '👦' : '👩';
+  document.getElementById('header-charname').textContent = selectedChar==='jason' ? 'Jason' : 'Lucia';
+  loadGame(); updateUI(); setRadio('event'); startDecayTimer();
+}
+function restartGame() {
+  document.getElementById('end-overlay').classList.remove('open');
+  currentDay = 1; heatLevel = 0; sideMissionsCompleted = 0;
+  earnedAchievements = {}; usedAdvIndices = [];
+  stats = { health:50, confidence:50, energy:50, freshness:50, xp:0, level:1, coins:0, streak:0 };
+  completed = { wash:false, teeth:false, clothes:false, deodorant:false, breakfast:false, bag:false };
+  upgrades  = { playlist:false, soap:false, checklist:false, alarm:false };
+  localStorage.removeItem(getSaveKey());
+  Object.values(achievements).forEach(a => document.getElementById(a.id).classList.remove('earned'));
+  sessionStart = Date.now(); comboCount = 0;
+  updateUI(); startDecayTimer();
+  setLog('New game started. Survive all 30 days in Vice Bridge City.', 'highlight');
+}
+
+// ═══════════════════════════════════════════════
+// DECAY TIMER
+// ═══════════════════════════════════════════════
+function getDecayTotal() { return upgrades.alarm ? 90 : 60; }
+function startDecayTimer() {
+  if (decayInterval) clearInterval(decayInterval);
+  decayTimer = getDecayTotal();
+  decayInterval = setInterval(() => {
+    decayTimer--;
+    const pct = (decayTimer / getDecayTotal()) * 100;
+    document.getElementById('decay-fill').style.width = pct + '%';
+    document.getElementById('decay-time-label').textContent = decayTimer + 's';
+    if (decayTimer <= 0) {
+      const amt = upgrades.alarm ? 3 : 7;
+      stats.freshness = Math.max(0, stats.freshness - amt);
+      if (heatLevel >= 3) stats.confidence = Math.max(0, stats.confidence - 2);
+      decayTimer = getDecayTotal();
+      updateUI();
+      if (stats.freshness <= 20 && !completed.wash)
+        setLog('⚠️ Freshness dropping fast. Get that routine moving.', 'danger');
+    }
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+const clamp = (v,mn,mx) => Math.max(mn, Math.min(mx, v));
+function updateBar(n,v) { document.getElementById(n+'-fill').style.width=v+'%'; document.getElementById(n+'-val').textContent=v+'/100'; }
+function flashBar(n)    { const f=document.getElementById(n+'-fill'); f.classList.remove('bar-flash'); void f.offsetWidth; f.classList.add('bar-flash'); }
+function setLog(msg, type='normal') {
+  const el = document.getElementById('log');
+  const cls = { success:'log-success', highlight:'log-highlight', warning:'log-warning', danger:'log-danger' };
+  const col = { success:'var(--green)', highlight:'var(--cyan)', warning:'var(--orange)', danger:'var(--pink)', normal:'var(--yellow)' };
+  el.innerHTML = cls[type] ? `<span class="${cls[type]}">${msg}</span>` : msg;
+  el.style.borderLeftColor = col[type] || 'var(--yellow)';
+}
+function setRadio(k) {
+  const lines = radioLines[k]; if (!lines) return;
+  const p = lines[Math.floor(Math.random()*lines.length)];
+  document.getElementById('radio-station').textContent = p[0];
+  document.getElementById('radio-text').textContent    = p[1];
+}
+function updateHeat() {
+  heatLevel = clamp(heatLevel, 0, 5);
+  for (let i=1;i<=5;i++) document.getElementById('star'+i).classList.toggle('active', i<=heatLevel);
+  const statuses = ['Clean record','Eyes on you','Heat rising','Feds watching','Vice Bridge wants you','Maximum heat'];
+  document.getElementById('heat-status').textContent = statuses[heatLevel];
+  const warn = document.getElementById('heat-warning');
+  warn.textContent = heatLevel >= HEAT_BLOCK ? '⚠️ Too hot to advance' : '';
+}
+function updateDayBanner() {
+  document.getElementById('day-num').textContent = currentDay;
+  document.getElementById('day-progress-fill').style.width = ((currentDay-1)/MAX_DAYS*100) + '%';
+  const obj = heatLevel >= HEAT_BLOCK
+    ? `Heat too high to advance — cool it down first`
+    : `Complete routine tasks, then End Day`;
+  document.getElementById('day-objective').textContent = obj;
+  const btn = document.getElementById('new-day-btn');
+  if (heatLevel >= HEAT_BLOCK) { btn.classList.add('blocked'); btn.disabled = false; }
+  else                          { btn.classList.remove('blocked'); btn.disabled = false; }
+}
+function updateSafeHouse() {
+  const c = [upgrades.playlist,upgrades.soap,upgrades.checklist,upgrades.alarm].filter(Boolean).length;
+  document.getElementById('safehouse').className = 'safehouse' + (c>=4?' maxed':c>0?' upgraded':'');
+  document.getElementById('safehouse-visual').textContent = ['🏠','🏠✨','🏡✨','🏡🌟','🏰🌟'][Math.min(c,4)];
+  document.getElementById('safehouse-name').textContent   = ['Base Safe House','Upgraded','Loaded','Fortified','Vice Bridge HQ'][Math.min(c,4)];
+  ['playlist','soap','checklist','alarm'].forEach(u => document.getElementById('pip-'+u).classList.toggle('unlocked', upgrades[u]));
+}
+function updateFlavourText() {
+  const {freshness,confidence,energy} = stats;
+  let t = '';
+  if (heatLevel >= 4)       t = 'Maximum heat. VBC is fully on you. Build that routine back up fast.';
+  else if (heatLevel >= HEAT_BLOCK) t = 'Heat too high — you cannot advance until you cool it down.';
+  else if (freshness < 20)  t = 'Freshness critical. Streets can tell. Wanted pressure building.';
+  else if (energy < 25)     t = 'Running on empty. Breakfast or a break — something needs to give.';
+  else if (confidence < 25) t = 'Confidence tanked. A clean outfit or a task tick could turn this around.';
+  else if (freshness >= 90 && confidence >= 80) t = 'Untouchable. VBC respects it. Full loadout looking clean.';
+  else if (freshness >= 80) t = 'Fresh and ready. Heat low. VBC looking good today.';
+  else if (confidence >= 80) t = 'Confidence peaking. Whatever you chose this morning — it worked.';
+  else if (energy >= 80)    t = 'Energy loaded. Mood stable. Best version of the morning unlocked.';
+  else                      t = 'Routine in progress. Keep building the loadout.';
+  document.getElementById('flavour-text').textContent = t;
+}
+let toastTimeout = null;
+function showToast(icon,name,desc) {
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-name').textContent = name;
+  document.getElementById('toast-desc').textContent = desc;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 3400);
+}
+function checkAchievements() {
+  const cc = Object.values(completed).filter(Boolean).length;
+  function earn(k) {
+    if (earnedAchievements[k]) return;
+    earnedAchievements[k] = true;
+    document.getElementById(achievements[k].id).classList.add('earned');
+    showToast(achievements[k].icon, achievements[k].name, achievements[k].desc);
+  }
+  if (cc >= 6)                                   earn('fullloadout');
+  if (stats.freshness >= 90)                     earn('freshprince');
+  if (heatLevel === 0 && cc >= 4)                earn('untouchable');
+  if (stats.level >= 3)                          earn('levelup');
+  if (stats.streak >= 3)                         earn('streakmaster');
+  if (sideMissionsCompleted >= 3)                earn('sidehustle');
+  if (cc >= 4 && (Date.now()-sessionStart)/1000 < 120) earn('speedrun');
+  if (heatLevel === 5 && stats.freshness > 30)   earn('survivor');
+}
+function unlockReflection() {
+  const cc = Object.values(completed).filter(Boolean).length;
+  if (cc >= 4 || stats.level >= 3 || stats.streak >= 2)
+    document.getElementById('reflection-section').style.display = 'block';
+}
+function updateUI() {
+  ['health','confidence','energy','freshness'].forEach(s => stats[s] = clamp(stats[s],0,100));
+  while (stats.xp >= stats.level*50) {
+    stats.xp -= stats.level*50; stats.level++; stats.coins += 5;
+    setLog('LEVEL UP! Reached Level '+stats.level+'. Bonus coins.', 'success');
+    showToast('⬆️','Level Up!','Reached Level '+stats.level);
+  }
+  document.getElementById('level-val').textContent  = stats.level;
+  document.getElementById('xp-val').textContent     = stats.xp;
+  document.getElementById('coins-val').textContent  = stats.coins;
+  document.getElementById('streak-val').textContent = stats.streak;
+  ['health','confidence','energy','freshness'].forEach(s => updateBar(s, stats[s]));
+  updateHeat(); updateDayBanner(); updateSafeHouse(); updateFlavourText();
+  for (let task in completed) {
+    const item = taskInfo[task];
+    const ce = document.getElementById(item.checkId), be = document.getElementById(item.buttonId);
+    if (completed[task]) { ce.textContent='✅ '+item.label; ce.classList.add('complete'); be.disabled=true; }
+    else                 { ce.textContent='⬜ '+item.label; ce.classList.remove('complete'); be.disabled=false; }
+  }
+  checkAchievements(); unlockReflection(); autoSave();
+}
+
+// ═══════════════════════════════════════════════
+// APPLY TASK REWARDS
+// ═══════════════════════════════════════════════
+function applyTask(task, mult) {
+  mult = mult || 1;
+  const item = taskInfo[task];
+  let bonus = 1;
+  if (upgrades.soap && task==='wash')                            bonus += 0.3;
+  if (upgrades.playlist && ['wash','teeth','clothes'].includes(task)) stats.energy += 5;
+  if (upgrades.checklist)                                        stats.confidence += 2;
+  if (heatLevel >= 3)                                            stats.confidence -= 6;
+  const now = Date.now();
+  if (now - lastComboTime < 8000) { comboCount++; } else { comboCount = 1; }
+  lastComboTime = now;
+  if (comboCount >= 3) { mult = Math.min(mult * 1.5, 1.5); showToast('⚡','Combo!','×1.5 XP bonus'); }
+  stats.health     += Math.round(item.health     * bonus * mult);
+  stats.confidence += Math.round(item.confidence * bonus * mult);
+  stats.energy     += Math.round(item.energy     * bonus * mult);
+  stats.freshness  += Math.round(item.freshness  * bonus * mult);
+  stats.xp         += Math.round(item.xp   * mult);
+  stats.coins      += Math.round(item.coins * mult);
+  heatLevel        += item.heat;
+  decayTimer = getDecayTotal();
+  const biggest = ['health','confidence','energy','freshness'].reduce((a,b) => Math.abs(item[a])>Math.abs(item[b])?a:b);
+  flashBar(biggest);
+  checkCombos(); completed[task] = true; updateUI();
+}
+function checkCombos() {
+  if (completed.wash && completed.clothes && completed.deodorant) {
+    stats.confidence += 10; stats.freshness += 12; stats.xp += 10; heatLevel = Math.max(0, heatLevel-1);
+  }
+  if (completed.teeth && completed.breakfast) { stats.health += 6; stats.energy += 6; stats.xp += 6; }
+  if (completed.bag   && completed.breakfast) { stats.confidence += 6; stats.energy += 6; stats.xp += 6; }
+  if (Object.values(completed).every(Boolean)) { stats.xp += 20; stats.coins += 5; showToast('🎯','Full Loadout!','+20 XP +5 coins'); }
+}
+
+// ═══════════════════════════════════════════════
+// NON-MINIGAME ACTIONS
+// ═══════════════════════════════════════════════
+function takeBreak() { stats.energy+=14; stats.confidence+=5; stats.freshness-=3; stats.xp+=7; stats.coins+=1; flashBar('energy'); setRadio('break'); setLog('Regulation break. Energy recovered.','highlight'); updateUI(); }
+function skipMoment() { stats.energy+=7; stats.health-=4; stats.confidence-=5; stats.freshness-=10; stats.xp+=2; heatLevel=Math.min(5,heatLevel+1); flashBar('freshness'); setRadio('skip'); setLog('Stayed in bed. Energy up, freshness dipped, heat crept up.','warning'); updateUI(); }
+
+// ═══════════════════════════════════════════════
+// DAY PROGRESSION — GATED BY HEAT
+// ═══════════════════════════════════════════════
+function tryNewDay() {
+  if (heatLevel >= HEAT_BLOCK) {
+    setLog('Heat level too high to advance. Cool it down first — complete hygiene tasks or handle a city event.', 'danger');
+    return;
+  }
+  const cc = Object.values(completed).filter(Boolean).length;
+  if (cc >= 4) { stats.streak++; stats.xp += 15; stats.coins += 4; heatLevel = Math.max(0, heatLevel-1); }
+  else if (cc < 3) { heatLevel = Math.min(5, heatLevel+1); }
+
+  currentDay++;
+  if (currentDay > MAX_DAYS) { showEndScreen(true); return; }
+
+  if (stats.health <= 0 || stats.freshness <= 0) { showEndScreen(false, 'stats'); return; }
+
+  completed = { wash:false, teeth:false, clothes:false, deodorant:false, breakfast:false, bag:false };
+  stats.health     = Math.max(30, stats.health     - 10);
+  stats.confidence = Math.max(30, stats.confidence - 10);
+  stats.energy     = Math.max(30, stats.energy     - 10);
+  stats.freshness  = Math.max(20, stats.freshness  - 22);
+  sessionStart = Date.now(); comboCount = 0;
+  currentChallenge = null; challengeCompleted = false;
+  document.getElementById('challenge-text').textContent = 'Press "New Side Mission" for a challenge.';
+  setLog(`Day ${currentDay} of ${MAX_DAYS}. Routine resets. Keep the heat down.`, 'highlight');
+  updateUI(); startDecayTimer();
+}
+
+function showEndScreen(won, reason) {
+  if (decayInterval) clearInterval(decayInterval);
+  const overlay = document.getElementById('end-overlay');
+  document.getElementById('end-icon').textContent  = won ? '🏆' : '💀';
+  document.getElementById('end-title').textContent = won ? 'You Survived' : 'Game Over';
+  let body = '';
+  if (won) {
+    body = `You made it through all 30 days in Vice Bridge City. Level ${stats.level}, streak of ${stats.streak}. The routine carried you.`;
+  } else if (reason === 'stats') {
+    body = `Day ${currentDay}. Your stats collapsed — health or freshness hit zero. Vice Bridge doesn't wait.`;
+  } else {
+    body = `Day ${currentDay}. The city caught up with you.`;
+  }
+  document.getElementById('end-body').textContent = body;
+  overlay.classList.add('open');
+}
+
+// ═══════════════════════════════════════════════
+// SIDE MISSIONS
+// ═══════════════════════════════════════════════
+function newChallenge() { currentChallenge=challenges[Math.floor(Math.random()*challenges.length)]; challengeCompleted=false; document.getElementById('challenge-text').textContent=currentChallenge.text; setLog('New side mission. Do it, swap it, or ignore it.','normal'); }
+function completeChallenge() {
+  if (!currentChallenge||challengeCompleted) { setLog('No active side mission ready.','warning'); return; }
+  const cc = Object.values(completed).filter(Boolean).length;
+  let ok = false;
+  if (currentChallenge.requiredTasks) { ok=currentChallenge.requiredTasks.every(t=>completed[t]); if(currentChallenge.required)ok=ok&&cc>=currentChallenge.required; }
+  else if (currentChallenge.required)   ok = cc >= currentChallenge.required;
+  else if (currentChallenge.special==='energy') ok = completed.breakfast && stats.energy >= 65;
+  else if (currentChallenge.special==='heat')   ok = heatLevel===0 && cc>=4;
+  else if (currentChallenge.special==='speed')  ok = cc>=4 && (Date.now()-sessionStart)/1000<90;
+  if (ok) { challengeCompleted=true; sideMissionsCompleted++; stats.xp+=currentChallenge.rewardXp; stats.coins+=currentChallenge.rewardCoins; stats.streak+=1; setLog('SIDE MISSION COMPLETE!','success'); }
+  else setLog('Not there yet — keep building the loadout.','warning');
+  updateUI();
+}
+function buyUpgrade(type) {
+  const prices={playlist:8,soap:10,checklist:12,alarm:15}, names={playlist:'Playlist',soap:'Favourite Soap',checklist:'Visual Checklist',alarm:'Early Alarm'};
+  if (upgrades[type]) { setLog(names[type]+' already unlocked.','warning'); return; }
+  if (stats.coins<prices[type]) { setLog('Not enough coins for '+names[type]+'.','warning'); return; }
+  stats.coins-=prices[type]; upgrades[type]=true;
+  if (type==='alarm') startDecayTimer();
+  setLog('Safe house upgraded: '+names[type]+'.','success'); updateUI();
+}
+
+// ═══════════════════════════════════════════════
+// ADVENTURE EVENTS
+// ═══════════════════════════════════════════════
+function triggerAdventure() {
+  if (usedAdvIndices.length >= adventureEvents.length) usedAdvIndices = [];
+  let idx; do { idx = Math.floor(Math.random()*adventureEvents.length); } while (usedAdvIndices.includes(idx));
+  usedAdvIndices.push(idx);
+  const ev = adventureEvents[idx];
+  setRadio('event');
+  document.getElementById('adv-icon').textContent    = ev.icon;
+  document.getElementById('adv-station').textContent = ev.station;
+  document.getElementById('adv-title').textContent   = ev.title;
+  document.getElementById('adv-scene').textContent   = ev.scene;
+  document.getElementById('adv-result').style.display = 'none';
+  document.getElementById('adv-close-btn').style.display = 'none';
+  const ch = document.getElementById('adv-choices');
+  ch.innerHTML = '';
+  ev.choices.forEach((c,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'adv-choice';
+    btn.innerHTML = `${c.text}<span class="choice-hint">${c.hint}</span>`;
+    btn.onclick = () => resolveAdventure(ev, i);
+    ch.appendChild(btn);
+  });
+  document.getElementById('adv-overlay').classList.add('open');
+}
+function resolveAdventure(ev, idx) {
+  const c = ev.choices[idx], s = c.stats;
+  if (s.health)    stats.health     += s.health;
+  if (s.confidence)stats.confidence += s.confidence;
+  if (s.energy)    stats.energy     += s.energy;
+  if (s.freshness) stats.freshness  += s.freshness;
+  if (s.xp)        stats.xp        += s.xp;
+  if (s.coins)     stats.coins     += s.coins;
+  if (s.heat)      heatLevel       += s.heat;
+  document.querySelectorAll('.adv-choice').forEach(b => b.disabled = true);
+  const parts = [];
+  if (s.health)    parts.push(`Health ${s.health>0?'+':''}${s.health}`);
+  if (s.confidence)parts.push(`Confidence ${s.confidence>0?'+':''}${s.confidence}`);
+  if (s.energy)    parts.push(`Energy ${s.energy>0?'+':''}${s.energy}`);
+  if (s.freshness) parts.push(`Freshness ${s.freshness>0?'+':''}${s.freshness}`);
+  if (s.xp)        parts.push(`+${s.xp} XP`);
+  if (s.coins)     parts.push(`+${s.coins} coins`);
+  if (s.heat)      parts.push(`Heat ${s.heat>0?'+':''}${s.heat}`);
+  document.getElementById('adv-result-text').textContent  = c.result;
+  document.getElementById('adv-result-stats').textContent = parts.join('  ·  ');
+  document.getElementById('adv-result').style.display     = 'block';
+  document.getElementById('adv-close-btn').style.display  = 'block';
+  setLog('VBC Event: '+ev.title+'.','highlight');
+  updateUI();
+}
+function closeAdventure() { document.getElementById('adv-overlay').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════════════
+function getSaveKey() { return 'gtr6_'+( selectedChar||'default'); }
+function autoSave() { localStorage.setItem(getSaveKey(), JSON.stringify({stats,completed,upgrades,heatLevel,currentDay,sideMissionsCompleted,earnedAchievements,selectedChar,usedAdvIndices})); }
+function saveGame() { autoSave(); setLog('Progress saved.','success'); }
+function loadGame() {
+  try {
+    const d = JSON.parse(localStorage.getItem(getSaveKey())||'{}');
+    if (d.stats)                stats = {...stats,...d.stats};
+    if (d.completed)            completed = {...completed,...d.completed};
+    if (d.upgrades)             upgrades  = {...upgrades,...d.upgrades};
+    if (typeof d.heatLevel==='number')             heatLevel = d.heatLevel;
+    if (typeof d.currentDay==='number')            currentDay = d.currentDay;
+    if (typeof d.sideMissionsCompleted==='number') sideMissionsCompleted = d.sideMissionsCompleted;
+    if (d.earnedAchievements) { earnedAchievements=d.earnedAchievements; for(const k in earnedAchievements) if(earnedAchievements[k]&&achievements[k]) document.getElementById(achievements[k].id).classList.add('earned'); }
+    if (d.usedAdvIndices) usedAdvIndices = d.usedAdvIndices;
+    setLog('Save loaded. Welcome back to Vice Bridge City.','highlight');
+  } catch(e) {}
+}
+function emailReflection() {
+  const text = document.getElementById('reflection-input').value.trim();
+  if (!text) { setLog('Write something in the reflection box first.','warning'); return; }
+  const char = selectedChar==='jason' ? 'Jason' : 'Lucia';
+  const tasks = Object.entries(completed).filter(([,v])=>v).map(([k])=>taskInfo[k].label).join(', ')||'None';
+  const sub  = `Grand Theft Routine 6 – Reflection (${char}, Day ${currentDay}, Level ${stats.level})`;
+  const body = `Character: ${char}\nDay: ${currentDay}/30 | Level: ${stats.level} | Streak: ${stats.streak}\nCompleted: ${tasks}\n\nReflection:\n${text}`;
+  window.open(`https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`,'_blank');
+  setLog('Opening Gmail to send reflection to Jay.','success');
+}
+
+// ═══════════════════════════════════════════════
+// MINI-GAMES
+// ═══════════════════════════════════════════════
+const canvas = document.getElementById('modal-canvas');
+const ctx    = canvas.getContext('2d');
+let mgTask=null, mgAttempt=0, mgAnimFrame=null, mgTimerInterval=null;
+let activeKeyHandler = null;
+
+function openMinigame(task) {
+  if (completed[task]) return;
+  mgTask=task; mgAttempt=0;
+  document.getElementById('modal-retry-btn').style.display='';
+  document.getElementById('modal-skip-btn').style.display='';
+  document.getElementById('skip-note').style.display='';
+  document.getElementById('modal-result').textContent='';
+  launchMinigame(task);
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); stopMinigame(); }
+function stopMinigame() {
+  if (mgAnimFrame) { cancelAnimationFrame(mgAnimFrame); mgAnimFrame=null; }
+  if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval=null; }
+  if (activeKeyHandler) { document.removeEventListener('keydown', activeKeyHandler); activeKeyHandler=null; }
+}
+function retryMinigame() { mgAttempt++; document.getElementById('modal-result').textContent=''; launchMinigame(mgTask); }
+function skipMinigame()  { stopMinigame(); applyTask(mgTask,0.25); setLog('Skipped '+taskInfo[mgTask].label+' — partial reward applied.','warning'); closeModal(); }
+function minigameWin(msg) {
+  stopMinigame();
+  document.getElementById('modal-result').textContent = '✅ '+msg;
+  document.getElementById('modal-retry-btn').style.display='none';
+  document.getElementById('modal-skip-btn').style.display='none';
+  document.getElementById('skip-note').style.display='none';
+  applyTask(mgTask, mgAttempt===0 ? 1 : 0.5);
+  setTimeout(closeModal, 1400);
+}
+function minigameFail(msg) { stopMinigame(); document.getElementById('modal-result').textContent='❌ '+msg+' — retry or skip.'; }
+function resizeCanvas() { const w=document.getElementById('modal-canvas-wrap').clientWidth||440; canvas.width=w; canvas.height=Math.round(w*.59); }
+function getCP(e) { const r=canvas.getBoundingClientRect(),sx=canvas.width/r.width,sy=canvas.height/r.height; if(e.touches)return{x:(e.touches[0].clientX-r.left)*sx,y:(e.touches[0].clientY-r.top)*sy}; return{x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy}; }
+function setKeyHints(pills) { // pills = [{key,label,active}]
+  const row = document.getElementById('key-hint-row');
+  row.innerHTML = pills.map(p=>`<span class="key-pill${p.active?' active-key':''}" id="kp-${p.key}">${p.label}</span>`).join('');
+  row.style.display = pills.length ? '' : 'none';
+}
+function flashKeyPill(key) {
+  const el = document.getElementById('kp-'+key);
+  if (!el) return;
+  el.classList.add('active-key');
+  setTimeout(()=>el.classList.remove('active-key'), 300);
+}
+function startTimerBar(dur) {
+  const bar=document.getElementById('modal-timer-bar');
+  bar.style.width='100%'; bar.style.background='var(--cyan)';
+  let elapsed=0;
+  mgTimerInterval=setInterval(()=>{
+    elapsed+=100;
+    const pct=Math.max(0,(1-elapsed/dur)*100);
+    bar.style.width=pct+'%';
+    if(pct<30) bar.style.background='var(--orange)';
+    if(pct<10) bar.style.background='var(--pink)';
+  },100);
+}
+
+function launchMinigame(task) {
+  stopMinigame(); resizeCanvas();
+  document.getElementById('key-hint-row').style.display='none';
+  const titles  = {wash:'🚿 Wash / Shower',teeth:'🪥 Brush Teeth',clothes:'👕 Clean Clothes',deodorant:'💨 Deodorant',breakfast:'🥣 Breakfast / Water',bag:'🎒 Pack Useful Items'};
+  const subs    = {wash:'Press the key shown in each zone to scrub it. Get 5 zones before time runs out!',teeth:'Press the number key shown on the flashing tooth. Hit 22 zones to finish!',clothes:'Drag and flick clothes into the basket — get 3 in!',deodorant:'Move your mouse/finger into the target zone and hold steady for 3 seconds.',breakfast:'Move your mouse/finger left or right to tilt the cup and pour. Fill to the line!',bag:'Move left/right to catch falling essentials. Dodge the junk!'};
+  document.getElementById('modal-title').textContent    = titles[task];
+  document.getElementById('modal-subtitle').textContent = subs[task] + (mgAttempt>0?' (retry — half reward if you win)':'');
+  ({wash:launchWash,teeth:launchTeeth,clothes:launchClothes,deodorant:launchDeodorant,breakfast:launchBreakfast,bag:launchBag})[task]();
+}
+
+// ── WASH — keyboard zones ──────────────────────
+function launchWash() {
+  const W=canvas.width, H=canvas.height;
+  const NEEDED=5, DURATION=16000;
+  const zones=[
+    {label:'Head', key:'q', cx:W*.5,  cy:H*.12, r:H*.09},
+    {label:'Neck', key:'w', cx:W*.5,  cy:H*.26, r:H*.055},
+    {label:'L Arm',key:'a', cx:W*.28, cy:H*.42, r:H*.075},
+    {label:'R Arm',key:'d', cx:W*.72, cy:H*.42, r:H*.075},
+    {label:'Chest',key:'s', cx:W*.5,  cy:H*.42, r:H*.1},
+    {label:'Belly',key:'z', cx:W*.5,  cy:H*.62, r:H*.09},
+    {label:'Legs', key:'x', cx:W*.5,  cy:H*.83, r:H*.09},
+  ];
+  const scrubbed = zones.map(()=>0);
+  const startTime = Date.now();
+  startTimerBar(DURATION);
+  setKeyHints(zones.map(z=>({key:z.key, label:`[${z.key.toUpperCase()}] ${z.label}`})));
+
+  const keyHandler = (e) => {
+    const k = e.key.toLowerCase();
+    const idx = zones.findIndex(z=>z.key===k);
+    if (idx<0) return;
+    scrubbed[idx] = Math.min(100, scrubbed[idx]+18);
+    flashKeyPill(k);
+  };
+  document.addEventListener('keydown', keyHandler);
+  activeKeyHandler = keyHandler;
+
+  // also allow touch/mouse drag as before
+  let isDown=false;
+  function onMove(e){if(!isDown)return;e.preventDefault();const{x,y}=getCP(e);zones.forEach((z,i)=>{const dx=x-z.cx,dy=y-z.cy;if(Math.sqrt(dx*dx+dy*dy)<z.r+8)scrubbed[i]=Math.min(100,scrubbed[i]+4);});}
+  function onDown(e){isDown=true;onMove(e);}function onUp(){isDown=false;}
+  canvas.addEventListener('mousedown',onDown);canvas.addEventListener('mousemove',onMove);canvas.addEventListener('mouseup',onUp);
+  canvas.addEventListener('touchstart',onDown,{passive:false});canvas.addEventListener('touchmove',onMove,{passive:false});canvas.addEventListener('touchend',onUp);
+  const prevKey = activeKeyHandler;
+  activeKeyHandler = (e) => { keyHandler(e); };
+  document.addEventListener('keydown', activeKeyHandler);
+  // remove the duplicate we just added
+  document.removeEventListener('keydown', keyHandler);
+
+  function cleanup(){
+    canvas.removeEventListener('mousedown',onDown);canvas.removeEventListener('mousemove',onMove);canvas.removeEventListener('mouseup',onUp);
+    canvas.removeEventListener('touchstart',onDown);canvas.removeEventListener('touchmove',onMove);canvas.removeEventListener('touchend',onUp);
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#0a1520'; ctx.fillRect(0,0,W,H);
+    // body outline
+    ctx.strokeStyle='rgba(0,212,212,0.1)'; ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(W*.5,H*.12,H*.1,0,Math.PI*2);ctx.stroke();
+    ctx.strokeRect(W*.35,H*.28,W*.3,H*.38);ctx.strokeRect(W*.2,H*.28,W*.14,H*.3);ctx.strokeRect(W*.66,H*.28,W*.14,H*.3);
+    ctx.strokeRect(W*.35,H*.67,W*.12,H*.28);ctx.strokeRect(W*.53,H*.67,W*.12,H*.28);
+    zones.forEach((z,i)=>{
+      const pct=scrubbed[i]/100;
+      ctx.strokeStyle=pct>=1?'var(--green)':`rgba(0,212,212,${.25+pct*.55})`; ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(z.cx,z.cy,z.r-2,0,Math.PI*2);ctx.stroke();
+      if(pct>0){ctx.strokeStyle=pct>=1?'#2ea86a':'#00d4d4';ctx.lineWidth=4;ctx.beginPath();ctx.arc(z.cx,z.cy,z.r-5,-Math.PI/2,-Math.PI/2+pct*Math.PI*2);ctx.stroke();}
+      ctx.fillStyle=pct>=1?'#2ea86a':'rgba(0,212,212,0.85)';
+      ctx.font=`bold ${Math.round(H*.042)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(pct>=1?'✓':`[${z.key.toUpperCase()}] ${z.label}`,z.cx,z.cy);
+    });
+    const done=scrubbed.filter(v=>v>=100).length;
+    ctx.fillStyle='#ccc'; ctx.font=`bold ${Math.round(H*.05)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText(`${done}/${NEEDED} zones`,10,8);
+    if(done>=NEEDED){cleanup();minigameWin('All zones scrubbed!');return;}
+    if(Date.now()-startTime>=DURATION){cleanup();minigameFail('Time\'s up');return;}
+    mgAnimFrame=requestAnimationFrame(draw);
+  }
+  mgAnimFrame=requestAnimationFrame(draw);
+}
+
+// ── TEETH — keyboard numbered zones ────────────
+function launchTeeth() {
+  const W=canvas.width, H=canvas.height;
+  const TEETH=8, NEEDED=22, DURATION=18000;
+  const tW=W*0.083, tH=H*0.28, startX=(W-TEETH*tW*1.1)/2;
+  let hits=0, activeIdx=-1, activeTimer=0, FLASH=1500, startTime=Date.now();
+  function pickNew(){activeIdx=Math.floor(Math.random()*TEETH);activeTimer=Date.now();}
+  pickNew(); startTimerBar(DURATION);
+  setKeyHints(Array.from({length:8},(_,i)=>({key:String(i+1),label:`[${i+1}]`})));
+
+  const keyHandler = (e) => {
+    const n = parseInt(e.key);
+    if (isNaN(n)||n<1||n>TEETH) return;
+    if (n-1 === activeIdx) { hits++; pickNew(); flashKeyPill(String(n)); }
+  };
+  document.addEventListener('keydown', keyHandler);
+  activeKeyHandler = keyHandler;
+
+  // also allow tap/click
+  function onDown(e){e.preventDefault();const{x,y}=getCP(e);const tx=startX+activeIdx*(tW*1.1),ty=H*.36;if(x>tx&&x<tx+tW&&y>ty&&y<ty+tH){hits++;pickNew();}}
+  canvas.addEventListener('mousedown',onDown);canvas.addEventListener('touchstart',onDown,{passive:false});
+  function cleanup(){canvas.removeEventListener('mousedown',onDown);canvas.removeEventListener('touchstart',onDown);}
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#0d0a08';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#8a4050';ctx.beginPath();ctx.roundRect(startX-8,H*.32,TEETH*tW*1.1+16,H*.1,8);ctx.fill();
+    for(let i=0;i<TEETH;i++){
+      const tx=startX+i*(tW*1.1),ty=H*.36,isActive=i===activeIdx;
+      const pulse=0.5+0.5*Math.sin((Date.now()-activeTimer)*.012);
+      ctx.fillStyle=isActive?`rgba(0,${Math.round(180+75*pulse)},${Math.round(180+75*pulse)},0.9)`:'#e8e8e6';
+      ctx.strokeStyle=isActive?'#00d4d4':'#888';ctx.lineWidth=isActive?2.5:1;
+      ctx.beginPath();ctx.roundRect(tx,ty,tW,tH,6);ctx.fill();ctx.stroke();
+      // key label
+      ctx.fillStyle=isActive?'rgba(0,0,0,0.8)':'#555';
+      ctx.font=`bold ${Math.round(H*.065)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(isActive?`[${i+1}]`:(i+1),tx+tW/2,ty+tH/2);
+    }
+    if(Date.now()-activeTimer>FLASH)pickNew();
+    const foam=hits/NEEDED;if(foam>0){ctx.fillStyle=`rgba(255,255,255,${foam*.12})`;ctx.beginPath();ctx.roundRect(startX-8,H*.36,TEETH*tW*1.1+16,tH*foam,8);ctx.fill();}
+    ctx.fillStyle='#ccc';ctx.font=`bold ${Math.round(H*.05)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(`Brushed: ${hits}/${NEEDED}`,10,8);
+    if(hits>=NEEDED){cleanup();minigameWin('Perfect brushing!');return;}
+    if(Date.now()-startTime>=DURATION){cleanup();minigameFail('Time\'s up');return;}
+    mgAnimFrame=requestAnimationFrame(draw);
+  }
+  mgAnimFrame=requestAnimationFrame(draw);
+}
+
+// ── CLOTHES — flick physics ────────────────────
+function launchClothes(){
+  const W=canvas.width,H=canvas.height,NEEDED=3;
+  const basket={x:W*.68,y:H*.62,w:W*.24,h:H*.22};
+  const EMOJIS=['👕','👖','🧦','🧤','👗','🎽'];
+  const clothes=Array.from({length:6},(_,i)=>({x:W*(.04+i*.16),y:H*.14,vx:0,vy:0,emoji:EMOJIS[i],inFlight:false,landed:false,inBasket:false,r:H*.056}));
+  let dragIdx=-1,dragOffX=0,dragOffY=0,lastX=0,lastY=0,lastTime=Date.now(),pDown=false;
+  setKeyHints([]);
+  function getIdx(x,y){for(let i=clothes.length-1;i>=0;i--){const c=clothes[i];if(!c.landed&&Math.abs(x-c.x)<c.r*1.3&&Math.abs(y-c.y)<c.r*1.3)return i;}return -1;}
+  function onDown(e){e.preventDefault();const{x,y}=getCP(e);dragIdx=getIdx(x,y);if(dragIdx>=0){dragOffX=x-clothes[dragIdx].x;dragOffY=y-clothes[dragIdx].y;}lastX=x;lastY=y;lastTime=Date.now();pDown=true;}
+  function onMove(e){e.preventDefault();if(!pDown||dragIdx<0)return;const{x,y}=getCP(e);clothes[dragIdx].x=x-dragOffX;clothes[dragIdx].y=y-dragOffY;lastX=x;lastY=y;}
+  function onUp(e){if(dragIdx<0){pDown=false;return;}const pos=e.changedTouches?{x:(e.changedTouches[0].clientX-canvas.getBoundingClientRect().left)*canvas.width/canvas.getBoundingClientRect().width,y:(e.changedTouches[0].clientY-canvas.getBoundingClientRect().top)*canvas.height/canvas.getBoundingClientRect().height}:{x:lastX,y:lastY};const dt=Math.max(16,Date.now()-lastTime);clothes[dragIdx].vx=(pos.x-lastX)/dt*16;clothes[dragIdx].vy=(pos.y-lastY)/dt*16;clothes[dragIdx].inFlight=true;dragIdx=-1;pDown=false;}
+  canvas.addEventListener('mousedown',onDown);canvas.addEventListener('mousemove',onMove);canvas.addEventListener('mouseup',onUp);
+  canvas.addEventListener('touchstart',onDown,{passive:false});canvas.addEventListener('touchmove',onMove,{passive:false});canvas.addEventListener('touchend',onUp,{passive:false});
+  function cleanup(){['mousedown','mousemove','mouseup'].forEach(ev=>canvas.removeEventListener(ev,{mousedown:onDown,mousemove:onMove,mouseup:onUp}[ev]));['touchstart','touchmove','touchend'].forEach(ev=>canvas.removeEventListener(ev,{touchstart:onDown,touchmove:onMove,touchend:onUp}[ev]));}
+  function draw(){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#0a0e18';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,0.03)';ctx.fillRect(0,H*.87,W,H*.13);
+    ctx.strokeStyle='#d4820a';ctx.lineWidth=2.5;ctx.strokeRect(basket.x,basket.y,basket.w,basket.h);
+    ctx.fillStyle='rgba(212,130,10,0.1)';ctx.fillRect(basket.x,basket.y,basket.w,basket.h);
+    ctx.font=`${Math.round(H*.06)}px Arial`;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('🧺',basket.x+basket.w/2,basket.y+4);
+    clothes.forEach(c=>{
+      if(c.inFlight&&!c.landed){c.x+=c.vx;c.y+=c.vy;c.vy+=0.58;c.vx*=0.99;
+        if(c.x>basket.x&&c.x<basket.x+basket.w&&c.y>basket.y&&c.y<basket.y+basket.h){c.landed=true;c.inBasket=true;}
+        if(c.y>H*.84){c.landed=true;c.vy=0;c.vx=0;}if(c.x<c.r){c.x=c.r;c.vx*=-.5;}if(c.x>W-c.r){c.x=W-c.r;c.vx*=-.5;}}
+    });
+    clothes.forEach(c=>{ctx.globalAlpha=(c.landed&&!c.inBasket)?.22:1;ctx.font=`${Math.round(c.r*1.8)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(c.emoji,c.x,c.y);
+      if(!c.landed&&!c.inFlight){ctx.strokeStyle='rgba(0,212,212,0.35)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(c.x,c.y,c.r+4,0,Math.PI*2);ctx.stroke();}ctx.globalAlpha=1;});
+    const inB=clothes.filter(c=>c.inBasket).length;
+    ctx.fillStyle='#ccc';ctx.font=`bold ${Math.round(H*.05)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(`In basket: ${inB}/${NEEDED}`,10,8);
+    if(inB>=NEEDED){cleanup();minigameWin('Laundry done!');return;}
+    if(clothes.filter(c=>!c.landed).length===0&&inB<NEEDED){cleanup();minigameFail(`Only ${inB} in`);return;}
+    mgAnimFrame=requestAnimationFrame(draw);
+  }
+  mgAnimFrame=requestAnimationFrame(draw);
+}
+
+// ── DEODORANT — hold steady ────────────────────
+function launchDeodorant(){
+  const W=canvas.width,H=canvas.height,HOLD=2800,DURATION=15000;
+  const tX=W*.5,tY=H*.44,tR=W*.085;
+  let hX=W*.5,hY=H*.44,holdTime=0,startTime=Date.now(),wobblePhase=Math.random()*100,lastF=Date.now();
+  setKeyHints([]);startTimerBar(DURATION);
+  function onMove(e){e.preventDefault();const{x,y}=getCP(e);hX=x;hY=y;}
+  canvas.addEventListener('mousemove',onMove);canvas.addEventListener('touchmove',onMove,{passive:false});
+  function cleanup(){canvas.removeEventListener('mousemove',onMove);canvas.removeEventListener('touchmove',onMove);}
+  function draw(){
+    const now=Date.now(),dt=now-lastF;lastF=now;const elapsed=now-startTime;
+    wobblePhase+=dt*.003;const diff=elapsed/DURATION;
+    const spX=hX+Math.sin(wobblePhase*1.4)*(18+diff*22),spY=hY+Math.cos(wobblePhase*.95)*(13+diff*16);
+    const inside=Math.sqrt((spX-tX)**2+(spY-tY)**2)<tR;
+    if(inside)holdTime=Math.min(HOLD,holdTime+dt);else holdTime=Math.max(0,holdTime-dt*.6);
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#080c10';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle=inside?'var(--cyan)':'rgba(0,212,212,0.28)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(tX,tY,tR,0,Math.PI*2);ctx.stroke();
+    const hf=holdTime/HOLD;
+    if(hf>0){ctx.strokeStyle='var(--green)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(tX,tY,tR-5,-Math.PI/2,-Math.PI/2+hf*Math.PI*2);ctx.stroke();}
+    ctx.fillStyle=inside?'rgba(0,212,212,0.09)':'rgba(0,212,212,0.02)';ctx.beginPath();ctx.arc(tX,tY,tR,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=inside?'#00d4d4':'#555';ctx.font=`bold ${Math.round(H*.038)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('HOLD',tX,tY);
+    ctx.font=`${Math.round(H*.09)}px Arial`;ctx.fillText('💨',spX,spY);
+    if(inside)for(let p=0;p<4;p++){const pa=(p/4)*Math.PI*2+(now*.002),pr=tR*(.3+hf*.5);ctx.fillStyle=`rgba(0,212,212,${.25+Math.random()*.35})`;ctx.beginPath();ctx.arc(tX+Math.cos(pa)*pr*(.5+Math.random()*.5),tY+Math.sin(pa)*pr*(.5+Math.random()*.5),2+Math.random()*2.5,0,Math.PI*2);ctx.fill();}
+    const bW=W*.58,bH=H*.044,bX=(W-bW)/2,bY=H*.83;
+    ctx.fillStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.roundRect(bX,bY,bW,bH,3);ctx.fill();
+    ctx.fillStyle=inside?'var(--green)':'rgba(0,212,212,0.4)';ctx.beginPath();ctx.roundRect(bX,bY,bW*hf,bH,3);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font=`${Math.round(H*.034)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('Move mouse/finger to guide spray',8,8);
+    if(holdTime>=HOLD){cleanup();minigameWin('Steady hands!');return;}
+    if(elapsed>=DURATION){cleanup();minigameFail('Time\'s up');return;}
+    mgAnimFrame=requestAnimationFrame(draw);
+  }
+  mgAnimFrame=requestAnimationFrame(draw);
+}
+
+// ── BREAKFAST — tilt pour ──────────────────────
+function launchBreakfast(){
+  const W=canvas.width,H=canvas.height,FILL=0.7,DURATION=17000;
+  let angle=0,pour=0,spill=0,startTime=Date.now();
+  const bX=W*.5,bY=H*.72,bW=W*.32,bH=H*.16,cW=W*.1,cH=H*.22;
+  setKeyHints([]);startTimerBar(DURATION);
+  function onMove(e){e.preventDefault();const{x}=getCP(e);angle=clamp((x-W/2)/(W/2)*1.4,-1.4,1.4);}
+  canvas.addEventListener('mousemove',onMove);canvas.addEventListener('touchmove',onMove,{passive:false});
+  function cleanup(){canvas.removeEventListener('mousemove',onMove);canvas.removeEventListener('touchmove',onMove);}
+  function draw(){
+    const elapsed=Date.now()-startTime;
+    pour=Math.min(1,pour+Math.max(0,(Math.abs(angle)-0.38)/0.65)*.0022);
+    spill+=Math.max(0,(Math.abs(angle)-1.1)/.2)*.003;
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#0a0a05';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,0.06)';ctx.beginPath();ctx.ellipse(bX,bY,bW/2,bH/2,0,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#888';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(bX,bY,bW/2,bH/2,0,0,Math.PI*2);ctx.stroke();
+    if(pour>0){ctx.fillStyle='rgba(239,180,36,0.7)';ctx.beginPath();ctx.ellipse(bX,bY+bH/2*(1-pour*.8),bW/2*.83,bH/2*.76*pour,0,0,Math.PI*2);ctx.fill();}
+    const lY=bY-bH/2*.08;ctx.strokeStyle='rgba(46,168,106,0.55)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(bX-bW/2*.68,lY);ctx.lineTo(bX+bW/2*.68,lY);ctx.stroke();ctx.setLineDash([]);
+    ctx.save();ctx.translate(W*.5,H*.35);ctx.rotate(angle*.7);
+    ctx.fillStyle='rgba(0,180,210,0.14)';ctx.strokeStyle='var(--cyan)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(-cW/2,-cH/2,cW,cH,6);ctx.fill();ctx.stroke();
+    const lH=cH*(0.66-pour*.5);if(lH>0){ctx.fillStyle='rgba(239,180,36,0.8)';ctx.beginPath();ctx.roundRect(-cW/2,cH/2-lH-4,cW,lH,4);ctx.fill();}
+    ctx.font=`${Math.round(H*.07)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🥛',0,0);ctx.restore();
+    if(Math.abs(angle)>0.38){const a=Math.min(1,(Math.abs(angle)-0.38)/0.4),sd=angle>0?1:-1;ctx.strokeStyle=`rgba(239,180,36,${a*.75})`;ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(W*.5+sd*cW*.4,H*.35+cH*.34);ctx.quadraticCurveTo(W*.5+sd*W*.05,H*.35+H*.1,bX,bY-bH*.2);ctx.stroke();}
+    if(spill>0.15){ctx.fillStyle=`rgba(192,48,90,${spill*1.3})`;ctx.font=`bold ${Math.round(H*.048)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('⚠️ Spilling!',W/2,H*.04);}
+    ctx.fillStyle=pour>=FILL?'var(--green)':'#ccc';ctx.font=`bold ${Math.round(H*.048)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='right';ctx.textBaseline='top';ctx.fillText(`${Math.round(pour*100)}%`,W-10,8);
+    ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font=`${Math.round(H*.034)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('Move mouse/finger left or right',8,8);
+    if(spill>0.44){cleanup();minigameFail('Spilled too much');return;}
+    if(pour>=FILL){cleanup();minigameWin('Bowl filled!');return;}
+    if(elapsed>=DURATION){cleanup();minigameFail('Time\'s up');return;}
+    mgAnimFrame=requestAnimationFrame(draw);
+  }
+  mgAnimFrame=requestAnimationFrame(draw);
+}
+
+// ── BAG — catch falling items ──────────────────
+function launchBag(){
+  const W=canvas.width,H=canvas.height,NEEDED=9,DURATION=18000;
+  const GOODS=['📓','🖊️','💧','🍎','🔑','📱','🧴','🎧','🪮'];
+  const BADS=['💀','🗑️','❌','🧨','💩','🎮'];
+  const bW=W*.17,bH=H*.13;
+  let bagX=W/2-bW/2,caught=0,missed=0,startTime=Date.now(),items=[],lastSpawn=0;
+  setKeyHints([{key:'←',label:'← Move Left'},{key:'→',label:'→ Move Right'}]);
+  startTimerBar(DURATION);
+  function spawnItem(){const g=Math.random()>.32;items.push({x:W*.05+Math.random()*(W*.9),y:-30,vy:2.4+Math.random()*2.4,emoji:g?GOODS[Math.floor(Math.random()*GOODS.length)]:BADS[Math.floor(Math.random()*BADS.length)],good:g,caught:false,hit:false,size:H*.06});}
+  const keys={ArrowLeft:false,ArrowRight:false};
+  const kd=(e)=>{if(e.key in keys){keys[e.key]=true;e.preventDefault();}};
+  const ku=(e)=>{if(e.key in keys)keys[e.key]=false;};
+  document.addEventListener('keydown',kd);document.addEventListener('keyup',ku);
+  function onMove(e){e.preventDefault();const{x}=getCP(e);bagX=clamp(x-bW/2,0,W-bW);}
+  canvas.addEventListener('mousemove',onMove);canvas.addEventListener('touchmove',onMove,{passive:false});
+  const prevKey = activeKeyHandler;
+  activeKeyHandler = kd;
+  function cleanup(){document.removeEventListener('keydown',kd);document.removeEventListener('keyup',ku);canvas.removeEventListener('mousemove',onMove);canvas.removeEventListener('touchmove',onMove);}
+  function draw(){
+    const elapsed=Date.now()-startTime;
+    if(keys.ArrowLeft)  bagX=clamp(bagX-6,0,W-bW);
+    if(keys.ArrowRight) bagX=clamp(bagX+6,0,W-bW);
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#0c0a14';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,212,212,0.04)';ctx.lineWidth=1;for(let gx=0;gx<W;gx+=40){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
+    if(elapsed-lastSpawn>Math.max(480,1300-elapsed*.025)){spawnItem();lastSpawn=elapsed;}
+    items.forEach(it=>{if(it.caught||it.hit)return;it.y+=it.vy;const bY=H-bH-10;if(it.y+it.size*.5>bY&&it.x>bagX-it.size*.5&&it.x<bagX+bW+it.size*.5){if(it.good){it.caught=true;caught++;}else{it.hit=true;missed++;}}});
+    items=items.filter(it=>it.y<H+40||it.caught||it.hit);
+    items.forEach(it=>{if(it.caught||it.hit)return;ctx.font=`${Math.round(it.size)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(it.emoji,it.x,it.y);});
+    const bY=H-bH-10;ctx.fillStyle='rgba(212,130,10,0.16)';ctx.strokeStyle='var(--orange)';ctx.lineWidth=2.5;ctx.beginPath();ctx.roundRect(bagX,bY,bW,bH,8);ctx.fill();ctx.stroke();
+    ctx.font=`${Math.round(H*.055)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🎒',bagX+bW/2,bY+bH/2);
+    ctx.fillStyle='#ccc';ctx.font=`bold ${Math.round(H*.05)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(`Caught: ${caught}/${NEEDED}`,10,8);
+    if(missed>0){ctx.fillStyle='var(--pink)';ctx.font=`bold ${Math.round(H*.04)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='right';ctx.fillText(`${missed} junk`,W-10,8);}
+    ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font=`${Math.round(H*.034)}px Atkinson Hyperlegible,Arial`;ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('Mouse/touch or ← → arrow keys',W/2,H-2);
+    if(caught>=NEEDED){cleanup();minigameWin('Bag packed!');return;}
+    if(elapsed>=DURATION){cleanup();minigameFail(`Only ${caught}/${NEEDED}`);return;}
+    mgAnimFrame=requestAnimationFrame(draw);
+  }
+  mgAnimFrame=requestAnimationFrame(draw);
+}
+</script>
+</body>
+</html>
