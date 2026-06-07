@@ -1,1606 +1,2019 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exploring Trajectory - Interactive UK Edition</title>
-    <!-- Tailwind CSS for modern layout -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap');
-        
-        body {
-            font-family: 'Lexend', sans-serif;
-            background-color: #fdfbf7; /* Off-white cream to prevent visual fatigue and glare */
-            color: #2d3748; /* Soft charcoal for high but gentle contrast */
-            line-height: 1.6;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word of the Week · Trajectory · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out;
-        }
+body {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  background-color: #fef8f4;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
 
-        .tab-content.active {
-            display: block;
-        }
+/* ── HEADER ── */
+.site-header {
+  background-color: #007291;
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.back-link {
+  color: #fef8f4;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  opacity: 0.85;
+}
+.back-link:hover { opacity: 1; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #003a5c 0%, #007291 60%, #00a0b4 100%);
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.04) 0%, transparent 70%);
+}
+.wotw-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #fde0c0;
+  margin-bottom: 0.75rem;
+}
+.hero-word {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 700;
+  color: #fef8f4;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.hero-phonetic {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+.hero-pos {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fef8f4;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 
-        /* Focus styles for keyboard accessibility */
-        button:focus-visible, input:focus-visible, select:focus-visible {
-            outline: 4px solid #0f766e;
-            outline-offset: 3px;
-        }
+/* ── TABS ── */
+.tab-nav {
+  background: #ffffff;
+  border-bottom: 2px solid #e8e0d8;
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 1rem 0.75rem;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #888;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+.tab-btn .tab-icon { font-size: 1.3rem; }
+.tab-btn:hover { color: #007291; background: #f8fbfc; }
+.tab-btn.active { color: #007291; border-bottom-color: #007291; background: #f0f9fb; }
 
-        /* Custom range sliders styling */
-        input[type=range] {
-            accent-color: #0d9488;
-            cursor: pointer;
-        }
+/* ── TAB PANELS ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-        /* Print formatting */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #worksheet-print-area, #worksheet-print-area *, #report-print-area, #report-print-area * {
-                visibility: visible;
-            }
-            #worksheet-print-area, #report-print-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                background-color: white;
-                color: black;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .page-break {
-                page-break-after: always;
-            }
-        }
-    </style>
+/* ── SHARED LAYOUT ── */
+.panel-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #007291;
+  margin-bottom: 1rem;
+}
+
+/* ── CARDS ── */
+.card {
+  background: #ffffff;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+.card + .card { margin-top: 1rem; }
+
+/* ── DEFINITION BLOCK ── */
+.def-block {
+  background: #e6f5f8;
+  border-left: 4px solid #007291;
+  border-radius: 0 12px 12px 0;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+}
+.def-block .def-word {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #007291;
+  margin-bottom: 0.4rem;
+}
+.def-block .def-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+/* ── EXAMPLE CARDS ── */
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.example-card {
+  background: #ffffff;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.example-card .ex-icon { font-size: 2rem; }
+.example-card .ex-theme {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #007291;
+}
+.example-card .ex-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+.example-card .ex-sentence {
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.5;
+}
+.example-card .ex-sentence strong { color: #007291; }
+
+/* ── WORD IN USE ── */
+.usage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.usage-card {
+  background: #fffbf0;
+  border: 1.5px solid #f0d888;
+  border-radius: 14px;
+  padding: 1.25rem;
+}
+.usage-card .usage-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #b07010;
+  margin-bottom: 0.5rem;
+}
+.usage-card .usage-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+.usage-card .usage-text em { color: #007291; font-style: normal; font-weight: 700; }
+
+/* ── RELATED WORDS ── */
+.related-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.related-pill {
+  background: #e6f5f8;
+  color: #007291;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  border: 1.5px solid #b0dce8;
+}
+.related-pill span {
+  color: #555;
+  font-weight: 400;
+  font-size: 0.78rem;
+  margin-left: 0.3rem;
+}
+
+/* ── NEXT BUTTON ── */
+.next-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #007291;
+  color: #fef8f4;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.9rem 1.75rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  text-decoration: none;
+}
+.next-btn:hover { background: #005a73; transform: translateY(-1px); }
+
+/* ════════════════════════════════════════
+   TAB 2 · SKATE PARK SIMULATOR
+════════════════════════════════════════ */
+.sim-hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.sim-hero h2 { font-size: 1.4rem; font-weight: 700; color: #fef8f4; }
+.sim-hero p { font-size: 0.88rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 0.3rem; }
+
+.sim-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 640px) {
+  .sim-layout { grid-template-columns: 1fr; }
+}
+.sim-controls {
+  background: #ffffff;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.sim-controls label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.sim-controls label span { color: #007291; }
+.sim-controls input[type=range] {
+  width: 100%;
+  accent-color: #007291;
+  cursor: pointer;
+}
+.sim-canvas-wrap {
+  background: linear-gradient(180deg, #1a1a2e 0%, #2d2d5e 50%, #3a5a3a 85%, #2d4a2d 100%);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+.sim-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sim-launch-btn {
+  width: 100%;
+  background: #007291;
+  color: #fef8f4;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sim-launch-btn:hover { background: #005a73; }
+.sim-gravity-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.toggle-wrap {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+}
+.toggle-wrap input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #ccc;
+  border-radius: 26px;
+  transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-wrap input:checked + .toggle-slider { background: #007291; }
+.toggle-wrap input:checked + .toggle-slider::before { transform: translateX(22px); }
+.toggle-label { font-size: 0.88rem; font-weight: 700; color: #1a1a1a; }
+.sim-explanation {
+  background: #e6f5f8;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  line-height: 1.5;
+  margin-top: 0.75rem;
+}
+
+/* ════════════════════════════════════════
+   TAB 3 · SHERWOOD ARCHERY GAME
+════════════════════════════════════════ */
+.game-hero {
+  background: linear-gradient(135deg, #1a2e1a 0%, #2d4a2d 100%);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.game-hero h2 { font-size: 1.4rem; font-weight: 700; color: #fef8f4; }
+.game-hero p { font-size: 0.88rem; color: rgba(255,255,255,0.7); margin-top: 0.3rem; line-height: 1.5; }
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 640px) {
+  .game-layout { grid-template-columns: 1fr; }
+}
+.game-controls {
+  background: #ffffff;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.game-controls label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.game-controls label span { color: #2d4a2d; }
+.game-controls input[type=range] {
+  width: 100%;
+  accent-color: #2d4a2d;
+  cursor: pointer;
+}
+.score-box {
+  background: #f4fbfd;
+  border: 1.5px solid #b0dce8;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.score-box .score-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+.score-box .score-val { font-size: 1.4rem; font-weight: 700; color: #007291; }
+.launch-arrow-btn {
+  width: 100%;
+  background: #2d4a2d;
+  color: #fef8f4;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.launch-arrow-btn:hover { background: #1a2e1a; }
+.launch-arrow-btn:disabled { background: #888; cursor: default; }
+.game-canvas-wrap {
+  background: linear-gradient(180deg, #0a1628 0%, #1a2e4a 30%, #1a3a1a 70%, #0d2010 100%);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.game-canvas-wrap canvas { display: block; width: 100%; height: auto; }
+.game-msg {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  display: none;
+}
+.game-msg.hit { background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; display: block; }
+.game-msg.miss { background: #fff3e6; border: 1.5px solid #e8a020; color: #7a4a00; display: block; }
+.level-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.level-pill {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  border: 1.5px solid #b0dce8;
+  background: #ffffff;
+  color: #007291;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.level-pill.active { background: #007291; color: #ffffff; border-color: #007291; }
+.level-pill.locked { background: #f0ede8; color: #aaa; border-color: #e0d8d0; cursor: default; }
+
+/* ════════════════════════════════════════
+   TAB 4 · CURIOSITY CHECK QUIZ
+════════════════════════════════════════ */
+.quiz-theme-banner {
+  background: linear-gradient(135deg, #2d4a1a 0%, #3a6a28 100%);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.quiz-theme-banner h2 { font-size: 1.3rem; font-weight: 700; color: #fef8f4; }
+.quiz-theme-banner p { font-size: 0.88rem; color: rgba(255,255,255,0.75); margin-top: 0.3rem; line-height: 1.5; }
+
+.quiz-block {
+  background: #ffffff;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.quiz-level-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: #e6f5f8;
+  color: #007291;
+  border: 1px solid #b0dce8;
+  margin-bottom: 0.75rem;
+}
+.quiz-q {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.6rem;
+}
+.quiz-opt {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 10px;
+  background: #fef8f4;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  line-height: 1.4;
+}
+.quiz-opt:hover { border-color: #007291; background: #f0f9fb; }
+.quiz-opt.correct { border-color: #2d4a2d; background: #e6f5e6; color: #1a2e1a; font-weight: 700; }
+.quiz-opt.wrong { border-color: #e8a020; background: #fff8ec; color: #7a4a00; }
+.quiz-feedback {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.5;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; }
+.quiz-feedback.wrong { background: #fff8ec; border: 1.5px solid #e8a020; color: #7a4a00; }
+
+/* Report desk */
+.report-desk {
+  background: #ffffff;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.report-desk h3 { font-size: 1.1rem; font-weight: 700; color: #1a1a1a; }
+.report-desk input[type=text], .report-desk input[type=email] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.95rem;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 10px;
+  background: #fef8f4;
+  color: #1a1a1a;
+  outline: none;
+}
+.report-desk input:focus { border-color: #007291; }
+.report-desk label { font-size: 0.8rem; font-weight: 700; color: #555; display: block; margin-bottom: 0.4rem; }
+.report-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 540px) { .report-fields { grid-template-columns: 1fr; } }
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  text-align: center;
+}
+.stat-card {
+  background: #f4fbfd;
+  border: 1.5px solid #b0dce8;
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+.stat-card .stat-num { font-size: 1.5rem; font-weight: 700; color: #007291; }
+.stat-card .stat-lbl { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.2rem; }
+.report-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.report-btn {
+  flex: 1;
+  min-width: 140px;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.report-btn.primary { background: #007291; color: #fef8f4; }
+.report-btn.primary:hover { background: #005a73; }
+.report-btn.secondary { background: #fde0c0; color: #7a3a00; }
+.report-btn.secondary:hover { background: #fbc898; }
+.report-notify {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: none;
+}
+.report-notify.show { display: block; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; }
+
+/* ════════════════════════════════════════
+   TAB 5 · WORKSHEET
+════════════════════════════════════════ */
+.ws-hero {
+  background: linear-gradient(135deg, #7a1a1a 0%, #a03020 100%);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.ws-hero h2 { font-size: 1.4rem; font-weight: 700; color: #fef8f4; }
+.ws-hero p { font-size: 0.88rem; color: rgba(255,255,255,0.75); margin-top: 0.3rem; line-height: 1.5; }
+.ws-card {
+  background: #ffffff;
+  border: 1.5px solid #e0d8d0;
+  border-radius: 14px;
+  padding: 2rem;
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.ws-icon { font-size: 3.5rem; }
+.ws-card h3 { font-size: 1.2rem; font-weight: 700; color: #1a1a1a; }
+.ws-card p { font-size: 0.88rem; color: #555; line-height: 1.5; }
+.ws-print-btn {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.9rem 2rem;
+  background: #7a1a1a;
+  color: #fef8f4;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ws-print-btn:hover { background: #5a1010; }
+
+/* ── PRINT AREA ── */
+@media screen { #ws-print-area { display: none; } }
+@media print {
+  body * { visibility: hidden; }
+  #ws-print-area, #ws-print-area * { visibility: visible; }
+  #ws-print-area { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; padding: 2rem; }
+  .no-print { display: none !important; }
+  .page-break { page-break-after: always; }
+}
+
+footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-3 sm:p-6 md:p-8">
+<body>
 
-    <!-- Main Interactive Frame -->
-    <main class="w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-teal-600/20 no-print">
-        
-        <!-- Header banner with UK theme and Global TTS -->
-        <header class="bg-gradient-to-r from-teal-800 to-emerald-800 p-6 sm:p-8 text-white relative">
-            <div class="absolute top-4 right-4 flex items-center gap-1.5 bg-teal-900/40 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase border border-teal-500/30">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                UK Curriculum Aligned
-            </div>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-2 flex items-center gap-3">
-                        🎯 Exploring Trajectory
-                    </h1>
-                    <p id="header-desc" class="text-teal-100 text-lg max-w-2xl inline">
-                        Let's investigate how objects fly through the air! Take your time, switch levels whenever you like, and discover the science of curved flights.
-                    </p>
-                    <button onclick="speakTextId('header-desc')" class="ml-2 bg-teal-700/60 hover:bg-teal-700 text-white rounded-full p-2 inline-flex items-center justify-center text-xs border border-teal-500/30 transition-colors" title="Listen to introduction">
-                        🔊 Read Aloud
-                    </button>
-                </div>
-            </div>
-        </header>
+<header class="site-header no-print">
+  <a class="back-link" href="index.html">← Week 2</a>
+</header>
 
-        <!-- Easy-to-Click Navigation Tabs -->
-        <nav class="flex flex-col sm:flex-row border-b-2 border-slate-100" aria-label="Main Navigation">
-            <button onclick="switchTab('learn')" id="tab-learn" class="flex-1 py-4 px-4 text-lg font-semibold text-teal-900 border-b-4 border-teal-600 bg-teal-50/50 hover:bg-teal-50 transition-all flex items-center justify-center gap-2">
-                <span class="text-xl">🕵️‍♂️</span> 1. Discover
-            </button>
-            <button onclick="switchTab('simulator')" id="tab-simulator" class="flex-1 py-4 px-4 text-lg font-semibold text-gray-500 border-b-4 border-transparent hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                <span class="text-xl">⚙️</span> 2. Gravity Tug-of-War
-            </button>
-            <button onclick="switchTab('game')" id="tab-game" class="flex-1 py-4 px-4 text-lg font-semibold text-gray-500 border-b-4 border-transparent hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                <span class="text-xl">🏹</span> 3. Sherwood Archery
-            </button>
-            <button onclick="switchTab('questions')" id="tab-questions" class="flex-1 py-4 px-4 text-lg font-semibold text-gray-500 border-b-4 border-transparent hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                <span class="text-xl">🤔</span> 4. Curiosity Check
-            </button>
-            <button onclick="switchTab('worksheet')" id="tab-worksheet" class="flex-1 py-4 px-4 text-lg font-semibold text-gray-500 border-b-4 border-transparent hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                <span class="text-xl">🖨️</span> 5. Worksheets
-            </button>
-        </nav>
+<!-- HERO -->
+<div class="hero no-print">
+  <p class="wotw-label">Word of the Week · Base 6</p>
+  <h1 class="hero-word">Trajectory</h1>
+  <p class="hero-phonetic">/ trəˈdʒek.tər.i /</p>
+  <span class="hero-pos">noun</span>
+</div>
 
-        <!-- Container for all tabs -->
-        <div class="p-4 sm:p-8 bg-slate-50/30">
+<!-- TAB NAV -->
+<nav class="tab-nav no-print">
+  <button class="tab-btn active" onclick="switchTab('discover')" id="tab-discover">
+    <span class="tab-icon">🚀</span>
+    <span>1. Discover</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('simulator')" id="tab-simulator">
+    <span class="tab-icon">🛹</span>
+    <span>2. Simulator</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('game')" id="tab-game">
+    <span class="tab-icon">🏹</span>
+    <span>3. Archery</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('quiz')" id="tab-quiz">
+    <span class="tab-icon">📸</span>
+    <span>4. Quiz</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('worksheet')" id="tab-worksheet">
+    <span class="tab-icon">🏰</span>
+    <span>5. Trebuchet</span>
+  </button>
+</nav>
 
-            <!-- TAB 1: DISCOVER -->
-            <section id="learn" class="tab-content active space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-teal-100 text-teal-800 text-sm font-bold px-3 py-1 rounded-md uppercase tracking-wider">What is a Trajectory?</span>
-                            <button onclick="speakText('What is a Trajectory? The Flight Path of Things. A trajectory is simply the imaginary line or path that an object traces as it flies, leaps, or shoots through the air. Whenever something is thrown or launched into the sky, it can\'t go straight forever. Gravity pulls it down, shaping its path into a beautiful smooth curve.')" class="bg-teal-100 hover:bg-teal-200 text-teal-800 rounded-full p-1.5 inline-flex items-center justify-center text-xs" title="Listen to section">
-                                🔊 Read Section
-                            </button>
-                        </div>
-                        <h2 class="text-3xl font-bold text-slate-800">The Flight Path of Things</h2>
-                        <p class="text-lg text-slate-600 leading-relaxed">
-                            A <strong class="text-teal-700">trajectory</strong> is simply the imaginary line or path that an object traces as it flies, leaps, or shoots through the air.
-                        </p>
-                        <p class="text-lg text-slate-600 leading-relaxed">
-                            Whenever something is thrown or launched into the sky, it can't go straight forever. Gravity pulls it down, shaping its path into a beautiful <strong class="text-teal-700">smooth curve</strong>.
-                        </p>
-                    </div>
+<!-- ══════════════════════════════════════════
+     TAB 1 · DISCOVER — SPACE MISSION CONTROL
+══════════════════════════════════════════ -->
+<div class="tab-panel active" id="panel-discover">
+<div class="panel-inner">
 
-                    <!-- Interactive Rich SVG Diagram explaining trajectory anatomy -->
-                    <div class="bg-teal-50/50 p-4 rounded-2xl border-2 border-teal-100 flex flex-col items-center">
-                        <div class="flex items-center gap-2 mb-2">
-                            <h3 id="diagram-title" class="font-bold text-teal-900 text-sm">Anatomy of a Trajectory Curve</h3>
-                            <button onclick="speakText('Anatomy of a Trajectory Curve. One, Launch or Push. Two, Peak or Highest Point. Gravity pulls down. Three, Landing.')" class="bg-teal-100 hover:bg-teal-200 text-teal-800 rounded-full p-1 inline-flex items-center justify-center text-xs" title="Listen to diagram labels">
-                                🔊 Read Labels
-                            </button>
-                        </div>
-                        <svg viewBox="0 0 400 220" class="w-full max-w-sm drop-shadow-sm" aria-label="Trajectory path showing start, peak and land">
-                            <!-- Sky grid lines -->
-                            <line x1="10" y1="180" x2="390" y2="180" stroke="#cbd5e1" stroke-dasharray="4 4" />
-                            <!-- Curve path -->
-                            <path d="M 40,180 Q 200,30 360,180" fill="none" stroke="#0d9488" stroke-width="4" stroke-dasharray="1 1" class="animate-[dash_2s_linear_infinite]" id="trajectory-line" />
-                            <!-- Launch point -->
-                            <circle cx="40" cy="180" r="8" fill="#3b82f6" />
-                            <text x="40" y="205" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">1. Launch (Push)</text>
-                            
-                            <!-- Peak point -->
-                            <circle cx="200" cy="105" r="8" fill="#f59e0b" />
-                            <text x="200" y="90" font-size="11" font-weight="bold" fill="#78350f" text-anchor="middle">2. Peak (Highest Point)</text>
-                            <!-- Gravity pull representation -->
-                            <path d="M 200,115 L 200,145" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow)" />
-                            <text x="212" y="135" font-size="10" font-weight="bold" fill="#991b1b">Gravity Pulls Down</text>
+  <!-- Definition -->
+  <div class="def-block">
+    <div class="def-word">trajectory <span style="font-weight:400;color:#555;font-size:0.9rem;">(noun)</span></div>
+    <div class="def-text">The curved path that an object follows as it moves through the air or space — shaped by the force that launched it and the pull of gravity.</div>
+  </div>
 
-                            <!-- Landing point -->
-                            <circle cx="360" cy="180" r="8" fill="#10b981" />
-                            <text x="360" y="205" font-size="11" font-weight="bold" fill="#065f46" text-anchor="middle">3. Landing</text>
+  <!-- Space intro card -->
+  <div class="card" style="background:linear-gradient(135deg,#003a5c,#007291);border:none;margin-bottom:1.5rem;">
+    <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#fde0c0;margin-bottom:0.5rem;">Mission Control · Houston</p>
+    <p style="font-size:1.1rem;font-weight:700;color:#fef8f4;margin-bottom:0.5rem;">Every rocket, satellite and space probe ever launched has followed a trajectory.</p>
+    <p style="font-size:0.9rem;color:rgba(255,255,255,0.8);line-height:1.6;">Engineers at NASA spend years calculating the exact trajectory a spacecraft needs to follow — the right angle, the right speed, the right curve through space. Get it wrong by even a fraction and a probe misses its target by millions of miles.</p>
+  </div>
 
-                            <!-- SVG arrow head definition -->
-                            <defs>
-                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
-                                </marker>
-                            </defs>
-                        </svg>
-                    </div>
-                </div>
+  <!-- SVG diagram -->
+  <p class="section-label">Anatomy of a trajectory</p>
+  <div class="card" style="margin-bottom:1.5rem;">
+    <svg viewBox="0 0 560 200" style="width:100%;max-width:560px;display:block;margin:0 auto;" aria-label="Diagram showing launch, peak and landing of a curved trajectory">
+      <!-- Ground line -->
+      <line x1="20" y1="170" x2="540" y2="170" stroke="#b0dce8" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <!-- Curve -->
+      <path d="M 50,170 Q 280,20 510,170" fill="none" stroke="#007291" stroke-width="3.5"/>
+      <!-- Launch dot -->
+      <circle cx="50" cy="170" r="7" fill="#007291"/>
+      <text x="50" y="190" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" font-weight="700" fill="#007291" text-anchor="middle">Launch</text>
+      <!-- Peak dot -->
+      <circle cx="280" cy="95" r="7" fill="#ef7724"/>
+      <text x="280" y="82" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" font-weight="700" fill="#ef7724" text-anchor="middle">Peak (highest point)</text>
+      <!-- Gravity arrow -->
+      <line x1="280" y1="103" x2="280" y2="133" stroke="#c0392b" stroke-width="2.5" marker-end="url(#arr)"/>
+      <text x="296" y="123" font-family="Atkinson Hyperlegible,sans-serif" font-size="10" fill="#c0392b" font-weight="700">gravity</text>
+      <!-- Landing dot -->
+      <circle cx="510" cy="170" r="7" fill="#2d4a2d"/>
+      <text x="510" y="190" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" font-weight="700" fill="#2d4a2d" text-anchor="middle">Landing</text>
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#c0392b"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
 
-                <!-- UK-Centric Visual Examples -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-xl font-bold text-slate-800">🇬🇧 Everyday Trajectories around the UK:</h3>
-                        <button onclick="speakText('Everyday Trajectories around the UK. Wembley Kick: When a football is kicked over a wall of defenders, its curved flight path into the goal is a trajectory. Trafalgar Square: Watch the water shooting out of the fountains in London. Each jet of water curves gracefully back down. Sherwood Bows: Robin Hood’s arrows start fast and straight, but bend towards the ground as they fly through the trees.')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-full p-1.5 inline-flex items-center justify-center text-xs" title="Listen to all examples">
-                            🔊 Read Examples
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <!-- Card 1 -->
-                        <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 hover:border-teal-200 transition-all shadow-sm flex flex-col items-center text-center">
-                            <span class="text-4xl mb-3" aria-hidden="true">⚽</span>
-                            <h4 class="font-bold text-slate-800 mb-1">Wembley Kick</h4>
-                            <p class="text-slate-600 text-sm">When a football is kicked over a wall of defenders, its curved flight path into the goal is a trajectory.</p>
-                        </div>
-                        <!-- Card 2 -->
-                        <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 hover:border-teal-200 transition-all shadow-sm flex flex-col items-center text-center">
-                            <span class="text-4xl mb-3" aria-hidden="true">⛲</span>
-                            <h4 class="font-bold text-slate-800 mb-1">Trafalgar Square</h4>
-                            <p class="text-slate-600 text-sm">Watch the water shooting out of the fountains in London. Each jet of water curves gracefully back down.</p>
-                        </div>
-                        <!-- Card 3 -->
-                        <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 hover:border-teal-200 transition-all shadow-sm flex flex-col items-center text-center">
-                            <span class="text-4xl mb-3" aria-hidden="true">🏹</span>
-                            <h4 class="font-bold text-slate-800 mb-1">Sherwood Bows</h4>
-                            <p class="text-slate-600 text-sm">Robin Hood’s arrows start fast and straight, but bend towards the ground as they fly through the trees.</p>
-                        </div>
-                    </div>
-                </div>
+  <!-- Examples across themes -->
+  <p class="section-label">Trajectory in the real world</p>
+  <div class="example-grid">
+    <div class="example-card">
+      <span class="ex-icon">🚀</span>
+      <span class="ex-theme">Space</span>
+      <div class="ex-title">Rocket to the Moon</div>
+      <div class="ex-sentence">Scientists plotted the <strong>trajectory</strong> of Apollo 11 so it would curve perfectly into lunar orbit.</div>
+    </div>
+    <div class="example-card">
+      <span class="ex-icon">⚽</span>
+      <span class="ex-theme">Sport</span>
+      <div class="ex-title">Free Kick</div>
+      <div class="ex-sentence">The goalkeeper watched the <strong>trajectory</strong> of the ball curl up and over the wall.</div>
+    </div>
+    <div class="example-card">
+      <span class="ex-icon">🌧️</span>
+      <span class="ex-theme">Weather</span>
+      <div class="ex-title">Raindrops</div>
+      <div class="ex-sentence">Wind changes the <strong>trajectory</strong> of falling rain, making it hit at an angle instead of straight down.</div>
+    </div>
+    <div class="example-card">
+      <span class="ex-icon">🎯</span>
+      <span class="ex-theme">Life</span>
+      <div class="ex-title">Life Path</div>
+      <div class="ex-sentence">People sometimes say your choices today shape the <strong>trajectory</strong> of your future.</div>
+    </div>
+  </div>
 
-                <!-- Bottom action button -->
-                <div class="flex justify-end pt-4">
-                    <button onclick="switchTab('simulator')" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-2xl shadow-md transition-all flex items-center gap-2 text-lg">
-                        Let's Try Gravity Tug-of-War! ➔
-                    </button>
-                </div>
-            </section>
+  <!-- Word in use -->
+  <p class="section-label">The word in a sentence</p>
+  <div class="usage-grid">
+    <div class="usage-card">
+      <div class="usage-label">Everyday</div>
+      <div class="usage-text">She watched the <em>trajectory</em> of the stone as it arced through the air and splashed into the lake.</div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-label">Science</div>
+      <div class="usage-text">The <em>trajectory</em> of the probe was adjusted mid-flight to avoid an asteroid field.</div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-label">Metaphor</div>
+      <div class="usage-text">The team's <em>trajectory</em> this season has been impressive — they've won six games in a row.</div>
+    </div>
+  </div>
 
-            <!-- TAB 2: SIMULATOR (TUG-OF-WAR) -->
-            <section id="simulator" class="tab-content space-y-6">
-                <div class="bg-amber-50 border-2 border-amber-200 p-5 rounded-2xl flex justify-between items-start gap-4">
-                    <div>
-                        <h3 id="sim-instructions-title" class="text-lg font-bold text-amber-950 flex items-center gap-2 mb-2">
-                            💡 Interactive Visual Experiment
-                        </h3>
-                        <p id="sim-instructions-text" class="text-amber-900">
-                            What shapes a trajectory? Play with the switch below to turn <strong>Gravity</strong> on or off, then tap <strong>Throw</strong>. Notice how the shape of the flight path changes!
-                        </p>
-                    </div>
-                    <button onclick="speakTextId('sim-instructions-text')" class="bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-full p-2 flex items-center justify-center text-xs self-start" title="Listen to instructions">
-                        🔊 Read
-                    </button>
-                </div>
+  <!-- Related words -->
+  <p class="section-label">Related words</p>
+  <div class="related-row">
+    <span class="related-pill">projectile <span>(noun)</span></span>
+    <span class="related-pill">arc <span>(noun)</span></span>
+    <span class="related-pill">parabola <span>(noun)</span></span>
+    <span class="related-pill">orbit <span>(noun)</span></span>
+    <span class="related-pill">velocity <span>(noun)</span></span>
+    <span class="related-pill">gravitational pull <span>(phrase)</span></span>
+  </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    <!-- Simulator controls -->
-                    <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 space-y-6">
-                        <!-- Gravity Toggle switch -->
-                        <div>
-                            <span class="block text-slate-700 font-bold mb-3">Earth's Gravity:</span>
-                            <div class="flex items-center gap-3">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="gravity-toggle" class="sr-only peer" checked onchange="toggleGravityVisual()">
-                                    <div class="w-14 h-8 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-600"></div>
-                                </label>
-                                <span id="gravity-status" class="text-lg font-bold text-emerald-700">Gravity is ON 🌍</span>
-                            </div>
-                        </div>
+  <div style="display:flex;justify-content:flex-end;padding-top:1rem;">
+    <button class="next-btn" onclick="switchTab('simulator')">Try the Skate Park Simulator →</button>
+  </div>
 
-                        <!-- Velocity / Power Control -->
-                        <div>
-                            <label for="sim-power-slider" class="block text-slate-700 font-bold mb-2">
-                                Launch Power: <span id="sim-power-display" class="text-teal-600">Medium</span>
-                            </label>
-                            <input type="range" id="sim-power-slider" min="1" max="3" value="2" class="w-full h-3 bg-slate-200 rounded-lg appearance-none" oninput="updateSimSliders()">
-                        </div>
+</div>
+</div>
 
-                        <!-- Fire button -->
-                        <button onclick="launchSim()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-6 rounded-2xl text-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
-                            <span>🚀</span> Launch Object!
-                        </button>
-                    </div>
+<!-- ══════════════════════════════════════════
+     TAB 2 · SIMULATOR — SKATE PARK
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-simulator">
+<div class="panel-inner">
 
-                    <!-- Simulator Visual Canvas Display -->
-                    <div class="lg:col-span-8 bg-gradient-to-b from-sky-100 to-sky-200 rounded-3xl border-4 border-sky-300/40 p-4 relative overflow-hidden flex flex-col items-center">
-                        <div class="absolute top-4 left-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-bold text-slate-600 border border-slate-200">
-                            Real-time flight path visualiser
-                        </div>
+  <div class="sim-hero">
+    <span style="font-size:2.5rem;">🛹</span>
+    <div>
+      <h2>Skate Park Trajectory Lab</h2>
+      <p>A skater launches off a ramp. Adjust the angle and power — then watch the trajectory change. Try turning gravity off to see what happens without it.</p>
+    </div>
+  </div>
 
-                        <!-- Simulator SVG Canvas Frame -->
-                        <svg id="sim-svg" viewBox="0 0 500 250" class="w-full h-auto max-w-lg bg-transparent drop-shadow-sm mt-4">
-                            <!-- Background ground -->
-                            <rect x="0" y="210" width="500" height="40" fill="#a7f3d0" />
-                            <line x1="0" y1="210" x2="500" y2="210" stroke="#059669" stroke-width="3" />
+  <div class="sim-layout">
+    <div class="sim-controls">
 
-                            <!-- Catapult Launcher illustration -->
-                            <g transform="translate(30, 185)">
-                                <rect x="0" y="5" width="20" height="20" fill="#78350f" rx="3" />
-                                <line x1="10" y1="10" x2="30" y2="-10" stroke="#451a03" stroke-width="5" stroke-linecap="round" id="sim-launcher-arm" />
-                            </g>
+      <div class="sim-gravity-toggle">
+        <label class="toggle-wrap">
+          <input type="checkbox" id="sim-gravity" checked onchange="simToggleGravity()">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label" id="sim-gravity-label">Gravity: ON 🌍</span>
+      </div>
 
-                            <!-- Trajectory paths (drawn dynamically in JS) -->
-                            <path id="sim-path" d="" fill="none" stroke="#d97706" stroke-width="4" stroke-dasharray="6 6" />
-                            
-                            <!-- Animated object ball -->
-                            <circle id="sim-ball" cx="40" cy="195" r="10" fill="#ef4444" stroke="#991b1b" stroke-width="2" style="display: none;" />
-                        </svg>
+      <div>
+        <label for="sim-angle">Launch Angle <span id="sim-angle-val">40°</span></label>
+        <input type="range" id="sim-angle" min="10" max="80" value="40" oninput="document.getElementById('sim-angle-val').textContent=this.value+'°'; simDrawScene();">
+      </div>
 
-                        <!-- Dynamic Explanation box -->
-                        <div class="flex items-center justify-between gap-4 mt-4 p-4 bg-white rounded-xl border border-sky-100 text-sm text-slate-700 max-w-md">
-                            <div id="sim-explanation" class="text-center w-full">
-                                When gravity is turned on, the horizontal motion combined with vertical acceleration shapes a downward curving trajectory.
-                            </div>
-                            <button onclick="speakTextId('sim-explanation')" class="bg-sky-100 hover:bg-sky-200 text-sky-900 rounded-full p-1.5 flex items-center justify-center text-xs" title="Read explanation text">
-                                🔊
-                            </button>
-                        </div>
-                    </div>
-                </div>
+      <div>
+        <label for="sim-power">Launch Power <span id="sim-power-val">5</span></label>
+        <input type="range" id="sim-power" min="2" max="10" value="5" oninput="document.getElementById('sim-power-val').textContent=this.value; simDrawScene();">
+      </div>
 
-                <!-- Bottom action button -->
-                <div class="flex justify-end pt-4">
-                    <button onclick="switchTab('game')" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-2xl shadow-md transition-all flex items-center gap-2 text-lg">
-                        Play Sherwood Archery Practice! ➔
-                    </button>
-                </div>
-            </section>
+      <button class="sim-launch-btn" onclick="simLaunch()">🛹 Launch Skater!</button>
 
-            <!-- TAB 3: GAME -->
-            <section id="game" class="tab-content space-y-6">
-                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-emerald-50 border-2 border-emerald-100 p-4 rounded-2xl">
-                    <div class="flex items-start gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                                <span>🏹</span> Sherwood Archery Practice
-                            </h2>
-                            <p id="game-desc-text" class="text-slate-600 text-sm">Practice controlling trajectories! Earn points to unlock more difficult levels. Hit targets to reveal Robin Hood's secrets.</p>
-                        </div>
-                        <button onclick="speakTextId('game-desc-text')" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-full p-2 flex items-center justify-center text-xs" title="Listen to game info">
-                            🔊 Read
-                        </button>
-                    </div>
-                    <!-- Level Selectors (PDA Friendly but Level-Locked: Unlocked through progress) -->
-                    <div class="flex flex-wrap gap-1.5" id="level-buttons-container">
-                        <!-- Rendered Dynamically in JS -->
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    <!-- Game Controls Panel -->
-                    <div class="lg:col-span-4 bg-slate-50 p-6 rounded-2xl border-2 border-slate-100 space-y-5">
-                        
-                        <!-- Level Info and Score Box -->
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 flex justify-between items-center">
-                            <div>
-                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Current Rank</span>
-                                <div id="current-level-name" class="font-bold text-teal-700 text-sm">Level 1</div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Accuracy Score</span>
-                                <div id="accuracy-score-display" class="font-bold text-emerald-600 text-lg">0 Pts</div>
-                            </div>
-                        </div>
-
-                        <!-- Level Specific Condition Banner with TTS -->
-                        <div class="p-3 bg-amber-50 text-amber-900 border border-amber-200 rounded-xl text-xs font-medium flex justify-between items-start gap-2">
-                            <div id="level-condition-banner" class="space-y-1">
-                                <!-- Injected dynamically based on level -->
-                            </div>
-                            <button onclick="speakTextId('level-condition-banner')" class="bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-full p-1.5 flex items-center justify-center text-[10px]" title="Read level challenge text">
-                                🔊
-                            </button>
-                        </div>
-
-                        <div>
-                            <label for="angle-slider" class="block text-md font-bold text-slate-700 mb-2 flex justify-between">
-                                <span>📐 Launch Angle:</span> <span id="angle-display" class="text-teal-700">45°</span>
-                            </label>
-                            <input type="range" id="angle-slider" min="10" max="85" value="45" class="w-full h-3 bg-slate-200 rounded-lg appearance-none">
-                            <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-semibold">
-                                <span>Flat Shot (10°)</span>
-                                <span>High Shot (85°)</span>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label for="power-slider" class="block text-md font-bold text-slate-700 mb-2 flex justify-between">
-                                <span>⚡ Release Power:</span> <span id="power-display" class="text-teal-700">16</span>
-                            </label>
-                            <input type="range" id="power-slider" min="8" max="25" value="16" class="w-full h-3 bg-slate-200 rounded-lg appearance-none">
-                            <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-semibold">
-                                <span>Gentle (8)</span>
-                                <span>Powerful (25)</span>
-                            </div>
-                        </div>
-                        
-                        <button id="launch-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg text-lg transition-all transform active:scale-95 flex items-center justify-center gap-2">
-                            <span>🏹</span> Loose Arrow!
-                        </button>
-
-                        <div id="game-message" class="p-4 rounded-xl text-center font-bold text-sm hidden border-2">
-                            <!-- Live feedback triggers here -->
-                        </div>
-                    </div>
-
-                    <!-- Game Screen Canvas Area -->
-                    <div class="lg:col-span-8 flex flex-col justify-center items-center bg-gradient-to-b from-sky-100 via-sky-50 to-emerald-50 rounded-2xl border-4 border-teal-600/20 overflow-hidden relative">
-                        <!-- Forest Background Overlay icons -->
-                        <div class="absolute bottom-6 left-12 text-5xl opacity-10 pointer-events-none">🌳</div>
-                        <div class="absolute bottom-6 right-24 text-6xl opacity-15 pointer-events-none">🌲</div>
-                        <div class="absolute top-8 right-16 text-4xl opacity-10 pointer-events-none">☁️</div>
-
-                        <!-- Live Windsock (For Levels with wind) -->
-                        <div id="windsock-indicator" class="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg text-xs font-bold border border-slate-200 flex items-center gap-2 hidden">
-                            <span class="text-lg">💨</span>
-                            <span id="windsock-text">Wind: Calm</span>
-                        </div>
-
-                        <canvas id="gameCanvas" width="650" height="380" class="w-full h-auto max-w-full drop-shadow-sm z-10"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 4: CURIOSITY CHECK (EXPANDED BLOOM'S TAXONOMY QUIZ) -->
-            <section id="questions" class="tab-content space-y-6">
-                <div class="bg-teal-50 border-2 border-teal-100 p-6 rounded-2xl flex justify-between items-start gap-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-teal-900 mb-2">Curiosity Explorer</h2>
-                        <p id="curiosity-intro-text" class="text-teal-800">
-                            Let's check out what you have learned about trajectories using different levels of thinking. There is no time pressure—feel free to explore and try again!
-                        </p>
-                    </div>
-                    <button onclick="speakTextId('curiosity-intro-text')" class="bg-teal-100 hover:bg-teal-200 text-teal-900 rounded-full p-2 flex items-center justify-center text-xs" title="Listen to intro">
-                        🔊 Read
-                    </button>
-                </div>
-
-                <!-- Dynamic Quiz Space -->
-                <div class="space-y-6" id="quiz-container">
-                    <!-- Populated dynamically via JS -->
-                </div>
-
-                <!-- Dynamic Live Progress Report & Delivery Panel -->
-                <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-6 space-y-6">
-                    <div class="border-b border-slate-200 pb-4">
-                        <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                            <span>📊</span> Your Explorer Report Desk
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-1">Ready to send your discoveries? Type in your details below to save a PDF report or email your achievements directly to your teacher.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="student-name" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">My Name:</label>
-                            <input type="text" id="student-name" placeholder="Enter your full name" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none" oninput="updateReportText()">
-                        </div>
-                        <div>
-                            <label for="teacher-email" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">Teacher's Email Address:</label>
-                            <input type="email" id="teacher-email" placeholder="teacher@school.sch.uk" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none" oninput="updateReportText()">
-                        </div>
-                    </div>
-
-                    <!-- Progress Stats Summary -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white p-4 rounded-xl border border-slate-100 text-center">
-                        <div>
-                            <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest">Questions Attempted</span>
-                            <span id="report-attempted" class="text-xl font-black text-slate-700">0 / 6</span>
-                        </div>
-                        <div>
-                            <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest">Correct Discoveries</span>
-                            <span id="report-correct" class="text-xl font-black text-emerald-600">0 / 6</span>
-                        </div>
-                        <div>
-                            <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest">Archery High Score</span>
-                            <span id="report-archery" class="text-xl font-black text-teal-600">0 Pts</span>
-                        </div>
-                    </div>
-
-                    <!-- Success Alert Notifications -->
-                    <div id="action-notification" class="hidden p-4 rounded-xl text-center font-bold text-sm border"></div>
-
-                    <!-- Action Triggers -->
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <button onclick="downloadReportAsPDF()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 px-6 rounded-xl shadow transition-transform active:scale-95 flex items-center justify-center gap-2">
-                            <span>📄</span> Save Report as PDF
-                        </button>
-                        <button onclick="emailReportToTeacher()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow transition-transform active:scale-95 flex items-center justify-center gap-2">
-                            <span>✉️</span> Email to Teacher
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 5: WORKSHEET VIEW -->
-            <section id="worksheet" class="tab-content space-y-6">
-                <div class="bg-indigo-50 border-2 border-indigo-100 p-6 rounded-2xl flex justify-between items-start gap-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-indigo-950 mb-2">Printable Home Learning</h2>
-                        <p id="worksheet-intro-text" class="text-indigo-800 text-lg">
-                            Need a break from screens? We have a print-friendly, low-pressure trajectory worksheet designed for you to draw, match, and write on.
-                        </p>
-                    </div>
-                    <button onclick="speakTextId('worksheet-intro-text')" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-950 rounded-full p-2 flex items-center justify-center text-xs" title="Read introduction">
-                        🔊 Read
-                    </button>
-                </div>
-                
-                <div class="bg-white border-2 border-indigo-200 p-8 rounded-3xl flex flex-col items-center text-center space-y-6 max-w-2xl mx-auto shadow-sm">
-                    <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center border-2 border-indigo-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
-                    </div>
-                    <div class="space-y-2">
-                        <h3 class="text-2xl font-bold text-slate-800">My Trajectory Explorations Worksheet</h3>
-                        <p class="text-slate-500">Perfect for desk-based drawing activities, matching paths, and localising with UK examples.</p>
-                    </div>
-                    <button onclick="triggerPrintWorksheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center gap-2 text-lg">
-                        👉 Print Worksheet Now
-                    </button>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- HIDDEN PRINT AREA: WORKSHEET (Only revealed to printer processes) -->
-    <div id="worksheet-print-area" class="hidden">
-        <div class="p-8 max-w-3xl mx-auto font-sans leading-relaxed text-black">
-            <!-- Header section -->
-            <div class="border-b-4 border-black pb-4 mb-6 flex justify-between items-end">
-                <div>
-                    <h1 class="text-3xl font-black tracking-tight uppercase">My Trajectory Discoveries</h1>
-                    <p class="text-sm italic">Investigating paths of flight in the UK</p>
-                </div>
-                <div class="text-right">
-                    <p class="font-bold">Name: ______________________</p>
-                    <p class="text-sm mt-1">Date: ______________________</p>
-                </div>
-            </div>
-
-            <!-- Task 1 -->
-            <div class="mb-8">
-                <h2 class="text-xl font-bold mb-2">1. The Missing Path Word</h2>
-                <p class="text-slate-800 mb-3">Complete the definition of the word trajectory. (Hint: The word rhymes with "bath"!)</p>
-                <div class="p-4 bg-gray-50 border border-gray-300 rounded-lg text-lg font-mono">
-                    A trajectory is the curved <span class="underline">P _ _ _</span> that an object follows as it flies through the air.
-                </div>
-            </div>
-
-            <!-- Task 2 -->
-            <div class="mb-8">
-                <h2 class="text-xl font-bold mb-2">2. Plot Robin Hood's Arrow</h2>
-                <p class="text-slate-800 mb-4">Robin Hood is shooting an arrow towards a golden target. Draw the curved trajectory line showing the arrow's path through the sky.</p>
-                <div class="h-44 border-2 border-dashed border-gray-400 rounded-xl relative flex justify-between items-end p-6">
-                    <div class="text-3xl">🏹 (Bow)</div>
-                    <div class="text-3xl pb-24 text-gray-400 text-xs">← Draw the curved flight trail here →</div>
-                    <div class="text-3xl">🎯 (Target Boss)</div>
-                </div>
-            </div>
-
-            <div class="page-break"></div> <!-- Smooth page break for visual layouts -->
-
-            <!-- Task 3 -->
-            <div class="mt-8 mb-8">
-                <h2 class="text-xl font-bold mb-2">3. Trajectory Matching Quest</h2>
-                <p class="text-slate-800 mb-4">Draw a line connecting each action to the type of trajectory you expect it to make:</p>
-                
-                <div class="grid grid-cols-2 gap-x-8 gap-y-4 text-sm mt-4">
-                    <div class="p-3 border border-gray-300 rounded font-bold">A. Kicking a football over a high wall</div>
-                    <div class="p-3 border border-gray-300 rounded font-bold">1. A straight flat line across the ground</div>
-                    
-                    <div class="p-3 border border-gray-300 rounded font-bold">B. Dropping a tennis ball from a window</div>
-                    <div class="p-3 border border-gray-300 rounded font-bold">2. A high, looping curve over the top</div>
-                    
-                    <div class="p-3 border border-gray-300 rounded font-bold">C. Pushing a toy car across a flat floor</div>
-                    <div class="p-3 border border-gray-300 rounded font-bold">3. A straight vertical path downwards</div>
-                </div>
-            </div>
-
-            <!-- Great job box -->
-            <div class="border-2 border-black p-4 rounded-xl text-center bg-gray-50 mt-12">
-                <p class="font-bold text-lg">🌟 Fantastic Work!</p>
-                <p class="text-sm">You have successfully explored gravity, push, and curved flight paths today!</p>
-            </div>
-        </div>
+      <div class="sim-explanation" id="sim-explanation">
+        With gravity on, the skater curves upward then falls back down — a classic trajectory.
+      </div>
     </div>
 
-    <!-- HIDDEN PRINT AREA: EXPLORER CERTIFICATE & REPORT -->
-    <div id="report-print-area" class="hidden">
-        <div class="p-12 max-w-3xl mx-auto font-sans leading-relaxed text-black border-8 border-double border-teal-800 m-4 rounded-xl bg-slate-50/20">
-            <div class="text-center space-y-3 pb-8 border-b-2 border-teal-800">
-                <span class="text-5xl">🏆</span>
-                <h1 class="text-3xl font-extrabold tracking-tight uppercase text-teal-900">Trajectory Explorer Graduate</h1>
-                <p class="text-lg italic text-slate-700">Official Science Discovery Document</p>
-            </div>
+    <div class="sim-canvas-wrap">
+      <canvas id="simCanvas" width="580" height="320"></canvas>
+    </div>
+  </div>
 
-            <div class="my-10 space-y-6 text-center">
-                <p class="text-xl">This certifies that</p>
-                <p id="print-recipient-name" class="text-3xl font-black underline text-teal-950">____________________________</p>
-                <p class="text-lg">has completed interactive scientific investigations into physics, gravity, and curved flight paths.</p>
-            </div>
+  <div style="display:flex;justify-content:flex-end;padding-top:1.5rem;">
+    <button class="next-btn" onclick="switchTab('game')">Play Sherwood Archery →</button>
+  </div>
 
-            <div class="my-8 bg-white p-6 rounded-xl border border-slate-300 space-y-3">
-                <h3 class="text-lg font-bold text-slate-800 border-b pb-2">🎯 Scientific Achievement Metrics</h3>
-                <div class="grid grid-cols-2 gap-4 text-sm font-medium">
-                    <div>Bloom's Questions Attempted:</div>
-                    <div id="print-attempted" class="text-right font-bold">0 / 6</div>
-                    <div>Curiosity Check Correct Answers:</div>
-                    <div id="print-correct" class="text-right font-bold text-emerald-700">0 / 6</div>
-                    <div>Sherwood Archery Practice High Score:</div>
-                    <div id="print-score" class="text-right font-bold text-teal-700">0 Pts</div>
-                    <div>Date Verified:</div>
-                    <div id="print-date" class="text-right font-bold">Thursday, 4 June 2026</div>
-                </div>
-            </div>
+</div>
+</div>
 
-            <!-- Question breakdown breakdown list -->
-            <div class="space-y-2 mt-4 text-xs">
-                <h4 class="font-bold border-b pb-1 text-slate-700">Exploration Log:</h4>
-                <div id="print-question-log" class="space-y-1">
-                    <!-- filled by script -->
-                </div>
-            </div>
+<!-- ══════════════════════════════════════════
+     TAB 3 · GAME — SHERWOOD ARCHERY
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-game">
+<div class="panel-inner">
 
-            <div class="flex justify-between items-end mt-12 border-t pt-8">
-                <div>
-                    <div class="h-10 w-24 border-b border-dashed border-slate-400"></div>
-                    <p class="text-[10px] text-slate-500 mt-1 font-bold">Teacher Signature</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-xs font-bold text-slate-800">🎯 Trajectory Simulation Engine</p>
-                    <p class="text-[9px] text-slate-500">UK Science Curriculum alignment framework</p>
-                </div>
-            </div>
+  <div class="game-hero">
+    <h2>🏹 Sherwood Forest Archery</h2>
+    <p>Use angle and power to send your arrow on the perfect trajectory. Hit the target to score — bullseye earns the most. Complete a level to unlock the next.</p>
+  </div>
+
+  <div class="game-layout">
+    <div class="game-controls">
+
+      <div class="score-box">
+        <div>
+          <div class="score-label">Score</div>
+          <div class="score-val" id="game-score">0 pts</div>
         </div>
+        <div style="text-align:right;">
+          <div class="score-label">Level</div>
+          <div class="score-val" id="game-level-name" style="font-size:0.95rem;">1 · Sunny Glade</div>
+        </div>
+      </div>
+
+      <div class="level-row" id="game-level-row"></div>
+
+      <div id="game-level-desc" style="font-size:0.82rem;color:#555;line-height:1.5;padding:0.5rem 0;"></div>
+
+      <div>
+        <label for="game-angle">Angle <span id="game-angle-val">45°</span></label>
+        <input type="range" id="game-angle" min="10" max="85" value="45" oninput="document.getElementById('game-angle-val').textContent=this.value+'°'; gameDrawScene();">
+      </div>
+
+      <div>
+        <label for="game-power">Power <span id="game-power-val">16</span></label>
+        <input type="range" id="game-power" min="8" max="25" value="16" oninput="document.getElementById('game-power-val').textContent=this.value; gameDrawScene();">
+      </div>
+
+      <button class="launch-arrow-btn" id="game-launch-btn" onclick="gameLaunch()">🏹 Loose Arrow!</button>
+
+      <div class="game-msg" id="game-msg"></div>
     </div>
 
-    <!-- Application Logic -->
-    <script>
-        // --- TEXT TO SPEECH SUPPORT (Browser-Native, Low-Latency Web Speech API) ---
-        function speakText(textString) {
-            if ('speechSynthesis' in window) {
-                // Cancel any currently speaking audio first to avoid overlap
-                window.speechSynthesis.cancel();
-                
-                const utterance = new SpeechSynthesisUtterance(textString);
-                utterance.lang = 'en-GB'; // Setup British English pronunciation
-                utterance.rate = 0.9;     // Slightly slower pace to make processing accessible for students with ADHD/Autism
-                
-                // Optional: select a native UK voice if available
-                const voices = window.speechSynthesis.getVoices();
-                const ukVoice = voices.find(voice => voice.lang.includes('GB') || voice.lang.includes('en-GB'));
-                if (ukVoice) {
-                    utterance.voice = ukVoice;
-                }
-                
-                window.speechSynthesis.speak(utterance);
-            } else {
-                console.warn("Browser Speech Synthesis not available.");
-            }
-        }
-
-        // Helper to fetch string text inside an HTML element and read it aloud
-        function speakTextId(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                speakText(element.innerText);
-            }
-        }
-
-        // --- NAVIGATION STATE MANAGEMENT ---
-        function switchTab(tabId) {
-            // Stop any ongoing speech reading when switching activities
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-            }
-
-            // Hide all tab screens
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // Reset tab navigation styles
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('border-teal-600', 'bg-teal-50/50', 'text-teal-900');
-                btn.classList.add('border-transparent', 'text-gray-500');
-            });
-            
-            // Show targeted screen
-            document.getElementById(tabId).classList.add('active');
-            // Apply selected styling to trigger tab
-            const activeBtn = document.getElementById(`tab-${tabId}`);
-            activeBtn.classList.remove('border-transparent', 'text-gray-500');
-            activeBtn.classList.add('border-teal-600', 'bg-teal-50/50', 'text-teal-900');
-
-            // Resize canvas or start active animation loops
-            if (tabId === 'game') {
-                initGame();
-            } else if (tabId === 'simulator') {
-                resetSim();
-            }
-        }
-
-        // --- BLOOM'S TAXONOMY STYLE CURIOSITY QUIZ DATA ---
-        const questions = [
-            {
-                level: "🧠 Remember Level",
-                q: "What is the scientific term for the curved flying path an object traces as it flies through the air?",
-                options: [
-                    "⚽ A gravity drag line",
-                    "🎯 A trajectory",
-                    "⚙️ A constant straight line"
-                ],
-                correct: 1,
-                explanation: "Splendid recall! The imaginary line or curved path traced by an object in flight is called its trajectory."
-            },
-            {
-                level: "💡 Understand Level",
-                q: "Why does a launched football curve down towards the pitch instead of moving in a straight line forever?",
-                options: [
-                    "💨 The wind pushes it down sideways",
-                    "🌍 Gravity pulls it down towards Earth",
-                    "🦕 The ball runs out of horizontal speed"
-                ],
-                correct: 1,
-                explanation: "Spot on! Gravity acts like an invisible hook, continuously pulling the flying object downward, shaping it into a curved trajectory."
-            },
-            {
-                level: "🛠️ Apply Level",
-                q: "You are aiming at a target in Sherwood Forest. A strong West wind is blowing from the left. Where should you aim your trajectory?",
-                options: [
-                    "👈 Slightly to the left to counteract the wind force",
-                    "👉 Slightly to the right to counteract the wind force",
-                    "🎯 Directly at the center of the target"
-                ],
-                correct: 0,
-                explanation: "Fantastic adjustment! Aiming slightly into the wind (to the left) ensures the wind drift pushes your trajectory back onto target."
-            },
-            {
-                level: "🔍 Analyse Level",
-                q: "What happens to the shape of your trajectory curve if you keep your angle the same but double the release power?",
-                options: [
-                    "🚀 It will loop much higher and land closer",
-                    "📈 It will make a wider, longer curve and land much further away",
-                    "🦖 It will look exactly the same but travel faster"
-                ],
-                correct: 1,
-                explanation: "Brilliant analysis! More launch speed allows the object to travel further forward before gravity has time to pull it to Earth."
-            },
-            {
-                level: "⚖️ Evaluate Level",
-                q: "If you play Sherwood Archery on the Moon where gravity is much weaker than on Earth, how would your trajectory change?",
-                options: [
-                    "🚀 The arrow would travel in a much longer, flatter curve",
-                    "🛑 The arrow would drop straight down instantly",
-                    "🛸 The arrow would travel in a perfect circle"
-                ],
-                correct: 0,
-                explanation: "Superb evaluation! Weak gravity means less downward acceleration, meaning the push force dominates, resulting in long, flat curves."
-            },
-            {
-                level: "✏️ Create Level",
-                q: "You need to launch a rescue package high over a stone wall to land safely in a castle courtyard. Which combination should you select?",
-                options: [
-                    "🏹 A high launch angle and high release power",
-                    "🏹 A flat, low launch angle and high release power",
-                    "🏹 A high launch angle and very low release power"
-                ],
-                correct: 0,
-                explanation: "Excellent strategy! High angle gives you the vertical loop needed to clear height obstacles, and high power ensures the distance is covered."
-            }
-        ];
-
-        // Tracker for student submissions in session memory
-        let studentResponses = {}; // format: { qIndex: selectedIndex }
-
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            container.innerHTML = '';
-
-            questions.forEach((question, qIndex) => {
-                const qBlock = document.createElement('div');
-                qBlock.className = "bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm space-y-4";
-                
-                let voiceText = `Question ${qIndex + 1}: ${question.q}. Choices are: ` + question.options.map((opt, i) => `${i + 1}, ${opt}`).join('. ');
-                
-                let html = `
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="space-y-1">
-                            <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 border border-teal-200">${question.level}</span>
-                            <h3 id="q-title-${qIndex}" class="text-lg sm:text-xl font-bold text-slate-800">${qIndex + 1}. ${question.q}</h3>
-                        </div>
-                        <button onclick="speakText('${voiceText.replace(/'/g, "\\'")}')" class="bg-teal-100 hover:bg-teal-200 text-teal-800 rounded-full p-2 flex items-center justify-center text-xs shrink-0" title="Read question and options">
-                            🔊 Read Question
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                `;
-                
-                question.options.forEach((opt, oIndex) => {
-                    const isSelected = studentResponses[qIndex] === oIndex;
-                    const isCorrect = question.correct === oIndex;
-                    
-                    let btnClass = "text-left p-4 border-2 border-slate-100 rounded-xl font-medium hover:bg-slate-50 hover:border-teal-200 transition-colors focus:ring-2 focus:ring-teal-500";
-                    if (studentResponses[qIndex] !== undefined) {
-                        if (isSelected) {
-                            btnClass = isCorrect ? "text-left p-4 border-2 border-emerald-500 bg-emerald-50 text-emerald-900 rounded-xl font-bold" : "text-left p-4 border-2 border-amber-500 bg-amber-50 text-amber-900 rounded-xl font-bold";
-                        }
-                    }
-
-                    html += `
-                        <button onclick="checkAnswer(${qIndex}, ${oIndex}, this)" class="${btnClass}">
-                            ${opt}
-                        </button>
-                    `;
-                });
-
-                html += `</div>`;
-                
-                // Show feedback if already answered
-                if (studentResponses[qIndex] !== undefined) {
-                    const isCorrect = questions[qIndex].correct === studentResponses[qIndex];
-                    const bgClass = isCorrect ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-amber-50 border-amber-200 text-amber-800";
-                    const icon = isCorrect ? "✨" : "🎯";
-                    const expText = isCorrect ? `Correct! ${question.explanation}` : "Not quite this time, but that's alright! Give another option a go.";
-                    
-                    html += `
-                        <div id="feedback-${qIndex}" class="text-md font-bold p-4 rounded-xl flex items-center justify-between gap-2 border-2 ${bgClass}">
-                            <span>${icon} ${expText}</span>
-                            <button onclick="speakText('${expText.replace(/'/g, "\\'")}')" class="bg-white/50 hover:bg-white/80 p-1.5 rounded-full inline-flex items-center justify-center shrink-0">🔊</button>
-                        </div>
-                    `;
-                } else {
-                    html += `<div id="feedback-${qIndex}" class="text-md font-bold hidden p-4 rounded-xl flex items-center justify-between gap-2 border-2"></div>`;
-                }
-                
-                qBlock.innerHTML = html;
-                container.appendChild(qBlock);
-            });
-
-            updateExplorerReport();
-        }
-
-        function checkAnswer(qIndex, selectedIndex, element) {
-            // Log response
-            studentResponses[qIndex] = selectedIndex;
-            
-            // Re-render to freeze states cleanly
-            renderQuiz();
-            
-            // Text feedback auto-reading support
-            const isCorrect = questions[qIndex].correct === selectedIndex;
-            if (isCorrect) {
-                speakText("Brilliant discovery! " + questions[qIndex].explanation);
-            } else {
-                speakText("Let's give that another try! Adjust your thoughts and pick again.");
-            }
-        }
-
-        // --- DYNAMIC REPORT DATA COMPILER ---
-        function updateExplorerReport() {
-            let attempted = Object.keys(studentResponses).length;
-            let correct = 0;
-            
-            questions.forEach((q, idx) => {
-                if (studentResponses[idx] === q.correct) {
-                    correct++;
-                }
-            });
-
-            // Update UI elements
-            document.getElementById('report-attempted').innerText = `${attempted} / 6`;
-            document.getElementById('report-correct').innerText = `${correct} / 6`;
-            document.getElementById('report-archery').innerText = `${accuracyPoints} Pts`;
-
-            // Prepare Print Variables
-            document.getElementById('print-attempted').innerText = `${attempted} / 6`;
-            document.getElementById('print-correct').innerText = `${correct} / 6`;
-            document.getElementById('print-score').innerText = `${accuracyPoints} Pts`;
-
-            // Render print questions list logs
-            const logContainer = document.getElementById('print-question-log');
-            logContainer.innerHTML = '';
-            questions.forEach((q, idx) => {
-                let statusText = "Not attempted yet";
-                let style = "text-slate-500";
-                if (studentResponses[idx] !== undefined) {
-                    if (studentResponses[idx] === q.correct) {
-                        statusText = "Correct discovery!";
-                        style = "text-emerald-700 font-bold";
-                    } else {
-                        statusText = "Needs refinement";
-                        style = "text-amber-700";
-                    }
-                }
-                logContainer.innerHTML += `<div class="flex justify-between border-b pb-0.5"><span class="font-medium">${idx+1}. [${q.level}]</span> <span class="${style}">${statusText}</span></div>`;
-            });
-        }
-
-        function updateReportText() {
-            const name = document.getElementById('student-name').value || "____________________________";
-            document.getElementById('print-recipient-name').innerText = name;
-        }
-
-        function showNotification(text, status) {
-            const box = document.getElementById('action-notification');
-            box.className = `p-4 rounded-xl text-center font-bold text-sm border-2 block mt-2`;
-            if (status === 'success') {
-                box.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
-            } else {
-                box.classList.add('bg-indigo-50', 'text-indigo-800', 'border-indigo-200');
-            }
-            box.innerText = text;
-            setTimeout(() => { box.classList.add('hidden'); }, 6000);
-        }
-
-        // --- PRINT TO PDF FUNCTIONALITY ---
-        function downloadReportAsPDF() {
-            // Safety Check: Name Input check
-            const nameInput = document.getElementById('student-name').value.trim();
-            if (!nameInput) {
-                showNotification("✍️ Please type your name into the 'Explorer Report Desk' form so we can build your certificate!", "warning");
-                speakText("Please type your name into the Explorer Report Desk form so we can build your certificate!");
-                return;
-            }
-
-            // Temporarily set print date
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            document.getElementById('print-date').innerText = today.toLocaleDateString('en-GB', options);
-
-            // Trigger window print focusing solely on Report Container
-            document.getElementById('worksheet-print-area').classList.add('hidden');
-            document.getElementById('report-print-area').classList.remove('hidden');
-            window.print();
-        }
-
-        function triggerPrintWorksheet() {
-            document.getElementById('report-print-area').classList.add('hidden');
-            document.getElementById('worksheet-print-area').classList.remove('hidden');
-            window.print();
-        }
-
-        // --- EMAIL / CLIPBOARD DELIVERY CONTROLLER ---
-        function emailReportToTeacher() {
-            const name = document.getElementById('student-name').value.trim() || "A Science Student";
-            const email = document.getElementById('teacher-email').value.trim();
-            
-            let attempted = Object.keys(studentResponses).length;
-            let correct = 0;
-            questions.forEach((q, idx) => {
-                if (studentResponses[idx] === q.correct) correct++;
-            });
-
-            // Format body content
-            let bodyText = `🏆 TRAJECTORY EXPLORER PROGRESS REPORT 🏆\n\n`;
-            bodyText += `Student Name: ${name}\n`;
-            bodyText += `Date Completed: ${new Date().toLocaleDateString('en-GB')}\n\n`;
-            bodyText += `--- ACHIEVEMENTS ---\n`;
-            bodyText += `- Curiosity Check Score: ${correct} / 6 correct answers\n`;
-            bodyText += `- Sherwood Archery Score: ${accuracyPoints} Pts\n\n`;
-            bodyText += `--- LOG OF DISCOVERIES ---\n`;
-            
-            questions.forEach((q, idx) => {
-                let status = "Not Attempted";
-                if (studentResponses[idx] !== undefined) {
-                    status = studentResponses[idx] === q.correct ? "✅ Correct Choice" : "❌ Attempted incorrectly";
-                }
-                bodyText += `${idx+1}. [${q.level}] Status: ${status}\n`;
-            });
-
-            bodyText += `\nThank you for exploring trajectories with me today!`;
-
-            // Try opening mailto link
-            const subjectLine = encodeURIComponent(`Trajectory Explorer Progress Report - ${name}`);
-            const mailtoUrl = `mailto:${email}?subject=${subjectLine}&body=${encodeURIComponent(bodyText)}`;
-            
-            // Clipboard Backup Copy
-            try {
-                const dummyTextarea = document.createElement('textarea');
-                dummyTextarea.value = bodyText;
-                document.body.appendChild(dummyTextarea);
-                dummyTextarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(dummyTextarea);
-                
-                showNotification("📋 Success! Your Explorer report text has been copied to your clipboard. You can paste this straight into an email to your teacher! Opening mail draft now...", "success");
-                speakText("Success! Your Explorer report text has been copied to your clipboard. You can paste this straight into an email.");
-            } catch(e) {
-                console.warn("Clipboard access failure", e);
-            }
-
-            // Attempt to trigger system mail application
-            window.location.href = mailtoUrl;
-        }
-
-
-        // --- VISUAL INTERACTIVE SIMULATOR LOGIC ---
-        let simInterval;
-        let simGravityOn = true;
-        let simPower = 2; // 1: Low, 2: Medium, 3: High
-
-        function toggleGravityVisual() {
-            const toggle = document.getElementById('gravity-toggle');
-            const statusText = document.getElementById('gravity-status');
-            const explanation = document.getElementById('sim-explanation');
-            
-            simGravityOn = toggle.checked;
-            
-            if (simGravityOn) {
-                statusText.innerText = "Gravity is ON 🌍";
-                statusText.className = "text-lg font-bold text-emerald-700";
-                explanation.innerHTML = "When gravity is turned on, the horizontal flight combined with gravity's pull shapes a downward-curving path (trajectory).";
-            } else {
-                statusText.innerText = "Gravity is OFF 🛸";
-                statusText.className = "text-lg font-bold text-indigo-600";
-                explanation.innerHTML = "Without gravity, the object keeps moving straight forever into space! No curved trajectory is created.";
-            }
-            resetSim();
-        }
-
-        function updateSimSliders() {
-            const slider = document.getElementById('sim-power-slider');
-            const display = document.getElementById('sim-power-display');
-            simPower = parseInt(slider.value);
-            
-            if (simPower === 1) display.innerText = "Low Power";
-            else if (simPower === 2) display.innerText = "Medium Power";
-            else display.innerText = "High Power";
-            
-            resetSim();
-        }
-
-        function resetSim() {
-            clearInterval(simInterval);
-            const simBall = document.getElementById('sim-ball');
-            const simPath = document.getElementById('sim-path');
-            
-            // Return ball to launching position
-            simBall.setAttribute('cx', '40');
-            simBall.setAttribute('cy', '195');
-            simBall.style.display = 'none';
-            
-            simPath.setAttribute('d', '');
-        }
-
-        function launchSim() {
-            resetSim();
-            const simBall = document.getElementById('sim-ball');
-            const simPath = document.getElementById('sim-path');
-            simBall.style.display = 'block';
-
-            let x = 40;
-            let y = 195;
-            
-            // Map sim velocity values
-            let vx = simPower * 3.5;
-            let vy = -simPower * 2.5;
-            let gravityFactor = simGravityOn ? 0.15 : 0;
-            
-            let points = [];
-            points.push(`${x},${y}`);
-
-            function animStep() {
-                x += vx;
-                vy += gravityFactor;
-                y += vy;
-
-                simBall.setAttribute('cx', x);
-                simBall.setAttribute('cy', y);
-                points.push(`${Math.round(x)},${Math.round(y)}`);
-                simPath.setAttribute('d', `M ${points.join(' L ')}`);
-
-                // End conditions (hitting ground or borders)
-                if (y > 200 || x > 510) {
-                    clearInterval(simInterval);
-                    if (y > 200) {
-                        simBall.setAttribute('cy', 200); // ground boundary
-                    }
-                }
-            }
-
-            simInterval = setInterval(animStep, 25);
-        }
-
-        // --- SHERWOOD FOREST ARCHERY GAME LOGIC (5-LEVEL ENGINE) ---
-        const gameLevels = [
-            {
-                id: 1,
-                name: "Level 1: Sunny Sherwood",
-                description: "Calm air and standard targets. Let's practice how launching angles shape your trajectory path!",
-                wind: 0,
-                obstacle: false,
-                moving: false,
-                targetY: 220,
-                targetRadius: 40
-            },
-            {
-                id: 2,
-                name: "Level 2: Whispering Winds",
-                description: "A fresh breeze is blowing from the side! It will blow your arrow off course. Can you adjust for it?",
-                wind: -0.15, // pushes leftwards
-                obstacle: false,
-                moving: false,
-                targetY: 200,
-                targetRadius: 36
-            },
-            {
-                id: 3,
-                name: "Level 3: Castle Walls",
-                description: "A tall, stone fortress wall blocks the way. Launch with a high curve trajectory to drop over it!",
-                wind: 0,
-                obstacle: true,
-                moving: false,
-                targetY: 240,
-                targetRadius: 36
-            },
-            {
-                id: 4,
-                name: "Level 4: Tree Canopy Target",
-                description: "The targets have been pulled high up on tree branches! Aim higher to reach this lofty objective.",
-                wind: 0.10, // slight right wind
-                obstacle: false,
-                moving: false,
-                targetY: 100, // Very high
-                targetRadius: 32
-            },
-            {
-                id: 5,
-                name: "Level 5: Robin's Ultimate Test",
-                description: "A tall castle wall, blowing winds, and a target sliding up and down in the trees!",
-                wind: -0.20,
-                obstacle: true,
-                moving: true,
-                targetY: 180,
-                targetRadius: 32
-            }
-        ];
-
-        let activeLevelIndex = 0;
-        let highestUnlockedLevelIndex = 0; // Tracks player progress (0 = Only Level 1 is unlocked initially)
-        let accuracyPoints = 0;
-
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let gameLoop;
-        
-        // UI Controls
-        const angleSlider = document.getElementById('angle-slider');
-        const powerSlider = document.getElementById('power-slider');
-        const angleDisplay = document.getElementById('angle-display');
-        const powerDisplay = document.getElementById('power-display');
-        const launchBtn = document.getElementById('launch-btn');
-        const messageBox = document.getElementById('game-message');
-
-        // Physics variables & coordinates
-        const gravity = 0.35;
-        let arrow = { 
-            x: 60, 
-            y: 310, 
-            vx: 0, 
-            vy: 0, 
-            isFlying: false, 
-            trail: [] 
-        };
-        
-        let target = { 
-            x: 520, 
-            y: 220, 
-            radius: 40,
-            dir: 1, // for moving level
-            speed: 1.5
-        };
-
-        // Confetti Particle system
-        let confetti = [];
-
-        // Real-time slider update hooks
-        angleSlider.oninput = function() { angleDisplay.innerText = this.value + "°"; drawScene(); }
-        powerSlider.oninput = function() { powerDisplay.innerText = this.value; drawScene(); }
-
-        // Render level select buttons inside game menu with level-locking logic
-        function renderLevelSelectors() {
-            const container = document.getElementById('level-buttons-container');
-            container.innerHTML = '';
-            gameLevels.forEach((lvl, idx) => {
-                const isUnlocked = idx <= highestUnlockedLevelIndex;
-                const btn = document.createElement('button');
-                
-                if (isUnlocked) {
-                    btn.innerText = `Lvl ${lvl.id}`;
-                    btn.className = `px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${idx === activeLevelIndex ? 'bg-teal-600 text-white border-teal-700' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'}`;
-                    btn.onclick = () => {
-                        selectLevel(idx);
-                    };
-                } else {
-                    btn.innerText = `🔒 Lvl ${lvl.id}`;
-                    btn.className = `px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-200 text-slate-400 border-slate-300 cursor-not-allowed opacity-70`;
-                    btn.title = `Complete Level ${lvl.id - 1} to unlock this challenge!`;
-                    btn.onclick = () => {
-                        speakText(`Level ${lvl.id} is currently locked. Complete the previous level to unlock it!`);
-                    };
-                }
-                container.appendChild(btn);
-            });
-        }
-
-        function selectLevel(index) {
-            activeLevelIndex = index;
-            renderLevelSelectors();
-            
-            // Get configurations
-            const config = gameLevels[activeLevelIndex];
-            
-            // Update Level Status Labels
-            document.getElementById('current-level-name').innerText = config.name;
-            
-            let conditionText = `<strong>Objective:</strong> ${config.description}<br/>`;
-            if (config.wind !== 0) {
-                conditionText += `💨 <strong>Wind:</strong> ${config.wind < 0 ? 'Left' : 'Right'} breeze blowing!`;
-                document.getElementById('windsock-indicator').classList.remove('hidden');
-                document.getElementById('windsock-text').innerText = `Wind: ${Math.abs(Math.round(config.wind * 50))} mph ${config.wind < 0 ? 'West' : 'East'}`;
-            } else {
-                document.getElementById('windsock-indicator').classList.add('hidden');
-            }
-            if (config.obstacle) {
-                conditionText += ` 🧱 <strong>Obstacle:</strong> Castle Wall blocking straight flight paths.`;
-            }
-            document.getElementById('level-condition-banner').innerHTML = conditionText;
-
-            // Apply Level configs to physics
-            target.radius = config.targetRadius;
-            target.y = config.targetY;
-            target.x = Math.floor(Math.random() * (550 - 460 + 1) + 460); // randomize distance slightly for uniqueness
-
-            resetArrow();
-            drawScene();
-        }
-
-        function initGame() {
-            renderLevelSelectors();
-            selectLevel(activeLevelIndex);
-        }
-
-        function resetArrow() {
-            arrow.x = 60;
-            arrow.y = 310;
-            arrow.vx = 0;
-            arrow.vy = 0;
-            arrow.isFlying = false;
-            arrow.trail = [];
-            confetti = [];
-            
-            launchBtn.disabled = false;
-            launchBtn.innerText = "Loose Arrow! 🏹";
-            launchBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-            launchBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
-            messageBox.classList.add('hidden');
-            
-            cancelAnimationFrame(gameLoop);
-            // Run a scene drawing loop to keep moving elements fluid
-            runVisualLoop();
-        }
-
-        function launchArrow() {
-            if (arrow.isFlying) return;
-            
-            const angleRad = parseInt(angleSlider.value) * (Math.PI / 180);
-            const power = parseFloat(powerSlider.value);
-            
-            // Calculate starting velocities
-            arrow.vx = power * Math.cos(angleRad) * 0.75;
-            arrow.vy = -power * Math.sin(angleRad) * 0.75; 
-            arrow.isFlying = true;
-            arrow.trail = [];
-            
-            launchBtn.disabled = true;
-            launchBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
-            launchBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-            launchBtn.innerText = "Flying... 🍃";
-        }
-
-        function createConfetti(x, y) {
-            confetti = [];
-            for (let i = 0; i < 40; i++) {
-                confetti.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 8,
-                    vy: (Math.random() - 0.5) * 8 - 3,
-                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-                    size: Math.random() * 5 + 3,
-                    life: 1.0
-                });
-            }
-        }
-
-        function drawScene() {
-            // Clear current canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw Sky Backdrop Gradients
-            let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            skyGrad.addColorStop(0, '#e0f2fe'); // sky-100
-            skyGrad.addColorStop(1, '#f0fdf4'); // green-50
-            ctx.fillStyle = skyGrad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Ground
-            ctx.fillStyle = '#10b981'; // grass green
-            ctx.fillRect(0, 310, canvas.width, 70);
-
-            const lvl = gameLevels[activeLevelIndex];
-
-            // Draw Castle Wall Obstacle if active
-            if (lvl.obstacle) {
-                // Stone grey wall in the middle
-                ctx.fillStyle = '#94a3b8';
-                ctx.fillRect(280, 150, 40, 160);
-                
-                // Draw battlements
-                ctx.fillStyle = '#64748b';
-                ctx.fillRect(275, 140, 50, 10);
-                // Bricks grid pattern overlay
-                ctx.strokeStyle = '#475569';
-                ctx.lineWidth = 1;
-                for (let y = 150; y < 310; y += 20) {
-                    ctx.beginPath();
-                    ctx.moveTo(280, y);
-                    ctx.lineTo(320, y);
-                    ctx.stroke();
-                }
-            }
-
-            // Draw Wood stands for target
-            ctx.strokeStyle = '#451a03';
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.moveTo(target.x, target.y + 10);
-            ctx.lineTo(target.x - 15, 330);
-            ctx.moveTo(target.x, target.y + 10);
-            ctx.lineTo(target.x + 15, 330);
-            ctx.stroke();
-
-            // Draw Concentric Archery Rings (Standard UK colors)
-            const rings = [
-                { color: '#ffffff', border: '#e2e8f0', r: target.radius },       // White (1pt)
-                { color: '#1e293b', border: '#475569', r: target.radius * 0.75 },  // Black (3pt)
-                { color: '#3b82f6', border: '#2563eb', r: target.radius * 0.5 },   // Blue (5pt)
-                { color: '#ef4444', border: '#dc2626', r: target.radius * 0.35 },  // Red (7pt)
-                { color: '#f59e0b', border: '#d97706', r: target.radius * 0.15 }   // Gold (9pt - Bullseye!)
-            ];
-
-            rings.forEach(ring => {
-                ctx.fillStyle = ring.color;
-                ctx.strokeStyle = ring.border;
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.arc(target.x, target.y, ring.r, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-            });
-
-            // Draw Bow (on Left)
-            ctx.save();
-            ctx.translate(60, 310);
-            const userAngle = -parseInt(angleSlider.value) * (Math.PI / 180);
-            ctx.rotate(userAngle);
-            
-            // Bow string (drawn straight when relaxed)
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(-15, -35);
-            ctx.lineTo(-15, 35);
-            ctx.stroke();
-
-            // Wooden bow limb
-            ctx.strokeStyle = '#78350f';
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.arc(-20, 0, 40, -Math.PI / 2.3, Math.PI / 2.3);
-            ctx.stroke();
-            ctx.restore();
-
-            // Draw Trajectory Trail
-            if (arrow.trail.length > 0) {
-                ctx.beginPath();
-                ctx.strokeStyle = '#94a3b8';
-                ctx.lineWidth = 3;
-                ctx.setLineDash([4, 8]);
-                ctx.moveTo(arrow.trail[0].x, arrow.trail[0].y);
-                for(let i=1; i<arrow.trail.length; i++) {
-                    ctx.lineTo(arrow.trail[i].x, arrow.trail[i].y);
-                }
-                ctx.stroke();
-                ctx.setLineDash([]); // reset dashes
-            } else if (!arrow.isFlying) {
-                // Draw a visual dotted predictive guide line
-                const angleRad = parseInt(angleSlider.value) * (Math.PI / 180);
-                const power = parseFloat(powerSlider.value);
-                let px = 60, py = 310;
-                let pvx = power * Math.cos(angleRad) * 0.75;
-                let pvy = -power * Math.sin(angleRad) * 0.75;
-                
-                ctx.beginPath();
-                ctx.strokeStyle = 'rgba(13, 148, 136, 0.25)'; // faint teal
-                ctx.lineWidth = 3;
-                ctx.setLineDash([4, 6]);
-                ctx.moveTo(px, py);
-                for(let i=0; i<35; i++) {
-                    px += pvx;
-                    pvy += gravity;
-                    // apply level wind force to prediction to make it accurate
-                    pvx += lvl.wind * 0.02;
-                    py += pvy;
-                    if(py > 310) break;
-                    // crash prediction into castle wall
-                    if(lvl.obstacle && px >= 280 && px <= 320 && py >= 150 && py <= 310) break;
-                    ctx.lineTo(px, py);
-                }
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-
-            // Draw actual flying arrow
-            if (arrow.isFlying || arrow.trail.length === 0) {
-                ctx.save();
-                ctx.translate(arrow.x, arrow.y);
-                
-                // Rotate arrow to face its movement path dynamically!
-                let curAngle = Math.atan2(arrow.vy, arrow.vx);
-                if (!arrow.isFlying) {
-                    curAngle = -parseInt(angleSlider.value) * (Math.PI / 180);
-                }
-                ctx.rotate(curAngle);
-
-                // Shaft
-                ctx.strokeStyle = '#78350f';
-                ctx.lineWidth = 2.5;
-                ctx.beginPath();
-                ctx.moveTo(-18, 0);
-                ctx.lineTo(18, 0);
-                ctx.stroke();
-
-                // Fletchings (Feathers on tail)
-                ctx.fillStyle = '#dc2626';
-                ctx.beginPath();
-                ctx.moveTo(-18, 0);
-                ctx.lineTo(-24, -5);
-                ctx.lineTo(-18, -5);
-                ctx.closePath();
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.moveTo(-18, 0);
-                ctx.lineTo(-24, 5);
-                ctx.lineTo(-18, 5);
-                ctx.closePath();
-                ctx.fill();
-
-                // Tip/Arrowhead
-                ctx.fillStyle = '#cbd5e1';
-                ctx.beginPath();
-                ctx.moveTo(18, 0);
-                ctx.lineTo(12, -4);
-                ctx.lineTo(12, 4);
-                ctx.closePath();
-                ctx.fill();
-
-                ctx.restore();
-            }
-
-            // Draw Confetti Particles
-            confetti.forEach((p, idx) => {
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.life;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1.0; // reset
-            });
-        }
-
-        function showGameFeedback(msg, pointsAwarded) {
-            messageBox.innerHTML = `
-                <div class="flex items-center justify-between gap-4">
-                    <span>${msg}</span>
-                    <button onclick="speakText('${msg.replace(/✨|🏆|🔴|🔵|🎯/g, '')}')" class="bg-white/40 hover:bg-white/60 p-1.5 rounded-full inline-flex items-center justify-center shrink-0">🔊</button>
-                </div>
-            `;
-            messageBox.className = `p-4 rounded-xl font-bold text-sm block mt-4 border-2`;
-            
-            let unlockedSomethingNew = false;
-
-            if (pointsAwarded > 0) {
-                messageBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
-                accuracyPoints += pointsAwarded;
-                document.getElementById('accuracy-score-display').innerText = `${accuracyPoints} Pts`;
-
-                // Update Report Desk Scores too
-                updateExplorerReport();
-
-                // CRITICAL TRIGGER: Unlock next level if the current level was successfully hit!
-                if (activeLevelIndex === highestUnlockedLevelIndex && highestUnlockedLevelIndex < 4) {
-                    highestUnlockedLevelIndex++;
-                    unlockedSomethingNew = true;
-                }
-            } else {
-                messageBox.classList.add('bg-sky-50', 'text-sky-800', 'border-sky-200');
-            }
-
-            // Speak feedback statement aloud to assist dyslexic/reading-challenged learners automatically
-            speakText(msg.replace(/✨|🏆|🔴|🔵|🎯/g, ''));
-
-            // Automatically prepare for next shot
-            setTimeout(() => {
-                resetArrow();
-                if (unlockedSomethingNew) {
-                    // Update selectors so padlocks disappear & automatically select the newly unlocked challenge!
-                    renderLevelSelectors();
-                    selectLevel(highestUnlockedLevelIndex);
-                    
-                    const unlockAlert = `Superb! You unlocked Level ${highestUnlockedLevelIndex + 1}! Let's try it together.`;
-                    speakText(unlockAlert);
-                } else {
-                    drawScene();
-                }
-            }, 3000);
-        }
-
-        function runVisualLoop() {
-            const lvl = gameLevels[activeLevelIndex];
-
-            // 1. Level Specific Target Motion (Level 5 moves)
-            if (lvl.moving) {
-                target.y += target.dir * target.speed;
-                // keep target within reasonable screen ranges
-                if (target.y < 120 || target.y > 280) {
-                    target.dir *= -1;
-                }
-            }
-
-            // 2. Confetti movement physics
-            confetti.forEach((p) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.2; // slight gravity pull
-                p.life -= 0.02;
-            });
-            confetti = confetti.filter(p => p.life > 0);
-
-            // 3. Arrow Flying updates
-            if (arrow.isFlying) {
-                // Apply gravity trajectory curve and optional wind force
-                arrow.vy += gravity;
-                arrow.vx += lvl.wind * 0.02; // wind push
-                arrow.x += arrow.vx;
-                arrow.y += arrow.vy;
-
-                // Record paths
-                if (arrow.trail.length === 0 || Math.abs(arrow.trail[arrow.trail.length-1].x - arrow.x) > 6) {
-                    arrow.trail.push({x: arrow.x, y: arrow.y});
-                }
-
-                // Obstacle collision (Castle Walls)
-                if (lvl.obstacle && arrow.x >= 280 && arrow.x <= 320 && arrow.y >= 150 && arrow.y <= 310) {
-                    arrow.isFlying = false;
-                    showGameFeedback("Ouch! Hit the stone castle walls. Aim higher to loop over it!", 0);
-                    return;
-                }
-
-                // Target hit testing
-                const dx = arrow.x - target.x;
-                const dy = arrow.y - target.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-
-                if (dist <= target.radius) {
-                    arrow.isFlying = false;
-                    createConfetti(arrow.x, arrow.y);
-                    
-                    // Award points based on distance from concentric centers
-                    let points = 0;
-                    let msg = "";
-                    if (dist <= target.radius * 0.15) {
-                        points = 10;
-                        msg = "🏆 Bullseye! Brilliant gold-ring master shot! (+10 Accuracy Points)";
-                    } else if (dist <= target.radius * 0.35) {
-                        points = 7;
-                        msg = "🔴 Splendid shot! Right in the red loop! (+7 Accuracy Points)";
-                    } else if (dist <= target.radius * 0.50) {
-                        points = 5;
-                        msg = "🔵 Well-aimed flight! High marks! (+5 Accuracy Points)";
-                    } else {
-                        points = 3;
-                        msg = "🎯 Target Hit! Your trajectory was on-point. (+3 Accuracy Points)";
-                    }
-                    showGameFeedback(msg, points);
-                    return;
-                }
-
-                // Forest floor crash
-                if (arrow.y >= 310) {
-                    arrow.y = 310;
-                    arrow.isFlying = false;
-                    showGameFeedback("Oops! Hit the grass floor. Try a bit more angle or power!", 0);
-                    return;
-                }
-
-                // Out of range limits
-                if (arrow.x > canvas.width) {
-                    arrow.isFlying = false;
-                    showGameFeedback("Shot too far! Reduce the launch power slightly.", 0);
-                    return;
-                }
-            }
-
-            drawScene();
-            gameLoop = requestAnimationFrame(runVisualLoop);
-        }
-
-        launchBtn.addEventListener('click', launchArrow);
-
-        // --- GLOBAL INITIALISATION ---
-        window.onload = () => {
-            renderQuiz();
-            initGame();
-        };
-
-    </script>
+    <div class="game-canvas-wrap">
+      <canvas id="gameCanvas" width="580" height="380"></canvas>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;padding-top:1.5rem;">
+    <button class="next-btn" onclick="switchTab('quiz')">Take the Wildlife Quiz →</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 4 · QUIZ — WILDLIFE PHOTOGRAPHER
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-quiz">
+<div class="panel-inner">
+
+  <div class="quiz-theme-banner">
+    <h2>📸 Wildlife Photographer's Curiosity Check</h2>
+    <p>You're a nature photographer trying to understand trajectories in the wild. Answer the questions to fill your portfolio. No time pressure — try as many times as you like.</p>
+  </div>
+
+  <div id="quiz-container"></div>
+
+  <!-- Report desk -->
+  <div class="report-desk">
+    <h3>📋 Send Your Results</h3>
+    <div class="report-fields">
+      <div>
+        <label for="r-name">Your name</label>
+        <input type="text" id="r-name" placeholder="Your name">
+      </div>
+      <div>
+        <label for="r-email">Teacher's email</label>
+        <input type="email" id="r-email" placeholder="jay.raine@chiltonbridgeschool.co.uk" value="jay.raine@chiltonbridgeschool.co.uk">
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-attempted">0/6</div>
+        <div class="stat-lbl">Attempted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-correct">0/6</div>
+        <div class="stat-lbl">Correct</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-score">0</div>
+        <div class="stat-lbl">Archery pts</div>
+      </div>
+    </div>
+    <div class="report-notify" id="report-notify"></div>
+    <div class="report-btns">
+      <button class="report-btn primary" onclick="emailResults()">✉️ Email to Teacher</button>
+      <button class="report-btn secondary" onclick="printReport()">📄 Save as PDF</button>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;padding-top:1.5rem;">
+    <button class="next-btn" onclick="switchTab('worksheet')">Print the Worksheet →</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 5 · TREBUCHET BUILDER
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-worksheet">
+<div class="panel-inner">
+
+  <div class="ws-hero">
+    <h2>🏰 The Great British Trebuchet Bake Off</h2>
+    <p>Design your trebuchet using the three sliders — arm length, counterweight, and release angle. Each one changes the trajectory. Can you clear the castle wall and land the cake on the judges' table?</p>
+  </div>
+
+  <div class="sim-layout">
+    <div class="sim-controls">
+
+      <div>
+        <label for="tb-arm" style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:700;color:#1a1a1a;margin-bottom:0.5rem;">
+          Arm Length <span id="tb-arm-val" style="color:#7a1a1a;">Medium</span>
+        </label>
+        <input type="range" id="tb-arm" min="1" max="3" value="2" step="1"
+          oninput="tbUpdateLabels(); tbDrawScene();"
+          style="accent-color:#7a1a1a;">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#888;margin-top:0.25rem;">
+          <span>Short</span><span>Medium</span><span>Long</span>
+        </div>
+      </div>
+
+      <div>
+        <label for="tb-weight" style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:700;color:#1a1a1a;margin-bottom:0.5rem;">
+          Counterweight <span id="tb-weight-val" style="color:#7a1a1a;">Medium</span>
+        </label>
+        <input type="range" id="tb-weight" min="1" max="3" value="2" step="1"
+          oninput="tbUpdateLabels(); tbDrawScene();"
+          style="accent-color:#7a1a1a;">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#888;margin-top:0.25rem;">
+          <span>Light</span><span>Medium</span><span>Heavy</span>
+        </div>
+      </div>
+
+      <div>
+        <label for="tb-angle" style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:700;color:#1a1a1a;margin-bottom:0.5rem;">
+          Release Angle <span id="tb-angle-val" style="color:#7a1a1a;">45°</span>
+        </label>
+        <input type="range" id="tb-angle" min="20" max="75" value="45"
+          oninput="document.getElementById('tb-angle-val').textContent=this.value+'°'; tbDrawScene();"
+          style="accent-color:#7a1a1a;">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#888;margin-top:0.25rem;">
+          <span>Low (20°)</span><span>High (75°)</span>
+        </div>
+      </div>
+
+      <button class="sim-launch-btn" id="tb-launch-btn"
+        onclick="tbLaunch()"
+        style="background:#7a1a1a;">
+        🎂 Launch Cake!
+      </button>
+
+      <div class="sim-explanation" id="tb-explanation">
+        Adjust the three sliders to design your trebuchet, then launch — can you clear the wall?
+      </div>
+
+      <!-- Result badge -->
+      <div id="tb-result" style="display:none;padding:0.75rem 1rem;border-radius:10px;font-size:0.9rem;font-weight:700;text-align:center;line-height:1.5;"></div>
+
+      <!-- Best score -->
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#888;padding-top:0.25rem;">
+        <span>Best distance:</span>
+        <span id="tb-best" style="font-weight:700;color:#7a1a1a;">—</span>
+      </div>
+    </div>
+
+    <div class="sim-canvas-wrap" style="background:linear-gradient(180deg,#1a0a00 0%,#3a1a00 40%,#2a3a0a 75%,#1a2a05 100%);">
+      <canvas id="tbCanvas" width="580" height="360"></canvas>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;padding-top:1.5rem;">
+    <button class="next-btn" onclick="switchTab('discover')" style="background:#7a1a1a;">Back to the start →</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PRINT AREA — WORKSHEET
+══════════════════════════════════════════ -->
+<div id="ws-print-area">
+  <div style="padding:2rem;max-width:680px;margin:0 auto;font-family:sans-serif;color:#000;">
+
+    <div style="border-bottom:3px solid #000;padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;">
+      <div>
+        <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem;">Word of the Week · Base 6</div>
+        <h1 style="font-size:2rem;font-weight:900;line-height:1;">Trajectory</h1>
+        <p style="font-size:0.9rem;font-style:italic;color:#444;">The Great British Trebuchet Bake Off</p>
+      </div>
+      <div style="text-align:right;">
+        <p style="font-weight:700;">Name: ______________________</p>
+        <p style="font-size:0.85rem;margin-top:0.4rem;">Date: ______________________</p>
+      </div>
+    </div>
+
+    <!-- Task 1 -->
+    <div style="margin-bottom:2rem;">
+      <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:0.5rem;">1. What does trajectory mean?</h2>
+      <p style="font-size:0.9rem;margin-bottom:0.75rem;">Fill in the missing word to complete the definition.</p>
+      <div style="background:#f5f5f5;border:1px solid #ccc;border-radius:8px;padding:1rem;font-size:1rem;font-family:monospace;">
+        A trajectory is the curved <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> that an object follows as it moves through the air.
+      </div>
+      <p style="font-size:0.8rem;color:#666;margin-top:0.4rem;">Hint: rhymes with "bath"</p>
+    </div>
+
+    <!-- Task 2 -->
+    <div style="margin-bottom:2rem;">
+      <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:0.5rem;">2. Draw the cake's trajectory</h2>
+      <p style="font-size:0.9rem;margin-bottom:0.75rem;">The trebuchet launches a cake from the left. The judges are sitting behind the castle wall on the right. Draw the curved trajectory the cake must follow to clear the wall and land on their table.</p>
+      <div style="height:160px;border:2px dashed #aaa;border-radius:10px;position:relative;display:flex;justify-content:space-between;align-items:flex-end;padding:1rem;">
+        <span style="font-size:2rem;">🏰 (Trebuchet)</span>
+        <span style="font-size:1.5rem;position:absolute;left:50%;transform:translateX(-50%);bottom:0;">🧱🧱🧱<br><span style="font-size:0.7rem;">Wall</span></span>
+        <span style="font-size:2rem;">🎂🎂 (Judges)</span>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Task 3 -->
+    <div style="margin-bottom:2rem;margin-top:1.5rem;">
+      <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:0.5rem;">3. Match the trajectory</h2>
+      <p style="font-size:0.9rem;margin-bottom:0.75rem;">Draw a line connecting each launch to the trajectory you'd expect.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem 2rem;">
+        <div style="border:1px solid #ccc;padding:0.6rem;border-radius:6px;font-size:0.88rem;font-weight:700;">A. Kicking a football over a wall</div>
+        <div style="border:1px solid #ccc;padding:0.6rem;border-radius:6px;font-size:0.88rem;font-weight:700;">1. A straight line — no curve at all</div>
+        <div style="border:1px solid #ccc;padding:0.6rem;border-radius:6px;font-size:0.88rem;font-weight:700;">B. Dropping a ball from a window</div>
+        <div style="border:1px solid #ccc;padding:0.6rem;border-radius:6px;font-size:0.88rem;font-weight:700;">2. A high looping curve upward then down</div>
+        <div style="border:1px solid #ccc;padding:0.6rem;border-radius:6px;font-size:0.88rem;font-weight:700;">C. Sliding a coin across a flat table</div>
+        <div style="border:1px solid #ccc;padding:0.6rem;border-radius:6px;font-size:0.88rem;font-weight:700;">3. A straight vertical drop downward</div>
+      </div>
+    </div>
+
+    <!-- Task 4 -->
+    <div style="margin-bottom:2rem;">
+      <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:0.5rem;">4. Use it in a sentence</h2>
+      <p style="font-size:0.9rem;margin-bottom:0.75rem;">Write your own sentence using the word <strong>trajectory</strong>.</p>
+      <div style="border-bottom:1px solid #aaa;height:2rem;margin-bottom:0.5rem;"></div>
+      <div style="border-bottom:1px solid #aaa;height:2rem;margin-bottom:0.5rem;"></div>
+      <div style="border-bottom:1px solid #aaa;height:2rem;"></div>
+    </div>
+
+    <!-- Star box -->
+    <div style="border:2px solid #000;border-radius:8px;padding:1rem;text-align:center;background:#fafafa;">
+      <p style="font-weight:900;font-size:1.1rem;">🌟 Brilliant work!</p>
+      <p style="font-size:0.9rem;">You've explored trajectory — from space missions to cake-throwing catapults.</p>
+    </div>
+  </div>
+</div>
+
+<footer class="no-print">Base 6 · Chilton Bridge School</footer>
+
+<script>
+// ══════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════
+const TAB_IDS = ['discover','simulator','game','quiz','worksheet'];
+
+function switchTab(id) {
+  TAB_IDS.forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===id);
+    document.getElementById('panel-'+t).classList.toggle('active', t===id);
+  });
+  if (id === 'simulator') { simInit(); }
+  if (id === 'game') { gameInit(); }
+  if (id === 'quiz') { renderQuiz(); }
+  if (id === 'worksheet') { tbUpdateLabels(); tbDrawScene(); }
+}
+
+// ══════════════════════════════════════
+// TAB 2 · SKATE PARK SIMULATOR
+// ══════════════════════════════════════
+const simCanvas = document.getElementById('simCanvas');
+const simCtx = simCanvas.getContext('2d');
+let simGravity = true;
+let simAnimId = null;
+
+function simToggleGravity() {
+  simGravity = document.getElementById('sim-gravity').checked;
+  const lbl = document.getElementById('sim-gravity-label');
+  const exp = document.getElementById('sim-explanation');
+  if (simGravity) {
+    lbl.textContent = 'Gravity: ON 🌍';
+    exp.textContent = 'With gravity on, the skater curves upward then falls back down — a classic trajectory.';
+  } else {
+    lbl.textContent = 'Gravity: OFF 🛸';
+    exp.textContent = 'Without gravity the skater flies in a straight line forever — no curved trajectory!';
+  }
+  simDrawScene();
+}
+
+function simInit() { simDrawScene(); }
+
+function simDrawScene(ball) {
+  const W = simCanvas.width, H = simCanvas.height;
+  simCtx.clearRect(0,0,W,H);
+
+  // Sky
+  const sky = simCtx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#1a1a2e');
+  sky.addColorStop(1,'#2d4a1a');
+  simCtx.fillStyle = sky;
+  simCtx.fillRect(0,0,W,H);
+
+  // Ground
+  simCtx.fillStyle = '#2d4a1a';
+  simCtx.fillRect(0, H-60, W, 60);
+  simCtx.fillStyle = '#1a2e1a';
+  simCtx.fillRect(0, H-60, W, 4);
+
+  // Ramp
+  simCtx.fillStyle = '#555';
+  simCtx.beginPath();
+  simCtx.moveTo(20, H-60);
+  simCtx.lineTo(100, H-60);
+  simCtx.lineTo(100, H-100);
+  simCtx.closePath();
+  simCtx.fill();
+
+  // Ramp surface highlight
+  simCtx.strokeStyle = '#888';
+  simCtx.lineWidth = 2;
+  simCtx.beginPath();
+  simCtx.moveTo(20, H-60);
+  simCtx.lineTo(100, H-100);
+  simCtx.stroke();
+
+  // Predicted path
+  const angle = parseInt(document.getElementById('sim-angle').value) * Math.PI / 180;
+  const power = parseInt(document.getElementById('sim-power').value) * 4;
+  let px = 100, py = H-100;
+  let pvx = power * Math.cos(angle);
+  let pvy = -power * Math.sin(angle);
+  const grav = simGravity ? 0.18 : 0;
+
+  simCtx.strokeStyle = 'rgba(0,200,255,0.35)';
+  simCtx.lineWidth = 2.5;
+  simCtx.setLineDash([5,7]);
+  simCtx.beginPath();
+  simCtx.moveTo(px, py);
+  for(let i=0;i<200;i++){
+    px += pvx * 0.5;
+    pvy += grav;
+    py += pvy * 0.5;
+    if(py > H-60 || px > W+20) break;
+    simCtx.lineTo(px, py);
+  }
+  simCtx.stroke();
+  simCtx.setLineDash([]);
+
+  // Ball / skater if in flight
+  if(ball) {
+    // Trail
+    simCtx.strokeStyle = 'rgba(0,200,255,0.5)';
+    simCtx.lineWidth = 2;
+    if(ball.trail && ball.trail.length > 1) {
+      simCtx.beginPath();
+      simCtx.moveTo(ball.trail[0].x, ball.trail[0].y);
+      ball.trail.forEach(p => simCtx.lineTo(p.x, p.y));
+      simCtx.stroke();
+    }
+    // Skater circle
+    simCtx.fillStyle = '#00c8ff';
+    simCtx.beginPath();
+    simCtx.arc(ball.x, ball.y, 12, 0, Math.PI*2);
+    simCtx.fill();
+    simCtx.fillStyle = '#fff';
+    simCtx.font = 'bold 14px sans-serif';
+    simCtx.textAlign = 'center';
+    simCtx.textBaseline = 'middle';
+    simCtx.fillText('🛹', ball.x, ball.y);
+  }
+
+  // Labels
+  simCtx.fillStyle = 'rgba(255,255,255,0.5)';
+  simCtx.font = '700 11px Atkinson Hyperlegible,sans-serif';
+  simCtx.textAlign = 'left';
+  simCtx.textBaseline = 'alphabetic';
+  simCtx.fillText('RAMP', 28, H-65);
+}
+
+function simLaunch() {
+  if(simAnimId) cancelAnimationFrame(simAnimId);
+  const angle = parseInt(document.getElementById('sim-angle').value) * Math.PI / 180;
+  const power = parseInt(document.getElementById('sim-power').value) * 4;
+  const H = simCanvas.height;
+  const W = simCanvas.width;
+  const grav = simGravity ? 0.18 : 0;
+
+  const ball = {
+    x: 100, y: H-100,
+    vx: power * Math.cos(angle) * 0.5,
+    vy: -power * Math.sin(angle) * 0.5,
+    trail: []
+  };
+
+  function step() {
+    ball.vy += grav;
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+    ball.trail.push({x: ball.x, y: ball.y});
+    if(ball.trail.length > 80) ball.trail.shift();
+    simDrawScene(ball);
+    if(ball.y < H-60 && ball.x < W+20) {
+      simAnimId = requestAnimationFrame(step);
+    } else {
+      simDrawScene();
+    }
+  }
+  simAnimId = requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════
+// TAB 3 · SHERWOOD ARCHERY GAME
+// ══════════════════════════════════════
+const gc = document.getElementById('gameCanvas');
+const gctx = gc.getContext('2d');
+
+const LEVELS = [
+  { id:1, name:'1 · Sunny Glade', desc:'Clear air, standard target. Practice your angle and power.', wind:0, obstacle:false, moving:false, ty:240, tr:42 },
+  { id:2, name:'2 · Crosswind',   desc:'A breeze blows from the left. Adjust your aim to compensate.', wind:-0.14, obstacle:false, moving:false, ty:220, tr:38 },
+  { id:3, name:'3 · Castle Wall', desc:'A stone wall blocks the path. Curve your trajectory over it.', wind:0, obstacle:true, moving:false, ty:280, tr:38 },
+  { id:4, name:'4 · High Target', desc:'The target hangs high in the trees. Aim up!', wind:0.1, obstacle:false, moving:false, ty:110, tr:34 },
+  { id:5, name:'5 · Robin\'s Test', desc:'Wall, wind and a moving target. The ultimate challenge.', wind:-0.18, obstacle:true, moving:true, ty:200, tr:32 },
+];
+
+let gLevel = 0;
+let gUnlocked = 0;
+let gScore = 0;
+let gArrow = { x:60, y:320, vx:0, vy:0, flying:false, trail:[] };
+let gTarget = { x:500, y:240, r:42, dir:1, speed:1.2 };
+let gConfetti = [];
+let gAnimId = null;
+const GRAVITY = 0.34;
+
+function gameInit() {
+  renderLevelPills();
+  selectLevel(gLevel);
+}
+
+function renderLevelPills() {
+  const row = document.getElementById('game-level-row');
+  row.innerHTML = '';
+  LEVELS.forEach((l,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'level-pill' + (i===gLevel?' active':'') + (i>gUnlocked?' locked':'');
+    btn.textContent = i>gUnlocked ? '🔒 '+l.id : 'Lvl '+l.id;
+    btn.onclick = () => { if(i<=gUnlocked){ selectLevel(i); } };
+    row.appendChild(btn);
+  });
+}
+
+function selectLevel(i) {
+  gLevel = i;
+  const l = LEVELS[i];
+  document.getElementById('game-level-name').textContent = l.name;
+  document.getElementById('game-level-desc').textContent = l.desc + (l.wind!==0 ? ' 💨' : '') + (l.obstacle ? ' 🧱' : '');
+  gTarget.r = l.tr;
+  gTarget.y = l.ty;
+  gTarget.x = 470 + Math.floor(Math.random()*60);
+  resetArrow();
+  renderLevelPills();
+}
+
+function resetArrow() {
+  if(gAnimId) cancelAnimationFrame(gAnimId);
+  gArrow = { x:60, y:320, vx:0, vy:0, flying:false, trail:[] };
+  gConfetti = [];
+  const btn = document.getElementById('game-launch-btn');
+  btn.disabled = false;
+  btn.textContent = '🏹 Loose Arrow!';
+  document.getElementById('game-msg').className = 'game-msg';
+  gameDrawScene();
+}
+
+function gameDrawScene() {
+  const W = gc.width, H = gc.height;
+  gctx.clearRect(0,0,W,H);
+
+  // Sky gradient — deep forest night
+  const sky = gctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#0a1628');
+  sky.addColorStop(0.5,'#1a3a1a');
+  sky.addColorStop(1,'#0d2010');
+  gctx.fillStyle = sky;
+  gctx.fillRect(0,0,W,H);
+
+  // Moon
+  gctx.fillStyle = 'rgba(255,255,220,0.85)';
+  gctx.beginPath();
+  gctx.arc(480,40,22,0,Math.PI*2);
+  gctx.fill();
+
+  // Stars
+  const stars = [[60,30],[120,15],[200,40],[320,20],[420,55],[510,25],[550,45],[80,60],[260,10]];
+  stars.forEach(([sx,sy]) => {
+    gctx.fillStyle='rgba(255,255,255,0.7)';
+    gctx.beginPath();
+    gctx.arc(sx,sy,1.5,0,Math.PI*2);
+    gctx.fill();
+  });
+
+  // Ground
+  gctx.fillStyle = '#0d2010';
+  gctx.fillRect(0, H-50, W, 50);
+  gctx.fillStyle = '#1a3a1a';
+  gctx.fillRect(0, H-50, W, 6);
+
+  // Trees (decorative)
+  [[30,290,20],[15,310,15],[W-40,285,22],[W-20,305,16]].forEach(([tx,ty,tr]) => {
+    gctx.fillStyle = '#0d2010';
+    gctx.beginPath();
+    gctx.moveTo(tx, ty);
+    gctx.lineTo(tx-tr, ty+tr*2);
+    gctx.lineTo(tx+tr, ty+tr*2);
+    gctx.closePath();
+    gctx.fill();
+  });
+
+  const lvl = LEVELS[gLevel];
+
+  // Castle wall obstacle
+  if(lvl.obstacle) {
+    gctx.fillStyle = '#4a4a5a';
+    gctx.fillRect(260, 160, 38, H-160-50);
+    gctx.fillStyle = '#3a3a4a';
+    for(let wy=170; wy<H-55; wy+=18) {
+      gctx.fillRect(260,wy,38,2);
+    }
+    // Battlements
+    [260,274,288].forEach(bx => {
+      gctx.fillStyle = '#4a4a5a';
+      gctx.fillRect(bx, 150, 10, 14);
+    });
+  }
+
+  // Target stand
+  gctx.strokeStyle = '#5a3a1a';
+  gctx.lineWidth = 5;
+  gctx.beginPath();
+  gctx.moveTo(gTarget.x, gTarget.y+gTarget.r);
+  gctx.lineTo(gTarget.x-12, H-50);
+  gctx.moveTo(gTarget.x, gTarget.y+gTarget.r);
+  gctx.lineTo(gTarget.x+12, H-50);
+  gctx.stroke();
+
+  // Target rings
+  [
+    {c:'#fff',     r:1.0},
+    {c:'#1a1a2e',  r:0.75},
+    {c:'#1a50d0',  r:0.52},
+    {c:'#c0392b',  r:0.35},
+    {c:'#f59e0b',  r:0.16},
+  ].forEach(ring => {
+    gctx.fillStyle = ring.c;
+    gctx.beginPath();
+    gctx.arc(gTarget.x, gTarget.y, gTarget.r*ring.r, 0, Math.PI*2);
+    gctx.fill();
+  });
+
+  // Wind indicator
+  if(lvl.wind !== 0) {
+    gctx.fillStyle = 'rgba(255,255,255,0.7)';
+    gctx.font = '700 11px Atkinson Hyperlegible,sans-serif';
+    gctx.textAlign = 'left';
+    gctx.textBaseline = 'top';
+    gctx.fillText('💨 Wind: '+(lvl.wind<0?'←':'→'), 8, 8);
+  }
+
+  // Predictive guide
+  if(!gArrow.flying) {
+    const aRad = parseInt(document.getElementById('game-angle').value)*Math.PI/180;
+    const pw = parseFloat(document.getElementById('game-power').value);
+    let px=60,py=320,pvx=pw*Math.cos(aRad)*0.75,pvy=-pw*Math.sin(aRad)*0.75;
+    gctx.strokeStyle='rgba(100,200,100,0.25)';
+    gctx.lineWidth=2.5;
+    gctx.setLineDash([4,7]);
+    gctx.beginPath();
+    gctx.moveTo(px,py);
+    for(let i=0;i<60;i++){
+      px+=pvx; pvy+=GRAVITY; pvx+=lvl.wind*0.015; py+=pvy;
+      if(py>H-50||px>W) break;
+      if(lvl.obstacle&&px>=260&&px<=298&&py>=150&&py<=H-50) break;
+      gctx.lineTo(px,py);
+    }
+    gctx.stroke();
+    gctx.setLineDash([]);
+  }
+
+  // Arrow trail
+  if(gArrow.trail.length>1) {
+    gctx.strokeStyle='rgba(200,200,100,0.5)';
+    gctx.lineWidth=2;
+    gctx.beginPath();
+    gctx.moveTo(gArrow.trail[0].x, gArrow.trail[0].y);
+    gArrow.trail.forEach(p=>gctx.lineTo(p.x,p.y));
+    gctx.stroke();
+  }
+
+  // Arrow
+  gctx.save();
+  gctx.translate(gArrow.x, gArrow.y);
+  const arrowAngle = gArrow.flying ? Math.atan2(gArrow.vy,gArrow.vx) : -parseInt(document.getElementById('game-angle').value)*Math.PI/180;
+  gctx.rotate(arrowAngle);
+  gctx.strokeStyle='#8B4513'; gctx.lineWidth=3; gctx.lineCap='round';
+  gctx.beginPath(); gctx.moveTo(-18,0); gctx.lineTo(16,0); gctx.stroke();
+  // Fletching
+  gctx.fillStyle='#c0392b';
+  gctx.beginPath(); gctx.moveTo(-18,0); gctx.lineTo(-25,-5); gctx.lineTo(-18,-4); gctx.closePath(); gctx.fill();
+  gctx.beginPath(); gctx.moveTo(-18,0); gctx.lineTo(-25,5); gctx.lineTo(-18,4); gctx.closePath(); gctx.fill();
+  // Tip
+  gctx.fillStyle='#ddd';
+  gctx.beginPath(); gctx.moveTo(16,0); gctx.lineTo(10,-3); gctx.lineTo(10,3); gctx.closePath(); gctx.fill();
+  gctx.restore();
+
+  // Bow
+  gctx.save();
+  gctx.translate(60,320);
+  gctx.rotate(-parseInt(document.getElementById('game-angle').value)*Math.PI/180);
+  gctx.strokeStyle='#5a3a1a'; gctx.lineWidth=4; gctx.lineCap='round';
+  gctx.beginPath(); gctx.arc(-18,0,36,-Math.PI/2.2,Math.PI/2.2); gctx.stroke();
+  gctx.strokeStyle='rgba(255,255,255,0.4)'; gctx.lineWidth=1.5;
+  gctx.beginPath(); gctx.moveTo(-12,-32); gctx.lineTo(-12,32); gctx.stroke();
+  gctx.restore();
+
+  // Confetti
+  gConfetti.forEach(p => {
+    gctx.fillStyle = p.c;
+    gctx.globalAlpha = p.life;
+    gctx.beginPath();
+    gctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    gctx.fill();
+    gctx.globalAlpha = 1;
+  });
+}
+
+function gameLaunch() {
+  if(gArrow.flying) return;
+  const aRad = parseInt(document.getElementById('game-angle').value)*Math.PI/180;
+  const pw = parseFloat(document.getElementById('game-power').value);
+  gArrow.vx = pw*Math.cos(aRad)*0.75;
+  gArrow.vy = -pw*Math.sin(aRad)*0.75;
+  gArrow.flying = true;
+  gArrow.trail = [];
+  const btn = document.getElementById('game-launch-btn');
+  btn.disabled = true;
+  btn.textContent = '✦ In flight…';
+  if(gAnimId) cancelAnimationFrame(gAnimId);
+  gameLoop();
+}
+
+function gameLoop() {
+  const lvl = LEVELS[gLevel];
+  const W = gc.width, H = gc.height;
+
+  if(lvl.moving) {
+    gTarget.y += gTarget.dir * gTarget.speed;
+    if(gTarget.y < 100 || gTarget.y > 280) gTarget.dir *= -1;
+  }
+
+  gConfetti.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.2; p.life-=0.025; });
+  gConfetti = gConfetti.filter(p=>p.life>0);
+
+  if(gArrow.flying) {
+    gArrow.vy += GRAVITY;
+    gArrow.vx += lvl.wind*0.015;
+    gArrow.x += gArrow.vx;
+    gArrow.y += gArrow.vy;
+    if(gArrow.trail.length===0||Math.abs(gArrow.trail[gArrow.trail.length-1].x-gArrow.x)>5)
+      gArrow.trail.push({x:gArrow.x,y:gArrow.y});
+
+    // Wall collision
+    if(lvl.obstacle&&gArrow.x>=260&&gArrow.x<=298&&gArrow.y>=150&&gArrow.y<=H-50) {
+      gArrow.flying=false;
+      showGameMsg('Blocked by the castle wall! Try a higher arc.','miss');
+      return;
+    }
+    // Target hit
+    const dx=gArrow.x-gTarget.x, dy=gArrow.y-gTarget.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<=gTarget.r) {
+      gArrow.flying=false;
+      let pts=0,msg='';
+      if(dist<=gTarget.r*0.16){pts=10;msg='🏆 Bullseye! Perfect trajectory! +10 pts';}
+      else if(dist<=gTarget.r*0.35){pts=7;msg='🔴 Red ring — great shot! +7 pts';}
+      else if(dist<=gTarget.r*0.52){pts=5;msg='🔵 Blue ring — well aimed! +5 pts';}
+      else{pts=3;msg='⚪ Outer ring — on target! +3 pts';}
+      gScore+=pts;
+      document.getElementById('game-score').textContent=gScore+' pts';
+      document.getElementById('stat-score').textContent=gScore;
+      spawnConfetti(gArrow.x,gArrow.y);
+      if(gLevel===gUnlocked&&gUnlocked<4){ gUnlocked++; }
+      showGameMsg(msg,'hit');
+      return;
+    }
+    // Ground
+    if(gArrow.y>=H-50){ gArrow.flying=false; showGameMsg('Hit the ground — try more angle or power.','miss'); return; }
+    // Out of bounds
+    if(gArrow.x>W+10){ gArrow.flying=false; showGameMsg('Too far! Reduce power a little.','miss'); return; }
+  }
+
+  gameDrawScene();
+  gAnimId = requestAnimationFrame(gameLoop);
+}
+
+function spawnConfetti(x,y) {
+  for(let i=0;i<35;i++) {
+    gConfetti.push({
+      x,y,
+      vx:(Math.random()-0.5)*7,
+      vy:(Math.random()-0.5)*7-2,
+      c:`hsl(${Math.random()*360},90%,60%)`,
+      r:Math.random()*4+2,
+      life:1
+    });
+  }
+}
+
+function showGameMsg(msg, type) {
+  const el = document.getElementById('game-msg');
+  el.textContent = msg;
+  el.className = 'game-msg '+type;
+  setTimeout(()=>{ resetArrow(); renderLevelPills(); }, 3000);
+}
+
+// ══════════════════════════════════════
+// TAB 4 · WILDLIFE QUIZ
+// ══════════════════════════════════════
+const QUESTIONS = [
+  {
+    badge:'🧠 Remember',
+    q:'What is the word for the curved path an object follows as it moves through the air?',
+    opts:['Velocity','Trajectory','Gravity','Parabola'],
+    correct:1,
+    feedback:'Yes! Trajectory is the curved path traced by a moving object through the air or space.'
+  },
+  {
+    badge:'💡 Understand',
+    q:'You\'re photographing a leaping frog. It launches upward but curves back down toward the pond. What force causes the downward curve in its trajectory?',
+    opts:['Wind resistance','The frog\'s weight','Gravity','Momentum'],
+    correct:2,
+    feedback:'Exactly — gravity pulls the frog downward continuously, shaping its path into a curve.'
+  },
+  {
+    badge:'🛠️ Apply',
+    q:'A bird drops a fish from a height while flying east. Which direction will the fish\'s trajectory curve?',
+    opts:['Straight down only','Down and slightly east — following the bird\'s forward movement','Directly back west','Up then down'],
+    correct:1,
+    feedback:'Spot on! The fish carries the bird\'s forward momentum, so it curves down and forward — not straight down.'
+  },
+  {
+    badge:'🔍 Analyse',
+    q:'You fire two arrows at the same angle. Arrow A uses twice the power. How will their trajectories differ?',
+    opts:['They will be identical','Arrow A will fly higher but land at the same spot','Arrow A will travel further and land further away','Arrow A will curve more steeply'],
+    correct:2,
+    feedback:'Correct! More power means greater speed. The object covers more horizontal distance before gravity brings it down.'
+  },
+  {
+    badge:'⚖️ Evaluate',
+    q:'You\'re on the Moon photographing a thrown rock. How would its trajectory compare to Earth?',
+    opts:['Much shorter — less air to fly through','Much longer and flatter — weaker gravity pulls it down more slowly','Identical to Earth','A perfect circle'],
+    correct:1,
+    feedback:'Brilliant! The Moon\'s gravity is about 1/6th of Earth\'s, so objects follow much longer, flatter trajectories.'
+  },
+  {
+    badge:'✏️ Create',
+    q:'You want to photograph a salmon leaping over a waterfall. To predict where it will land, what two things do you most need to know?',
+    opts:['Its colour and size','Its launch angle and speed','The water temperature and depth','The time of day and weather'],
+    correct:1,
+    feedback:'Perfect thinking! Launch angle and speed together determine the shape and length of the trajectory — everything else is secondary.'
+  }
+];
+
+let quizResponses = {};
+
+function renderQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  QUESTIONS.forEach((q,i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-block';
+    let optsHtml = q.opts.map((o,j) => {
+      let cls = 'quiz-opt';
+      if(quizResponses[i]!==undefined) {
+        if(j===q.correct) cls+=' correct';
+        else if(j===quizResponses[i]) cls+=' wrong';
+      }
+      return `<button class="${cls}" onclick="quizAnswer(${i},${j})">${o}</button>`;
+    }).join('');
+
+    let feedbackCls = 'quiz-feedback';
+    let feedbackTxt = '';
+    if(quizResponses[i]!==undefined) {
+      const correct = quizResponses[i]===q.correct;
+      feedbackCls += correct ? ' show correct' : ' show wrong';
+      feedbackTxt = correct ? '✓ '+q.feedback : 'Not quite — have another look at the options.';
+    }
+
+    div.innerHTML = `
+      <div class="quiz-level-badge">${q.badge}</div>
+      <div class="quiz-q">${i+1}. ${q.q}</div>
+      <div class="quiz-options">${optsHtml}</div>
+      <div class="${feedbackCls}">${feedbackTxt}</div>
+    `;
+    c.appendChild(div);
+  });
+  updateStats();
+}
+
+function quizAnswer(qi, oi) {
+  quizResponses[qi] = oi;
+  renderQuiz();
+}
+
+function updateStats() {
+  const attempted = Object.keys(quizResponses).length;
+  const correct = QUESTIONS.filter((q,i)=>quizResponses[i]===q.correct).length;
+  document.getElementById('stat-attempted').textContent = attempted+'/6';
+  document.getElementById('stat-correct').textContent = correct+'/6';
+  document.getElementById('stat-score').textContent = gScore;
+}
+
+function emailResults() {
+  const name = document.getElementById('r-name').value.trim() || 'A student';
+  const email = document.getElementById('r-email').value.trim();
+  const attempted = Object.keys(quizResponses).length;
+  const correct = QUESTIONS.filter((q,i)=>quizResponses[i]===q.correct).length;
+
+  let body = `WORD OF THE WEEK — TRAJECTORY\nStudent: ${name}\nDate: ${new Date().toLocaleDateString('en-GB')}\n\n`;
+  body += `Quiz: ${correct}/6 correct (${attempted}/6 attempted)\nArchery score: ${gScore} pts\n\nQuestion breakdown:\n`;
+  QUESTIONS.forEach((q,i)=>{
+    const status = quizResponses[i]===undefined?'Not attempted': quizResponses[i]===q.correct?'✓ Correct':'✗ Incorrect';
+    body+=`${i+1}. [${q.badge}] ${status}\n`;
+  });
+
+  const subject = encodeURIComponent(`Trajectory Explorer — ${name}`);
+  window.location.href = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(body)}`;
+
+  const n = document.getElementById('report-notify');
+  n.textContent = '✓ Opening your email app now. Results ready to send!';
+  n.className = 'report-notify show';
+  setTimeout(()=>n.className='report-notify', 5000);
+}
+
+function printReport() {
+  const name = document.getElementById('r-name').value.trim();
+  if(!name){ alert('Please type your name first.'); return; }
+  triggerPrint();
+}
+
+function triggerPrint() {
+  window.print();
+}
+
+// ══════════════════════════════════════
+// TAB 5 · TREBUCHET BUILDER
+// ══════════════════════════════════════
+const tbCanvas = document.getElementById('tbCanvas');
+const tbCtx = tbCanvas.getContext('2d');
+let tbAnimId = null;
+let tbBest = null;
+
+// Wall and judges table positions (canvas coords)
+const TB_WALL_X = 310;
+const TB_WALL_TOP = 180;
+const TB_TABLE_X1 = 440;
+const TB_TABLE_X2 = 560;
+const TB_TABLE_Y = 285;
+const TB_GROUND_Y = 310;
+
+const ARM_LABELS = ['','Short','Medium','Long'];
+const WEIGHT_LABELS = ['','Light','Medium','Heavy'];
+
+function tbUpdateLabels() {
+  const arm = parseInt(document.getElementById('tb-arm').value);
+  const wt  = parseInt(document.getElementById('tb-weight').value);
+  document.getElementById('tb-arm-val').textContent    = ARM_LABELS[arm];
+  document.getElementById('tb-weight-val').textContent = WEIGHT_LABELS[wt];
+}
+
+// Physics: arm length → affects angle multiplier; weight → affects speed
+function tbGetPhysics() {
+  const arm    = parseInt(document.getElementById('tb-arm').value);    // 1-3
+  const weight = parseInt(document.getElementById('tb-weight').value); // 1-3
+  const angleDeg = parseInt(document.getElementById('tb-angle').value);
+  const angleRad = angleDeg * Math.PI / 180;
+
+  // Longer arm = higher arc; heavier weight = more power
+  const power = (weight * 3.2) + (arm * 1.4) + 2;
+  const vx = power * Math.cos(angleRad) * 0.72;
+  const vy = -power * Math.sin(angleRad) * 0.72;
+  return { vx, vy };
+}
+
+function tbDrawScene(cake) {
+  const W = tbCanvas.width, H = tbCanvas.height;
+  tbCtx.clearRect(0,0,W,H);
+
+  // Sky
+  const sky = tbCtx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#1a0a00');
+  sky.addColorStop(0.5,'#3a1a00');
+  sky.addColorStop(0.75,'#2a3a0a');
+  sky.addColorStop(1,'#1a2a05');
+  tbCtx.fillStyle = sky;
+  tbCtx.fillRect(0,0,W,H);
+
+  // Stars
+  [[40,20],[120,35],[200,15],[300,28],[400,18],[510,30],[560,10],[80,50],[450,45]].forEach(([sx,sy])=>{
+    tbCtx.fillStyle='rgba(255,240,200,0.7)';
+    tbCtx.beginPath(); tbCtx.arc(sx,sy,1.3,0,Math.PI*2); tbCtx.fill();
+  });
+
+  // Ground
+  tbCtx.fillStyle='#1a2a05';
+  tbCtx.fillRect(0,TB_GROUND_Y,W,H-TB_GROUND_Y);
+  tbCtx.fillStyle='#2a3a0a';
+  tbCtx.fillRect(0,TB_GROUND_Y,W,5);
+
+  // Castle wall
+  tbCtx.fillStyle='#5a5060';
+  tbCtx.fillRect(TB_WALL_X,TB_WALL_TOP,36,TB_GROUND_Y-TB_WALL_TOP);
+  // Battlements
+  tbCtx.fillStyle='#4a4050';
+  [TB_WALL_X, TB_WALL_X+13, TB_WALL_X+26].forEach(bx=>{
+    tbCtx.fillRect(bx,TB_WALL_TOP-14,10,14);
+  });
+  // Brick lines
+  tbCtx.strokeStyle='rgba(0,0,0,0.3)'; tbCtx.lineWidth=1;
+  for(let wy=TB_WALL_TOP; wy<TB_GROUND_Y; wy+=18){
+    tbCtx.beginPath(); tbCtx.moveTo(TB_WALL_X,wy); tbCtx.lineTo(TB_WALL_X+36,wy); tbCtx.stroke();
+  }
+
+  // Judges' table
+  tbCtx.fillStyle='#7a5020';
+  tbCtx.fillRect(TB_TABLE_X1, TB_TABLE_Y, TB_TABLE_X2-TB_TABLE_X1, 10);
+  tbCtx.fillStyle='#5a3a10';
+  tbCtx.fillRect(TB_TABLE_X1+10, TB_TABLE_Y+10, 8, 28);
+  tbCtx.fillRect(TB_TABLE_X2-18, TB_TABLE_Y+10, 8, 28);
+  // Judges emoji
+  tbCtx.font='18px sans-serif'; tbCtx.textAlign='center';
+  tbCtx.fillText('👨‍⚖️', TB_TABLE_X1+16, TB_TABLE_Y-4);
+  tbCtx.fillText('👩‍⚖️', TB_TABLE_X1+40, TB_TABLE_Y-4);
+  tbCtx.fillText('🎩', TB_TABLE_X1+64, TB_TABLE_Y-4);
+  // "JUDGES" label
+  tbCtx.fillStyle='rgba(255,220,100,0.8)'; tbCtx.font='700 9px Atkinson Hyperlegible,sans-serif';
+  tbCtx.fillText('JUDGES', (TB_TABLE_X1+TB_TABLE_X2)/2, TB_TABLE_Y+26);
+
+  // Draw trebuchet (at x=60)
+  const arm = parseInt(document.getElementById('tb-arm').value);
+  const armPx = 20 + arm * 14; // arm length in pixels
+  tbCtx.strokeStyle='#8B6030'; tbCtx.lineWidth=5; tbCtx.lineCap='round';
+  // Frame
+  tbCtx.beginPath();
+  tbCtx.moveTo(30,TB_GROUND_Y); tbCtx.lineTo(70,TB_GROUND_Y);
+  tbCtx.moveTo(50,TB_GROUND_Y); tbCtx.lineTo(50,TB_GROUND_Y-40);
+  tbCtx.stroke();
+  // Pivot and arm
+  tbCtx.fillStyle='#5a3a10';
+  tbCtx.beginPath(); tbCtx.arc(50,TB_GROUND_Y-40,5,0,Math.PI*2); tbCtx.fill();
+  const angleRad = parseInt(document.getElementById('tb-angle').value)*Math.PI/180;
+  // Arm points back-left and forward-right from pivot
+  const ax1 = 50 - Math.cos(angleRad)*armPx*0.6;
+  const ay1 = (TB_GROUND_Y-40) + Math.sin(angleRad)*armPx*0.6;
+  const ax2 = 50 + Math.cos(angleRad)*armPx;
+  const ay2 = (TB_GROUND_Y-40) - Math.sin(angleRad)*armPx;
+  tbCtx.strokeStyle='#8B6030'; tbCtx.lineWidth=4;
+  tbCtx.beginPath(); tbCtx.moveTo(ax1,ay1); tbCtx.lineTo(ax2,ay2); tbCtx.stroke();
+  // Counterweight (back end)
+  const wt = parseInt(document.getElementById('tb-weight').value);
+  const wtR = 4 + wt*3;
+  tbCtx.fillStyle='#4a2a00';
+  tbCtx.beginPath(); tbCtx.arc(ax1,ay1+wtR,wtR,0,Math.PI*2); tbCtx.fill();
+  // Sling (front tip)
+  tbCtx.strokeStyle='rgba(200,180,100,0.7)'; tbCtx.lineWidth=1.5;
+  tbCtx.beginPath(); tbCtx.moveTo(ax2,ay2); tbCtx.lineTo(ax2+8,ay2+14); tbCtx.stroke();
+  // Cake at tip (before launch)
+  if(!cake) {
+    tbCtx.font='16px sans-serif'; tbCtx.textAlign='center';
+    tbCtx.fillText('🎂', ax2+8, ay2+26);
+  }
+
+  // Predicted trajectory (dashed)
+  if(!cake) {
+    const ph = tbGetPhysics();
+    let px=ax2+8, py=ay2+26;
+    tbCtx.strokeStyle='rgba(255,150,50,0.3)';
+    tbCtx.lineWidth=2; tbCtx.setLineDash([4,7]);
+    tbCtx.beginPath(); tbCtx.moveTo(px,py);
+    for(let i=0;i<120;i++){
+      px+=ph.vx; py+=ph.vy; ph.vy+=0.16;
+      if(py>TB_GROUND_Y+10||px>W+10) break;
+      // stop guide at wall
+      if(px>=TB_WALL_X&&px<=TB_WALL_X+36&&py>=TB_WALL_TOP) break;
+      tbCtx.lineTo(px,py);
+    }
+    tbCtx.stroke(); tbCtx.setLineDash([]);
+  }
+
+  // Cake in flight
+  if(cake) {
+    // Trail
+    if(cake.trail.length>1){
+      tbCtx.strokeStyle='rgba(255,150,50,0.5)'; tbCtx.lineWidth=2.5;
+      tbCtx.beginPath(); tbCtx.moveTo(cake.trail[0].x,cake.trail[0].y);
+      cake.trail.forEach(p=>tbCtx.lineTo(p.x,p.y)); tbCtx.stroke();
+    }
+    tbCtx.font='20px sans-serif'; tbCtx.textAlign='center';
+    tbCtx.fillText('🎂', cake.x, cake.y);
+  }
+
+  // Distance marker if landed
+  if(cake && !cake.flying && cake.landX) {
+    tbCtx.fillStyle='rgba(255,220,100,0.9)';
+    tbCtx.font='700 11px Atkinson Hyperlegible,sans-serif';
+    tbCtx.textAlign='center';
+    tbCtx.fillText('⬇ landed here', cake.landX, TB_GROUND_Y-8);
+  }
+}
+
+function tbLaunch() {
+  if(tbAnimId) cancelAnimationFrame(tbAnimId);
+  document.getElementById('tb-result').style.display='none';
+
+  const arm = parseInt(document.getElementById('tb-arm').value);
+  const ph = tbGetPhysics();
+  const armPx = 20 + arm*14;
+  const pivot = { x:50, y:TB_GROUND_Y-40 };
+  const angleRad = parseInt(document.getElementById('tb-angle').value)*Math.PI/180;
+  const startX = pivot.x + Math.cos(angleRad)*armPx + 8;
+  const startY = (pivot.y - Math.sin(angleRad)*armPx) + 26;
+
+  const cake = { x:startX, y:startY, vx:ph.vx, vy:ph.vy, flying:true, trail:[], landX:null };
+
+  const btn = document.getElementById('tb-launch-btn');
+  btn.disabled=true; btn.textContent='✦ Flying…';
+
+  function step() {
+    cake.vy += 0.16;
+    cake.x  += cake.vx;
+    cake.y  += cake.vy;
+    if(cake.trail.length===0||Math.abs(cake.trail[cake.trail.length-1].x-cake.x)>4)
+      cake.trail.push({x:cake.x,y:cake.y});
+
+    // Wall collision — hit the wall?
+    if(cake.x>=TB_WALL_X && cake.x<=TB_WALL_X+36 && cake.y>=TB_WALL_TOP && cake.y<=TB_GROUND_Y) {
+      cake.flying=false; cake.landX=cake.x;
+      tbDrawScene(cake);
+      tbShowResult('🧱 Hit the castle wall! Try a steeper angle to arc over it.', false, cake.x);
+      return;
+    }
+
+    // Ground
+    if(cake.y >= TB_GROUND_Y) {
+      cake.y = TB_GROUND_Y; cake.flying=false; cake.landX=cake.x;
+      tbDrawScene(cake);
+      const dist = Math.round(cake.x);
+      // Check if landed on judges table
+      if(cake.x >= TB_TABLE_X1 && cake.x <= TB_TABLE_X2) {
+        tbShowResult('🏆 Perfect landing! The cake hit the judges\' table! Trajectory mastered!', true, cake.x);
+      } else if(cake.x < TB_WALL_X) {
+        tbShowResult('🍰 Landed short of the wall — try more counterweight or a longer arm.', false, cake.x);
+      } else if(cake.x > TB_TABLE_X2) {
+        tbShowResult('💨 Overshot the table — reduce your power or lower the angle.', false, cake.x);
+      } else {
+        tbShowResult('🎯 Cleared the wall but missed the table — so close! Adjust your angle.', false, cake.x);
+      }
+      // Update best
+      if(tbBest===null || (cake.x>=TB_TABLE_X1&&cake.x<=TB_TABLE_X2)) {
+        tbBest = cake.x>=TB_TABLE_X1&&cake.x<=TB_TABLE_X2 ? '🎂 On the table!' : dist+'px';
+        document.getElementById('tb-best').textContent = tbBest;
+      }
+      return;
+    }
+    if(cake.x > tbCanvas.width+20) {
+      cake.flying=false;
+      tbShowResult('💨 Way too far! Reduce the counterweight.', false, tbCanvas.width);
+      return;
+    }
+
+    tbDrawScene(cake);
+    tbAnimId = requestAnimationFrame(step);
+  }
+  tbAnimId = requestAnimationFrame(step);
+}
+
+function tbShowResult(msg, success, landX) {
+  const el = document.getElementById('tb-result');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = success ? '#e6f5e6' : '#fff3e6';
+  el.style.border = '1.5px solid '+(success?'#2d4a2d':'#e8a020');
+  el.style.color = success ? '#1a2e1a' : '#7a4a00';
+  const btn = document.getElementById('tb-launch-btn');
+  setTimeout(()=>{ btn.disabled=false; btn.textContent='🎂 Launch Cake!'; tbDrawScene(); }, 2500);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+window.onload = () => {
+  simInit();
+  gameDrawScene();
+  renderQuiz();
+  tbUpdateLabels();
+  tbDrawScene();
+};
+</script>
 </body>
 </html>
