@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finding Information in Texts · Week 1 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fef8f4;
+    --card: #ffffff;
+    --navy: #007291;
+    --navy-light: #e6f5f8;
+    --teal: #005a73;
+    --teal-light: #d0eaf0;
+    --amber: #ef7724;
+    --amber-light: #fff3eb;
+    --rose: #b84a5a;
+    --rose-light: #fce8eb;
+    --green: #3a8a3f;
+    --green-light: #dff0e0;
+    --text: #2c2c2c;
+    --muted: #666;
+    --border: #ddd;
+    --radius: 14px;
+    --shadow: 0 2px 14px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.85;
+    padding: 20px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    background: var(--navy);
+    color: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  .page-header h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.4px; }
+  .page-header p { margin-top: 8px; font-size: 1rem; opacity: 0.88; }
+
+  /* ── PDA NOTE ── */
+  .pda-note {
+    background: #f0f7ee;
+    border: 2px dashed #88bb8a;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+    color: #3a6e3d;
+    margin-bottom: 24px;
+  }
+
+  /* ── SECTION CARDS ── */
+  .section-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 26px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 18px 24px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+    transition: filter 0.2s;
+  }
+  .section-header:hover { filter: brightness(0.96); }
+  .section-header .toggle-icon { margin-left: auto; font-size: 1.2rem; transition: transform 0.3s; }
+  .section-header.open .toggle-icon { transform: rotate(180deg); }
+
+  .section-body {
+    padding: 0 24px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s ease, padding 0.3s;
+  }
+  .section-body.open { max-height: 6000px; padding: 8px 24px 30px; }
+
+  .theme-navy .section-header { background: var(--navy-light); color: var(--navy); }
+  .theme-teal .section-header { background: var(--teal-light); color: var(--teal); }
+  .theme-amber .section-header { background: var(--amber-light); color: #7a4e00; }
+  .theme-rose .section-header { background: var(--rose-light); color: var(--rose); }
+
+  /* ── INTRO / KEY POINT ── */
+  .intro-text {
+    background: var(--navy-light);
+    border-left: 5px solid var(--navy);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 1rem;
+  }
+  .intro-text.teal { background: var(--teal-light); border-left-color: var(--teal); }
+  .intro-text.amber { background: var(--amber-light); border-left-color: var(--amber); }
+  .intro-text.rose { background: var(--rose-light); border-left-color: var(--rose); }
+
+  /* ── NUMBERED POINTS ── */
+  .point-list { list-style: none; padding: 0; margin-bottom: 16px; }
+  .point-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    font-size: 1rem;
+  }
+  .point-num {
+    background: var(--navy);
+    color: white;
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0; margin-top: 5px;
+  }
+  .point-num.teal { background: var(--teal); }
+  .point-num.amber { background: var(--amber); }
+  .point-num.rose { background: var(--rose); }
+
+  /* ── EXAMPLE BOXES ── */
+  .example-box {
+    background: #f4f4f4;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 16px 0;
+    font-size: 0.97rem;
+  }
+  .ex-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  /* ── SIMULATED TEXT SPECIMENS ── */
+  .text-specimen {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: white;
+    font-size: 0.9rem;
+    margin: 12px 0;
+    line-height: 1.6;
+  }
+  .text-specimen .spec-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  .text-specimen .spec-sub {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .specimen-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0;
+  }
+  @media (max-width: 580px) { .specimen-row { grid-template-columns: 1fr; } }
+
+  /* Email specimen */
+  .email-specimen {
+    border: 2px solid #aaa;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.88rem;
+    overflow: hidden;
+  }
+  .email-header-row {
+    background: #e8e8e8;
+    padding: 6px 12px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    gap: 10px;
+    font-size: 0.82rem;
+  }
+  .email-header-row span { color: #555; }
+  .email-header-row strong { color: #222; }
+  .email-body-text { padding: 10px 12px; line-height: 1.6; }
+
+  /* Website specimen */
+  .website-specimen {
+    border: 2px solid #aaa;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.88rem;
+    overflow: hidden;
+  }
+  .website-bar {
+    background: #ddd;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    color: #555;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .url-box {
+    background: white;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 0.78rem;
+    flex: 1;
+  }
+  .website-nav {
+    background: #007291;
+    display: flex;
+    gap: 2px;
+    padding: 5px 8px;
+  }
+  .website-nav span {
+    background: #005a73;
+    color: white;
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: default;
+  }
+  .website-nav span.active { background: white; color: #007291; }
+  .website-content { padding: 10px 12px; }
+  .website-title { font-size: 1.1rem; font-weight: 700; color: #007291; margin-bottom: 6px; }
+
+  /* Advert specimen */
+  .advert-specimen {
+    border: 2px solid #c08000;
+    border-radius: 6px;
+    background: #fffbef;
+    font-size: 0.88rem;
+    padding: 12px;
+    text-align: center;
+  }
+  .advert-specimen .ad-title { font-size: 1.1rem; font-weight: 700; color: #7a4e00; font-style: italic; margin-bottom: 4px; }
+
+  /* Newspaper specimen */
+  .newspaper-specimen {
+    border: 2px solid #888;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.88rem;
+    padding: 12px;
+  }
+  .newspaper-specimen .paper-meta { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  .newspaper-specimen .headline { font-size: 1.3rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+  .newspaper-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85rem; }
+
+  /* Highlighted text box (key words example) */
+  .key-text-box {
+    border: 2px solid var(--navy);
+    border-radius: 8px;
+    background: #e6f5f8;
+    padding: 14px 16px;
+    font-size: 0.97rem;
+    line-height: 1.8;
+    margin: 12px 0;
+  }
+  .underline { text-decoration: underline; text-decoration-color: var(--navy); font-weight: 700; }
+  .underline.amber { text-decoration-color: var(--amber); color: #7a4e00; }
+
+  /* ── REVEAL BOXES ── */
+  .reveal-wrap { margin: 14px 0 6px; }
+  .reveal-toggle {
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .reveal-toggle:hover { background: #005a73; transform: translateY(-1px); }
+  .reveal-toggle.teal { background: var(--teal); }
+  .reveal-toggle.teal:hover { background: #1f6357; }
+  .reveal-toggle.amber { background: var(--amber); color: white; }
+  .reveal-toggle.amber:hover { background: #a86a00; }
+  .reveal-toggle.rose { background: var(--rose); }
+  .reveal-toggle.rose:hover { background: #963c4a; }
+  .reveal-content {
+    display: none;
+    margin-top: 8px;
+    padding: 14px 16px;
+    background: #f5f5f5;
+    border-radius: 0 8px 8px 8px;
+    border-left: 4px solid var(--navy);
+    animation: fadeIn 0.25s ease;
+  }
+  .reveal-content.teal-border { border-left-color: var(--teal); }
+  .reveal-content.amber-border { border-left-color: var(--amber); }
+  .reveal-content.rose-border { border-left-color: var(--rose); }
+  .reveal-content.visible { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+  /* ── HINT BOXES ── */
+  .hint-wrap { margin: 10px 0; }
+  .hint-toggle {
+    background: none;
+    border: 2px solid var(--amber);
+    border-radius: 8px;
+    color: #7a4e00;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.88rem;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .hint-toggle:hover { background: var(--amber-light); }
+  .hint-content {
+    display: none;
+    background: var(--amber-light);
+    border-radius: 0 0 8px 8px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    border: 2px solid var(--amber);
+    border-top: none;
+    line-height: 1.6;
+  }
+  .hint-content.visible { display: block; }
+
+  /* ── QUESTIONS ── */
+  .question-card {
+    background: #f0eef8;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+    border-left: 5px solid var(--navy);
+  }
+  .question-card.teal-q { background: var(--teal-light); border-left-color: var(--teal); }
+  .question-card.amber-q { background: var(--amber-light); border-left-color: var(--amber); }
+  .question-card.rose-q { background: var(--rose-light); border-left-color: var(--rose); }
+  .q-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .q-label.teal { color: var(--teal); }
+  .q-label.amber { color: #7a4e00; }
+  .q-label.rose { color: var(--rose); }
+  .question-card p { font-size: 1rem; margin-bottom: 14px; }
+
+  /* Multiple choice */
+  .mc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 520px) { .mc-grid { grid-template-columns: 1fr; } }
+  .mc-btn {
+    background: white;
+    border: 2px solid #bbb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s;
+    line-height: 1.4;
+  }
+  .mc-btn:hover { border-color: var(--navy); background: var(--navy-light); }
+  .mc-btn.selected-correct { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight: 700; }
+  .mc-btn.selected-wrong { background: #fde8e8; border-color: #c0392b; color: #c0392b; }
+  .mc-btn.reveal-correct { background: var(--green-light); border-color: var(--green); }
+
+  /* Free text */
+  .answer-area {
+    width: 100%;
+    border: 2px solid #bbb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 1rem;
+    background: white;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  .answer-area:focus { outline: none; border-color: var(--navy); }
+
+  .check-btn {
+    margin-top: 10px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .check-btn:hover { background: #005a73; }
+  .check-btn.teal { background: var(--teal); }
+  .check-btn.teal:hover { background: #1f6357; }
+
+  .feedback {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: none;
+  }
+  .feedback.correct { background: var(--green-light); border: 2px solid var(--green); color: var(--green); display: block; }
+  .feedback.incorrect { background: #fde8e8; border: 2px solid #c0392b; color: #c0392b; display: block; }
+
+  /* ── PASSAGE BOX (for practice Qs) ── */
+  .passage-box {
+    border: 2.5px solid var(--navy);
+    border-radius: 10px;
+    background: white;
+    padding: 18px 20px;
+    margin: 16px 0;
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+  .passage-box .passage-meta {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 6px;
+  }
+  .passage-box .passage-headline {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .passage-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .passage-cols { grid-template-columns: 1fr; } }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 2px dashed var(--border); margin: 22px 0; }
+
+  /* ── EXPORT ── */
+  #export-btn {
+    display: block;
+    width: 100%;
+    margin-top: 32px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #export-btn:hover { background: #2d7032; }
+
+  .section-intro-label {
+    display: inline-block;
+    background: var(--navy);
+    color: white;
+    border-radius: 20px;
+    padding: 3px 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  .section-intro-label.teal { background: var(--teal); }
+  .section-intro-label.amber { background: var(--amber); }
+  .section-intro-label.rose { background: var(--rose); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div style="background:#007291;padding:0.75rem 1.5rem;display:flex;align-items:center;gap:0.75rem;">
+  <a href="../index.html" style="color:rgba(255,255,255,0.85);font-size:0.85rem;font-weight:700;text-decoration:none;">← Week 1</a>
+  <span style="color:rgba(255,255,255,0.4);font-size:0.85rem;">/ English / Finding Information in Texts</span>
+</div>
+<div class="page-header">
+  <h1>📖 Finding Information in Texts</h1>
+  <p>Week 1 · English &nbsp;·&nbsp; Open each topic when you're ready</p>
+</div>
+
+<div class="pda-note">
+  💡 <strong>You're in charge here.</strong> Work through as much or as little as feels right today. All the examples have a "show the answer" button — you decide when to look. When you're done, hit the button at the bottom to send your answers to Jay.
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TOPIC 1 — SPOTTING DIFFERENT TYPES OF TEXT
+════════════════════════════════════════════ -->
+<div class="section-card theme-navy">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <span>🔍</span> Topic 1 — Spotting Different Types of Text
+    <span class="toggle-icon">▼</span>
+  </div>
+  <div class="section-body open">
+
+    <span class="section-intro-label">What to learn</span>
+
+    <!-- Letters & emails -->
+    <div class="intro-text">
+      <strong>Letters and emails have standard layouts</strong>
+    </div>
+    <ul class="point-list">
+      <li>
+        <div class="point-num">1</div>
+        <div>Letters have an <strong>address</strong>, the <strong>date</strong> and a <strong>greeting</strong> at the top, with a <strong>sign-off</strong> at the bottom.</div>
+      </li>
+      <li>
+        <div class="point-num">2</div>
+        <div>Emails have a <strong>'to'</strong> and a <strong>'from'</strong> box at the top, as well as a box for the email's <strong>subject</strong>.</div>
+      </li>
+    </ul>
+
+    <div class="example-box">
+      <div class="ex-label">👀 What does an email look like?</div>
+      <div class="email-specimen">
+        <div class="email-header-row"><span>✉️</span> <span>To:</span> <strong>j.harrick@azmail.co.uk</strong></div>
+        <div class="email-header-row"><span>From:</span> <strong>gavin.kelley@azmail.co.uk</strong></div>
+        <div class="email-header-row"><span>Subject:</span> <strong>Theatre trip</strong></div>
+        <div class="email-body-text">
+          <p>Hi Jonathan,</p>
+          <p style="margin-top:8px;">I'd like to go to the theatre for my birthday next Wednesday. I was wondering if you wanted to come too?</p>
+          <p style="margin-top:8px;">The play I want to see is called 'Men and Boys'. It's a drama set in World War Two. The tickets are £20 each. I can buy them for us.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Adverts & leaflets -->
+    <div class="intro-text" style="margin-top:20px;">
+      <strong>Adverts and leaflets try to grab your attention</strong>
+    </div>
+    <ul class="point-list">
+      <li><div class="point-num">1</div><div>Adverts are <strong>persuasive</strong>. They try to <strong>convince</strong> you to do something.</div></li>
+      <li><div class="point-num">2</div><div>Leaflets are <strong>explanatory</strong>. They give you <strong>information</strong> about something.</div></li>
+      <li><div class="point-num">3</div><div>Adverts and leaflets both use <strong>colours, pictures</strong> and different <strong>fonts</strong> to get <strong>noticed</strong>.</div></li>
+    </ul>
+
+    <!-- Websites -->
+    <div class="intro-text" style="margin-top:20px;">
+      <strong>Websites have specific features</strong>
+    </div>
+    <p style="font-size:1rem; margin-bottom:12px;">They usually have an <strong>address bar</strong> at the top, a <strong>search box</strong> and <strong>links</strong> to other <strong>webpages</strong>.</p>
+
+    <div class="example-box">
+      <div class="ex-label">👀 What does a website look like?</div>
+      <div class="website-specimen">
+        <div class="website-bar">
+          <span>◀ ▶</span>
+          <div class="url-box">http://www.gilesontour.co.uk</div>
+        </div>
+        <div class="website-nav">
+          <span class="active">Home</span>
+          <span>Tour Dates</span>
+          <span>Tickets</span>
+          <span>Interviews</span>
+          <span>Contact</span>
+        </div>
+        <div class="website-content">
+          <div class="website-title">Giles on Tour 🎸</div>
+          <p style="font-size:0.88rem;">Welcome to the official Giles on Tour website. Find ticket information, tour dates, and exclusive interviews here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Articles -->
+    <div class="intro-text" style="margin-top:20px;">
+      <strong>Articles are in newspapers or magazines</strong>
+    </div>
+    <ul class="point-list">
+      <li><div class="point-num">1</div><div>They have <strong>headlines</strong> to tell you what the article is <strong>about</strong>.</div></li>
+      <li><div class="point-num">2</div><div><strong>Subheadings</strong> and <strong>columns</strong> are used to break up the text.</div></li>
+      <li><div class="point-num">3</div><div>Some articles discuss a <strong>topic</strong>, such as health, while others report <strong>news stories</strong>.</div></li>
+    </ul>
+
+    <hr class="divider">
+    <span class="section-intro-label">Practice Questions</span>
+    <p style="font-size:1rem; margin-bottom:16px;">Look at each text type below, then answer the questions. Have a go at working it out before revealing the answer!</p>
+
+    <!-- Q1 & Q2 — email -->
+    <div class="question-card">
+      <div class="q-label">Questions 1 &amp; 2</div>
+      <div class="email-specimen" style="margin-bottom:14px;">
+        <div class="email-header-row"><span>✉️</span> <span>To:</span> <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></div>
+        <div class="email-header-row"><span>Subject:</span> <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></div>
+        <div class="email-body-text" style="color:#aaa; font-size:0.82rem; line-height:2;">
+          ████████████████ ██████████ ████████<br>
+          ██████ ████████████████ ██████<br>
+          ████████████████████████████<br>
+        </div>
+      </div>
+      <p><strong>1)</strong> What type of text is this?</p>
+      <textarea class="answer-area" id="q1" placeholder="Write your answer here..." rows="2"></textarea>
+      <div class="reveal-wrap">
+        <button class="reveal-toggle" onclick="toggleReveal(this)">👁 Show answer</button>
+        <div class="reveal-content">✅ This is an <strong>email</strong>.</div>
+      </div>
+
+      <p style="margin-top:16px;"><strong>2)</strong> Name <strong>one</strong> feature that tells you this.</p>
+      <textarea class="answer-area" id="q2" placeholder="Write your answer here..." rows="2"></textarea>
+    </div>
+
+    <!-- Q3 & Q4 — website -->
+    <div class="question-card">
+      <div class="q-label">Questions 3 &amp; 4</div>
+      <div class="website-specimen" style="margin-bottom:14px;">
+        <div class="website-bar"><span>◀ ▶</span><div class="url-box">http://www...</div></div>
+        <div class="website-nav"><span class="active">Home</span><span>Tour Dates</span><span>Tickets</span><span>Interviews</span><span>Contact</span></div>
+        <div class="website-content">
+          <div class="website-title">Giles on Tour</div>
+          <p style="font-size:0.82rem; color:#aaa;">████████████████████ ████████████<br>██████████████ ███████████████████</p>
+        </div>
+      </div>
+      <p><strong>3)</strong> What type of text is this?</p>
+      <textarea class="answer-area" id="q3" placeholder="Write your answer here..." rows="2"></textarea>
+
+      <p style="margin-top:16px;"><strong>4)</strong> Name <strong>one</strong> feature that tells you this.</p>
+      <textarea class="answer-area" id="q4" placeholder="Write your answer here..." rows="2"></textarea>
+    </div>
+
+    <!-- Q5 & Q6 — advert -->
+    <div class="question-card">
+      <div class="q-label">Questions 5 &amp; 6</div>
+      <div class="advert-specimen" style="margin-bottom:14px;">
+        <div class="ad-title">Carpentry Workshop</div>
+        <div style="font-style:italic; font-size:0.85rem; margin-bottom:8px;">Learn a new skill!</div>
+        <ul style="text-align:left; list-style:disc; padding-left:20px; font-size:0.85rem; color:#555; line-height:2;">
+          <li>████████████████</li>
+          <li>████████████████</li>
+          <li>████████████</li>
+        </ul>
+        <div style="display:inline-block; background:#e8a020; color:white; border-radius:50%; width:54px; height:54px; line-height:1.1; font-size:0.75rem; font-weight:700; padding:8px; margin-top:8px;">Only £25 per hour!</div>
+      </div>
+      <p><strong>5)</strong> What type of text is this?</p>
+      <textarea class="answer-area" id="q5" placeholder="Write your answer here..." rows="2"></textarea>
+
+      <p style="margin-top:16px;"><strong>6)</strong> Name <strong>one</strong> feature that tells you this.</p>
+      <textarea class="answer-area" id="q6" placeholder="Write your answer here..." rows="2"></textarea>
+    </div>
+
+    <!-- Q7 & Q8 — newspaper article -->
+    <div class="question-card">
+      <div class="q-label">Questions 7 &amp; 8</div>
+      <div class="newspaper-specimen" style="margin-bottom:14px;">
+        <div class="paper-meta">The Daily News</div>
+        <div class="headline">New Trains Tested</div>
+        <div class="newspaper-cols">
+          <div>
+            <p style="font-size:0.78rem; font-weight:700; margin-bottom:4px;">Successful Final Tests</p>
+            <p style="font-size:0.82rem; color:#aaa;">██████████████████████████████████████</p>
+          </div>
+          <div>
+            <p style="font-size:0.78rem; font-weight:700; margin-bottom:4px;">Troubled Development</p>
+            <p style="font-size:0.82rem; color:#aaa;">██████████████████████████████████████</p>
+          </div>
+        </div>
+        <p style="font-size:0.78rem; font-weight:700; margin-top:8px; margin-bottom:4px;">Faster and More Reliable</p>
+        <p style="font-size:0.82rem; color:#aaa;">████████████████████████████████████████████</p>
+      </div>
+      <p><strong>7)</strong> What type of text is this?</p>
+      <textarea class="answer-area" id="q7" placeholder="Write your answer here..." rows="2"></textarea>
+
+      <p style="margin-top:16px;"><strong>8)</strong> Name <strong>one</strong> feature that tells you this.</p>
+      <textarea class="answer-area" id="q8" placeholder="Write your answer here..." rows="2"></textarea>
+    </div>
+
+    <!-- ── GAME 1 UNLOCK ── -->
+    <div id="game1-locked" style="margin-top:28px; text-align:center; padding:22px; background:#f0f0f0; border-radius:14px; border:2px dashed #bbb;">
+      <div style="font-size:2rem;">🔒</div>
+      <p style="font-size:1rem; color:#666; margin-top:8px;">Answer all 8 questions above to unlock the mini-game!</p>
+      <div id="game1-progress" style="margin-top:10px; font-size:0.9rem; color:#999;">0 / 8 answered</div>
+    </div>
+    <div id="game1-panel" style="display:none; margin-top:28px;">
+      <div style="background:linear-gradient(135deg,#2d3f6b,#4a6090); border-radius:14px; padding:6px 24px 24px; color:white;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+          <h3 style="font-size:1.1rem; font-weight:700; color:white;">🎮 Word Scramble — unlocked!</h3>
+          <span id="g1-score-display" style="font-size:0.9rem; opacity:0.85;">Score: 0</span>
+        </div>
+        <p style="font-size:0.88rem; opacity:0.85; margin-bottom:16px;">Unscramble the word and type it in. English & reading themed!</p>
+        <div style="background:rgba(255,255,255,0.12); border-radius:10px; padding:18px; text-align:center;">
+          <div id="g1-scrambled" style="font-size:2.2rem; font-weight:700; letter-spacing:8px; margin-bottom:14px; color:#ffeaa0;"></div>
+          <div id="g1-clue" style="font-size:0.85rem; opacity:0.8; margin-bottom:14px;"></div>
+          <input id="g1-input" type="text" placeholder="Your answer..." autocomplete="off" autocorrect="off" spellcheck="false"
+            style="width:200px; padding:10px 14px; border-radius:8px; border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.15); color:white; font-family:'Atkinson Hyperlegible',sans-serif; font-size:1rem; text-align:center; outline:none; text-transform:uppercase;"
+            onkeydown="if(event.key==='Enter')g1Check()">
+          <div style="margin-top:12px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <button onclick="g1Check()" style="background:white; color:#007291; border:none; border-radius:8px; padding:10px 22px; font-family:'Atkinson Hyperlegible',sans-serif; font-size:0.95rem; font-weight: 700; cursor:pointer;">Check ✓</button>
+            <button onclick="g1Skip()" style="background:rgba(255,255,255,0.15); color:white; border:2px solid rgba(255,255,255,0.3); border-radius:8px; padding:10px 22px; font-family:'Atkinson Hyperlegible',sans-serif; font-size:0.95rem; cursor:pointer;">Skip →</button>
+          </div>
+          <div id="g1-fb" style="margin-top:12px; font-size:1rem; min-height:1.4em;"></div>
+        </div>
+        <div style="margin-top:12px; display:flex; justify-content:space-between; font-size:0.82rem; opacity:0.7;">
+          <span id="g1-count"></span>
+          <span id="g1-streak"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+════════════════════════════════════════════ -->
+<div class="section-card theme-teal">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>🎯</span> Topic 2 — Picking Out the Main Point
+    <span class="toggle-icon">▼</span>
+  </div>
+  <div class="section-body">
+
+    <span class="section-intro-label teal">What to learn</span>
+
+    <div class="intro-text teal">
+      <strong>The main point of a text is what it is about</strong>
+    </div>
+    <ul class="point-list">
+      <li><div class="point-num teal">1</div><div>You <strong>don't</strong> need to read <strong>all</strong> of a text to find the <strong>main point</strong>.</div></li>
+      <li><div class="point-num teal">2</div><div>Move your eyes <strong>quickly</strong> over the text, looking for <strong>key words</strong>.</div></li>
+      <li><div class="point-num teal">3</div><div><strong>Key words</strong> are the <strong>most important</strong> words in the text.</div></li>
+      <li><div class="point-num teal">4</div><div><strong>Underline</strong> any key words that you find.</div></li>
+    </ul>
+
+    <div class="example-box">
+      <div class="ex-label">✨ Example — Key words are underlined</div>
+      <div class="key-text-box">
+        Not much is known about the <span class="underline">history of Stonehenge</span>. <span class="underline">Nobody knows when</span> it was built, but most historians think it must have been between <span class="underline">3000 and 2000 BC</span>.
+      </div>
+      <div class="reveal-wrap">
+        <button class="reveal-toggle teal" onclick="toggleReveal(this)">👁 What is this text about?</button>
+        <div class="reveal-content teal-border">The key words tell us this text is about <strong>the history of Stonehenge</strong>.</div>
+      </div>
+    </div>
+
+    <div class="example-box">
+      <div class="ex-label">✨ Example — Key words are underlined</div>
+      <div class="key-text-box">
+        Taking <span class="underline">regular exercise helps</span> to keep you <span class="underline">healthy</span>. It <span class="underline">reduces your risk</span> of heart disease and diabetes.
+      </div>
+      <div class="reveal-wrap">
+        <button class="reveal-toggle teal" onclick="toggleReveal(this)">👁 What is this text about?</button>
+        <div class="reveal-content teal-border">The key words tell us this text is about <strong>why exercise is good for you</strong>.</div>
+      </div>
+    </div>
+
+    <div class="intro-text teal" style="margin-top:20px;">
+      <strong>The most important point usually comes first</strong>
+    </div>
+    <ul class="point-list">
+      <li><div class="point-num teal">1</div><div>Some texts are divided into <strong>paragraphs</strong>. Paragraphs are <strong>groups</strong> of sentences.</div></li>
+      <li><div class="point-num teal">2</div><div>The <strong>main point</strong> of a text is often in the <strong>first paragraph</strong>.</div></li>
+    </ul>
+
+    <hr class="divider">
+    <span class="section-intro-label teal">Practice Questions</span>
+    <p style="font-size:1rem; margin-bottom:16px;">Read each text carefully, then answer the question next to it. Circle your answer — or tap the option you think is right!</p>
+
+    <!-- Blue River -->
+    <div class="question-card teal-q">
+      <div class="q-label teal">Text 1 — Blue River</div>
+      <div class="text-specimen" style="margin-bottom:14px;">
+        <div class="spec-title">Blue River 🌊</div>
+        <div class="spec-sub">Members-only swimming club</div>
+        <p>Blue River is an exclusive swimming club in Tunaley. Our facilities include:</p>
+        <ul style="margin-left:20px; margin-top:6px; font-size:0.9rem;">
+          <li>A 50-metre swimming pool</li>
+          <li>A bubble pool and steam room</li>
+          <li>Sports massage</li>
+        </ul>
+        <p style="margin-top:6px; font-size:0.9rem;">Open 7 am to 10 pm every day.</p>
+      </div>
+      <p><strong>1)</strong> This text is about:</p>
+      <div class="mc-grid">
+        <button class="mc-btn" onclick="mcAnswer(this, true, 'mc1')">a) A swimming club</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc1')">b) Sports massage</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc1')">c) Swimming lessons</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc1')">d) Tunaley</button>
+      </div>
+      <div id="mc1-fb" class="feedback"></div>
+      <div class="reveal-wrap">
+        <button class="reveal-toggle teal" onclick="toggleReveal(this)">👁 Show answer</button>
+        <div class="reveal-content teal-border">✅ The correct answer is <strong>a) A swimming club</strong>. The first sentence tells us Blue River is "an exclusive swimming club".</div>
+      </div>
+      <div class="hint-wrap">
+        <button class="hint-toggle" onclick="toggleHint(this)">💡 Hint</button>
+        <div class="hint-content">Look at the first sentence — what is Blue River described as?</div>
+      </div>
+    </div>
+
+    <!-- Get on Your Bike -->
+    <div class="question-card teal-q">
+      <div class="q-label teal">Text 2 — Get on Your Bike</div>
+      <div class="advert-specimen" style="margin-bottom:14px; text-align:left;">
+        <div class="ad-title" style="font-size:1rem;">GET ON YOUR BIKE 🚲</div>
+        <p style="font-size:0.88rem; margin-bottom:6px;">Cycling is a great way to get around. The best things about cycling are:</p>
+        <ul style="margin-left:18px; font-size:0.85rem; line-height:1.8;">
+          <li>It's free</li>
+          <li>It's good for the environment</li>
+          <li>It's good exercise</li>
+        </ul>
+        <p style="font-size:0.85rem; margin-top:8px;">There are lots of ways to get involved in cycling. Look out for a local cycling club in your town or go out with a friend. Don't forget to wear a helmet!</p>
+      </div>
+      <p><strong>2)</strong> This text:</p>
+      <div class="mc-grid">
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc2')">a) Tells you about cycling helmets</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc2')">b) Persuades you to do more exercise</button>
+        <button class="mc-btn" onclick="mcAnswer(this, true, 'mc2')">c) Tells you about cycling</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc2')">d) Advertises a cycling club</button>
+      </div>
+      <div id="mc2-fb" class="feedback"></div>
+      <div class="hint-wrap">
+        <button class="hint-toggle" onclick="toggleHint(this)">💡 Hint</button>
+        <div class="hint-content">Read the very first sentence. What is the whole text mainly covering?</div>
+      </div>
+    </div>
+
+    <!-- Cleaner Wanted -->
+    <div class="question-card teal-q">
+      <div class="q-label teal">Text 3 — Cleaner Wanted</div>
+      <div class="newspaper-specimen" style="margin-bottom:14px;">
+        <div class="spec-title" style="text-decoration:underline;">Cleaner Wanted</div>
+        <p style="font-size:0.88rem; margin-bottom:6px;">Family looking for an experienced cleaner for a large 5-bedroom house in West Tranby. Duties to include:</p>
+        <ul style="margin-left:18px; font-size:0.85rem; line-height:1.8;">
+          <li>General household cleaning</li>
+          <li>Ironing</li>
+          <li>Laundry</li>
+        </ul>
+        <p style="font-size:0.85rem; margin-top:6px;">4 hours per week. Pay from £11 an hour depending on experience. References required. Please contact Mrs Anita Rao on <strong>0141 496 0154</strong>.</p>
+      </div>
+      <p><strong>3)</strong> This text:</p>
+      <div class="mc-grid">
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc3')">a) Tells you about Anita Rao</button>
+        <button class="mc-btn" onclick="mcAnswer(this, true, 'mc3')">b) Advertises a cleaning job</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc3')">c) Advertises a house for sale</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc3')">d) Tells you about West Tranby</button>
+      </div>
+      <div id="mc3-fb" class="feedback"></div>
+    </div>
+
+    <!-- Inter-Coffee -->
+    <div class="question-card teal-q">
+      <div class="q-label teal">Text 4 — Inter-Coffee</div>
+      <div class="advert-specimen" style="margin-bottom:14px;">
+        <div class="ad-title">☕ iNTER-COFFEE</div>
+        <div style="font-style:italic; font-size:0.85rem; color:#555; margin-bottom:8px;">George Street, Handelby</div>
+        <p style="font-size:0.88rem; font-weight: 700; margin-bottom:4px;">We have 12 computers with high-speed internet, plus free Wi-Fi for all our customers.</p>
+        <p style="font-size:0.88rem;">Coffee, cake and snacks served all day.</p>
+        <p style="font-size:0.88rem;">Open 8 am to 11 pm Monday to Saturday.</p>
+      </div>
+      <p><strong>4)</strong> This text is about:</p>
+      <div class="mc-grid">
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc4')">a) The internet</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc4')">b) George Street</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc4')">c) A restaurant</button>
+        <button class="mc-btn" onclick="mcAnswer(this, true, 'mc4')">d) An internet café</button>
+      </div>
+      <div id="mc4-fb" class="feedback"></div>
+      <div class="hint-wrap">
+        <button class="hint-toggle" onclick="toggleHint(this)">💡 Hint</button>
+        <div class="hint-content">It sells coffee <em>and</em> has computers. What kind of place has both?</div>
+      </div>
+    </div>
+
+    <!-- ── GAME 2 UNLOCK ── -->
+    <div id="game2-locked" style="margin-top:28px; text-align:center; padding:22px; background:#f0f0f0; border-radius:14px; border:2px dashed #bbb;">
+      <div style="font-size:2rem;">🔒</div>
+      <p style="font-size:1rem; color:#666; margin-top:8px;">Answer all 4 questions above to unlock the mini-game!</p>
+      <div id="game2-progress" style="margin-top:10px; font-size:0.9rem; color:#999;">0 / 4 answered</div>
+    </div>
+    <div id="game2-panel" style="display:none; margin-top:28px;">
+      <div style="background:linear-gradient(135deg,#2a7d6b,#3a9e88); border-radius:14px; padding:6px 24px 24px; color:white;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+          <h3 style="font-size:1.1rem; font-weight:700; color:white;">🎮 Main Point Match — unlocked!</h3>
+          <span id="g2-score-display" style="font-size:0.9rem; opacity:0.85;">Score: 0</span>
+        </div>
+        <p style="font-size:0.88rem; opacity:0.85; margin-bottom:16px;">Match each text snippet to its main point. Drag and drop!</p>
+        <div id="g2-arena" style="background:rgba(255,255,255,0.1); border-radius:10px; padding:16px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div>
+              <div style="font-size:0.78rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Text snippets</div>
+              <div id="g2-texts" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+            <div>
+              <div style="font-size:0.78rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Main points</div>
+              <div id="g2-points" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+          </div>
+          <div style="margin-top:14px; text-align:center;">
+            <button onclick="g2Check()" style="background:white; color:#2a7d6b; border:none; border-radius:8px; padding:10px 24px; font-family:'Atkinson Hyperlegible',sans-serif; font-size:0.95rem; font-weight: 700; cursor:pointer;">Check matches ✓</button>
+            <button onclick="g2New()" style="background:rgba(255,255,255,0.15); color:white; border:2px solid rgba(255,255,255,0.3); border-radius:8px; padding:10px 24px; font-family:'Atkinson Hyperlegible',sans-serif; font-size:0.95rem; cursor:pointer; margin-left:8px;">New round →</button>
+          </div>
+          <div id="g2-fb" style="margin-top:12px; text-align:center; font-size:0.95rem; min-height:1.4em;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+════════════════════════════════════════════ -->
+<div class="section-card theme-amber">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>🔑</span> Topic 3 — Using Key Words to Find Information
+    <span class="toggle-icon">▼</span>
+  </div>
+  <div class="section-body">
+
+    <span class="section-intro-label amber">What to learn</span>
+
+    <div class="intro-text amber">
+      <strong>Look for key words in the question and the text</strong>
+    </div>
+    <ul class="point-list">
+      <li><div class="point-num amber">1</div><div>You <strong>don't</strong> have to read the <strong>whole text</strong> to find a piece of information.</div></li>
+      <li><div class="point-num amber">2</div><div>Underline the <strong>key words</strong> in the <strong>question</strong>.</div></li>
+      <li><div class="point-num amber">3</div><div>Quickly <strong>read</strong> through the text, looking for these <strong>key words</strong>.</div></li>
+      <li><div class="point-num amber">4</div><div>When you find one, read the rest of the sentence <strong>carefully</strong> to find the answer.</div></li>
+    </ul>
+
+    <div class="example-box">
+      <div class="ex-label">✨ Example — Using a PO Box</div>
+      <p style="margin-bottom:10px; font-size:0.97rem;"><strong>Question:</strong> How often should you <span class="underline amber">collect</span> your mail?</p>
+      <div class="key-text-box">
+        <strong style="text-decoration:underline;">Using a Post Office (PO) Box</strong><br><br>
+        Having your mail sent to a PO Box lets you keep the address of your company private.<br><br>
+        If you have a PO Box, you must <span class="underline amber">collect</span> your mail <strong>once a week</strong>. The Post Office can deliver mail from a PO Box for an extra fee.
+      </div>
+      <div class="reveal-wrap">
+        <button class="reveal-toggle amber" onclick="toggleReveal(this)">👁 Show the answer</button>
+        <div class="reveal-content amber-border">The word <strong>'collect'</strong> appears in the text. Reading that sentence carefully gives us the answer: <strong>"once a week"</strong>.</div>
+      </div>
+    </div>
+
+    <div class="intro-text amber" style="margin-top:20px;">
+      <strong>Think about what the question means</strong>
+    </div>
+    <p style="font-size:1rem; margin-bottom:12px;">The key words in the <strong>question</strong> might not be <strong>exactly</strong> the same as the words in the <strong>text</strong>.</p>
+
+    <div class="example-box">
+      <div class="ex-label">✨ Example — Mid-Valley Language School</div>
+      <p style="margin-bottom:10px; font-size:0.97rem;"><strong>Question:</strong> Give <strong>one</strong> example of a <span class="underline amber">subject</span> you can try at the open day.</p>
+      <div class="key-text-box">
+        <strong style="text-decoration:underline;">Mid-Valley Language School</strong><br><br>
+        Mid-Valley Language School is having an open day on Thursday 14th May. Come and have a free taster session.<br><br>
+        We have lots of <span class="underline amber">classes</span> on offer:<br>
+        <strong>French &nbsp; German &nbsp; Spanish &nbsp; Arabic &nbsp; Mandarin</strong>
+      </div>
+      <div class="reveal-wrap">
+        <button class="reveal-toggle amber" onclick="toggleReveal(this)">👁 Show the answer</button>
+        <div class="reveal-content amber-border">The question says <strong>'subject'</strong> but the text says <strong>'classes'</strong> — they mean the same thing! Any one of the five options is correct: <strong>French, German, Spanish, Arabic,</strong> or <strong>Mandarin</strong>.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <span class="section-intro-label amber">Practice Questions</span>
+    <p style="font-size:1rem; margin-bottom:16px;">Read the newspaper article, then answer the questions below. Use the key word technique — underline the key word in the question, then find it in the text.</p>
+
+    <!-- The passage -->
+    <div class="passage-box">
+      <div class="passage-meta">Friday 18th July — Tarnford Gazette</div>
+      <div class="passage-headline">Upper Tarnford to get bypass</div>
+      <div class="passage-cols">
+        <div>
+          <p>Traffic has been increasing in Upper Tarnford over the last 5 years. Now the council have decided to build a bypass around the town. The council hope a bypass will reduce traffic problems in the area.</p>
+          <p style="margin-top:10px;">Upper Tarnford town centre is often full of cars and lorries. The roads are particularly busy at rush hour. Most of the traffic is passing through from Kellingworth to Lower Tarnford.</p>
+        </div>
+        <div>
+          <p>The new bypass would mean people could drive past Upper Tarnford rather than through it.</p>
+          <p style="margin-top:10px;">Some people are worried that the bypass will affect the environment. It will cut through a large part of Pavey Wood. This area is very popular with birdwatchers because it is home to a rare type of sparrow.</p>
+          <p style="margin-top:10px;">Construction of the bypass is due to begin in September. It will take 6 months to complete.</p>
+          <p style="margin-top:10px;">What do you think about the bypass? Visit our website today and have your say.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1 — multiple choice -->
+    <div class="question-card amber-q">
+      <div class="q-label amber">Question 1</div>
+      <p>How long has the traffic been increasing in Upper Tarnford?</p>
+      <div class="mc-grid">
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc5')">a) The last 3 years</button>
+        <button class="mc-btn" onclick="mcAnswer(this, true, 'mc5')">b) The last 5 years</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc5')">c) Since September</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc5')">d) The last 6 months</button>
+      </div>
+      <div id="mc5-fb" class="feedback"></div>
+      <div class="reveal-wrap">
+        <button class="reveal-toggle amber" onclick="toggleReveal(this)">👁 Show answer</button>
+        <div class="reveal-content amber-border">✅ The correct answer is <strong>b) The last 5 years</strong>. The first sentence says "Traffic has been increasing in Upper Tarnford over the last 5 years."</div>
+      </div>
+      <div class="hint-wrap">
+        <button class="hint-toggle" onclick="toggleHint(this)">💡 Key word hint</button>
+        <div class="hint-content">Find the word <strong>"increasing"</strong> in the article — what number appears right next to it?</div>
+      </div>
+    </div>
+
+    <!-- Q2 — multiple choice -->
+    <div class="question-card amber-q">
+      <div class="q-label amber">Question 2</div>
+      <p>Who has decided to build the bypass?</p>
+      <div class="mc-grid">
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc6')">a) Local people</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc6')">b) Car drivers</button>
+        <button class="mc-btn" onclick="mcAnswer(this, true, 'mc6')">c) The council</button>
+        <button class="mc-btn" onclick="mcAnswer(this, false, 'mc6')">d) Birdwatchers</button>
+      </div>
+      <div id="mc6-fb" class="feedback"></div>
+      <div class="hint-wrap">
+        <button class="hint-toggle" onclick="toggleHint(this)">💡 Key word hint</button>
+        <div class="hint-content">Find the word <strong>"decided"</strong> in the article — who is mentioned just before it?</div>
+      </div>
+    </div>
+
+    <!-- Q3 — free text -->
+    <div class="question-card amber-q">
+      <div class="q-label amber">Question 3</div>
+      <p>When will the building of the bypass start?</p>
+      <textarea class="answer-area" id="q_bypass_start" placeholder="Write your answer here..." rows="2"></textarea>
+      <button class="check-btn amber" onclick="checkContains('q_bypass_start', ['september'], 'bypass_start_fb')">Check my answer</button>
+      <div class="feedback" id="bypass_start_fb"></div>
+    </div>
+
+    <!-- Q4 — free text -->
+    <div class="question-card amber-q">
+      <div class="q-label amber">Question 4</div>
+      <p>When is the traffic in Upper Tarnford at its worst?</p>
+      <textarea class="answer-area" id="q_worst" placeholder="Write your answer here..." rows="2"></textarea>
+      <button class="check-btn amber" onclick="checkContains('q_worst', ['rush hour', 'rush'], 'worst_fb')">Check my answer</button>
+      <div class="feedback" id="worst_fb"></div>
+    </div>
+
+    <!-- Q5 — free text -->
+    <div class="question-card amber-q">
+      <div class="q-label amber">Question 5</div>
+      <p>You want to give your opinion about the bypass. What should you do?</p>
+      <textarea class="answer-area" id="q_opinion" placeholder="Write your answer here..." rows="3"></textarea>
+      <button class="check-btn amber" onclick="checkContains('q_opinion', ['website', 'visit', 'online'], 'opinion_fb')">Check my answer</button>
+      <div class="feedback" id="opinion_fb"></div>
+    </div>
+
+    <!-- ── GAME 3 UNLOCK ── -->
+    <div id="game3-locked" style="margin-top:28px; text-align:center; padding:22px; background:#f0f0f0; border-radius:14px; border:2px dashed #bbb;">
+      <div style="font-size:2rem;">🔒</div>
+      <p style="font-size:1rem; color:#666; margin-top:8px;">Answer all 5 questions above to unlock the mini-game!</p>
+      <div id="game3-progress" style="margin-top:10px; font-size:0.9rem; color:#999;">0 / 5 answered</div>
+    </div>
+    <div id="game3-panel" style="display:none; margin-top:28px;">
+      <div style="background:linear-gradient(135deg,#c47a00,#e8a020); border-radius:14px; padding:6px 24px 24px; color:white;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+          <h3 style="font-size:1.1rem; font-weight:700; color:white;">🎮 Key Word Tap — unlocked!</h3>
+          <span id="g3-score-display" style="font-size:0.9rem; opacity:0.85;">Score: 0</span>
+        </div>
+        <p style="font-size:0.88rem; opacity:0.85; margin-bottom:12px;">Words fall from the top. Tap only the KEY WORDS — ignore the filler words!</p>
+        <div style="background:rgba(0,0,0,0.2); border-radius:10px; overflow:hidden; position:relative; height:320px;" id="g3-arena">
+          <canvas id="g3-canvas" width="600" height="320" style="width:100%; height:320px; cursor:pointer; display:block;"></canvas>
+          <div id="g3-overlay" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.55); border-radius:10px;">
+            <div style="font-size:1.3rem; font-weight:700; margin-bottom:8px;">Ready?</div>
+            <div style="font-size:0.85rem; opacity:0.85; margin-bottom:16px; text-align:center; padding:0 20px;">Tap KEY WORDS (highlighted in yellow) — avoid the grey filler words!</div>
+            <button onclick="g3Start()" style="background:white; color:#c47a00; border:none; border-radius:8px; padding:12px 28px; font-family:'Atkinson Hyperlegible',sans-serif; font-size:1rem; font-weight: 700; cursor:pointer;">Start game ▶</button>
+          </div>
+        </div>
+        <div style="margin-top:10px; display:flex; justify-content:space-between; font-size:0.85rem;">
+          <span id="g3-lives" style="opacity:0.9;">Lives: ❤️❤️❤️</span>
+          <span id="g3-level" style="opacity:0.7;">Level 1</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<button id="export-btn" onclick="emailAnswers()">📧 Email my answers to Jay</button>
+
+<br><br>
+
+<script>
+  // Open first section on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const first = document.querySelector('.section-header');
+    if (first) {
+      first.classList.add('open');
+      first.nextElementSibling.classList.add('open');
+    }
+  });
+
+  function toggleSection(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  }
+
+  function toggleHint(btn) {
+    const content = btn.nextElementSibling;
+    content.classList.toggle('visible');
+    btn.textContent = content.classList.contains('visible') ? '🙈 Hide hint' : '💡 Hint';
+  }
+
+  function toggleReveal(btn) {
+    if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+    const content = btn.nextElementSibling;
+    content.classList.toggle('visible');
+    btn.textContent = content.classList.contains('visible') ? '🙈 Hide answer' : btn.dataset.label;
+  }
+
+  // Multiple choice — correct answer is flagged by passing true/false
+  // For Topic 2 (main point), correct answers are: a, c, b, d
+  // For Topic 3 (key words), correct answers are: b, c
+  const mcCorrect = {
+    mc1: 'a', mc2: 'c', mc3: 'b', mc4: 'd',
+    mc5: 'b', mc6: 'c'
+  };
+
+  function mcAnswer(btn, correct, groupId) {
+    const fb = document.getElementById(groupId + '-fb');
+    const allBtns = btn.closest('.question-card').querySelectorAll('.mc-btn');
+    allBtns.forEach(b => b.style.pointerEvents = 'none');
+    if (correct) {
+      btn.classList.add('selected-correct');
+      fb.className = 'feedback correct';
+      fb.textContent = '✅ Correct — well done!';
+    } else {
+      btn.classList.add('selected-wrong');
+      fb.className = 'feedback incorrect';
+      fb.textContent = '🤔 Not quite — check the hint or the reveal button below.';
+    }
+    setTimeout(checkUnlocks, 50);
+  }
+
+  function checkContains(id, keywords, fbId) {
+    const raw = document.getElementById(id).value.trim().toLowerCase();
+    const fb = document.getElementById(fbId);
+    if (!raw) {
+      fb.className = 'feedback incorrect';
+      fb.textContent = '📝 Nothing written yet — have a go, even a guess is fine!';
+      return;
+    }
+    const match = keywords.some(k => raw.includes(k));
+    if (match) {
+      fb.className = 'feedback correct';
+      fb.textContent = '✅ That\'s right — well done!';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.textContent = '🤔 Not quite — try the key word hint, or check the reveal button.';
+    }
+    setTimeout(checkUnlocks, 50);
+  }
+
+  // ═══════════════════════════════════════════
+  // UNLOCK SYSTEM
+  // ═══════════════════════════════════════════
+
+  const topic1Qs = ['q1','q2','q3','q4','q5','q6','q7','q8'];
+  const topic2Qs = ['mc1','mc2','mc3','mc4'];
+  const topic3Qs = ['mc5','mc6','q_bypass_start','q_worst','q_opinion'];
+
+  function isMCAttempted(id) {
+    const fb = document.getElementById(id + '-fb');
+    return fb && (fb.classList.contains('correct') || fb.classList.contains('incorrect'));
+  }
+  function isTextAttempted(id) {
+    const el = document.getElementById(id);
+    return el && el.value.trim().length > 0;
+  }
+
+  function checkUnlocks() {
+    const t1done = topic1Qs.filter(id => isTextAttempted(id)).length;
+    document.getElementById('game1-progress').textContent = t1done + ' / 8 answered';
+    if (t1done >= 8) {
+      document.getElementById('game1-locked').style.display = 'none';
+      const p = document.getElementById('game1-panel');
+      if (p.style.display === 'none') { p.style.display = 'block'; g1Init(); }
+    }
+
+    const t2done = topic2Qs.filter(id => isMCAttempted(id)).length;
+    document.getElementById('game2-progress').textContent = t2done + ' / 4 answered';
+    if (t2done >= 4) {
+      document.getElementById('game2-locked').style.display = 'none';
+      const p = document.getElementById('game2-panel');
+      if (p.style.display === 'none') { p.style.display = 'block'; g2New(); }
+    }
+
+    const t3done = topic3Qs.filter(id =>
+      id.startsWith('mc') ? isMCAttempted(id) : isTextAttempted(id)
+    ).length;
+    document.getElementById('game3-progress').textContent = t3done + ' / 5 answered';
+    if (t3done >= 5) {
+      document.getElementById('game3-locked').style.display = 'none';
+      const p = document.getElementById('game3-panel');
+      if (p.style.display === 'none') { p.style.display = 'block'; }
+    }
+  }
+
+  document.querySelectorAll('.answer-area').forEach(ta => {
+    ta.addEventListener('input', () => setTimeout(checkUnlocks, 300));
+  });
+
+  // ═══════════════════════════════════════════
+  // GAME 1 — WORD SCRAMBLE
+  // ═══════════════════════════════════════════
+  const g1Words = [
+    { word:'EMAIL', clue:'You send this online with a subject line' },
+    { word:'HEADLINE', clue:'The big title at the top of a newspaper article' },
+    { word:'WEBSITE', clue:'It has an address bar and navigation links' },
+    { word:'ADVERT', clue:'Persuasive text that wants you to buy or do something' },
+    { word:'LEAFLET', clue:'Gives you information — often through a letterbox!' },
+    { word:'COLUMN', clue:'Newspapers use these to break up text' },
+    { word:'ARTICLE', clue:'A piece of writing in a newspaper or magazine' },
+    { word:'SUBJECT', clue:'The line in an email that tells you what it\'s about' },
+    { word:'KEYWORD', clue:'An important word that unlocks the meaning of a text' },
+    { word:'FEATURE', clue:'A characteristic that helps identify a text type' },
+  ];
+  let g1Pool, g1Current, g1Score = 0, g1Streak = 0, g1Total = 0;
+
+  function g1Scramble(w) {
+    let arr = w.split('');
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    const result = arr.join('');
+    return result === w ? g1Scramble(w) : result;
+  }
+
+  function g1Init() {
+    g1Pool = [...g1Words].sort(() => Math.random() - 0.5);
+    g1Score = 0; g1Streak = 0; g1Total = 0;
+    document.getElementById('g1-score-display').textContent = 'Score: 0';
+    g1Next();
+  }
+
+  function g1Next() {
+    if (!g1Pool.length) g1Pool = [...g1Words].sort(() => Math.random() - 0.5);
+    g1Current = g1Pool.pop();
+    document.getElementById('g1-scrambled').textContent = g1Scramble(g1Current.word);
+    document.getElementById('g1-clue').textContent = '💡 ' + g1Current.clue;
+    document.getElementById('g1-input').value = '';
+    document.getElementById('g1-fb').textContent = '';
+    document.getElementById('g1-input').focus();
+    g1Total++;
+    document.getElementById('g1-count').textContent = 'Round ' + g1Total;
+    document.getElementById('g1-streak').textContent = g1Streak > 1 ? '🔥 ' + g1Streak + ' in a row!' : '';
+  }
+
+  function g1Check() {
+    const val = document.getElementById('g1-input').value.trim().toUpperCase();
+    if (!val) return;
+    if (val === g1Current.word) {
+      g1Score += 10 + (g1Streak * 2);
+      g1Streak++;
+      document.getElementById('g1-fb').innerHTML = '✅ <strong style="color:#ffeaa0">Correct!</strong> +' + (10 + ((g1Streak-1)*2)) + ' points';
+      document.getElementById('g1-score-display').textContent = 'Score: ' + g1Score;
+      document.getElementById('g1-streak').textContent = g1Streak > 1 ? '🔥 ' + g1Streak + ' in a row!' : '';
+      setTimeout(g1Next, 1100);
+    } else {
+      g1Streak = 0;
+      document.getElementById('g1-fb').textContent = '❌ Not quite — try again or skip!';
+      document.getElementById('g1-streak').textContent = '';
+    }
+  }
+
+  function g1Skip() {
+    g1Streak = 0;
+    document.getElementById('g1-fb').innerHTML = '➡️ The answer was <strong style="color:#ffeaa0">' + g1Current.word + '</strong>';
+    document.getElementById('g1-streak').textContent = '';
+    setTimeout(g1Next, 1400);
+  }
+
+  // ═══════════════════════════════════════════
+  // GAME 2 — MAIN POINT MATCH (drag-select)
+  // ═══════════════════════════════════════════
+  const g2Pairs = [
+    { text:'A 50-metre pool, steam room, sports massage. Open 7am–10pm every day.', point:'A leisure club' },
+    { text:'Cycling is free, good for the environment and great exercise.', point:'Why cycling is good' },
+    { text:'4 hrs/wk cleaning. Pay from £11/hr. Contact Mrs Rao.', point:'A job advertisement' },
+    { text:'12 computers, free Wi-Fi, coffee and cake. Mon–Sat 8am–11pm.', point:'An internet café' },
+    { text:'Traffic increasing for 5 years. Council to build a bypass.', point:'A road development' },
+    { text:'PO Box must be collected once a week. Extra fee for delivery.', point:'Using a PO Box' },
+    { text:'French, German, Spanish, Arabic, Mandarin classes on offer.', point:'A language school' },
+    { text:'"New Trains Tested" — successful final tests after troubled development.', point:'A news article' },
+  ];
+
+  let g2Score = 0, g2ActivePairs, g2Selected = null;
+
+  function g2Shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+  function g2New() {
+    g2ActivePairs = g2Shuffle(g2Pairs).slice(0, 3);
+    g2Selected = null;
+    const shuffledTexts = g2Shuffle(g2ActivePairs);
+    const shuffledPoints = g2Shuffle(g2ActivePairs);
+
+    const tCont = document.getElementById('g2-texts');
+    const pCont = document.getElementById('g2-points');
+    tCont.innerHTML = ''; pCont.innerHTML = '';
+    document.getElementById('g2-fb').textContent = '';
+
+    shuffledTexts.forEach((pair, i) => {
+      const d = document.createElement('div');
+      d.dataset.id = g2ActivePairs.indexOf(pair);
+      d.dataset.side = 'text';
+      d.textContent = pair.text;
+      d.style.cssText = 'background:rgba(255,255,255,0.12);border:2px solid transparent;border-radius:8px;padding:10px 12px;font-size:0.82rem;cursor:pointer;line-height:1.5;transition:all 0.15s;';
+      d.addEventListener('click', () => g2Select(d));
+      tCont.appendChild(d);
+    });
+
+    shuffledPoints.forEach((pair, i) => {
+      const d = document.createElement('div');
+      d.dataset.id = g2ActivePairs.indexOf(pair);
+      d.dataset.side = 'point';
+      d.textContent = pair.point;
+      d.style.cssText = 'background:rgba(255,255,255,0.12);border:2px solid transparent;border-radius:8px;padding:10px 12px;font-size:0.88rem;font-weight: 700;cursor:pointer;transition:all 0.15s;';
+      d.addEventListener('click', () => g2Select(d));
+      pCont.appendChild(d);
+    });
+
+    document.getElementById('g2-score-display').textContent = 'Score: ' + g2Score;
+  }
+
+  function g2Select(el) {
+    if (el.dataset.matched) return;
+    if (!g2Selected) {
+      if (g2Selected) { g2Selected.style.borderColor = 'transparent'; }
+      g2Selected = el;
+      el.style.borderColor = '#ffeaa0';
+      return;
+    }
+    if (g2Selected === el) { g2Selected.style.borderColor = 'transparent'; g2Selected = null; return; }
+    if (g2Selected.dataset.side === el.dataset.side) {
+      g2Selected.style.borderColor = 'transparent';
+      g2Selected = el;
+      el.style.borderColor = '#ffeaa0';
+      return;
+    }
+    if (g2Selected.dataset.id === el.dataset.id) {
+      [g2Selected, el].forEach(e => {
+        e.style.borderColor = '#aaffc3';
+        e.style.background = 'rgba(100,220,140,0.25)';
+        e.style.cursor = 'default';
+        e.dataset.matched = '1';
+      });
+      g2Score += 10;
+      document.getElementById('g2-score-display').textContent = 'Score: ' + g2Score;
+      const allMatched = document.querySelectorAll('#g2-texts [data-matched], #g2-points [data-matched]').length;
+      if (allMatched === g2ActivePairs.length * 2) {
+        document.getElementById('g2-fb').innerHTML = '🎉 <strong style="color:#ffeaa0">All matched! Great work!</strong>';
+      }
+    } else {
+      [g2Selected, el].forEach(e => {
+        e.style.borderColor = '#ff9a9a';
+        setTimeout(() => { e.style.borderColor = 'transparent'; }, 600);
+      });
+      document.getElementById('g2-fb').textContent = '❌ Not a match — try again!';
+    }
+    g2Selected = null;
+  }
+
+  function g2Check() {
+    const matched = document.querySelectorAll('#g2-texts [data-matched]').length;
+    if (matched === g2ActivePairs.length) {
+      document.getElementById('g2-fb').innerHTML = '🎉 <strong style="color:#ffeaa0">All matched! Great work!</strong>';
+    } else {
+      document.getElementById('g2-fb').textContent = matched + ' / ' + g2ActivePairs.length + ' matched so far — keep going!';
+    }
+  }
+
+  // ═══════════════════════════════════════════
+  // GAME 3 — KEY WORD TAP
+  // ═══════════════════════════════════════════
+  const g3KeyWords = ['HEADLINE','EMAIL','COLUMN','ADVERT','LEAFLET','WEBSITE','SUBJECT','ARTICLE','KEYWORD','AUTHOR','FEATURE','PARAGRAPH'];
+  const g3FillerWords = ['the','and','but','for','with','this','that','from','they','have','been','will','when','what','some','more','then','than','also','each','into','over'];
+
+  let g3Particles = [], g3Score = 0, g3Lives = 3, g3Level = 1, g3Running = false, g3AnimId, g3SpawnTimer = 0, g3Canvas, g3Ctx;
+
+  function g3Start() {
+    document.getElementById('g3-overlay').style.display = 'none';
+    g3Canvas = document.getElementById('g3-canvas');
+    g3Ctx = g3Canvas.getContext('2d');
+    g3Particles = []; g3Score = 0; g3Lives = 3; g3Level = 1; g3Running = true; g3SpawnTimer = 0;
+    document.getElementById('g3-score-display').textContent = 'Score: 0';
+    document.getElementById('g3-lives').textContent = 'Lives: ❤️❤️❤️';
+    document.getElementById('g3-level').textContent = 'Level 1';
+    g3Canvas.addEventListener('click', g3HandleClick);
+    requestAnimationFrame(g3Loop);
+  }
+
+  function g3Spawn() {
+    const isKey = Math.random() < 0.45;
+    const words = isKey ? g3KeyWords : g3FillerWords;
+    const word = words[Math.floor(Math.random() * words.length)];
+    const cw = g3Canvas.getBoundingClientRect().width || 600;
+    const scale = cw / 600;
+    g3Particles.push({
+      word, isKey,
+      x: 30 + Math.random() * (600 - 120),
+      y: -30,
+      speed: (0.8 + Math.random() * 0.7 + g3Level * 0.15),
+      hit: false, miss: false, alpha: 1,
+      w: 0, h: 34
+    });
+  }
+
+  function g3Loop(ts) {
+    if (!g3Running) return;
+    const cw = 600; const ch = 320;
+    g3Ctx.clearRect(0, 0, cw, ch);
+
+    g3SpawnTimer++;
+    const spawnRate = Math.max(30, 60 - g3Level * 5);
+    if (g3SpawnTimer >= spawnRate) { g3Spawn(); g3SpawnTimer = 0; }
+
+    g3Particles = g3Particles.filter(p => p.alpha > 0.05);
+    let livesLost = 0;
+
+    g3Particles.forEach(p => {
+      if (!p.hit && !p.miss) {
+        p.y += p.speed;
+        if (p.y > ch + 20) {
+          if (p.isKey) { p.miss = true; livesLost++; }
+          else p.alpha = 0;
+        }
+      }
+      if (p.hit || p.miss) p.alpha -= 0.06;
+
+      const fontSize = p.isKey ? 15 : 13;
+      g3Ctx.font = 'bold ' + fontSize + "px 'Atkinson Hyperlegible', sans-serif";
+      const tw = g3Ctx.measureText(p.word).width;
+      p.w = tw + 20; p.h = 34;
+
+      g3Ctx.globalAlpha = p.alpha;
+      if (p.hit) {
+        g3Ctx.fillStyle = '#aaffc3';
+        g3Ctx.strokeStyle = '#55cc77';
+      } else if (p.miss) {
+        g3Ctx.fillStyle = '#ff9a9a';
+        g3Ctx.strokeStyle = '#cc4444';
+      } else if (p.isKey) {
+        g3Ctx.fillStyle = '#ffeaa0';
+        g3Ctx.strokeStyle = '#ddbb00';
+      } else {
+        g3Ctx.fillStyle = 'rgba(180,180,200,0.35)';
+        g3Ctx.strokeStyle = 'rgba(160,160,180,0.5)';
+      }
+      g3Ctx.lineWidth = 1.5;
+      g3RoundRect(p.x - p.w/2, p.y - p.h/2, p.w, p.h, 8);
+      g3Ctx.fill(); g3Ctx.stroke();
+
+      g3Ctx.fillStyle = p.isKey && !p.hit && !p.miss ? '#5a3a00' : (p.hit ? '#004020' : (p.miss ? '#600' : '#ccc'));
+      g3Ctx.font = 'bold ' + fontSize + "px 'Atkinson Hyperlegible', sans-serif";
+      g3Ctx.textAlign = 'center';
+      g3Ctx.textBaseline = 'middle';
+      g3Ctx.fillText(p.word, p.x, p.y);
+      g3Ctx.globalAlpha = 1;
+    });
+
+    if (livesLost > 0) {
+      g3Lives = Math.max(0, g3Lives - livesLost);
+      document.getElementById('g3-lives').textContent = 'Lives: ' + '❤️'.repeat(g3Lives) + '🖤'.repeat(3 - g3Lives);
+      if (g3Lives <= 0) { g3End(); return; }
+    }
+
+    if (g3Score > g3Level * 50) {
+      g3Level++;
+      document.getElementById('g3-level').textContent = 'Level ' + g3Level;
+    }
+
+    g3AnimId = requestAnimationFrame(g3Loop);
+  }
+
+  function g3RoundRect(x, y, w, h, r) {
+    g3Ctx.beginPath();
+    g3Ctx.moveTo(x + r, y);
+    g3Ctx.lineTo(x + w - r, y);
+    g3Ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    g3Ctx.lineTo(x + w, y + h - r);
+    g3Ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    g3Ctx.lineTo(x + r, y + h);
+    g3Ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    g3Ctx.lineTo(x, y + r);
+    g3Ctx.quadraticCurveTo(x, y, x + r, y);
+    g3Ctx.closePath();
+  }
+
+  function g3HandleClick(e) {
+    const rect = g3Canvas.getBoundingClientRect();
+    const scaleX = 600 / rect.width;
+    const scaleY = 320 / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top) * scaleY;
+    let hit = false;
+    g3Particles.forEach(p => {
+      if (p.hit || p.miss) return;
+      if (mx > p.x - p.w/2 && mx < p.x + p.w/2 && my > p.y - p.h/2 && my < p.y + p.h/2) {
+        hit = true;
+        if (p.isKey) {
+          p.hit = true;
+          g3Score += 5;
+          document.getElementById('g3-score-display').textContent = 'Score: ' + g3Score;
+        } else {
+          p.miss = true;
+          g3Lives = Math.max(0, g3Lives - 1);
+          document.getElementById('g3-lives').textContent = 'Lives: ' + '❤️'.repeat(g3Lives) + '🖤'.repeat(3 - g3Lives);
+          if (g3Lives <= 0) { g3End(); }
+        }
+      }
+    });
+  }
+
+  function g3End() {
+    g3Running = false;
+    cancelAnimationFrame(g3AnimId);
+    g3Canvas.removeEventListener('click', g3HandleClick);
+    const ov = document.getElementById('g3-overlay');
+    ov.style.display = 'flex';
+    ov.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:1.5rem;font-weight:700;margin-bottom:8px;">Game Over!</div><div style="font-size:1rem;margin-bottom:16px;opacity:0.85;">Final score: <strong style="color:#ffeaa0;">' + g3Score + '</strong></div><button onclick="g3Start()" style="background:white;color:#c47a00;border:none;border-radius:8px;padding:12px 28px;font-family:Arial,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">Play again ▶</button></div>';
+  }
+
+
+  function emailAnswers() {
+    const fields = [
+      { id: 'q1',            label: 'Q1 — Type of text (email image)' },
+      { id: 'q2',            label: 'Q2 — Feature that tells you it\'s an email' },
+      { id: 'q3',            label: 'Q3 — Type of text (website image)' },
+      { id: 'q4',            label: 'Q4 — Feature that tells you it\'s a website' },
+      { id: 'q5',            label: 'Q5 — Type of text (advert image)' },
+      { id: 'q6',            label: 'Q6 — Feature that tells you it\'s an advert' },
+      { id: 'q7',            label: 'Q7 — Type of text (newspaper image)' },
+      { id: 'q8',            label: 'Q8 — Feature that tells you it\'s a newspaper article' },
+      { id: 'q_bypass_start', label: 'Q3 (Bypass) — When does construction start?' },
+      { id: 'q_worst',       label: 'Q4 (Bypass) — When is traffic worst?' },
+      { id: 'q_opinion',     label: 'Q5 (Bypass) — How to give your opinion?' },
+    ];
+
+    // Collect MC answers
+    const mcLabels = {
+      mc1: 'Q1 (Blue River) — Multiple choice',
+      mc2: 'Q2 (Get on Your Bike) — Multiple choice',
+      mc3: 'Q3 (Cleaner Wanted) — Multiple choice',
+      mc4: 'Q4 (Inter-Coffee) — Multiple choice',
+      mc5: 'Q1 (Bypass traffic) — Multiple choice',
+      mc6: 'Q2 (Who decided bypass) — Multiple choice',
+    };
+
+    let body = 'Hi Jay,\n\nHere are my answers for Finding Information in Texts:\n\n';
+    body += '=== Topic 1: Spotting Text Types ===\n\n';
+
+    fields.slice(0, 8).forEach(f => {
+      const el = document.getElementById(f.id);
+      const val = el ? el.value.trim() || '(not answered)' : '(not answered)';
+      body += `${f.label}:\n${val}\n\n`;
+    });
+
+    body += '=== Topic 2: Picking Out the Main Point (multiple choice) ===\n\n';
+    ['mc1','mc2','mc3','mc4'].forEach(id => {
+      const card = document.getElementById(id + '-fb');
+      const status = card && card.classList.contains('correct') ? '✅ Correct' : card && card.classList.contains('incorrect') ? '❌ Incorrect' : '(not attempted)';
+      body += `${mcLabels[id]}: ${status}\n`;
+    });
+
+    body += '\n=== Topic 3: Using Key Words (multiple choice) ===\n\n';
+    ['mc5','mc6'].forEach(id => {
+      const card = document.getElementById(id + '-fb');
+      const status = card && card.classList.contains('correct') ? '✅ Correct' : card && card.classList.contains('incorrect') ? '❌ Incorrect' : '(not attempted)';
+      body += `${mcLabels[id]}: ${status}\n`;
+    });
+
+    body += '\n=== Topic 3: Using Key Words (written answers) ===\n\n';
+    fields.slice(8).forEach(f => {
+      const el = document.getElementById(f.id);
+      const val = el ? el.value.trim() || '(not answered)' : '(not answered)';
+      body += `${f.label}:\n${val}\n\n`;
+    });
+
+    body += '================================\nFrom your student 😊';
+
+    const mailto = 'mailto:jay.raine@chiltonbridgeschool.co.uk'
+      + '?subject=' + encodeURIComponent('Finding Information in Texts — My Answers')
+      + '&body=' + encodeURIComponent(body);
+    window.location.href = mailto;
+  }
+</script>
+<div style="text-align:center;padding:1.5rem;font-size:0.8rem;color:#888;border-top:1px solid #e0d8d0;margin-top:2rem;">
+  Base 6 · Chilton Bridge School
+</div>
+</body>
+</html>
