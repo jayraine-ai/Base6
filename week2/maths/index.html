@@ -22,7 +22,10 @@
   .focus-card ul { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
   .focus-card ul li { font-size: 0.95rem; color: #1a1a1a; line-height: 1.5; }
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card { background: #ffffff; border: 2px solid #007291; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+
+  /* Card is now a div wrapper so the tracker doesn't trigger navigation */
+  .resource-card-wrap { display: flex; flex-direction: column; }
+  .resource-card { background: #ffffff; border: 2px solid #007291; border-radius: 14px 14px 0 0; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; border-bottom: none; }
   .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,114,145,0.15); }
   .resource-card.recap { border-color: #e8a020; background: #fffbf0; }
   .resource-card.rpg { border-color: #7a3fa8; background: #f9f4ff; }
@@ -36,6 +39,22 @@
   .resource-arrow.purple { color: #7a3fa8; }
   .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; width: fit-content; }
   .tag-recap { background-color: #fdecc8; color: #b07010; }
+
+  /* Completion tracker strip */
+  .tracker-strip { border: 2px solid #007291; border-top: 1px solid #d0eaf0; border-radius: 0 0 14px 14px; background: #f4fbfd; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .tracker-strip.recap { border-color: #e8a020; border-top-color: #f5dfa0; background: #fffdf5; }
+  .tracker-strip.rpg { border-color: #7a3fa8; border-top-color: #ddd0f0; background: #faf6ff; }
+  .tracker-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #888; margin-right: 0.25rem; white-space: nowrap; }
+  .init-btn { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #b0d8e0; background: #ffffff; font-size: 0.7rem; font-weight: 700; color: #007291; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s, color 0.15s; flex-shrink: 0; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  .init-btn:hover { border-color: #007291; background: #e6f5f8; }
+  .init-btn.done { background: #007291; border-color: #005a73; color: #ffffff; }
+  .tracker-strip.recap .init-btn { border-color: #f0c870; color: #b07010; }
+  .tracker-strip.recap .init-btn:hover { background: #fdecc8; border-color: #e8a020; }
+  .tracker-strip.recap .init-btn.done { background: #e8a020; border-color: #b07010; color: #ffffff; }
+  .tracker-strip.rpg .init-btn { border-color: #c4a8e8; color: #7a3fa8; }
+  .tracker-strip.rpg .init-btn:hover { background: #f0e8ff; border-color: #7a3fa8; }
+  .tracker-strip.rpg .init-btn.done { background: #7a3fa8; border-color: #5a2a88; color: #ffffff; }
+
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -64,40 +83,65 @@
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
-    <a class="resource-card recap" href="area-el2-activity.html">
-      <div class="resource-icon">📐</div>
-      <span class="resource-name amber">Area Explorer — Recap</span>
-      <span class="resource-desc">A recap of area from last week. Entry Level 2.</span>
-      <span class="resource-tag tag-recap">Recap activity</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card recap" href="area-el2-activity.html">
+        <div class="resource-icon">📐</div>
+        <span class="resource-name amber">Area Explorer — Recap</span>
+        <span class="resource-desc">A recap of area from last week. Entry Level 2.</span>
+        <span class="resource-tag tag-recap">Recap activity</span>
+      </a>
+      <div class="tracker-strip recap" data-activity="area-el2">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
-    <a class="resource-card" href="data-and-charts.html">
-      <div class="resource-icon">📊</div>
-      <span class="resource-name">Data and Charts</span>
-      <span class="resource-desc">Explore bar charts and pie charts through interactive activities, games and mini breaks. Includes email and PDF results.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="data-and-charts.html">
+        <div class="resource-icon">📊</div>
+        <span class="resource-name">Data and Charts</span>
+        <span class="resource-desc">Explore bar charts and pie charts through interactive activities, games and mini breaks. Includes email and PDF results.</span>
+        <span class="resource-arrow">Open activity →</span>
+      </a>
+      <div class="tracker-strip" data-activity="data-charts">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
-    <a class="resource-card" href="probability-language.html">
-      <div class="resource-icon">🎲</div>
-      <span class="resource-name">Language of Probability</span>
-      <span class="resource-desc">Explore impossible, unlikely, even chance, likely and certain — with a spinner, coin flip, dice and word games. Includes email and PDF results.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="probability-language.html">
+        <div class="resource-icon">🎲</div>
+        <span class="resource-name">Language of Probability</span>
+        <span class="resource-desc">Explore impossible, unlikely, even chance, likely and certain — with a spinner, coin flip, dice and word games. Includes email and PDF results.</span>
+        <span class="resource-arrow">Open activity →</span>
+      </a>
+      <div class="tracker-strip" data-activity="probability">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
-    <a class="resource-card" href="times-tables-60-min.html">
-      <div class="resource-icon">✖️</div>
-      <span class="resource-name">Times Tables Mission</span>
-      <span class="resource-desc">A 60-minute session using arrays, skip counting, fact families, a match game and a quiz. Choose any times table from 2 to 12. Includes calm mode and movement breaks.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="times-tables-60-min.html">
+        <div class="resource-icon">✖️</div>
+        <span class="resource-name">Times Tables Mission</span>
+        <span class="resource-desc">A 60-minute session using arrays, skip counting, fact families, a match game and a quiz. Choose any times table from 2 to 12. Includes calm mode and movement breaks.</span>
+        <span class="resource-arrow">Open activity →</span>
+      </a>
+      <div class="tracker-strip" data-activity="times-tables">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
-    <a class="resource-card rpg" href="data-realms-defenders-rpg.html">
-      <div class="resource-icon">🛡️</div>
-      <span class="resource-name purple">Data Realms: Shadow Defenders RPG</span>
-      <span class="resource-desc">A dark fantasy RPG where you battle monsters using chart interpretation and probability skills. Choose a hero class, forge gear, unlock skills and defeat the Uncertainty Dragon.</span>
-      <span class="resource-arrow purple">Play game →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card rpg" href="data-realms-defenders-rpg.html">
+        <div class="resource-icon">🛡️</div>
+        <span class="resource-name purple">Data Realms: Shadow Defenders RPG</span>
+        <span class="resource-desc">A dark fantasy RPG where you battle monsters using chart interpretation and probability skills. Choose a hero class, forge gear, unlock skills and defeat the Uncertainty Dragon.</span>
+        <span class="resource-arrow purple">Play game →</span>
+      </a>
+      <div class="tracker-strip rpg" data-activity="data-realms">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
   </div>
 </main>
@@ -105,6 +149,43 @@
 <footer>
   Base 6 · Chilton Bridge School
 </footer>
+
+<script>
+  const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+  const STORE_KEY = 'base6_w2_maths_tracker';
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; }
+  }
+  function saveState(state) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  function buildTrackers() {
+    const state = loadState();
+    document.querySelectorAll('.tracker-strip').forEach(strip => {
+      const activity = strip.dataset.activity;
+      STUDENTS.forEach(initials => {
+        const btn = document.createElement('button');
+        btn.className = 'init-btn' + (state[activity]?.[initials] ? ' done' : '');
+        btn.textContent = initials;
+        btn.title = state[activity]?.[initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          const s = loadState();
+          if (!s[activity]) s[activity] = {};
+          s[activity][initials] = !s[activity][initials];
+          saveState(s);
+          btn.classList.toggle('done', !!s[activity][initials]);
+          btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+        });
+        strip.appendChild(btn);
+      });
+    });
+  }
+
+  buildTrackers();
+</script>
 
 </body>
 </html>
