@@ -229,7 +229,7 @@
 </main>
 
 <footer>
-  Base 6 · Chilton Bridge School
+  <span id="reset-target" onclick="handleResetClick()" style="cursor:default;">Base 6 · Chilton Bridge School</span>
   <a class="teacher-link" href="teacher.html">·</a>
 </footer>
 
@@ -346,12 +346,30 @@ function submitChallenge() {
     'Response:\n' + answer + '\n\n' +
     '—\nSent automatically from Base 6'
   );
-  window.location.href = 'mailto:' + TEACHER_EMAIL + '?subject=' + subject + '&body=' + body;
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + subject + '&body=' + body, '_blank');
 }
 
 // ── Init ─────────────────────────────────────────────────
 renderStampRow();
 checkAlreadyDone();
+
+// ── Hidden stamp reset (triple-click footer) ─────────────
+let resetClicks = 0, resetTimer = null;
+function handleResetClick() {
+  resetClicks++;
+  clearTimeout(resetTimer);
+  resetTimer = setTimeout(() => { resetClicks = 0; }, 600);
+  if (resetClicks >= 3) {
+    resetClicks = 0;
+    if (confirm('Reset your stamp card? This will clear all saved stamps on this device.')) {
+      localStorage.removeItem(STORE_KEY);
+      localStorage.removeItem('base6_w2_challenge');
+      document.getElementById('challenge-form').style.display = 'flex';
+      document.getElementById('challenge-done').classList.remove('show');
+      renderStampRow();
+    }
+  }
+}
 </script>
 
 </body>
