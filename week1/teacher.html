@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard · Week 1 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #1a1a2e; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .header-left { display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+  .back-link:hover { color: #fff; }
+  .header-title { color: #fff; font-size: 1rem; font-weight: 700; }
+  .lock-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); font-size: 0.75rem; font-weight: 700; font-family: 'Atkinson Hyperlegible', sans-serif; border-radius: 6px; padding: 0.4rem 0.8rem; cursor: pointer; }
+  .lock-btn:hover { background: rgba(255,255,255,0.18); }
+
+  /* Password gate */
+  .gate { max-width: 400px; margin: 6rem auto; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); text-align: center; }
+  .gate h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .gate p { font-size: 0.88rem; color: #666; margin-bottom: 1.5rem; }
+  .gate input { width: 100%; padding: 0.7rem 1rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; border: 2px solid #e0d8d0; border-radius: 8px; margin-bottom: 0.75rem; outline: none; text-align: center; letter-spacing: 0.1em; }
+  .gate input:focus { border-color: #007291; }
+  .gate button { width: 100%; background: #007291; color: #fff; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; border: none; border-radius: 8px; padding: 0.75rem; cursor: pointer; }
+  .gate button:hover { background: #005a73; }
+  .gate .pw-error { font-size: 0.82rem; color: #c0392b; margin-top: 0.5rem; min-height: 1.2em; }
+
+  /* Dashboard */
+  #dashboard { display: none; }
+  .dash-main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .dash-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+  .dash-top h1 { font-size: 1.4rem; font-weight: 700; }
+  .dash-top p { font-size: 0.88rem; color: #666; margin-top: 0.2rem; }
+  .summary-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .summary-pill { background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.75rem 1.25rem; font-size: 0.9rem; }
+  .summary-pill strong { font-size: 1.1rem; color: #007291; display: block; }
+  .reset-btn { background: #fdecea; color: #c0392b; border: 1.5px solid #f0c8c0; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.8rem; font-weight: 700; border-radius: 7px; padding: 0.45rem 0.9rem; cursor: pointer; }
+  .reset-btn:hover { background: #f8d7d4; }
+
+  /* Subject sections */
+  .subject-block { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; overflow: hidden; margin-bottom: 1.25rem; }
+  .subject-head { padding: 0.85rem 1.25rem; font-size: 0.9rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+  .col-headers { display: grid; grid-template-columns: 1fr repeat(5, 38px); align-items: center; gap: 6px; padding: 0.4rem 1.25rem; background: #f9f5f2; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #999; border-top: 1px solid #f0eae4; }
+  .col-headers span { text-align: center; }
+  .col-headers .activity-col { text-align: left; }
+  .activity-row { display: grid; grid-template-columns: 1fr repeat(5, 38px); align-items: center; gap: 6px; padding: 0.65rem 1.25rem; border-top: 1px solid #f0eae4; }
+  .activity-row:hover { background: #fdfaf7; }
+  .activity-name { font-size: 0.88rem; color: #1a1a1a; line-height: 1.4; }
+  .tick-cell { display: flex; align-items: center; justify-content: center; }
+  .tick { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; border: 2px solid #e0d8d0; color: #ccc; background: #fafafa; }
+  .tick.done { background: #2e8b57; border-color: #1f6b40; color: #fff; }
+  .tick.na { background: #f0f0f0; border-color: #ddd; color: #bbb; font-size: 0.6rem; }
+
+  /* Notes */
+  .notes-section { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+  .notes-section h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.75rem; }
+  .note-box label { font-size: 0.75rem; font-weight: 700; color: #888; display: block; margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .note-box textarea { width: 100%; border: 1.5px solid #e0d8d0; border-radius: 8px; padding: 0.55rem 0.75rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; color: #1a1a1a; background: #fdfaf7; resize: vertical; min-height: 70px; outline: none; }
+  .note-box textarea:focus { border-color: #007291; }
+  .save-notes-btn { margin-top: 0.75rem; background: #007291; color: #fff; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; border: none; border-radius: 7px; padding: 0.5rem 1.1rem; cursor: pointer; }
+  .save-notes-btn:hover { background: #005a73; }
+  .save-confirm { font-size: 0.78rem; color: #2e8b57; margin-left: 0.75rem; display: none; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-left">
+    <a class="back-link" href="index.html">← Week 1</a>
+    <span class="header-title">🔒 Teacher Dashboard — Week 1</span>
+  </div>
+  <button class="lock-btn" onclick="lockDashboard()">Lock</button>
+</header>
+
+<!-- Password gate -->
+<div class="gate" id="gate">
+  <h2>🔒 Teacher Access</h2>
+  <p>Enter the password to view the Week 1 dashboard.</p>
+  <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')checkPw()" />
+  <button onclick="checkPw()">Unlock →</button>
+  <p class="pw-error" id="pw-error"></p>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+<div class="dash-main">
+
+  <div class="dash-top">
+    <div>
+      <h1>Week 1 Overview</h1>
+      <p>Tracker data is read from each student's browser localStorage. Students must use the same device for data to appear here.</p>
+    </div>
+    <button class="reset-btn" onclick="if(confirm('Reset ALL Week 1 tracker data?')) resetAll()">Reset all trackers</button>
+  </div>
+
+  <div class="summary-row" id="summary-row"></div>
+
+  <div id="subjects-container"></div>
+
+  <div class="notes-section">
+    <h3>📝 Student notes</h3>
+    <div class="notes-grid" id="notes-grid"></div>
+    <button class="save-notes-btn" onclick="saveNotes()">Save notes</button>
+    <span class="save-confirm" id="save-confirm">Saved ✓</span>
+  </div>
+
+</div>
+<footer>Base 6 · Chilton Bridge School</footer>
+</div>
+
+<script>
+const PASSWORD = 'teacher2026';
+const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+const NOTES_KEY = 'base6_w1_teacher_notes';
+
+const SUBJECTS = [
+  {
+    label: '🔢 Maths', color: '#007291',
+    storePrefix: 'base6_w1_maths_tracker',
+    activities: [
+      { id: 'area',         name: 'Area Explorer' },
+      { id: 'place-value',  name: 'Place Value Explorer' },
+      { id: 'times-tables', name: 'Times Tables' },
+    ]
+  },
+  {
+    label: '📝 English', color: '#ef7724',
+    storePrefix: 'base6_w1_english_tracker',
+    activities: [
+      { id: 'finding-information', name: 'Finding Information in Texts' },
+    ]
+  },
+  {
+    label: '💬 PSHE', color: '#7a3fa8',
+    storePrefix: 'base6_w1_pshe_tracker',
+    activities: [
+      { id: 'weekly-weather', name: 'Weekly Weather' },
+    ]
+  },
+  {
+    label: '🌍 Cultural Calendar', color: '#006994',
+    storePrefix: 'base6_w1_cultural_tracker',
+    activities: [
+      { id: 'chilton-island', name: 'The Chilton Island' },
+    ]
+  },
+  {
+    label: '🔬 Science', color: '#2e8b57',
+    storePrefix: 'base6_w1_science_tracker',
+    activities: [
+      { id: 'forces', name: 'Contact and Non-Contact Forces' },
+    ]
+  },
+  {
+    label: '📜 History', color: '#c0392b',
+    storePrefix: 'base6_w1_history_tracker',
+    activities: [
+      { id: 'roman-architecture', name: 'Ancient Roman Architecture' },
+    ]
+  },
+  {
+    label: '🔭 Project', color: '#4a5a9a',
+    storePrefix: 'base6_w1_project_tracker',
+    activities: [
+      { id: 'research-tool', name: 'My Research Space' },
+    ]
+  },
+];
+
+function checkPw() {
+  const val = document.getElementById('pw-input').value;
+  if (val === PASSWORD) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    renderDashboard();
+  } else {
+    document.getElementById('pw-error').textContent = 'Incorrect password — try again.';
+  }
+}
+
+function lockDashboard() {
+  document.getElementById('gate').style.display = 'block';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+}
+
+function getState(prefix) {
+  try { return JSON.parse(localStorage.getItem(prefix)) || {}; } catch(e) { return {}; }
+}
+
+function renderDashboard() {
+  // Summary
+  let totalActs = 0, totalDone = 0;
+  const studentDone = Object.fromEntries(STUDENTS.map(s => [s, 0]));
+  SUBJECTS.forEach(subj => {
+    const state = getState(subj.storePrefix);
+    subj.activities.forEach(act => {
+      totalActs++;
+      STUDENTS.forEach(s => {
+        if (state[act.id]?.[s]) { totalDone++; studentDone[s]++; }
+      });
+    });
+  });
+
+  const sr = document.getElementById('summary-row');
+  const totalSlots = SUBJECTS.reduce((a, s) => a + s.activities.length, 0);
+  sr.innerHTML = `<div class="summary-pill"><strong>${totalDone}</strong>completions total</div>` +
+    STUDENTS.map(s => `<div class="summary-pill"><strong style="color:#007291">${studentDone[s]}/${totalSlots}</strong>${s}</div>`).join('');
+
+  // Subjects
+  const container = document.getElementById('subjects-container');
+  container.innerHTML = '';
+  SUBJECTS.forEach(subj => {
+    const state = getState(subj.storePrefix);
+    const block = document.createElement('div');
+    block.className = 'subject-block';
+
+    let doneCount = 0, slotCount = subj.activities.length * STUDENTS.length;
+    subj.activities.forEach(act => { STUDENTS.forEach(s => { if (state[act.id]?.[s]) doneCount++; }); });
+
+    block.innerHTML = `
+      <div class="subject-head" style="background:${subj.color}18; border-bottom:1px solid ${subj.color}30;">
+        <span style="color:${subj.color}">${subj.label}</span>
+        <span style="font-size:0.78rem;color:#888;">${doneCount}/${slotCount} done</span>
+      </div>
+      <div class="col-headers">
+        <span class="activity-col">Activity</span>
+        ${STUDENTS.map(s => `<span>${s}</span>`).join('')}
+      </div>
+    `;
+
+    subj.activities.forEach(act => {
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      row.innerHTML = `<div class="activity-name">${act.name}</div>` +
+        STUDENTS.map(s => {
+          const done = !!(state[act.id]?.[s]);
+          return `<div class="tick-cell"><div class="tick${done ? ' done' : ''}">${done ? '✓' : ''}</div></div>`;
+        }).join('');
+      block.appendChild(row);
+    });
+
+    container.appendChild(block);
+  });
+
+  // Notes
+  const notes = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+  const ng = document.getElementById('notes-grid');
+  ng.innerHTML = STUDENTS.map(s => `
+    <div class="note-box">
+      <label>${s}</label>
+      <textarea id="note-${s}" placeholder="Notes for ${s}…">${notes[s] || ''}</textarea>
+    </div>`).join('');
+}
+
+function saveNotes() {
+  const notes = Object.fromEntries(STUDENTS.map(s => [s, document.getElementById('note-' + s).value]));
+  localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  const c = document.getElementById('save-confirm');
+  c.style.display = 'inline';
+  setTimeout(() => { c.style.display = 'none'; }, 2000);
+}
+
+function resetAll() {
+  SUBJECTS.forEach(s => localStorage.removeItem(s.storePrefix));
+  renderDashboard();
+}
+</script>
+
+</body>
+</html>
