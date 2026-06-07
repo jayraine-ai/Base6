@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project · Week 1 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
+  .subject-hero { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 0 2rem 2rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #a0b8d8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #444; margin-bottom: 1.25rem; }
+  .focus-card { background: #eef0f8; border-left: 4px solid #4a5a9a; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .focus-card p.label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4a5a9a; margin-bottom: 0.5rem; }
+  .focus-card p.body { font-size: 0.95rem; color: #1a1a1a; line-height: 1.6; }
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .resource-card-wrap { display: flex; flex-direction: column; }
+  a.resource-card { background: #ffffff; border: 2px solid #4a5a9a; border-radius: 14px 14px 0 0; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; border-bottom: none; }
+  a.resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(74,90,154,0.15); }
+  .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
+  .resource-name { font-size: 1.05rem; font-weight: 700; color: #4a5a9a; line-height: 1.3; }
+  .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
+  .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #4a5a9a; }
+  .tracker-strip { border: 2px solid #4a5a9a; border-top: 1px solid #c0c8e8; border-radius: 0 0 14px 14px; background: #f4f5fc; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .tracker-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #888; margin-right: 0.25rem; white-space: nowrap; }
+  .init-btn { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #b0b8e0; background: #ffffff; font-size: 0.65rem; font-weight: 700; color: #4a5a9a; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.12s, border-color 0.12s, color 0.12s; flex-shrink: 0; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  .init-btn:hover { border-color: #4a5a9a; background: #eef0f8; }
+  .init-btn.done { background: #4a5a9a; border-color: #1a1a2e; color: #ffffff; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../index.html">← Week 1</a>
+  <span class="breadcrumb">/ Project</span>
+</header>
+
+<div class="subject-hero">
+  <p class="subject-label">Week 1 · Project</p>
+  <h1>🔭 Project</h1>
+</div>
+
+<main class="main">
+
+  <div class="focus-card">
+    <p class="label">This week's driving question</p>
+    <p class="body">How do our choices today shape the worlds of tomorrow? This week is about exploring and researching — finding out what you already know and what you want to find out.</p>
+  </div>
+
+  <p class="section-label">Resources</p>
+  <div class="resources-grid">
+
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="research-tool.html">
+        <div class="resource-icon">🔍</div>
+        <span class="resource-name">My Research Space</span>
+        <span class="resource-desc">A place to collect your ideas, questions and research notes as you start exploring the driving question.</span>
+        <span class="resource-arrow">Open →</span>
+      </a>
+      <div class="tracker-strip" data-activity="research-tool">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+<script>
+  const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+  const STORE_KEY = 'base6_w1_project_tracker';
+  function loadState() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; } }
+  function saveState(s) { try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch(e) {} }
+  document.querySelectorAll('.tracker-strip').forEach(strip => {
+    const activity = strip.dataset.activity;
+    const state = loadState();
+    STUDENTS.forEach(initials => {
+      const btn = document.createElement('button');
+      btn.className = 'init-btn' + (state[activity]?.[initials] ? ' done' : '');
+      btn.textContent = initials;
+      btn.title = state[activity]?.[initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const s = loadState();
+        if (!s[activity]) s[activity] = {};
+        s[activity][initials] = !s[activity][initials];
+        saveState(s);
+        btn.classList.toggle('done', !!s[activity][initials]);
+        btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      });
+      strip.appendChild(btn);
+    });
+  });
+</script>
+
+</body>
+</html>
