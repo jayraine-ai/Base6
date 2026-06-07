@@ -22,12 +22,18 @@
   .focus-card p.label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #006994; margin-bottom: 0.5rem; }
   .focus-card p.body { font-size: 0.95rem; color: #1a1a1a; line-height: 1.6; }
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card { background: #ffffff; border: 2px solid #006994; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .resource-card-wrap { display: flex; flex-direction: column; }
+  .resource-card { background: #ffffff; border: 2px solid #006994; border-radius: 14px 14px 0 0; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; border-bottom: none; }
   .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,105,148,0.15); }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
   .resource-name { font-size: 1.05rem; font-weight: 700; color: #006994; line-height: 1.3; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
   .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #006994; }
+  .tracker-strip { border: 2px solid #006994; border-top: 1px solid #b0d8ec; border-radius: 0 0 14px 14px; background: #f0f9ff; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .tracker-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #888; margin-right: 0.25rem; white-space: nowrap; }
+  .init-btn { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #90c8e0; background: #ffffff; font-size: 0.65rem; font-weight: 700; color: #006994; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.12s, border-color 0.12s, color 0.12s; flex-shrink: 0; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  .init-btn:hover { border-color: #006994; background: #e0f0f8; }
+  .init-btn.done { background: #006994; border-color: #004d70; color: #ffffff; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -54,19 +60,29 @@
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
-    <a class="resource-card" href="world-oceans-day.html">
-      <div class="resource-icon">🌊</div>
-      <span class="resource-name">World Oceans Day 2026</span>
-      <span class="resource-desc">Explore ocean facts, dive into the deep zones, sort ocean threats, play Fact or Myth, take the quiz and make your personal pledge. Includes email and PDF results.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="world-oceans-day.html">
+        <div class="resource-icon">🌊</div>
+        <span class="resource-name">World Oceans Day 2026</span>
+        <span class="resource-desc">Explore ocean facts, dive into the deep zones, sort ocean threats, play Fact or Myth, take the quiz and make your personal pledge. Includes email and PDF results.</span>
+        <span class="resource-arrow">Open activity →</span>
+      </a>
+      <div class="tracker-strip" data-activity="world-oceans-day">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
-    <a class="resource-card" href="ocean-day-game.html">
-      <div class="resource-icon">🐠</div>
-      <span class="resource-name">Ocean Day — Flappy Fish</span>
-      <span class="resource-desc">Swim through the ocean, collect trash, and avoid the coral walls. Earn shells, open treasure chests, and unlock rare cosmetic skins.</span>
-      <span class="resource-arrow">Play game →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="ocean-day-game.html">
+        <div class="resource-icon">🐠</div>
+        <span class="resource-name">Ocean Day — Flappy Fish</span>
+        <span class="resource-desc">Swim through the ocean, collect trash, and avoid the coral walls. Earn shells, open treasure chests, and unlock rare cosmetic skins.</span>
+        <span class="resource-arrow">Play game →</span>
+      </a>
+      <div class="tracker-strip" data-activity="flappy-fish">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
   </div>
 </main>
@@ -74,6 +90,33 @@
 <footer>
   Base 6 · Chilton Bridge School
 </footer>
+
+<script>
+  const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+  const STORE_KEY = 'base6_w2_cultural_tracker';
+  function loadState() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; } }
+  function saveState(s) { try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch(e) {} }
+  document.querySelectorAll('.tracker-strip').forEach(strip => {
+    const activity = strip.dataset.activity;
+    const state = loadState();
+    STUDENTS.forEach(initials => {
+      const btn = document.createElement('button');
+      btn.className = 'init-btn' + (state[activity]?.[initials] ? ' done' : '');
+      btn.textContent = initials;
+      btn.title = state[activity]?.[initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const s = loadState();
+        if (!s[activity]) s[activity] = {};
+        s[activity][initials] = !s[activity][initials];
+        saveState(s);
+        btn.classList.toggle('done', !!s[activity][initials]);
+        btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      });
+      strip.appendChild(btn);
+    });
+  });
+</script>
 
 </body>
 </html>
