@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word of the Week — Cultivate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  background:#FDF8F0;
+  color:#2C2218;
+  min-height:100vh;
+  font-size:18px;
+  line-height:1.8;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+
+/* ── APP SHELL ── */
+.app{max-width:700px;margin:0 auto;padding:1rem 1.25rem 3rem;}
+
+/* ── HERO ── */
+.word-hero{text-align:left;padding:1.5rem 0 0.75rem;}
+.word-badge{display:inline-block;background:#3B6D11;color:#EAF3DE;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 16px;border-radius:6px;margin-bottom:12px;}
+.word-title{font-family:'Fredoka One',cursive;font-size:48px;color:#27500A;line-height:1.1;letter-spacing:0px;}
+.word-title span{color:#639922;}
+.word-phonetic{font-size:16px;color:#6B5E4E;margin-top:6px;letter-spacing:0.03em;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:8px;padding:1rem 0 0.75rem;flex-wrap:wrap;}
+.tab{
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  padding:8px 18px;
+  border-radius:8px;
+  border:2px solid #C8B89A;
+  background:#FFF8EE;
+  color:#6B5E4E;
+  cursor:pointer;
+  transition:all 0.15s;
+  letter-spacing:0.02em;
+}
+.tab:hover{border-color:#3B6D11;color:#27500A;background:#EAF3DE;}
+.tab.active{background:#3B6D11;border-color:#3B6D11;color:#EAF3DE;}
+
+/* ── PANELS ── */
+.panel{display:none;padding-top:0.5rem;}
+.panel.active{display:block;}
+
+/* ── MEANING ── */
+.meaning-card{
+  background:#FFF8EE;
+  border-radius:12px;
+  padding:1.4rem 1.5rem;
+  margin-bottom:1.25rem;
+  border-left:5px solid #3B6D11;
+  border-top:0.5px solid #C8B89A;
+  border-right:0.5px solid #C8B89A;
+  border-bottom:0.5px solid #C8B89A;
+}
+.pos-label{font-size:13px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;}
+.definition{font-size:18px;line-height:1.9;color:#2C2218;margin-bottom:12px;}
+.example{
+  font-size:17px;
+  color:#4A3D30;
+  border-left:4px solid #97C459;
+  padding-left:14px;
+  line-height:1.8;
+  background:#F5FAED;
+  padding:10px 14px;
+  border-radius:0 8px 8px 0;
+}
+.synonyms{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.syn-chip{
+  font-size:15px;
+  font-weight:700;
+  background:#EAF3DE;
+  color:#27500A;
+  padding:5px 14px;
+  border-radius:6px;
+  border:1.5px solid #97C459;
+}
+
+/* ── SORT ── */
+.sort-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.25rem;}
+.sort-zone{border-radius:12px;border:3px dashed #C8B89A;padding:14px;min-height:130px;}
+.sort-zone.accept{border-color:#3B6D11;background:#F5FAED;}
+.sort-zone.reject{border-color:#C0392B;background:#FFF0EE;}
+.sort-zone-title{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
+.sort-zone.accept .sort-zone-title{color:#27500A;}
+.sort-zone.reject .sort-zone-title{color:#922B21;}
+.word-pool{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
+.pool-word{
+  font-size:16px;
+  font-weight:700;
+  padding:8px 16px;
+  border-radius:8px;
+  background:#FFF8EE;
+  border:2px solid #C8B89A;
+  cursor:pointer;
+  transition:all 0.15s;
+  color:#2C2218;
+  line-height:1.4;
+}
+.pool-word:hover{transform:translateY(-2px);border-color:#3B6D11;background:#EAF3DE;}
+.pool-word.placed{opacity:0.3;pointer-events:none;}
+.placed-chip{font-size:14px;font-weight:700;padding:5px 12px;border-radius:6px;margin:4px;display:inline-block;cursor:pointer;line-height:1.4;}
+.placed-chip.correct{background:#EAF3DE;color:#27500A;border:1.5px solid #97C459;}
+.placed-chip.wrong{background:#FDEDEC;color:#922B21;border:1.5px solid #E74C3C;}
+.placed-chip.neutral{background:#FFF8EE;color:#2C2218;border:1.5px solid #C8B89A;}
+
+/* ── GAP FILL ── */
+.gap-sentence{
+  font-size:18px;
+  line-height:2.4;
+  color:#2C2218;
+  margin-bottom:1.25rem;
+  padding:1.1rem 1.25rem;
+  background:#FFF8EE;
+  border-radius:12px;
+  border:0.5px solid #C8B89A;
+}
+.gap-input{
+  display:inline-block;
+  border:none;
+  border-bottom:3px solid #3B6D11;
+  background:transparent;
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:18px;
+  font-weight:700;
+  color:#27500A;
+  width:150px;
+  text-align:center;
+  outline:none;
+  padding:0 4px;
+}
+.gap-correct{border-bottom-color:#27500A;color:#27500A;}
+.gap-wrong{border-bottom-color:#C0392B;color:#922B21;}
+.gap-num{font-size:14px;font-weight:700;color:#6B5E4E;margin-bottom:6px;}
+.progress-dots{display:flex;gap:8px;margin-bottom:14px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#C8B89A;}
+.dot.done{background:#3B6D11;}
+.dot.current{background:#639922;}
+
+/* ── MEMORY ── */
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem;}
+.mem-card{
+  aspect-ratio:1;
+  border-radius:10px;
+  border:2px solid #C8B89A;
+  background:#FFF8EE;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:700;
+  text-align:center;
+  padding:8px;
+  transition:all 0.2s;
+  color:#2C2218;
+  line-height:1.5;
+}
+.mem-card .back{display:none;font-size:12px;color:#4A3D30;line-height:1.5;text-align:center;}
+.mem-card .front{display:flex;align-items:center;justify-content:center;width:100%;font-size:22px;}
+.mem-card.flipped{background:#FFF8EE;border-color:#3B6D11;border-width:2.5px;}
+.mem-card.flipped .front{display:none;}
+.mem-card.flipped .back{display:block;}
+.mem-card.matched{background:#EAF3DE;border-color:#3B6D11;cursor:default;}
+.mem-card.matched .front{display:none;}
+.mem-card.matched .back{display:block;color:#27500A;font-weight:700;}
+.score-bar{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 16px;background:#FFF8EE;border-radius:10px;
+  margin-bottom:1.25rem;border:0.5px solid #C8B89A;
+  font-size:16px;color:#6B5E4E;
+}
+.score-val{font-size:20px;font-weight:700;color:#3B6D11;}
+
+/* ── EMOJI CLUES ── */
+.clue-card{
+  background:#FFF8EE;border-radius:12px;border:0.5px solid #C8B89A;
+  padding:1.25rem 1.4rem;margin-bottom:12px;cursor:pointer;transition:all 0.15s;
+  border-left:5px solid #C8B89A;
+}
+.clue-card:hover{border-left-color:#639922;background:#F5FAED;}
+.clue-emojis{font-size:30px;margin-bottom:10px;letter-spacing:6px;}
+.clue-prompt{font-size:16px;color:#6B5E4E;margin-bottom:8px;font-weight:700;}
+.clue-reveal{font-size:17px;font-weight:700;color:#27500A;display:none;line-height:1.8;margin-top:6px;}
+.clue-card.revealed .clue-reveal{display:block;}
+.clue-card.revealed{border-left-color:#3B6D11;background:#F5FAED;}
+
+/* ── SHARED UI ── */
+.game-btn{
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:16px;font-weight:700;
+  padding:11px 24px;border-radius:8px;border:none;cursor:pointer;transition:all 0.15s;
+  letter-spacing:0.02em;
+}
+.btn-green{background:#3B6D11;color:#EAF3DE;}
+.btn-green:hover{background:#27500A;}
+.btn-outline{background:transparent;border:2px solid #C8B89A;color:#2C2218;}
+.btn-outline:hover{border-color:#3B6D11;color:#27500A;}
+.feedback-msg{
+  font-size:17px;font-weight:700;padding:12px 16px;border-radius:10px;
+  margin-top:12px;display:none;line-height:1.7;
+}
+.feedback-msg.show{display:block;}
+.feedback-msg.win{background:#EAF3DE;color:#27500A;border-left:4px solid #3B6D11;}
+.feedback-msg.lose{background:#FDEDEC;color:#922B21;border-left:4px solid #C0392B;}
+.section-title{font-family:'Fredoka One',cursive;font-size:24px;color:#27500A;margin-bottom:8px;}
+.section-desc{font-size:16px;color:#6B5E4E;margin-bottom:16px;line-height:1.8;}
+
+/* ── FARM GAME ── */
+#farm{font-family:'Atkinson Hyperlegible',sans-serif;background:#2D4A1E;border-radius:14px;overflow:hidden;min-height:560px;position:relative;user-select:none;}
+#fsky{background:#4A7C3F;padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+#game-title{font-family:'Fredoka One',cursive;font-size:22px;color:#EAF3DE;}
+#fscore-box{background:rgba(0,0,0,0.28);border-radius:8px;padding:5px 14px;font-size:15px;font-weight:700;color:#C0DD97;}
+#fday-box{background:rgba(0,0,0,0.28);border-radius:8px;padding:5px 14px;font-size:15px;font-weight:700;color:#FAC775;}
+#customers-row{display:flex;gap:8px;padding:8px 12px;background:#3B6D11;overflow-x:auto;min-height:88px;align-items:flex-start;}
+.customer{background:#1D3A0E;border-radius:10px;padding:9px 11px;min-width:130px;max-width:160px;border:1.5px solid #639922;flex-shrink:0;}
+.cust-name{font-size:13px;font-weight:700;color:#9FE1CB;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px;}
+.cust-order{display:flex;gap:5px;flex-wrap:wrap;}
+.order-item{display:flex;align-items:center;gap:3px;background:#27500A;border-radius:6px;padding:3px 8px;font-size:13px;font-weight:700;color:#C0DD97;}
+.order-item.filled{background:#085041;color:#9FE1CB;text-decoration:line-through;opacity:0.6;}
+.cust-timer{height:5px;background:#639922;border-radius:3px;margin-top:7px;transition:width 0.5s linear;}
+.cust-timer.urgent{background:#E74C3C;}
+#ffield-area{padding:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.plot{background:#5C3D1E;border-radius:10px;border:2.5px solid #7A5230;min-height:95px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;padding:8px;}
+.plot:hover{border-color:#C0DD97;}
+.plot.selected{border-color:#F0A500;background:#6B4A25;}
+.plot.ready{border-color:#97C459;animation:fpulse 1s ease-in-out infinite alternate;}
+@keyframes fpulse{from{border-color:#97C459;}to{border-color:#EAF3DE;}}
+.plot-emoji{font-size:30px;line-height:1;}
+.plot-label{font-size:12px;font-weight:700;color:#C0DD97;margin-top:5px;text-align:center;line-height:1.4;}
+.plot-bar-wrap{width:82%;height:6px;background:rgba(0,0,0,0.3);border-radius:3px;margin-top:6px;}
+.plot-bar{height:6px;background:#97C459;border-radius:3px;transition:width 0.4s;}
+#fseed-menu{display:none;position:absolute;background:#1D3A0E;border:2px solid #639922;border-radius:12px;padding:10px;gap:8px;flex-wrap:wrap;z-index:20;}
+#fseed-menu.open{display:flex;}
+.seed-opt{display:flex;flex-direction:column;align-items:center;gap:3px;background:#27500A;border-radius:8px;padding:8px 12px;cursor:pointer;border:1.5px solid transparent;transition:all 0.12s;min-width:60px;}
+.seed-opt:hover{border-color:#97C459;background:#3B6D11;}
+.seed-opt-icon{font-size:24px;}
+.seed-opt-name{font-size:11px;font-weight:700;color:#C0DD97;}
+#fbasket-area{padding:4px 12px 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+#fbasket-label{font-size:13px;font-weight:700;color:#9FE1CB;text-transform:uppercase;letter-spacing:0.07em;}
+.basket-item{display:flex;align-items:center;gap:5px;background:#27500A;border-radius:8px;padding:5px 14px;font-size:14px;font-weight:700;color:#C0DD97;cursor:pointer;border:1.5px solid #3B6D11;transition:all 0.12s;}
+.basket-item:hover{border-color:#97C459;}
+#fmsg-bar{padding:7px 14px;min-height:32px;font-size:14px;font-weight:700;color:#FAC775;text-align:center;line-height:1.5;}
+#fq-overlay{display:none;position:absolute;inset:0;background:rgba(10,20,8,0.9);z-index:30;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px;}
+#fq-overlay.open{display:flex;}
+#fq-box{background:#0D1F0A;border:2px solid #3B6D11;border-radius:14px;padding:20px 22px;max-width:360px;width:100%;}
+#fq-crop{font-size:36px;text-align:center;margin-bottom:8px;}
+#fq-text{font-size:16px;font-weight:700;color:#C0DD97;line-height:1.7;margin-bottom:14px;text-align:center;}
+#fq-opts{display:flex;flex-direction:column;gap:9px;}
+.fq-opt{background:#1D3A0E;color:#9FE1CB;border:1.5px solid #3B6D11;border-radius:8px;padding:11px 16px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;text-align:left;transition:background 0.12s;line-height:1.5;}
+.fq-opt:hover{background:#27500A;}
+.fq-opt.correct{background:#085041;border-color:#5DCAA5;color:#9FE1CB;pointer-events:none;}
+.fq-opt.wrong{background:#4A1010;border-color:#E74C3C;color:#F5A9A9;pointer-events:none;}
+#fend-overlay{display:none;position:absolute;inset:0;background:rgba(10,20,8,0.92);z-index:40;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px;}
+#fend-overlay.open{display:flex;}
+.fend-title{font-family:'Fredoka One',cursive;font-size:30px;color:#97C459;text-align:center;}
+.fend-sub{font-size:15px;color:#9FE1CB;text-align:center;max-width:300px;line-height:1.8;}
+.fbtn{background:#3B6D11;color:#EAF3DE;border:none;border-radius:8px;padding:12px 28px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;letter-spacing:0.02em;}
+.fbtn:hover{background:#27500A;}
+#fstart-overlay{position:absolute;inset:0;background:rgba(10,20,8,0.92);z-index:40;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px;}
+.fstart-title{font-family:'Fredoka One',cursive;font-size:26px;color:#97C459;text-align:center;}
+.fstart-sub{font-size:14px;color:#9FE1CB;text-align:center;max-width:310px;line-height:1.8;}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:320px;width:100%;}
+.how-item{background:#1D3A0E;border-radius:8px;padding:10px 12px;font-size:13px;color:#C0DD97;font-weight:700;line-height:1.5;border:1px solid #27500A;}
+.how-item span{font-size:20px;display:block;margin-bottom:4px;}
+</style>
+</head>
+<body>
+<div style="background:#007291;padding:0.65rem 1.4rem;display:flex;align-items:center;gap:0.75rem;font-family:'Atkinson Hyperlegible',sans-serif;">
+  <a href="index.html" style="color:rgba(255,255,255,0.85);font-size:0.85rem;font-weight:700;text-decoration:none;">← Week 1</a>
+  <span style="color:rgba(255,255,255,0.4);font-size:0.85rem;">/ Word of the Week — Cultivate</span>
+</div>
+<div class="app">
+  <h2 class="sr-only">Word of the Week activities for the word cultivate</h2>
+
+  <div class="word-hero">
+    <div class="word-badge">Word of the Week</div>
+    <div class="word-title">c<span>ul</span>ti<span>vate</span></div>
+    <div class="word-phonetic">/ ˈkʌl · tɪ · veɪt / &nbsp;•&nbsp; verb</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('meaning',this)">🌱 Meaning</button>
+    <button class="tab" onclick="switchTab('sort',this)">🌿 Sort It</button>
+    <button class="tab" onclick="switchTab('gap',this)">✏️ Gap Fill</button>
+    <button class="tab" onclick="switchTab('memory',this)">🧠 Pairs</button>
+    <button class="tab" onclick="switchTab('emoji',this)">🎯 Emoji Clues</button>
+    <button class="tab" onclick="switchTab('farm',this)">🚜 Chilton Farm</button>
+  </div>
+
+  <!-- MEANING -->
+  <div class="panel active" id="tab-meaning">
+    <div class="meaning-card">
+      <div class="pos-label">verb — meaning 1</div>
+      <div class="definition">To prepare land and grow plants or crops on it.</div>
+      <div class="example">"Farmers have cultivated this valley for hundreds of years."</div>
+    </div>
+    <div class="meaning-card">
+      <div class="pos-label">verb — meaning 2</div>
+      <div class="definition">To develop or improve something carefully over time — like a skill, a friendship, or a good habit.</div>
+      <div class="example">"She worked hard to cultivate her talent for music."</div>
+    </div>
+    <div class="meaning-card">
+      <div class="pos-label">verb — meaning 3</div>
+      <div class="definition">To build a friendly relationship with someone — often because it is useful to you.</div>
+      <div class="example">"He made efforts to cultivate friendships with his new classmates."</div>
+    </div>
+    <div style="margin-bottom:1.25rem;">
+      <div style="font-size:14px;font-weight:700;color:#6B5E4E;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Words that mean something similar</div>
+      <div class="synonyms">
+        <span class="syn-chip">grow</span>
+        <span class="syn-chip">develop</span>
+        <span class="syn-chip">nurture</span>
+        <span class="syn-chip">foster</span>
+        <span class="syn-chip">tend</span>
+        <span class="syn-chip">build</span>
+        <span class="syn-chip">encourage</span>
+      </div>
+    </div>
+    <div style="margin-bottom:1.25rem;">
+      <div style="font-size:14px;font-weight:700;color:#6B5E4E;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Word family</div>
+      <div class="synonyms">
+        <span class="syn-chip" style="background:#EAF3DE;color:#27500A;border-color:#3B6D11">cultivate — verb</span>
+        <span class="syn-chip" style="background:#E6F1FB;color:#0C447C;border-color:#378ADD">cultivation — noun</span>
+        <span class="syn-chip" style="background:#FAEEDA;color:#633806;border-color:#EF9F27">cultivated — adjective</span>
+        <span class="syn-chip" style="background:#FBEAF0;color:#72243E;border-color:#D4537E">cultivator — noun</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SORT IT -->
+  <div class="panel" id="tab-sort">
+    <div class="section-title">Sort It Out</div>
+    <p class="section-desc">Can these be completed using <strong style="color:#27500A">cultivate</strong>? Click each phrase to sort it into the right box.</p>
+    <div class="word-pool" id="sort-pool">
+      <div class="pool-word" onclick="sortWord(this,'yes','grow crops in a field')">grow crops in a field</div>
+      <div class="pool-word" onclick="sortWord(this,'yes','a strong friendship')">a strong friendship</div>
+      <div class="pool-word" onclick="sortWord(this,'no','a mountain by hand')">a mountain by hand</div>
+      <div class="pool-word" onclick="sortWord(this,'yes','a skill over time')">a skill over time</div>
+      <div class="pool-word" onclick="sortWord(this,'no','the weather outside')">the weather outside</div>
+      <div class="pool-word" onclick="sortWord(this,'yes','a love of reading')">a love of reading</div>
+      <div class="pool-word" onclick="sortWord(this,'no','a rock instantly')">a rock instantly</div>
+      <div class="pool-word" onclick="sortWord(this,'yes','good habits')">good habits</div>
+    </div>
+    <div class="sort-grid">
+      <div class="sort-zone accept">
+        <div class="sort-zone-title">✅ You CAN cultivate...</div>
+        <div id="zone-yes-chips"></div>
+      </div>
+      <div class="sort-zone reject">
+        <div class="sort-zone-title">❌ You CANNOT cultivate...</div>
+        <div id="zone-no-chips"></div>
+      </div>
+    </div>
+    <div id="sort-feedback" class="feedback-msg"></div>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+      <button class="game-btn btn-green" onclick="checkSort()">Check answers</button>
+      <button class="game-btn btn-outline" onclick="resetSort()">Reset</button>
+    </div>
+  </div>
+
+  <!-- GAP FILL -->
+  <div class="panel" id="tab-gap">
+    <div class="section-title">Gap Fill</div>
+    <p class="section-desc">Type the correct form of <strong style="color:#27500A">cultivate</strong> in each gap. The hint in brackets will help you.</p>
+    <div class="progress-dots" id="gap-dots"></div>
+    <div id="gap-questions"></div>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+      <button class="game-btn btn-green" onclick="checkGaps()">Check answers</button>
+      <button class="game-btn btn-outline" onclick="resetGaps()">Reset</button>
+    </div>
+    <div id="gap-feedback" class="feedback-msg"></div>
+  </div>
+
+  <!-- MEMORY PAIRS -->
+  <div class="panel" id="tab-memory">
+    <div class="section-title">Pairs</div>
+    <p class="section-desc">Match each word to its meaning. Click two cards — if they match, they stay open!</p>
+    <div class="score-bar">
+      <span>Pairs found:</span>
+      <span class="score-val" id="mem-score">0</span>
+      <span>out of 4</span>
+      <span style="margin-left:auto;font-size:15px;">Flips: <strong id="mem-flips">0</strong></span>
+    </div>
+    <div class="memory-grid" id="memory-grid"></div>
+    <div id="mem-feedback" class="feedback-msg"></div>
+    <button class="game-btn btn-outline" style="margin-top:4px;" onclick="resetMemory()">Shuffle and restart</button>
+  </div>
+
+  <!-- EMOJI CLUES -->
+  <div class="panel" id="tab-emoji">
+    <div class="section-title">Emoji Clues</div>
+    <p class="section-desc">Each set of emojis hints at a way you could use <strong style="color:#27500A">cultivate</strong>. Tap a card to reveal the answer.</p>
+    <div class="clue-card" onclick="revealClue(this)">
+      <div class="clue-emojis">🌾 🚜 🌱 💧</div>
+      <div class="clue-prompt">What might a farmer cultivate?</div>
+      <div class="clue-reveal">A farmer might cultivate a field of crops — preparing the soil and growing food.</div>
+    </div>
+    <div class="clue-card" onclick="revealClue(this)">
+      <div class="clue-emojis">👩‍🎨 🎵 📚 ⏳</div>
+      <div class="clue-prompt">What might a student cultivate?</div>
+      <div class="clue-reveal">A student might cultivate a talent or skill, like music, art, or reading — building it up slowly over time.</div>
+    </div>
+    <div class="clue-card" onclick="revealClue(this)">
+      <div class="clue-emojis">🤝 😊 💬 🌟</div>
+      <div class="clue-prompt">What might a new person in a place cultivate?</div>
+      <div class="clue-reveal">Someone new might cultivate friendships and relationships — putting in effort to make them grow.</div>
+    </div>
+    <div class="clue-card" onclick="revealClue(this)">
+      <div class="clue-emojis">🧘 🌿 😌 ✨</div>
+      <div class="clue-prompt">What personal quality could you cultivate?</div>
+      <div class="clue-reveal">You could cultivate calm, patience, or confidence — practising and developing it until it becomes part of you.</div>
+    </div>
+    <div class="clue-card" onclick="revealClue(this)">
+      <div class="clue-emojis">🧪 🔬 💡 📖</div>
+      <div class="clue-prompt">What might a scientist cultivate?</div>
+      <div class="clue-reveal">A scientist might cultivate bacteria in a lab, or cultivate a curiosity — both involve careful growing and nurturing.</div>
+    </div>
+  </div>
+
+  <!-- CHILTON FARM -->
+  <div class="panel" id="tab-farm">
+    <div id="farm">
+      <div id="fsky">
+        <div id="game-title">Chilton Farm</div>
+        <div style="display:flex;gap:8px;">
+          <div id="fday-box">Day 1</div>
+          <div id="fscore-box">£0</div>
+        </div>
+      </div>
+      <div id="customers-row"></div>
+      <div id="ffield-area"></div>
+      <div id="fbasket-area">
+        <div id="fbasket-label">Basket:</div>
+        <div id="fbasket-items"></div>
+      </div>
+      <div id="fmsg-bar"></div>
+      <div id="fseed-menu"></div>
+      <div id="fq-overlay">
+        <div id="fq-box">
+          <div id="fq-crop"></div>
+          <div id="fq-text"></div>
+          <div id="fq-opts"></div>
+        </div>
+        <div style="font-size:13px;color:#5DCAA5;text-align:center;font-weight:700;">Answer correctly to unlock your harvest!</div>
+      </div>
+      <div id="fend-overlay">
+        <div class="fend-title" id="fend-title">Day over!</div>
+        <div class="fend-sub" id="fend-sub"></div>
+        <button class="fbtn" id="fbtn-nextday">Next day</button>
+      </div>
+      <div id="fstart-overlay">
+        <div class="fstart-title">Chilton Farm</div>
+        <div class="fstart-sub">Grow crops, fill customer orders, and answer a quick question to unlock each harvest!</div>
+        <div class="how-grid">
+          <div class="how-item"><span>🌱</span>Click a plot to plant a seed</div>
+          <div class="how-item"><span>⏳</span>Wait for crops to grow</div>
+          <div class="how-item"><span>❓</span>Answer a question to harvest</div>
+          <div class="how-item"><span>🛒</span>Click basket crops to fill orders</div>
+        </div>
+        <button class="fbtn" id="fbtn-start-game">Start farming!</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(id,el){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+/* ── SORT ── */
+var sortAnswers={};
+function sortWord(el,bucket,label){
+  var key=el.textContent.trim();
+  sortAnswers[key]={bucket:bucket,el:el};
+  el.classList.add('placed');
+  var chip=document.createElement('span');
+  chip.className='placed-chip neutral';chip.textContent=label;
+  chip.onclick=function(){el.classList.remove('placed');chip.remove();delete sortAnswers[key];document.getElementById('sort-feedback').classList.remove('show');};
+  document.getElementById(bucket==='yes'?'zone-yes-chips':'zone-no-chips').appendChild(chip);
+}
+function checkSort(){
+  var correct={'grow crops in a field':'yes','a strong friendship':'yes','a mountain by hand':'no','a skill over time':'yes','the weather outside':'no','a love of reading':'yes','a rock instantly':'no','good habits':'yes'};
+  var score=0,total=Object.keys(correct).length,placed=Object.keys(sortAnswers).length;
+  document.querySelectorAll('#zone-yes-chips .placed-chip,#zone-no-chips .placed-chip').forEach(function(c){c.classList.remove('correct','wrong','neutral');});
+  Object.entries(sortAnswers).forEach(function(e){
+    var isRight=correct[e[0]]===e[1].bucket;if(isRight)score++;
+    document.querySelectorAll('#zone-yes-chips .placed-chip,#zone-no-chips .placed-chip').forEach(function(c){
+      if(c.textContent.trim()===e[0].trim())c.classList.add(isRight?'correct':'wrong');
+    });
+  });
+  var fb=document.getElementById('sort-feedback');
+  if(placed<total){fb.textContent='Please sort all '+total+' phrases first!';fb.className='feedback-msg show lose';}
+  else if(score===total){fb.textContent='Perfect! You know exactly what cultivate means!';fb.className='feedback-msg show win';}
+  else{fb.textContent=score+' out of '+total+' correct. The wrong ones are highlighted in red — check the Meaning tab for help!';fb.className='feedback-msg show lose';}
+}
+function resetSort(){
+  document.querySelectorAll('.pool-word').forEach(function(el){el.classList.remove('placed');});
+  document.getElementById('zone-yes-chips').innerHTML='';
+  document.getElementById('zone-no-chips').innerHTML='';
+  document.getElementById('sort-feedback').className='feedback-msg';
+  sortAnswers={};
+}
+
+/* ── GAP FILL ── */
+var gapData=[
+  {sentence:'A good gardener must ___ the soil before planting seeds.',answer:'cultivate',hint:'base form'},
+  {sentence:'She spent years ___ her confidence in public speaking.',answer:'cultivating',hint:'-ing form'},
+  {sentence:'The scientist ___ a rare plant in her greenhouse last summer.',answer:'cultivated',hint:'past tense'},
+  {sentence:'The teacher helped students ___ a love of learning.',answer:'cultivate',hint:'base form'},
+  {sentence:'He has ___ a wide network of friends since moving here.',answer:'cultivated',hint:'past participle — has _____'}
+];
+function buildGaps(){
+  var html='';
+  gapData.forEach(function(q,i){
+    var parts=q.sentence.split('___');
+    html+='<div class="gap-num">Sentence '+(i+1)+' &nbsp;<span style="font-weight:400;color:#6B5E4E">('+q.hint+')</span></div>';
+    html+='<div class="gap-sentence">'+parts[0]+'<input class="gap-input" id="gap-'+i+'" placeholder="type here" autocomplete="off" spellcheck="false">'+parts[1]+'</div>';
+  });
+  document.getElementById('gap-questions').innerHTML=html;
+  var dots='';gapData.forEach(function(_,i){dots+='<div class="dot" id="dot-'+i+'"></div>';});
+  document.getElementById('gap-dots').innerHTML=dots;
+}
+function checkGaps(){
+  var score=0;
+  gapData.forEach(function(q,i){
+    var val=document.getElementById('gap-'+i).value.trim().toLowerCase();
+    var el=document.getElementById('gap-'+i),dot=document.getElementById('dot-'+i);
+    el.classList.remove('gap-correct','gap-wrong');dot.classList.remove('done','current');
+    if(val===q.answer){score++;el.classList.add('gap-correct');dot.classList.add('done');}
+    else if(val!==''){el.classList.add('gap-wrong');dot.classList.add('current');}
+  });
+  var fb=document.getElementById('gap-feedback');
+  if(score===gapData.length){fb.textContent='All correct! Excellent use of the word family!';fb.className='feedback-msg show win';}
+  else{fb.textContent=score+' out of '+gapData.length+' correct. Check the red gaps — the hints in brackets will help!';fb.className='feedback-msg show lose';}
+}
+function resetGaps(){
+  gapData.forEach(function(_,i){
+    var el=document.getElementById('gap-'+i);el.value='';
+    el.classList.remove('gap-correct','gap-wrong');
+    document.getElementById('dot-'+i).classList.remove('done','current');
+  });
+  document.getElementById('gap-feedback').className='feedback-msg';
+}
+
+/* ── MEMORY ── */
+var memPairs=[
+  {word:'cultivate',def:'to develop something carefully over time'},
+  {word:'cultivation',def:'the process of growing crops or developing a skill'},
+  {word:'cultivated',def:'well-educated and showing good manners'},
+  {word:'cultivator',def:'a person or machine that prepares land for crops'}
+];
+var memState={flipped:[],matched:[],flips:0,locked:false};
+function buildMemory(){
+  var cards=[];
+  memPairs.forEach(function(p,i){
+    cards.push({type:'word',text:p.word,pair:i});
+    cards.push({type:'def',text:p.def,pair:i});
+  });
+  cards.sort(function(){return Math.random()-0.5;});
+  var grid=document.getElementById('memory-grid');grid.innerHTML='';
+  cards.forEach(function(c){
+    var el=document.createElement('div');el.className='mem-card';
+    el.dataset.pair=c.pair;el.dataset.type=c.type;
+    el.innerHTML='<div class="front">🌿</div><div class="back">'+c.text+'</div>';
+    el.onclick=function(){flipCard(el);};
+    grid.appendChild(el);
+  });
+  memState={flipped:[],matched:[],flips:0,locked:false};
+  document.getElementById('mem-score').textContent='0';
+  document.getElementById('mem-flips').textContent='0';
+  document.getElementById('mem-feedback').className='feedback-msg';
+}
+function flipCard(el){
+  if(memState.locked||el.classList.contains('flipped')||el.classList.contains('matched'))return;
+  el.classList.add('flipped');memState.flipped.push(el);memState.flips++;
+  document.getElementById('mem-flips').textContent=memState.flips;
+  if(memState.flipped.length===2){
+    memState.locked=true;var a=memState.flipped[0],b=memState.flipped[1];
+    if(a.dataset.pair===b.dataset.pair&&a.dataset.type!==b.dataset.type){
+      setTimeout(function(){
+        a.classList.remove('flipped');a.classList.add('matched');
+        b.classList.remove('flipped');b.classList.add('matched');
+        memState.matched.push(a.dataset.pair);memState.flipped=[];memState.locked=false;
+        document.getElementById('mem-score').textContent=memState.matched.length;
+        if(memState.matched.length===4){var fb=document.getElementById('mem-feedback');fb.textContent='All pairs found in '+memState.flips+' flips! Great memory!';fb.className='feedback-msg show win';}
+      },500);
+    } else {
+      setTimeout(function(){a.classList.remove('flipped');b.classList.remove('flipped');memState.flipped=[];memState.locked=false;},950);
+    }
+  }
+}
+function resetMemory(){buildMemory();}
+function revealClue(el){el.classList.add('revealed');}
+
+/* ── CHILTON FARM ── */
+(function(){
+var CROPS=[
+  {id:'carrot',name:'Carrot',emoji:'🥕',seedEmoji:'🌱',growTime:12,value:8},
+  {id:'wheat',name:'Wheat',emoji:'🌾',seedEmoji:'🌿',growTime:18,value:6},
+  {id:'tomato',name:'Tomato',emoji:'🍅',seedEmoji:'🪴',growTime:22,value:10},
+  {id:'corn',name:'Corn',emoji:'🌽',seedEmoji:'🌱',growTime:16,value:9}
+];
+var NAMES=['Alice','Ben','Priya','Marcus','Leila','Tom','Rosa','Dev'];
+var FQs=[
+  {q:'Which word is a synonym of "cultivate"?',opts:['nurture','ignore','destroy','avoid'],ans:0},
+  {q:'"She cultivated her talent." What does this mean?',opts:['She developed it carefully','She threw it away','She shared it widely','She forgot about it'],ans:0},
+  {q:'Fill the gap: "Farmers ___ their land each spring."',opts:['cultivate','cultivating','a cultivator','cultivated wrongly'],ans:0},
+  {q:'What type of word is "cultivate"?',opts:['a verb','a noun','an adjective','an adverb'],ans:0},
+  {q:'"Cultivation" is the ___ form of cultivate.',opts:['noun form','verb form','adjective form','past form'],ans:0},
+  {q:'Which sentence uses "cultivate" correctly?',opts:['He cultivated a love of reading.','She cultivated the thunder.','They cultivated a rock.','I cultivated instantly.'],ans:0},
+  {q:'A "cultivator" is a person or machine that...',opts:['prepares and tends land','ignores crops','destroys weeds only','counts money'],ans:0},
+  {q:'Which word does NOT mean something similar to "cultivate"?',opts:['destroy','nurture','develop','foster'],ans:0}
+];
+var fplots=[],fbasket=[],fcustomers=[],fscore=0,fday=1,frunning=false;
+var fsel=null,fTick=null,fqPend=null,fdayT=0,FMAX=120,fusedQs=[];
+function fgetQ(){
+  if(fusedQs.length>=FQs.length)fusedQs=[];
+  var rem=FQs.filter(function(_,i){return fusedQs.indexOf(i)<0;});
+  var idx=FQs.indexOf(rem[Math.floor(Math.random()*rem.length)]);
+  fusedQs.push(idx);return FQs[idx];
+}
+function finitP(){fplots=[];for(var i=0;i<6;i++)fplots.push({id:i,crop:null,progress:0,ready:false,growing:false});}
+function fspawnC(){
+  if(fcustomers.length>=4)return;
+  var name=NAMES[Math.floor(Math.random()*NAMES.length)];
+  var n=1+Math.floor(Math.random()*2),order=[];
+  for(var i=0;i<n;i++){
+    var c=CROPS[Math.floor(Math.random()*CROPS.length)];
+    var ex=order.find(function(o){return o.id===c.id;});
+    if(ex)ex.qty++;else order.push({id:c.id,emoji:c.emoji,name:c.name,qty:1,filled:0});
+  }
+  fcustomers.push({name:name,order:order,timer:100,id:Date.now()});
+  frC();
+}
+function frC(){
+  var row=document.getElementById('customers-row');row.innerHTML='';
+  if(!fcustomers.length){row.innerHTML='<div style="font-size:14px;color:#5DCAA5;padding:8px;font-weight:700;">Waiting for customers...</div>';return;}
+  fcustomers.forEach(function(c){
+    var d=document.createElement('div');d.className='customer';
+    var oH=c.order.map(function(o){return '<div class="order-item'+(o.filled>=o.qty?' filled':'')+'">'+o.emoji+' x'+o.qty+'</div>';}).join('');
+    d.innerHTML='<div class="cust-name">'+c.name+'</div><div class="cust-order">'+oH+'</div><div class="cust-timer'+(c.timer<35?' urgent':'')+'" style="width:'+c.timer+'%"></div>';
+    row.appendChild(d);
+  });
+}
+function frP(){
+  var fa=document.getElementById('ffield-area');fa.innerHTML='';
+  fplots.forEach(function(p){
+    var d=document.createElement('div');
+    d.className='plot'+(fsel===p.id?' selected':'')+(p.ready?' ready':'');
+    if(!p.crop){d.innerHTML='<div class="plot-emoji">🟫</div><div class="plot-label">Empty plot</div>';}
+    else{
+      var c=CROPS.find(function(x){return x.id===p.crop;});
+      var si=p.ready?2:Math.min(Math.floor(p.progress/50),1);
+      var pct=Math.min(100,Math.round(p.progress));
+      d.innerHTML='<div class="plot-emoji">'+['🌱','🌿',c.emoji][si]+'</div><div class="plot-label">'+c.name+'<br>'+(p.ready?'Ready to harvest!':'Growing... '+pct+'%')+'</div>'+(p.ready?'':'<div class="plot-bar-wrap"><div class="plot-bar" style="width:'+pct+'%"></div></div>');
+    }
+    d.onclick=(function(pid){return function(){fclickP(pid);};})(p.id);
+    fa.appendChild(d);
+  });
+}
+function frB(){
+  var bi=document.getElementById('fbasket-items');bi.innerHTML='';
+  if(!fbasket.length){bi.innerHTML='<span style="font-size:13px;color:#5DCAA5;font-weight:700;">empty</span>';return;}
+  var cnt={};fbasket.forEach(function(b){cnt[b]=(cnt[b]||0)+1;});
+  Object.entries(cnt).forEach(function(e){
+    var c=CROPS.find(function(x){return x.id===e[0];});
+    var d=document.createElement('div');d.className='basket-item';
+    d.innerHTML=c.emoji+' '+c.name+' x'+e[1];
+    d.onclick=(function(id){return function(){ftryFill(id);};})(e[0]);
+    bi.appendChild(d);
+  });
+}
+function fmsg(t,col){var m=document.getElementById('fmsg-bar');m.textContent=t;m.style.color=col||'#FAC775';}
+function fclickP(id){
+  var p=fplots[id];
+  if(p.ready){fharvest(id);return;}
+  if(p.growing){fmsg('This crop is still growing — be patient!','#9FE1CB');return;}
+  if(p.crop)return;
+  fsel=id;frP();fopenMenu(id);
+}
+function fopenMenu(pid){
+  var fa=document.getElementById('ffield-area'),pe=fa.children[pid];
+  var menu=document.getElementById('fseed-menu');menu.innerHTML='';
+  CROPS.forEach(function(c){
+    var d=document.createElement('div');d.className='seed-opt';
+    d.innerHTML='<div class="seed-opt-icon">'+c.seedEmoji+'</div><div class="seed-opt-name">'+c.name+'</div>';
+    d.onclick=(function(cid){return function(e){e.stopPropagation();fplant(pid,cid);};})(c.id);
+    menu.appendChild(d);
+  });
+  var r=pe.getBoundingClientRect(),fr=document.getElementById('farm').getBoundingClientRect();
+  var top=r.bottom-fr.top+4,left=r.left-fr.left;
+  if(left+175>fr.width)left=fr.width-180;
+  menu.style.top=top+'px';menu.style.left=left+'px';menu.classList.add('open');
+}
+document.getElementById('farm').addEventListener('click',function(e){
+  if(!e.target.closest('#fseed-menu')&&!e.target.closest('.plot')){document.getElementById('fseed-menu').classList.remove('open');fsel=null;frP();}
+});
+function fplant(pid,cid){
+  fplots[pid].crop=cid;fplots[pid].progress=0;fplots[pid].growing=true;fplots[pid].ready=false;
+  document.getElementById('fseed-menu').classList.remove('open');fsel=null;
+  fmsg('Planted '+CROPS.find(function(x){return x.id===cid;}).name+'! Wait for it to grow...','#C0DD97');frP();
+}
+function fharvest(pid){
+  var p=fplots[pid],q=fgetQ(),c=CROPS.find(function(x){return x.id===p.crop;});
+  fqPend={pid:pid,cid:p.crop};
+  var ov=document.getElementById('fq-overlay');
+  document.getElementById('fq-crop').textContent=c.emoji;
+  document.getElementById('fq-text').textContent=q.q;
+  var od=document.getElementById('fq-opts');od.innerHTML='';
+  q.opts.forEach(function(opt,i){
+    var b=document.createElement('button');b.className='fq-opt';b.textContent=opt;
+    b.onclick=function(){
+      od.querySelectorAll('.fq-opt').forEach(function(x){x.onclick=null;});
+      if(i===q.ans){
+        b.classList.add('correct');
+        setTimeout(function(){ov.classList.remove('open');fcompH(fqPend.pid,fqPend.cid);},600);
+      } else {
+        b.classList.add('wrong');od.querySelectorAll('.fq-opt')[q.ans].classList.add('correct');
+        setTimeout(function(){ov.classList.remove('open');fmsg('Not quite — try harvesting again when you are ready!','#F5A9A9');},1100);
+      }
+    };
+    od.appendChild(b);
+  });
+  ov.classList.add('open');
+}
+function fcompH(pid,cid){
+  fbasket.push(cid);
+  fplots[pid]={id:pid,crop:null,progress:0,ready:false,growing:false};
+  fmsg('Harvested '+CROPS.find(function(x){return x.id===cid;}).name+'! Click it in your basket to fill an order.','#97C459');
+  frP();frB();
+}
+function ftryFill(cid){
+  var c=CROPS.find(function(x){return x.id===cid;});
+  for(var i=0;i<fcustomers.length;i++){
+    var cu=fcustomers[i];
+    for(var j=0;j<cu.order.length;j++){
+      var item=cu.order[j];
+      if(item.id===cid&&item.filled<item.qty){
+        item.filled++;fbasket.splice(fbasket.indexOf(cid),1);
+        fmsg('Gave '+c.emoji+' '+c.name+' to '+cu.name+'!','#9FE1CB');
+        fcheckFilled(i);frB();frC();return;
+      }
+    }
+  }
+  fmsg('No customer needs '+c.name+' right now!','#FAC775');
+}
+function fcheckFilled(ci){
+  var cu=fcustomers[ci];
+  if(cu.order.every(function(o){return o.filled>=o.qty;})){
+    var earned=cu.order.reduce(function(s,o){return s+CROPS.find(function(x){return x.id===o.id;}).value*o.qty;},0);
+    fscore+=earned;document.getElementById('fscore-box').textContent='£'+fscore;
+    fmsg('Order complete for '+cu.name+'! Earned £'+earned,'#FAC775');
+    fcustomers.splice(ci,1);frC();
+  }
+}
+function ftick(){
+  if(!frunning)return;
+  fdayT++;
+  document.getElementById('fday-box').textContent='Day '+fday+' — '+Math.round((fdayT/FMAX)*100)+'%';
+  fplots.forEach(function(p){
+    if(p.growing&&!p.ready){
+      var c=CROPS.find(function(x){return x.id===p.crop;});
+      p.progress+=100/c.growTime;
+      if(p.progress>=100){p.ready=true;p.growing=false;fmsg(CROPS.find(function(x){return x.id===p.crop;}).name+' is ready to harvest — click it!','#97C459');}
+    }
+  });
+  fcustomers.forEach(function(c){c.timer=Math.max(0,c.timer-0.7);});
+  fcustomers=fcustomers.filter(function(c){if(c.timer<=0){fmsg(c.name+' left without their order!','#F5A9A9');return false;}return true;});
+  if(fdayT%18===0)fspawnC();
+  if(fdayT>=FMAX){fendDay();return;}
+  frP();frC();
+}
+function fendDay(){
+  frunning=false;clearInterval(fTick);
+  document.getElementById('fend-overlay').classList.add('open');
+  if(fday>=5){
+    document.getElementById('fend-title').textContent='Season complete!';
+    document.getElementById('fend-sub').textContent='Amazing work! You earned £'+fscore+' across all 5 days. You truly know how to cultivate!';
+    document.getElementById('fbtn-nextday').textContent='Play again';
+  } else {
+    document.getElementById('fend-title').textContent='Day '+fday+' over!';
+    document.getElementById('fend-sub').textContent='You have earned £'+fscore+' so far. Ready for day '+(fday+1)+'?';
+    document.getElementById('fbtn-nextday').textContent='Start day '+(fday+1);
+  }
+}
+function fstartDay(){
+  document.getElementById('fend-overlay').classList.remove('open');
+  fdayT=0;frunning=true;fbasket=[];fcustomers=[];
+  finitP();frP();frB();frC();fspawnC();
+  clearInterval(fTick);fTick=setInterval(ftick,800);
+  fmsg('Day '+fday+' started — customers are arriving!','#C0DD97');
+}
+document.getElementById('fbtn-nextday').onclick=function(){
+  if(fday>=5){fday=1;fscore=0;document.getElementById('fscore-box').textContent='£0';}
+  else fday++;
+  fstartDay();
+};
+document.getElementById('fbtn-start-game').onclick=function(){
+  document.getElementById('fstart-overlay').style.display='none';
+  fday=1;fscore=0;document.getElementById('fscore-box').textContent='£0';fstartDay();
+};
+finitP();frP();frB();
+document.getElementById('customers-row').innerHTML='<div style="font-size:14px;color:#5DCAA5;padding:8px;font-weight:700;">Waiting for customers...</div>';
+})();
+
+buildGaps();
+buildMemory();
+</script>
+</body>
+</html>
