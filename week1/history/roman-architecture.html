@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ancient Roman Architecture · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
+  .hero { background: linear-gradient(135deg, #c0392b 0%, #8a2218 100%); padding: 2rem; text-align: center; }
+  .hero-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #f5c6c0; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .main { max-width: 840px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  .section-heading { font-size: 1.15rem; font-weight: 700; color: #8a2218; margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 2px solid #f5c6c0; }
+  .section-heading:first-of-type { margin-top: 0; }
+
+  /* Info cards */
+  .info-card { background: #fff; border: 2px solid #f0c8c0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; line-height: 1.7; font-size: 0.95rem; }
+  .info-card strong { color: #8a2218; }
+
+  /* Structure grid */
+  .structure-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .structure-card { background: #fff; border: 2px solid #e8d8d0; border-radius: 14px; padding: 1.1rem 1.25rem; }
+  .structure-card .sc-emoji { font-size: 1.8rem; margin-bottom: 0.4rem; }
+  .structure-card h3 { font-size: 0.95rem; font-weight: 700; color: #8a2218; margin-bottom: 0.35rem; }
+  .structure-card p { font-size: 0.85rem; color: #444; line-height: 1.6; }
+
+  /* Building game */
+  .game-box { background: #fff; border: 2px solid #e8d8d0; border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; }
+  .game-header { background: linear-gradient(135deg, #c0392b, #8a2218); padding: 1rem 1.5rem; color: #fef8f4; }
+  .game-header h3 { font-size: 1rem; font-weight: 700; }
+  .game-header p { font-size: 0.83rem; opacity: 0.85; margin-top: 0.2rem; }
+  .game-body { padding: 1.25rem 1.5rem; }
+  .build-target { background: #fff8f0; border: 2px solid #f5c6c0; border-radius: 10px; padding: 0.85rem 1.1rem; margin-bottom: 1.1rem; font-size: 0.9rem; }
+  .build-target span { font-weight: 700; color: #8a2218; }
+  .parts-tray { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; background: #f9f4f0; border-radius: 10px; padding: 0.85rem; min-height: 56px; }
+  .building-area { min-height: 130px; background: #f0f0e8; border: 2px dashed #c0a898; border-radius: 10px; padding: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-content: flex-start; margin-bottom: 0.75rem; position: relative; }
+  .building-area::after { content: 'Drag parts here to build'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; color: #b0a098; pointer-events: none; }
+  .building-area.has-parts::after { display: none; }
+  .part { background: #fff; border: 2px solid #c0a898; border-radius: 8px; padding: 0.35rem 0.7rem; font-size: 0.82rem; font-weight: 700; cursor: grab; user-select: none; color: #5a3020; transition: box-shadow 0.12s, border-color 0.12s; }
+  .part:active { cursor: grabbing; }
+  .part.correct-part { border-color: #2e8b57; color: #1f6b40; background: #eaf7f0; }
+  .part.wrong-part { border-color: #c0392b; color: #8a2218; background: #fdecea; }
+  .game-feedback { font-size: 0.88rem; font-weight: 700; padding: 0.55rem 0.9rem; border-radius: 8px; display: none; margin-bottom: 0.75rem; }
+  .game-feedback.show { display: block; }
+  .game-feedback.win { background: #d4f0e0; color: #1f6b40; }
+  .game-feedback.fail { background: #fde8e8; color: #8a2218; }
+  .game-feedback.partial { background: #fff3cd; color: #7a5a00; }
+  .game-progress { font-size: 0.78rem; color: #888; margin-bottom: 0.75rem; }
+  .btn { display: inline-block; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; font-weight: 700; border: none; border-radius: 9px; padding: 0.6rem 1.3rem; cursor: pointer; transition: background 0.15s; }
+  .btn-check { background: #c0392b; color: #fff; }
+  .btn-check:hover { background: #8a2218; }
+  .btn-next { background: #2e8b57; color: #fff; display: none; }
+  .btn-next:hover { background: #1f6b40; }
+  .btn-reset { background: #aaa; color: #fff; margin-left: 0.4rem; }
+  .btn-reset:hover { background: #777; }
+
+  /* Reflection */
+  .reflect-box { background: #fff; border: 2px solid #f0c8c0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .reflect-box label { font-size: 0.9rem; font-weight: 700; color: #8a2218; display: block; margin-bottom: 0.5rem; }
+  .reflect-box textarea { width: 100%; border: 1.5px solid #f0c8c0; border-radius: 8px; padding: 0.7rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; color: #1a1a1a; background: #fffaf9; resize: vertical; min-height: 80px; outline: none; }
+  .reflect-box textarea:focus { border-color: #c0392b; }
+
+  /* Minecraft challenge */
+  .mc-banner { background: linear-gradient(135deg, #3a6e26, #1e4a14); border-radius: 16px; padding: 1.5rem 1.75rem; display: flex; align-items: flex-start; gap: 1.25rem; color: #fef8f4; margin-top: 1rem; }
+  .mc-icon { font-size: 2.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .mc-body .mc-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; margin-bottom: 0.25rem; }
+  .mc-body .mc-title { font-size: 1.1rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.6rem; }
+  .mc-body .mc-tasks { padding-left: 1.2rem; }
+  .mc-body .mc-tasks li { font-size: 0.88rem; opacity: 0.9; line-height: 1.7; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← History</a>
+  <span class="breadcrumb">/ Ancient Roman Architecture</span>
+</header>
+
+<div class="hero">
+  <p class="hero-label">Week 1 · History</p>
+  <h1>🏛️ Ancient Roman Architecture</h1>
+</div>
+
+<main class="main">
+
+  <!-- SECTION 1 -->
+  <h2 class="section-heading">Why does Roman architecture matter?</h2>
+  <div class="info-card">
+    The Romans were one of the greatest builders in history. Over 2,000 years ago they constructed roads, bridges, aqueducts and enormous public buildings — many of which are <strong>still standing today</strong>. Their engineering ideas spread across Europe and are still used in modern buildings. When you look at a domed roof, an arch, or a set of concrete columns, you are often looking at a Roman invention.
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 class="section-heading">Key Roman structures</h2>
+  <div class="structure-grid">
+    <div class="structure-card">
+      <div class="sc-emoji">🏟️</div>
+      <h3>The Colosseum</h3>
+      <p>A huge oval amphitheatre in Rome, completed in 80 AD. It held up to 80,000 spectators and used concrete, arches and vaults to support the enormous weight.</p>
+    </div>
+    <div class="structure-card">
+      <div class="sc-emoji">🛕</div>
+      <h3>The Pantheon</h3>
+      <p>A temple with one of the world's first and largest unreinforced concrete domes — over 43 metres wide. Built around 125 AD, it is still intact today.</p>
+    </div>
+    <div class="structure-card">
+      <div class="sc-emoji">🌉</div>
+      <h3>Aqueducts</h3>
+      <p>Long bridge-like structures that carried fresh water from mountains into cities. They used a gentle slope and the arch to move water over huge distances.</p>
+    </div>
+    <div class="structure-card">
+      <div class="sc-emoji">🏛️</div>
+      <h3>Roman Forum</h3>
+      <p>The busy centre of Roman public life. Surrounded by temples, government buildings and monuments, all using columns, arches and marble cladding.</p>
+    </div>
+    <div class="structure-card">
+      <div class="sc-emoji">🛣️</div>
+      <h3>Roman Roads</h3>
+      <p>Over 400,000 km of roads were built across the empire. Built in layers — gravel, sand and stone — they were so well made that many are still used today.</p>
+    </div>
+    <div class="structure-card">
+      <div class="sc-emoji">🏊</div>
+      <h3>Public Baths (Thermae)</h3>
+      <p>Enormous bathing complexes with heated floors, pools and libraries. The underfloor heating system (hypocaust) circulated hot air beneath the floor.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Building features -->
+  <h2 class="section-heading">Roman building techniques</h2>
+  <div class="info-card">
+    Romans were the first to use <strong>concrete</strong> (opus caementicium) on a large scale — mixed with volcanic ash, it was stronger than stone. They perfected the <strong>arch</strong>, which spreads weight outwards rather than straight down, allowing much larger and heavier structures. They combined arches into <strong>vaults</strong> and <strong>domes</strong>. Rows of arches created the <strong>aqueduct</strong>. Stacked arches built the <strong>amphitheatre</strong>.
+  </div>
+
+  <!-- SECTION 4: Building game -->
+  <h2 class="section-heading">Build it yourself</h2>
+
+  <div class="game-box">
+    <div class="game-header">
+      <h3>🏗️ Roman Builder Challenge</h3>
+      <p>Each round shows you a Roman structure. Drag the correct building parts into the construction area.</p>
+    </div>
+    <div class="game-body">
+      <div class="build-target">Build: <span id="target-name">—</span> — <span id="target-hint" style="font-weight:400;color:#555;"></span></div>
+      <div class="game-progress" id="game-progress"></div>
+
+      <div style="margin-bottom:0.5rem; font-size:0.78rem; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.06em;">Available parts:</div>
+      <div class="parts-tray" id="parts-tray"></div>
+
+      <div style="margin-bottom:0.5rem; font-size:0.78rem; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.06em;">Your construction:</div>
+      <div class="building-area" id="building-area"></div>
+
+      <div class="game-feedback" id="game-feedback"></div>
+      <button class="btn btn-check" onclick="checkBuild()">Check my build ✓</button>
+      <button class="btn btn-reset" onclick="resetBuild()">Clear ↺</button>
+      <button class="btn btn-next" id="btn-next" onclick="nextRound()">Next structure →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Reflection -->
+  <h2 class="section-heading">Think about it</h2>
+
+  <div class="reflect-box">
+    <label>Which Roman structure impressed you the most, and why?</label>
+    <textarea placeholder="Write your thoughts here…"></textarea>
+  </div>
+
+  <div class="reflect-box">
+    <label>Romans used the arch to build bigger and stronger. Can you think of a modern building or structure that uses the same idea?</label>
+    <textarea placeholder="Write your thoughts here…"></textarea>
+  </div>
+
+  <!-- SECTION 6: Minecraft challenge -->
+  <h2 class="section-heading">Minecraft Education challenge</h2>
+
+  <div class="mc-banner">
+    <span class="mc-icon">⛏️</span>
+    <div class="mc-body">
+      <div class="mc-label">Minecraft Education Edition</div>
+      <div class="mc-title">Build an Ancient Roman Structure</div>
+      <ul class="mc-tasks">
+        <li>Choose one Roman structure to recreate — the Colosseum, Pantheon, an aqueduct, or your own design</li>
+        <li>Use <strong>arches</strong> somewhere in your build — the arch is the key Roman invention</li>
+        <li>Think about <strong>symmetry</strong> — Roman buildings were carefully balanced on both sides</li>
+        <li>Add at least one <strong>column</strong> — Romans used columns to decorate and support their buildings</li>
+        <li>When you are done, take a screenshot or share your build with the group</li>
+      </ul>
+    </div>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School</footer>
+
+<script>
+const ROUNDS = [
+  {
+    name: 'The Colosseum',
+    hint: 'the great oval amphitheatre',
+    correct: ['Concrete foundation', 'Arched entrances', 'Tiered seating', 'Outer stone wall', 'Underground chambers'],
+    distractors: ['Concrete dome', 'Aqueduct channel', 'Hypocaust floor', 'Bronze roof tiles']
+  },
+  {
+    name: 'The Pantheon',
+    hint: 'the famous domed temple',
+    correct: ['Concrete dome', 'Circular rotunda', 'Portico columns', 'Bronze door', 'Oculus opening'],
+    distractors: ['Tiered seating', 'Aqueduct channel', 'Underground chambers', 'Arched entrances']
+  },
+  {
+    name: 'A Roman Aqueduct',
+    hint: 'the water-carrying bridge',
+    correct: ['Aqueduct channel', 'Stacked arches', 'Stone piers', 'Gentle slope', 'Settling tank'],
+    distractors: ['Concrete dome', 'Tiered seating', 'Hypocaust floor', 'Circular rotunda']
+  },
+  {
+    name: 'Roman Public Baths',
+    hint: 'the thermae complex',
+    correct: ['Hypocaust floor', 'Heated pools', 'Vaulted ceiling', 'Changing rooms', 'Water pipes'],
+    distractors: ['Oculus opening', 'Tiered seating', 'Stacked arches', 'Aqueduct channel']
+  }
+];
+
+let round = 0;
+let dragging = null;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function loadRound() {
+  if (round >= ROUNDS.length) {
+    showComplete(); return;
+  }
+  const r = ROUNDS[round];
+  document.getElementById('target-name').textContent = r.name;
+  document.getElementById('target-hint').textContent = r.hint;
+  document.getElementById('game-progress').textContent = `Round ${round + 1} of ${ROUNDS.length}`;
+  document.getElementById('game-feedback').className = 'game-feedback';
+  document.getElementById('btn-next').style.display = 'none';
+
+  const allParts = shuffle([...r.correct, ...r.distractors]);
+  const tray = document.getElementById('parts-tray');
+  tray.innerHTML = '';
+  allParts.forEach(p => { tray.appendChild(makePart(p)); });
+
+  const area = document.getElementById('building-area');
+  area.innerHTML = '';
+  area.classList.remove('has-parts');
+}
+
+function makePart(label) {
+  const el = document.createElement('div');
+  el.className = 'part';
+  el.textContent = label;
+  el.draggable = true;
+  el.addEventListener('dragstart', () => { dragging = el; setTimeout(() => el.style.opacity = '0.4', 0); });
+  el.addEventListener('dragend', () => { el.style.opacity = '1'; dragging = null; });
+  return el;
+}
+
+['parts-tray', 'building-area'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('dragover', e => { e.preventDefault(); el.style.background = id === 'building-area' ? '#e8e8d8' : '#f0ece8'; });
+  el.addEventListener('dragleave', () => { el.style.background = ''; });
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.style.background = '';
+    if (dragging) {
+      el.appendChild(dragging);
+      document.getElementById('building-area').classList.toggle('has-parts', document.getElementById('building-area').children.length > 0);
+    }
+  });
+});
+
+function checkBuild() {
+  const r = ROUNDS[round];
+  const placed = [...document.querySelectorAll('#building-area .part')].map(p => p.textContent);
+  let correct = 0;
+  placed.forEach(p => {
+    const partEl = [...document.querySelectorAll('#building-area .part')].find(el => el.textContent === p);
+    if (r.correct.includes(p)) { correct++; if (partEl) partEl.classList.add('correct-part'); }
+    else { if (partEl) partEl.classList.add('wrong-part'); }
+  });
+  const missed = r.correct.filter(p => !placed.includes(p)).length;
+  const fb = document.getElementById('game-feedback');
+  if (correct === r.correct.length && placed.length === r.correct.length) {
+    fb.textContent = `🏛️ Perfect build! You chose all ${r.correct.length} correct parts for the ${r.name}.`;
+    fb.className = 'game-feedback show win';
+    document.getElementById('btn-next').style.display = 'inline-block';
+  } else if (correct > 0) {
+    fb.textContent = `Good effort — ${correct} correct parts, but ${placed.length - correct} wrong part${placed.length - correct !== 1 ? 's' : ''} and ${missed} part${missed !== 1 ? 's' : ''} missing. Try again!`;
+    fb.className = 'game-feedback show partial';
+  } else {
+    fb.textContent = `Not quite — none of those parts are right for the ${r.name}. Have another look at the structure cards above.`;
+    fb.className = 'game-feedback show fail';
+  }
+}
+
+function resetBuild() {
+  const area = document.getElementById('building-area');
+  const tray = document.getElementById('parts-tray');
+  [...area.querySelectorAll('.part')].forEach(p => {
+    p.classList.remove('correct-part', 'wrong-part');
+    tray.appendChild(p);
+  });
+  area.classList.remove('has-parts');
+  document.getElementById('game-feedback').className = 'game-feedback';
+  document.getElementById('btn-next').style.display = 'none';
+}
+
+function nextRound() { round++; loadRound(); }
+
+function showComplete() {
+  document.querySelector('.game-body').innerHTML = `<div style="text-align:center;padding:1.5rem;"><div style="font-size:2rem;margin-bottom:0.5rem;">🏛️</div><div style="font-size:1rem;font-weight:700;color:#1f6b40;margin-bottom:0.4rem;">All structures built!</div><div style="font-size:0.88rem;color:#555;">You correctly identified the parts for all four Roman structures.</div></div>`;
+}
+
+loadRound();
+</script>
+
+</body>
+</html>
