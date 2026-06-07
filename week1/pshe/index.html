@@ -12,21 +12,28 @@
   .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem; }
   .back-link:hover { opacity: 1; }
   .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
-  .subject-hero { background-color: #7a3fa8; padding: 0 2rem 2rem; text-align: center; }
-  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #e8d8f8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .subject-hero { background: linear-gradient(135deg, #5a3080 0%, #3a1a58 100%); padding: 0 2rem 2rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #d4b0f0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
   .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
   .main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7a3fa8; margin-bottom: 1.25rem; }
+  .focus-card { background: #fff; border: 2px solid #e0d0f0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .focus-card .label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #7a3fa8; margin-bottom: 0.6rem; }
+  .focus-card ul { padding-left: 1.2rem; }
+  .focus-card ul li { font-size: 1rem; line-height: 1.7; color: #333; }
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card { background: #ffffff; border: 2px solid #9c5fc5; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-  .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(122,63,168,0.15); }
-  .resource-card.placeholder { border-color: #ccc; border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none; }
+  .resource-card-wrap { display: flex; flex-direction: column; }
+  a.resource-card { background: #ffffff; border: 2px solid #9c5fc5; border-radius: 14px 14px 0 0; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; text-decoration: none; color: inherit; transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s; cursor: pointer; border-bottom: none; }
+  a.resource-card:hover { border-color: #7a3fa8; box-shadow: 0 4px 16px rgba(122,63,168,0.14); transform: translateY(-2px); }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
   .resource-name { font-size: 1.05rem; font-weight: 700; color: #7a3fa8; line-height: 1.3; }
-  .resource-name.muted { color: #999; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
   .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #7a3fa8; }
-  .resource-tag { margin-top: auto; padding-top: 0.75rem; display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background-color: #f0ede8; color: #999; width: fit-content; }
+  .tracker-strip { border: 2px solid #9c5fc5; border-top: 1px solid #ddd0f0; border-radius: 0 0 14px 14px; background: #faf6ff; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .tracker-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #888; margin-right: 0.25rem; white-space: nowrap; }
+  .init-btn { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #d0b8e8; background: #ffffff; font-size: 0.65rem; font-weight: 700; color: #7a3fa8; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.12s, border-color 0.12s, color 0.12s; flex-shrink: 0; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  .init-btn:hover { border-color: #7a3fa8; background: #f0e8ff; }
+  .init-btn.done { background: #7a3fa8; border-color: #5a2a88; color: #ffffff; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -43,21 +50,29 @@
 </div>
 
 <main class="main">
+
+  <div class="focus-card">
+    <p class="label">This week we are exploring</p>
+    <ul>
+      <li>How our feelings can change from day to day</li>
+      <li>Using weather as a way to describe our emotions</li>
+      <li>Noticing what our feelings feel like inside our bodies</li>
+    </ul>
+  </div>
+
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
-    <a class="resource-card" href="weekly-weather.html">
-      <div class="resource-icon">🌤️</div>
-      <span class="resource-name">Weekly Weather</span>
-      <span class="resource-desc">Explore and express your emotions with the Emotional Explorer.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
-
-    <div class="resource-card placeholder">
-      <div class="resource-icon">➕</div>
-      <span class="resource-name muted">More coming soon</span>
-      <span class="resource-desc">Additional resources will appear here.</span>
-      <span class="resource-tag">Coming soon</span>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="weekly-weather.html">
+        <div class="resource-icon">🌤️</div>
+        <span class="resource-name">Weekly Weather</span>
+        <span class="resource-desc">Explore and express your emotions using weather as a guide. Includes a mood chart, emotion mixer, games and printable worksheets.</span>
+        <span class="resource-arrow">Open activity →</span>
+      </a>
+      <div class="tracker-strip" data-activity="weekly-weather">
+        <span class="tracker-label">Done:</span>
+      </div>
     </div>
 
   </div>
@@ -66,6 +81,33 @@
 <footer>
   Base 6 · Chilton Bridge School
 </footer>
+
+<script>
+  const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+  const STORE_KEY = 'base6_w1_pshe_tracker';
+  function loadState() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; } }
+  function saveState(s) { try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch(e) {} }
+  document.querySelectorAll('.tracker-strip').forEach(strip => {
+    const activity = strip.dataset.activity;
+    const state = loadState();
+    STUDENTS.forEach(initials => {
+      const btn = document.createElement('button');
+      btn.className = 'init-btn' + (state[activity]?.[initials] ? ' done' : '');
+      btn.textContent = initials;
+      btn.title = state[activity]?.[initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const s = loadState();
+        if (!s[activity]) s[activity] = {};
+        s[activity][initials] = !s[activity][initials];
+        saveState(s);
+        btn.classList.toggle('done', !!s[activity][initials]);
+        btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      });
+      strip.appendChild(btn);
+    });
+  });
+</script>
 
 </body>
 </html>
