@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Research Space</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0eb;
+    --card: #ffffff;
+    --soft: #ede8e0;
+    --green: #3d7a5e;
+    --green-light: #e8f5ef;
+    --green-mid: #a8d5bc;
+    --teal: #2a7f8f;
+    --teal-light: #e5f4f6;
+    --amber: #d97706;
+    --amber-light: #fef3e0;
+    --plum: #6b4f8a;
+    --plum-light: #f2edf9;
+    --coral: #c0515a;
+    --coral-light: #fceef0;
+    --text: #2a2420;
+    --muted: #7a6e65;
+    --border: #ddd6ca;
+    --radius: 18px;
+    --shadow: 0 4px 22px rgba(0,0,0,0.07);
+    --method-internet: #2a7f8f;
+    --method-interview: #6b4f8a;
+    --method-documentary: #d97706;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--teal);
+    padding: 28px 32px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; right: -30px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 50%;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: 60%;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .header-inner { max-width: 800px; margin: 0 auto; position: relative; }
+  .header h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .header p { color: rgba(255,255,255,0.82); font-size: 0.97rem; margin-top: 5px; }
+  .question-banner {
+    background: rgba(255,255,255,0.14);
+    border-left: 4px solid rgba(255,255,255,0.55);
+    border-radius: 10px;
+    padding: 11px 16px;
+    margin-top: 14px;
+    color: #fff;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* NAV DOTS */
+  .progress-bar-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 14px 32px 0;
+  }
+  .progress-dots { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .progress-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s, transform 0.2s;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .progress-dot.active { background: var(--teal); transform: scale(1.35); }
+  .progress-dot.done { background: var(--green-mid); }
+  .progress-label { font-size: 0.85rem; color: var(--muted); margin-left: 4px; }
+
+  /* MAIN */
+  main { max-width: 800px; margin: 0 auto; padding: 28px 24px 70px; }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeUp 0.4s ease both; }
+  .section.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+  .section-intro {
+    color: var(--muted);
+    font-size: 0.97rem;
+    margin-bottom: 22px;
+    line-height: 1.75;
+  }
+  .skip-hint { font-size: 0.85rem; font-style: italic; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    border: 1.5px solid var(--border);
+  }
+  .card-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .card-hint { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; font-style: italic; }
+
+  /* TEXTAREA */
+  textarea {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 15px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text);
+    background: var(--bg);
+    resize: vertical;
+    min-height: 88px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--teal); background: #fff; }
+  textarea::placeholder { color: #c0b8b0; font-style: italic; }
+
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    background: var(--soft);
+    border: 2px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 17px;
+    font-size: 0.93rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    color: var(--text);
+    user-select: none;
+    line-height: 1.3;
+  }
+  .chip:hover { border-color: var(--teal); background: var(--teal-light); }
+  .chip.selected { background: var(--teal-light); border-color: var(--teal); color: var(--teal); font-weight: 700; }
+
+  /* USEFULNESS CHIPS */
+  .useful-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .useful-chip {
+    border: 2px solid var(--border);
+    border-radius: 30px;
+    padding: 6px 14px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background: var(--soft);
+    color: var(--text);
+    user-select: none;
+  }
+  .useful-chip:hover { border-color: var(--green); }
+  .useful-chip.sel-yes { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight: 700; }
+  .useful-chip.sel-sort { background: var(--amber-light); border-color: var(--amber); color: var(--amber); font-weight: 700; }
+  .useful-chip.sel-no  { background: var(--coral-light); border-color: var(--coral); color: var(--coral); font-weight: 700; }
+
+  /* METHOD BADGE */
+  .method-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    margin-bottom: 14px;
+  }
+  .mb-internet  { background: var(--teal-light); color: var(--teal); }
+  .mb-interview { background: var(--plum-light); color: var(--plum); }
+  .mb-documentary { background: var(--amber-light); color: var(--amber); }
+
+  /* RESEARCH ENTRIES */
+  #entriesContainer { margin-bottom: 10px; }
+
+  .entry-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.35s ease both;
+    position: relative;
+  }
+  .entry-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 10px;
+  }
+  .entry-num {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .btn-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 3px 8px;
+    border-radius: 8px;
+    transition: all 0.18s;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    white-space: nowrap;
+  }
+  .btn-remove:hover { background: var(--coral-light); color: var(--coral); }
+
+  .entry-method-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .method-btn {
+    border: 2px solid var(--border);
+    border-radius: 30px;
+    padding: 7px 14px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    background: var(--soft);
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    color: var(--text);
+    transition: all 0.18s;
+    user-select: none;
+  }
+  .method-btn:hover { border-color: var(--teal); }
+  .method-btn.sel-internet    { background: var(--teal-light); border-color: var(--teal); color: var(--teal); font-weight: 700; }
+  .method-btn.sel-interview   { background: var(--plum-light); border-color: var(--plum); color: var(--plum); font-weight: 700; }
+  .method-btn.sel-documentary { background: var(--amber-light); border-color: var(--amber); color: var(--amber); font-weight: 700; }
+
+  .field-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    color: var(--muted);
+    margin-bottom: 6px;
+    margin-top: 14px;
+    display: block;
+  }
+  .field-label:first-of-type { margin-top: 0; }
+
+  .entry-card textarea { min-height: 72px; font-size: 0.97rem; }
+
+  .btn-add-entry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal-light);
+    border: 2px dashed var(--teal);
+    border-radius: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    color: var(--teal);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    width: 100%;
+    transition: all 0.2s;
+    margin-bottom: 6px;
+  }
+  .btn-add-entry:hover { background: #d0edf0; }
+
+  /* WELCOME */
+  .welcome-big {
+    font-family: 'Nunito', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--teal);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .welcome-text { font-size: 1.05rem; margin-bottom: 16px; line-height: 1.8; }
+  .rule-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px; }
+  .rule-pill {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--card);
+    border-radius: 12px; padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    font-size: 0.97rem; line-height: 1.55;
+  }
+  .rule-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* TIP BOX */
+  .tip-box {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .tip-box strong { color: var(--teal); }
+
+  /* METHOD GUIDE CARDS */
+  .method-guide {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 13px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 560px) { .method-guide { grid-template-columns: 1fr; } }
+  .mg-card {
+    border-radius: 14px;
+    padding: 16px;
+    border: 1.5px solid var(--border);
+  }
+  .mg-card.internet    { background: var(--teal-light); border-color: #b0d8de; }
+  .mg-card.interview   { background: var(--plum-light); border-color: #c8b8e0; }
+  .mg-card.documentary { background: var(--amber-light); border-color: #f0c878; }
+  .mg-emoji { font-size: 1.5rem; margin-bottom: 6px; }
+  .mg-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.92rem;
+    margin-bottom: 6px;
+  }
+  .mg-card.internet  .mg-title { color: var(--teal); }
+  .mg-card.interview .mg-title { color: var(--plum); }
+  .mg-card.documentary .mg-title { color: var(--amber); }
+  .mg-tips { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    border-radius: 40px;
+    padding: 13px 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--teal); color: #fff; }
+  .btn-primary:hover { background: #1e6070; transform: translateY(-1px); }
+  .btn-secondary { background: transparent; color: var(--muted); border: 2px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+  .btn-email { background: var(--amber); color: #fff; }
+  .btn-email:hover { background: #b86005; transform: translateY(-1px); }
+
+  /* SUMMARY */
+  .summary-block {
+    background: var(--soft);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    border-left: 4px solid var(--teal);
+  }
+  .summary-block h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.88rem;
+    color: var(--teal);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .summary-block p, .summary-block li { font-size: 0.95rem; line-height: 1.7; }
+  .summary-block ul { padding-left: 18px; }
+  .summary-entry {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+    font-size: 0.93rem;
+    line-height: 1.7;
+  }
+  .summary-entry-method {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .sem-internet    { color: var(--teal); }
+  .sem-interview   { color: var(--plum); }
+  .sem-documentary { color: var(--amber); }
+  .empty-note { color: #c0b8b0; font-style: italic; font-size: 0.9rem; }
+
+  /* REFLECTION */
+  .reflection-prompt {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div style="background:#007291;padding:0.65rem 1.4rem;display:flex;align-items:center;gap:0.75rem;font-family:'Atkinson Hyperlegible',sans-serif;">
+  <a href="../index.html" style="color:rgba(255,255,255,0.85);font-size:0.85rem;font-weight:700;text-decoration:none;">← Week 1</a>
+  <span style="color:rgba(255,255,255,0.4);font-size:0.85rem;">/ Project / Research Tool</span>
+</div>
+
+
+<div class="header">
+  <div class="header-inner">
+    <h1>🔍 My Research Space</h1>
+    <p>Chilton Bridge School · 7-Week Project</p>
+    <div class="question-banner">
+      "How do our choices today shape the worlds of tomorrow?"
+    </div>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-dots" id="progressDots"></div>
+</div>
+
+<main>
+
+  <!-- SEC 0: WELCOME -->
+  <div class="section active" id="sec-0">
+    <div class="welcome-big">Let's do some research 🔍</div>
+    <p class="welcome-text">
+      Research means finding things out — watching, reading, listening, asking questions.
+      This space helps you keep track of what you discover.
+    </p>
+    <div class="rule-list">
+      <div class="rule-pill"><span class="rule-icon">📝</span>You can add as many or as few research entries as you like</div>
+      <div class="rule-pill"><span class="rule-icon">⏭️</span>Skip anything that doesn't feel useful right now</div>
+      <div class="rule-pill"><span class="rule-icon">🔁</span>You can go back and change anything before sending</div>
+      <div class="rule-pill"><span class="rule-icon">📧</span>At the end you can email everything to Jay</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="goTo(1)">Let's go →</button>
+    </div>
+  </div>
+
+  <!-- SEC 1: MY RESEARCH QUESTION -->
+  <div class="section" id="sec-1">
+    <div class="section-title">What am I trying to find out? 🤔</div>
+    <p class="section-intro">
+      Before searching or watching anything, it can help to think about what you're actually curious about.
+      There's no right answer here — just your question.<br>
+      <span class="skip-hint">Leave this blank if you'd rather just start exploring.</span>
+    </p>
+
+    <div class="card">
+      <div class="card-label">The thing I most want to find out about:</div>
+      <div class="card-hint">It could be a question, a topic, or just something that's been nagging at you.</div>
+      <textarea id="researchQ" placeholder="e.g. Do small choices really add up? / What happens to plastic after we throw it away? / How do people decide what to buy?..." rows="3"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Why does that feel worth looking into?</div>
+      <div class="card-hint">Even just a sentence or a fragment.</div>
+      <textarea id="researchWhy" placeholder="e.g. Because I want to know if it actually matters, or I just find it interesting..." rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- SEC 2: HOW TO RESEARCH -->
+  <div class="section" id="sec-2">
+    <div class="section-title">Ways to research 🗺️</div>
+    <p class="section-intro">
+      There are three ways you can gather information for this project. Here's a quick guide to each one.
+    </p>
+
+    <div class="method-guide">
+      <div class="mg-card internet">
+        <div class="mg-emoji">🌐</div>
+        <div class="mg-title">Internet search</div>
+        <div class="mg-tips">
+          Try searching for your topic + "explained simply" or "for young people".<br><br>
+          Look for .org, .gov or .edu sites — they're often more reliable.<br><br>
+          If something seems surprising, check whether another site says the same thing.
+        </div>
+      </div>
+      <div class="mg-card interview">
+        <div class="mg-emoji">🗣️</div>
+        <div class="mg-title">Interviewing someone</div>
+        <div class="mg-tips">
+          Think about who might know something useful — a family member, local person, or someone with relevant experience.<br><br>
+          Write 2 or 3 questions before you speak to them.<br><br>
+          You don't need to record it — notes or memory is fine.
+        </div>
+      </div>
+      <div class="mg-card documentary">
+        <div class="mg-emoji">🎬</div>
+        <div class="mg-title">Documentary or video</div>
+        <div class="mg-tips">
+          YouTube, BBC iPlayer and Netflix all have good options.<br><br>
+          You don't have to watch the whole thing — even 10 minutes can give you useful ideas.<br><br>
+          Pause when something interesting comes up and jot it down.
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>💡 You don't need to use all three.</strong> One or two good sources is plenty — quality matters more than quantity.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Start recording what I find →</button>
+    </div>
+  </div>
+
+  <!-- SEC 3: RESEARCH LOG -->
+  <div class="section" id="sec-3">
+    <div class="section-title">What I found 📋</div>
+    <p class="section-intro">
+      Add an entry each time you find something worth keeping — a useful website, an interview, a documentary, anything.
+      Short notes are completely fine.<br>
+      <span class="skip-hint">Add as many or as few as you like. One is enough to start.</span>
+    </p>
+
+    <div id="entriesContainer"></div>
+
+    <button class="btn-add-entry" onclick="addEntry()">
+      <span>＋</span> Add a research entry
+    </button>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- SEC 4: REFLECTION -->
+  <div class="section" id="sec-4">
+    <div class="section-title">Thinking about what I found 💭</div>
+    <p class="section-intro">
+      A few optional questions to help make sense of your research.
+      You don't need to answer all of them — just the ones that feel worth it.<br>
+      <span class="skip-hint">All of this is optional.</span>
+    </p>
+
+    <div class="card">
+      <div class="card-label">The most interesting thing I found out:</div>
+      <p class="reflection-prompt">Something that surprised you, stuck with you, or made you think differently.</p>
+      <textarea id="refInteresting" placeholder="e.g. I didn't realise how much packaging actually gets recycled... / I was surprised to hear that..." rows="3"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Something that didn't quite make sense, or felt confusing:</div>
+      <p class="reflection-prompt">Confusing things are often the most interesting — they usually mean there's more to find out.</p>
+      <textarea id="refConfusing" placeholder="e.g. I wasn't sure whether... / Two sources seemed to disagree about..." rows="3"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Something I want to look into more:</div>
+      <p class="reflection-prompt">A loose thread, an unanswered question, somewhere worth exploring next.</p>
+      <textarea id="refMore" placeholder="e.g. I'd like to find out more about... / I want to watch something about..." rows="3"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">How does what I found connect to the driving question?</div>
+      <p class="reflection-prompt">No need for a perfect answer — just whatever feels true.</p>
+      <textarea id="refConnect" placeholder="e.g. I think it shows that... / It made me think the answer might be..." rows="4"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(5)">See my summary →</button>
+    </div>
+  </div>
+
+  <!-- SEC 5: SUMMARY + EMAIL -->
+  <div class="section" id="sec-5">
+    <div class="section-title">Here's what you've got 🌟</div>
+    <p class="section-intro">Everything you've recorded, all in one place. Take a look — does it feel like a fair picture of your research?</p>
+
+    <div id="summaryOutput"></div>
+
+    <div class="card" style="border-color: var(--amber); background: var(--amber-light); margin-top: 22px;">
+      <div class="card-label" style="color: var(--amber);">📧 Send this to Jay</div>
+      <p style="font-size:0.95rem; color: var(--muted); margin-bottom:14px; line-height:1.65;">
+        This will open an email with all your research notes ready to send to Jay at Chilton Bridge School.
+        You can add anything else before you send it.
+      </p>
+      <button class="btn btn-email" onclick="sendEmail()">Open email to Jay →</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Go back and edit</button>
+      <button class="btn btn-secondary" onclick="goTo(0)">Start again</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ─── NAVIGATION ───────────────────────────────────────────
+  const TOTAL = 6;
+  let current = 0;
+  const sectionNames = ['Welcome','My question','How to research','What I found','Reflection','Summary'];
+
+  const dotsEl = document.getElementById('progressDots');
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('span');
+    d.className = 'progress-dot' + (i === 0 ? ' active' : '');
+    d.title = sectionNames[i];
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+  const labelEl = document.createElement('span');
+  labelEl.className = 'progress-label';
+  labelEl.id = 'progressLabel';
+  labelEl.textContent = sectionNames[0];
+  dotsEl.appendChild(labelEl);
+
+  function goTo(n) {
+    document.getElementById('sec-' + current).classList.remove('active');
+    current = n;
+    document.getElementById('sec-' + current).classList.add('active');
+    document.querySelectorAll('.progress-dot').forEach((d, i) => {
+      d.classList.remove('active', 'done');
+      if (i < current) d.classList.add('done');
+      if (i === current) d.classList.add('active');
+    });
+    document.getElementById('progressLabel').textContent = sectionNames[current];
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (n === 5) buildSummary();
+  }
+
+  // ─── ENTRY BUILDER ────────────────────────────────────────
+  let entryCount = 0;
+
+  function addEntry() {
+    entryCount++;
+    const id = 'e' + entryCount;
+    const container = document.getElementById('entriesContainer');
+    const div = document.createElement('div');
+    div.className = 'entry-card';
+    div.id = id;
+    div.innerHTML = `
+      <div class="entry-header">
+        <span class="entry-num">Research entry ${entryCount}</span>
+        <button class="btn-remove" onclick="removeEntry('${id}')">✕ Remove</button>
+      </div>
+
+      <label class="field-label">How did you find this? (pick one)</label>
+      <div class="entry-method-row">
+        <button class="method-btn" data-method="internet"    onclick="pickMethod(this, '${id}')">🌐 Internet</button>
+        <button class="method-btn" data-method="interview"   onclick="pickMethod(this, '${id}')">🗣️ Interview</button>
+        <button class="method-btn" data-method="documentary" onclick="pickMethod(this, '${id}')">🎬 Documentary / video</button>
+      </div>
+
+      <div id="${id}-internet-tip"    class="tip-box" style="display:none;margin-bottom:14px;font-size:0.88rem;">
+        <strong>💡 Internet tip:</strong> Note down the website name or address so you can find it again.
+      </div>
+      <div id="${id}-interview-tip"   class="tip-box" style="display:none;margin-bottom:14px;font-size:0.88rem;background:var(--plum-light);border-color:var(--plum);">
+        <strong style="color:var(--plum)">💡 Interview tip:</strong> You don't need to remember everything — just the most useful bits.
+      </div>
+      <div id="${id}-documentary-tip" class="tip-box" style="display:none;margin-bottom:14px;font-size:0.88rem;background:var(--amber-light);border-color:var(--amber);">
+        <strong style="color:var(--amber)">💡 Video tip:</strong> Note the title and roughly how far in the useful bit was.
+      </div>
+
+      <label class="field-label">What was it? (website / person / title)</label>
+      <textarea id="${id}-source" rows="1" placeholder="e.g. BBC Bitesize, my uncle, 'The True Cost' documentary..." style="min-height:54px;"></textarea>
+
+      <label class="field-label">What I was looking for:</label>
+      <textarea id="${id}-looking" rows="2" placeholder="e.g. How much plastic ends up in the ocean..."></textarea>
+
+      <label class="field-label">What I found out:</label>
+      <textarea id="${id}-found" rows="3" placeholder="Notes, facts, quotes, ideas — whatever feels worth keeping..."></textarea>
+
+      <label class="field-label" style="margin-top:16px;">Was it useful?</label>
+      <div class="useful-chips">
+        <span class="useful-chip" data-val="Yes — really useful"    onclick="pickUseful(this, '${id}')">✅ Yes — really useful</span>
+        <span class="useful-chip" data-val="Sort of"                onclick="pickUseful(this, '${id}')">🤔 Sort of</span>
+        <span class="useful-chip" data-val="Not really this time"   onclick="pickUseful(this, '${id}')">❌ Not really</span>
+      </div>
+
+      <label class="field-label" style="margin-top:14px;">One thing I want to remember from this:</label>
+      <textarea id="${id}-takeaway" rows="2" placeholder="The thing I'd tell someone if I was explaining what I found..."></textarea>
+    `;
+    container.appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function removeEntry(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function pickMethod(btn, id) {
+    const row = btn.closest('.entry-method-row');
+    row.querySelectorAll('.method-btn').forEach(b => b.className = 'method-btn');
+    const method = btn.dataset.method;
+    btn.classList.add('sel-' + method);
+    // show tip
+    ['internet','interview','documentary'].forEach(m => {
+      const tip = document.getElementById(`${id}-${m}-tip`);
+      if (tip) tip.style.display = (m === method) ? 'block' : 'none';
+    });
+  }
+
+  function pickUseful(chip, id) {
+    const row = chip.closest('.useful-chips');
+    row.querySelectorAll('.useful-chip').forEach(c => c.className = 'useful-chip');
+    const val = chip.dataset.val;
+    if (val === 'Yes — really useful') chip.classList.add('sel-yes');
+    else if (val === 'Sort of')         chip.classList.add('sel-sort');
+    else                                chip.classList.add('sel-no');
+  }
+
+  // ─── SUMMARY ──────────────────────────────────────────────
+  function getEntries() {
+    const entries = [];
+    document.querySelectorAll('.entry-card').forEach(card => {
+      const id = card.id;
+      const methodBtn = card.querySelector('.method-btn[class*="sel-"]');
+      const method = methodBtn ? methodBtn.dataset.method : '';
+      const usefulChip = card.querySelector('.useful-chip[class*="sel-"]');
+      entries.push({
+        method,
+        source:   (document.getElementById(`${id}-source`)?.value || '').trim(),
+        looking:  (document.getElementById(`${id}-looking`)?.value || '').trim(),
+        found:    (document.getElementById(`${id}-found`)?.value || '').trim(),
+        useful:   usefulChip ? usefulChip.dataset.val : '',
+        takeaway: (document.getElementById(`${id}-takeaway`)?.value || '').trim(),
+      });
+    });
+    return entries;
+  }
+
+  function val(id) { return (document.getElementById(id)?.value || '').trim(); }
+
+  function buildSummary() {
+    const rq        = val('researchQ');
+    const rWhy      = val('researchWhy');
+    const entries   = getEntries();
+    const refInt    = val('refInteresting');
+    const refConf   = val('refConfusing');
+    const refMore   = val('refMore');
+    const refConn   = val('refConnect');
+
+    let html = '';
+
+    // Question block
+    let qInner = '';
+    if (rq)   qInner += `<p><strong>Question:</strong> ${rq}</p>`;
+    if (rWhy) qInner += `<p style="margin-top:6px"><strong>Why:</strong> ${rWhy}</p>`;
+    if (!qInner) qInner = `<p class="empty-note">Nothing added here</p>`;
+    html += `<div class="summary-block"><h3>🤔 My research question</h3>${qInner}</div>`;
+
+    // Entries block
+    let eInner = '';
+    const methodLabel = { internet: '🌐 Internet', interview: '🗣️ Interview', documentary: '🎬 Documentary / video', '': '📋 Research entry' };
+    if (entries.length === 0) {
+      eInner = `<p class="empty-note">No entries recorded yet</p>`;
+    } else {
+      entries.forEach((e, i) => {
+        const mClass = e.method ? `sem-${e.method}` : '';
+        const mLabel = methodLabel[e.method] || '📋 Research entry';
+        let inner = `<div class="summary-entry-method ${mClass}">${mLabel}</div>`;
+        if (e.source)   inner += `<p><strong>Source:</strong> ${e.source}</p>`;
+        if (e.looking)  inner += `<p><strong>Looking for:</strong> ${e.looking}</p>`;
+        if (e.found)    inner += `<p><strong>Found:</strong> ${e.found}</p>`;
+        if (e.useful)   inner += `<p><strong>Useful?</strong> ${e.useful}</p>`;
+        if (e.takeaway) inner += `<p><strong>Key takeaway:</strong> ${e.takeaway}</p>`;
+        eInner += `<div class="summary-entry">${inner}</div>`;
+      });
+    }
+    html += `<div class="summary-block"><h3>📋 What I found (${entries.length} ${entries.length === 1 ? 'entry' : 'entries'})</h3>${eInner}</div>`;
+
+    // Reflection block
+    let rInner = '';
+    if (refInt)  rInner += `<p><strong>Most interesting:</strong> ${refInt}</p>`;
+    if (refConf) rInner += `<p style="margin-top:8px"><strong>Confusing or unclear:</strong> ${refConf}</p>`;
+    if (refMore) rInner += `<p style="margin-top:8px"><strong>Want to find out more about:</strong> ${refMore}</p>`;
+    if (refConn) rInner += `<p style="margin-top:8px"><strong>Connection to driving question:</strong> ${refConn}</p>`;
+    if (!rInner) rInner = `<p class="empty-note">Nothing added here</p>`;
+    html += `<div class="summary-block"><h3>💭 My reflections</h3>${rInner}</div>`;
+
+    document.getElementById('summaryOutput').innerHTML = html;
+  }
+
+  // ─── EMAIL ────────────────────────────────────────────────
+  function sendEmail() {
+    const rq      = val('researchQ');
+    const rWhy    = val('researchWhy');
+    const entries = getEntries();
+    const refInt  = val('refInteresting');
+    const refConf = val('refConfusing');
+    const refMore = val('refMore');
+    const refConn = val('refConnect');
+    const now     = new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+    const methodLabel = { internet: 'Internet search', interview: 'Interview', documentary: 'Documentary / video' };
+
+    let body = `Research Notes — How do our choices today shape the worlds of tomorrow?\n`;
+    body += `Completed: ${now}\n\n`;
+
+    body += `--- MY RESEARCH QUESTION ---\n`;
+    if (rq)   body += `Question: ${rq}\n`;
+    if (rWhy) body += `Why: ${rWhy}\n`;
+
+    body += `\n--- WHAT I FOUND (${entries.length} entries) ---\n`;
+    if (entries.length === 0) {
+      body += `No entries recorded.\n`;
+    } else {
+      entries.forEach((e, i) => {
+        body += `\nEntry ${i + 1}${e.method ? ` — ${methodLabel[e.method] || e.method}` : ''}\n`;
+        if (e.source)   body += `  Source: ${e.source}\n`;
+        if (e.looking)  body += `  Looking for: ${e.looking}\n`;
+        if (e.found)    body += `  Found: ${e.found}\n`;
+        if (e.useful)   body += `  Useful? ${e.useful}\n`;
+        if (e.takeaway) body += `  Key takeaway: ${e.takeaway}\n`;
+      });
+    }
+
+    body += `\n--- MY REFLECTIONS ---\n`;
+    if (refInt)  body += `Most interesting: ${refInt}\n`;
+    if (refConf) body += `Confusing or unclear: ${refConf}\n`;
+    if (refMore) body += `Want to find out more: ${refMore}\n`;
+    if (refConn) body += `Connection to driving question: ${refConn}\n`;
+
+    const subject = encodeURIComponent('My Research Notes — Worlds of Tomorrow');
+    window.location.href = `mailto:jay.raine@chiltonbridgeschool.co.uk?subject=${subject}&body=${encodeURIComponent(body)}`;
+  }
+</script>
+</body>
+</html>
