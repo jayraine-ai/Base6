@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask Jay · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .hero { background: linear-gradient(135deg, #007291, #004d66); padding: 2rem; text-align: center; }
+  .hero-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; }
+  .main { max-width: 640px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+  .letter { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 2rem 2.25rem; font-size: 0.97rem; line-height: 1.9; color: #1a1a1a; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+  .letter p { margin-bottom: 0.5rem; }
+  .letter .fixed { color: #555; }
+
+  .message-box, .name-box {
+    display: block;
+    width: 100%;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.97rem;
+    color: #1a1a1a;
+    background: #fef8f4;
+    border: none;
+    border-bottom: 2px dashed #c8e0e8;
+    border-radius: 0;
+    outline: none;
+    resize: none;
+    line-height: 1.9;
+    padding: 0.1rem 0.25rem;
+    transition: border-color 0.15s;
+  }
+  .message-box:focus, .name-box:focus { border-color: #007291; background: #f0f8fa; border-radius: 4px; }
+  .message-box { min-height: 120px; margin: 0.2rem 0; }
+  .name-box { width: 220px; display: inline-block; }
+
+  .send-row { margin-top: 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .send-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; background: #007291; color: #fff; border: none; border-radius: 10px; padding: 0.75rem 2rem; cursor: pointer; transition: background 0.15s; }
+  .send-btn:hover { background: #005a73; }
+  .send-note { font-size: 0.8rem; color: #aaa; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../index.html">← Home</a>
+</header>
+
+<div class="hero">
+  <p class="hero-label">Tools &amp; Resources</p>
+  <h1>✉️ Ask Jay</h1>
+</div>
+
+<main class="main">
+
+  <div class="letter">
+    <p class="fixed">Dear Jay,</p>
+    <p class="fixed">Thank you for being so amazing and cool,<br>also,</p>
+
+    <textarea class="message-box" id="message" placeholder="Type your message here…"></textarea>
+
+    <p class="fixed">Warm regards,<br>Your brilliant student,</p>
+    <input class="name-box" type="text" id="name" placeholder="Your name" maxlength="60">
+  </div>
+
+  <div class="send-row">
+    <button class="send-btn" onclick="sendEmail()">Send to Jay 📨</button>
+    <span class="send-note">Opens your email app ready to send</span>
+  </div>
+
+</main>
+
+<script>
+function sendEmail() {
+  const message = document.getElementById('message').value.trim();
+  const name    = document.getElementById('name').value.trim();
+
+  const body =
+    'Dear Jay,\n\n' +
+    'Thank you for being so amazing and cool,\n' +
+    'also,\n\n' +
+    (message || '(no message written)') + '\n\n' +
+    'Warm regards,\n' +
+    'Your brilliant student,\n' +
+    (name || '(anonymous)');
+
+  const subject = encodeURIComponent('A message from your brilliant student' + (name ? ', ' + name : ''));
+  window.open(
+    'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + subject + '&body=' + encodeURIComponent(body),
+    '_blank'
+  );
+}
+</script>
+
+</body>
+</html>
