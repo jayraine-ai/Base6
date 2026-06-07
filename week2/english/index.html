@@ -23,12 +23,24 @@
   .focus-item { background: #ffffff; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.95rem; color: #1a1a1a; line-height: 1.5; border: 1px solid #fcd8bc; }
   .focus-item strong { color: #c05a10; font-weight: 700; display: block; margin-bottom: 0.2rem; }
   .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-  .resource-card { background: #ffffff; border: 2px solid #ef7724; border-radius: 14px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .resource-card-wrap { display: flex; flex-direction: column; }
+  .resource-card { background: #ffffff; border: 2px solid #ef7724; border-radius: 14px 14px 0 0; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.15s ease, box-shadow 0.15s ease; border-bottom: none; }
   .resource-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(239,119,36,0.15); }
+  .resource-card.dark { background: #07091a; border-color: #18d8ff; }
   .resource-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
   .resource-name { font-size: 1.05rem; font-weight: 700; color: #c05a10; line-height: 1.3; }
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
   .resource-arrow { margin-top: auto; padding-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #c05a10; }
+  .tracker-strip { border: 2px solid #ef7724; border-top: 1px solid #fcd8bc; border-radius: 0 0 14px 14px; background: #fff8f3; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .tracker-strip.dark { border-color: #18d8ff; border-top-color: rgba(24,216,255,0.3); background: #07091a; }
+  .tracker-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #888; margin-right: 0.25rem; white-space: nowrap; }
+  .tracker-strip.dark .tracker-label { color: #4a6080; }
+  .init-btn { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fcc090; background: #ffffff; font-size: 0.65rem; font-weight: 700; color: #ef7724; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.12s, border-color 0.12s, color 0.12s; flex-shrink: 0; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  .init-btn:hover { border-color: #ef7724; background: #fff3eb; }
+  .init-btn.done { background: #ef7724; border-color: #c05a10; color: #ffffff; }
+  .tracker-strip.dark .init-btn { border-color: rgba(24,216,255,0.4); background: #0f1428; color: #18d8ff; }
+  .tracker-strip.dark .init-btn:hover { border-color: #18d8ff; background: #0a1535; }
+  .tracker-strip.dark .init-btn.done { background: #18d8ff; border-color: #00b8df; color: #07091a; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -59,26 +71,41 @@
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
-    <a class="resource-card" href="language-explorer.html">
-      <div class="resource-icon">🗺️</div>
-      <span class="resource-name">Language Explorer</span>
-      <span class="resource-desc">Explore language features in an interactive adventure.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="language-explorer.html">
+        <div class="resource-icon">🗺️</div>
+        <span class="resource-name">Language Explorer</span>
+        <span class="resource-desc">Explore language features in an interactive adventure.</span>
+        <span class="resource-arrow">Open activity →</span>
+      </a>
+      <div class="tracker-strip" data-activity="language-explorer">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
-    <a class="resource-card" href="slang-sandbox.html">
-      <div class="resource-icon">💬</div>
-      <span class="resource-name">Slang Sandbox</span>
-      <span class="resource-desc">Explore tone, style and register — translate between slang and standard English.</span>
-      <span class="resource-arrow">Open activity →</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card" href="slang-sandbox.html">
+        <div class="resource-icon">💬</div>
+        <span class="resource-name">Slang Sandbox</span>
+        <span class="resource-desc">Explore tone, style and register — translate between slang and standard English.</span>
+        <span class="resource-arrow">Open activity →</span>
+      </a>
+      <div class="tracker-strip" data-activity="slang-sandbox">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
-    <a class="resource-card" href="syntax-runner.html" style="background:#07091a;border-color:#18d8ff;">
-      <div class="resource-icon">🌆</div>
-      <span class="resource-name" style="color:#18d8ff;">Syntax Runner: Chilton City Uplink</span>
-      <span class="resource-desc" style="color:#aab7d4;">The city AI is broadcasting corrupted language. Hack terminals, repair Standard English verb forms, battle drones and outsmart GRAM-MA before the signal goes citywide.</span>
-      <span class="resource-arrow" style="color:#18d8ff;border-top:1px solid rgba(24,216,255,.2);padding-top:0.75rem;">▶ Enter Chilton City</span>
-    </a>
+    <div class="resource-card-wrap">
+      <a class="resource-card dark" href="syntax-runner.html">
+        <div class="resource-icon">🌆</div>
+        <span class="resource-name" style="color:#18d8ff;">Syntax Runner: Chilton City Uplink</span>
+        <span class="resource-desc" style="color:#aab7d4;">The city AI is broadcasting corrupted language. Hack terminals, repair Standard English verb forms, battle drones and outsmart GRAM-MA before the signal goes citywide.</span>
+        <span class="resource-arrow" style="color:#18d8ff;border-top:1px solid rgba(24,216,255,.2);padding-top:0.75rem;">▶ Enter Chilton City</span>
+      </a>
+      <div class="tracker-strip dark" data-activity="syntax-runner">
+        <span class="tracker-label">Done:</span>
+      </div>
+    </div>
 
   </div>
 </main>
@@ -86,6 +113,33 @@
 <footer>
   Base 6 · Chilton Bridge School
 </footer>
+
+<script>
+  const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+  const STORE_KEY = 'base6_w2_english_tracker';
+  function loadState() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; } }
+  function saveState(s) { try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch(e) {} }
+  document.querySelectorAll('.tracker-strip').forEach(strip => {
+    const activity = strip.dataset.activity;
+    const state = loadState();
+    STUDENTS.forEach(initials => {
+      const btn = document.createElement('button');
+      btn.className = 'init-btn' + (state[activity]?.[initials] ? ' done' : '');
+      btn.textContent = initials;
+      btn.title = state[activity]?.[initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const s = loadState();
+        if (!s[activity]) s[activity] = {};
+        s[activity][initials] = !s[activity][initials];
+        saveState(s);
+        btn.classList.toggle('done', !!s[activity][initials]);
+        btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      });
+      strip.appendChild(btn);
+    });
+  });
+</script>
 
 </body>
 </html>
