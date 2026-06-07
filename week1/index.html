@@ -332,7 +332,7 @@ function submitChallenge() {
     'Response:\n' + answer + '\n\n' +
     '—\nSent automatically from Base 6'
   );
-  window.location.href = 'mailto:' + TEACHER_EMAIL + '?subject=' + subject + '&body=' + body;
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + subject + '&body=' + body, '_blank');
 }
 
 renderStampRow();
