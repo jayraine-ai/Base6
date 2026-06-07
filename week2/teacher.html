@@ -80,6 +80,28 @@
   .note-card textarea { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; color: #1a1a1a; background: #fef8f4; border: 1.5px solid #d0eaf0; border-radius: 8px; padding: 0.5rem 0.75rem; resize: vertical; min-height: 70px; line-height: 1.5; }
   .note-card textarea:focus { outline: none; border-color: #007291; }
 
+  /* ── Reading record ── */
+  .reading-section { background: #ffffff; border: 1.5px solid #d0eaf0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .reading-section h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; }
+  .reading-student-card { border: 1.5px solid #e0d8d0; border-radius: 10px; overflow: hidden; }
+  .reading-student-head { background: #f0f8fa; padding: 0.5rem 1rem; font-size: 0.82rem; font-weight: 700; color: #007291; border-bottom: 1px solid #e0d8d0; }
+  .reading-row-headers { display: grid; grid-template-columns: 80px 1fr 90px 110px 1fr; gap: 6px; padding: 0.3rem 0.75rem; background: #fafaf8; border-bottom: 1px solid #f0ebe6; }
+  .reading-row-headers span { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #aaa; }
+  .reading-entry-row { display: grid; grid-template-columns: 80px 1fr 90px 110px 1fr; gap: 6px; padding: 0.35rem 0.75rem; border-bottom: 1px solid #f5f0eb; align-items: center; }
+  .reading-entry-row:last-child { border-bottom: none; }
+  .reading-day-label { font-size: 0.75rem; font-weight: 700; color: #888; }
+  .reading-entry-row input[type=text] { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.78rem; color: #1a1a1a; background: #fef8f4; border: 1.5px solid #e0d8d0; border-radius: 5px; padding: 0.28rem 0.5rem; width: 100%; outline: none; }
+  .reading-entry-row input[type=text]:focus { border-color: #007291; }
+  .reading-entry-row select { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.78rem; color: #1a1a1a; background: #fef8f4; border: 1.5px solid #e0d8d0; border-radius: 5px; padding: 0.28rem 0.4rem; width: 100%; outline: none; }
+  .reading-entry-row select:focus { border-color: #007291; }
+  .save-reading-btn { align-self: flex-end; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; background: #007291; color: #fff; border: none; border-radius: 7px; padding: 0.45rem 1rem; cursor: pointer; }
+  .save-reading-btn:hover { background: #005a73; }
+  .email-reading-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; background: #ef7724; color: #fff; border: none; border-radius: 7px; padding: 0.45rem 1rem; cursor: pointer; }
+  .email-reading-btn:hover { background: #c05a10; }
+  .print-reading-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; background: #fff; color: #007291; border: 1.5px solid #007291; border-radius: 7px; padding: 0.45rem 1rem; cursor: pointer; }
+  .print-reading-btn:hover { background: #e6f5f8; }
+  .save-confirm { font-size: 0.78rem; color: #2e8b57; display: none; }
+
   /* ── Reset ── */
   .danger-zone { text-align: right; }
   .reset-all-btn { font-size: 0.8rem; color: #c0392b; background: none; border: 1.5px solid #f5c0bb; border-radius: 8px; padding: 0.4rem 0.9rem; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
@@ -137,6 +159,18 @@
   <div class="notes-section">
     <h2>Student notes</h2>
     <div class="notes-grid" id="notes-grid"></div>
+  </div>
+
+  <!-- Reading record -->
+  <div class="reading-section">
+    <h2>Reading record</h2>
+    <div id="reading-cards"></div>
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+      <button class="save-reading-btn" onclick="saveReading()">Save</button>
+      <button class="email-reading-btn" onclick="emailReading()">Email to me ✉</button>
+      <button class="print-reading-btn" onclick="printReading()">Print / PDF 🖨</button>
+      <span class="save-confirm" id="reading-confirm">Saved ✓</span>
+    </div>
   </div>
 
   <div class="danger-zone">
@@ -287,6 +321,7 @@ function saveNotes(notes) {
 function renderDashboard() {
   renderSubjects();
   renderNotes();
+  renderReading();
   updateSummary();
 }
 
@@ -409,6 +444,152 @@ function confirmReset() {
     renderSubjects();
     updateSummary();
   }
+}
+
+// ── Reading record ──────────────────────────────────────────────
+const READING_KEY = 'base6_w2_reading_record';
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+function loadReading() {
+  try { return JSON.parse(localStorage.getItem(READING_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function saveReading() {
+  const data = {};
+  STUDENTS.forEach(s => {
+    data[s] = {};
+    DAYS.forEach(day => {
+      data[s][day] = {
+        title:      document.getElementById(`rr-${s}-${day}-title`).value,
+          pages:      document.getElementById(`rr-${s}-${day}-pages`).value,
+        engagement: document.getElementById(`rr-${s}-${day}-engagement`).value,
+        notes:      document.getElementById(`rr-${s}-${day}-notes`).value,
+      };
+    });
+  });
+  try { localStorage.setItem(READING_KEY, JSON.stringify(data)); } catch(e) {}
+  const c = document.getElementById('reading-confirm');
+  c.style.display = 'inline';
+  setTimeout(() => { c.style.display = 'none'; }, 2000);
+}
+
+function renderReading() {
+  const container = document.getElementById('reading-cards');
+  const data = loadReading();
+  container.innerHTML = '';
+
+  STUDENTS.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'reading-student-card';
+
+    const head = document.createElement('div');
+    head.className = 'reading-student-head';
+    head.textContent = s;
+    card.appendChild(head);
+
+    const colHeaders = document.createElement('div');
+    colHeaders.className = 'reading-row-headers';
+    colHeaders.innerHTML = '<span>Day</span><span>Book / text title</span><span>Pages</span><span>Engagement</span><span>Notes</span>';
+    card.appendChild(colHeaders);
+
+    DAYS.forEach(day => {
+      const d = (data[s] && data[s][day]) ? data[s][day] : {};
+      const row = document.createElement('div');
+      row.className = 'reading-entry-row';
+      row.innerHTML = `
+        <div class="reading-day-label">${day}</div>
+        <input type="text" id="rr-${s}-${day}-title"      value="${d.title      || ''}" placeholder="Title…">
+        <input type="text" id="rr-${s}-${day}-pages"      value="${d.pages      || ''}" placeholder="e.g. 1–12">
+        <select id="rr-${s}-${day}-engagement">
+          <option value="">—</option>
+          <option value="High" ${d.engagement==='High'?'selected':''}>High</option>
+          <option value="Good" ${d.engagement==='Good'?'selected':''}>Good</option>
+          <option value="OK"   ${d.engagement==='OK'  ?'selected':''}>OK</option>
+          <option value="Low"  ${d.engagement==='Low' ?'selected':''}>Low</option>
+        </select>
+        <input type="text" id="rr-${s}-${day}-notes" value="${d.notes || ''}" placeholder="Notes…">
+      `;
+      card.appendChild(row);
+    });
+
+    container.appendChild(card);
+  });
+}
+
+function emailReading() {
+  saveReading();
+  const data = loadReading();
+  const lines = ['BASE 6 · WEEK 2 READING RECORD', ''];
+  STUDENTS.forEach(s => {
+    lines.push(`── ${s} ──`);
+    DAYS.forEach(day => {
+      const d = (data[s] && data[s][day]) ? data[s][day] : {};
+      const hasContent = d.title || d.pages || d.engagement || d.notes;
+      if (hasContent) {
+        lines.push(`  ${day}:`);
+        if (d.title)      lines.push(`    Title:      ${d.title}`);
+        if (d.pages)      lines.push(`    Pages:      ${d.pages}`);
+        if (d.engagement) lines.push(`    Engagement: ${d.engagement}`);
+        if (d.notes)      lines.push(`    Notes:      ${d.notes}`);
+      } else {
+        lines.push(`  ${day}: —`);
+      }
+    });
+    lines.push('');
+  });
+  const subject = encodeURIComponent('Base 6 · Week 2 Reading Record');
+  const body = encodeURIComponent(lines.join('\n'));
+  window.open(`https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=${subject}&body=${body}`, '_blank');
+}
+
+function printReading() {
+  saveReading();
+  const data = loadReading();
+  const rows = STUDENTS.map(s => {
+    const dayRows = DAYS.map(day => {
+      const d = (data[s] && data[s][day]) ? data[s][day] : {};
+      return `<tr>
+        <td style="padding:5px 8px;font-size:11px;color:#888;white-space:nowrap;">${day}</td>
+        <td style="padding:5px 8px;font-size:11px;">${d.title || ''}</td>
+        <td style="padding:5px 8px;font-size:11px;text-align:center;">${d.pages || ''}</td>
+        <td style="padding:5px 8px;font-size:11px;text-align:center;">${d.engagement || ''}</td>
+        <td style="padding:5px 8px;font-size:11px;">${d.notes || ''}</td>
+      </tr>`;
+    }).join('');
+    return `
+      <div style="margin-bottom:16px;break-inside:avoid;">
+        <div style="background:#007291;color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:4px 4px 0 0;">${s}</div>
+        <table style="width:100%;border-collapse:collapse;border:1px solid #ddd;border-top:none;">
+          <thead>
+            <tr style="background:#f5f5f5;">
+              <th style="padding:4px 8px;font-size:10px;text-align:left;width:36px;">Day</th>
+              <th style="padding:4px 8px;font-size:10px;text-align:left;">Title</th>
+              <th style="padding:4px 8px;font-size:10px;text-align:center;width:70px;">Pages</th>
+              <th style="padding:4px 8px;font-size:10px;text-align:center;width:80px;">Engagement</th>
+              <th style="padding:4px 8px;font-size:10px;text-align:left;">Notes</th>
+            </tr>
+          </thead>
+          <tbody>${dayRows}</tbody>
+        </table>
+      </div>`;
+  }).join('');
+
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head>
+    <title>Week 2 Reading Record · Base 6</title>
+    <style>
+      body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; padding: 24px; color: #1a1a1a; }
+      h1 { font-size: 15px; margin-bottom: 4px; }
+      p { font-size: 11px; color: #888; margin-bottom: 16px; }
+      @media print { body { padding: 0; } }
+    </style>
+  </head><body>
+    <h1>Base 6 · Week 2 · Reading Record</h1>
+    <p>Printed ${new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'})}</p>
+    ${rows}
+    <script>window.onload = function(){ window.print(); }<\/script>
+  </body></html>`);
+  win.document.close();
 }
 
 // ── Init ──────────────────────────────────────────────────────────
