@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact and Non-Contact Forces · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
+  .hero { background: linear-gradient(135deg, #1f6b40, #2e8b57); padding: 2rem; text-align: center; }
+  .hero-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #c8f0d8; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .main { max-width: 820px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+  /* Section headings */
+  .section-heading { font-size: 1.15rem; font-weight: 700; color: #1f6b40; margin: 2rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 2px solid #c8f0d8; }
+  .section-heading:first-of-type { margin-top: 0; }
+
+  /* Explainer cards */
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  @media (max-width: 540px) { .card-grid { grid-template-columns: 1fr; } }
+  .card { border-radius: 14px; padding: 1.25rem 1.4rem; line-height: 1.6; }
+  .card.contact { background: #e8f7ef; border: 2px solid #2e8b57; }
+  .card.noncontact { background: #eef0fb; border: 2px solid #5a6acf; }
+  .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card.contact h3 { color: #1f6b40; }
+  .card.noncontact h3 { color: #3a4aaf; }
+  .card p { font-size: 0.93rem; color: #333; }
+  .card ul { padding-left: 1.2rem; margin-top: 0.5rem; }
+  .card ul li { font-size: 0.93rem; color: #333; margin-bottom: 0.3rem; }
+
+  /* Examples visual strip */
+  .examples-strip { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .example-chip { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; background: #fff; border-radius: 12px; padding: 0.75rem 1rem; font-size: 0.82rem; font-weight: 700; min-width: 90px; text-align: center; border: 2px solid transparent; }
+  .example-chip.contact-chip { border-color: #2e8b57; color: #1f6b40; }
+  .example-chip.noncontact-chip { border-color: #5a6acf; color: #3a4aaf; }
+  .example-chip span.emoji { font-size: 1.6rem; }
+
+  /* Sort activity */
+  .sort-intro { font-size: 0.95rem; color: #333; line-height: 1.6; margin-bottom: 1.25rem; }
+  .sort-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  @media (max-width: 540px) { .sort-grid { grid-template-columns: 1fr; } }
+  .sort-zone { border-radius: 14px; padding: 1rem; min-height: 180px; }
+  .sort-zone.contact-zone { background: #e8f7ef; border: 2px dashed #2e8b57; }
+  .sort-zone.noncontact-zone { background: #eef0fb; border: 2px dashed #5a6acf; }
+  .sort-zone h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .sort-zone.contact-zone h4 { color: #1f6b40; }
+  .sort-zone.noncontact-zone h4 { color: #3a4aaf; }
+  .drop-area { min-height: 120px; display: flex; flex-wrap: wrap; gap: 0.5rem; align-content: flex-start; }
+  .token { background: #fff; border-radius: 8px; padding: 0.4rem 0.75rem; font-size: 0.85rem; font-weight: 700; cursor: grab; user-select: none; border: 2px solid #ccc; transition: box-shadow 0.15s; }
+  .token:active { cursor: grabbing; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .token-bank { display: flex; flex-wrap: wrap; gap: 0.5rem; background: #fff8f2; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 1rem; min-height: 56px; }
+  .token-bank-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 0.5rem; }
+  .sort-feedback { font-size: 0.9rem; font-weight: 700; padding: 0.6rem 1rem; border-radius: 8px; display: none; margin-bottom: 1rem; }
+  .sort-feedback.correct { background: #d4f0e0; color: #1f6b40; display: block; }
+  .sort-feedback.incorrect { background: #fde8e8; color: #b83a2a; display: block; }
+  .sort-feedback.partial { background: #fff3cd; color: #7a5a00; display: block; }
+
+  /* Check button */
+  .btn { display: inline-block; background: #2e8b57; color: #fff; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; border: none; border-radius: 10px; padding: 0.7rem 1.5rem; cursor: pointer; transition: background 0.15s; }
+  .btn:hover { background: #1f6b40; }
+  .btn.reset { background: #888; margin-left: 0.5rem; }
+  .btn.reset:hover { background: #555; }
+
+  /* Reflection */
+  .reflect-box { background: #fff; border: 2px solid #2e8b57; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+  .reflect-box label { font-size: 0.9rem; font-weight: 700; color: #1f6b40; display: block; margin-bottom: 0.5rem; }
+  .reflect-box textarea { width: 100%; border: 1.5px solid #c8e8d0; border-radius: 8px; padding: 0.7rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; color: #1a1a1a; background: #f8fef9; resize: vertical; min-height: 80px; outline: none; }
+  .reflect-box textarea:focus { border-color: #2e8b57; }
+
+  /* Final Wordwall link */
+  .wordwall-banner { background: linear-gradient(135deg, #1f6b40, #2e8b57); border-radius: 16px; padding: 1.5rem 1.75rem; display: flex; align-items: center; gap: 1.25rem; text-decoration: none; color: #fef8f4; transition: transform 0.15s, box-shadow 0.15s; margin-top: 1rem; }
+  .wordwall-banner:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(46,139,87,0.25); }
+  .wordwall-icon { font-size: 2.4rem; flex-shrink: 0; }
+  .wordwall-text .ww-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; margin-bottom: 0.25rem; }
+  .wordwall-text .ww-title { font-size: 1.1rem; font-weight: 700; line-height: 1.3; }
+  .wordwall-text .ww-sub { font-size: 0.85rem; opacity: 0.8; margin-top: 0.2rem; }
+  .wordwall-arrow { margin-left: auto; font-size: 1.5rem; flex-shrink: 0; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Science</a>
+  <span class="breadcrumb">/ Contact and Non-Contact Forces</span>
+</header>
+
+<div class="hero">
+  <p class="hero-label">Week 1 · Science</p>
+  <h1>⚡ Contact and Non-Contact Forces</h1>
+</div>
+
+<main class="main">
+
+  <!-- SECTION 1: What is a force? -->
+  <h2 class="section-heading">What is a force?</h2>
+
+  <div class="card" style="background:#f0faf4; border: 2px solid #2e8b57; border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+    <p style="font-size:0.95rem; line-height:1.7; color:#222;">
+      A <strong>force</strong> is a push or a pull. Forces can make things start moving, stop moving, speed up, slow down, or change direction. Every force has a <strong>size</strong> (how strong it is) and a <strong>direction</strong> (which way it pushes or pulls).
+    </p>
+  </div>
+
+  <!-- SECTION 2: Two types -->
+  <h2 class="section-heading">Two types of force</h2>
+
+  <div class="card-grid">
+    <div class="card contact">
+      <h3>👋 Contact forces</h3>
+      <p>These only work when two things are <strong>touching</strong>. The force happens at the point of contact.</p>
+      <ul>
+        <li><strong>Friction</strong> — slows things down when surfaces rub</li>
+        <li><strong>Air resistance</strong> — pushes back against moving objects</li>
+        <li><strong>Normal force</strong> — a surface pushing back up against an object</li>
+        <li><strong>Tension</strong> — a pulling force through a rope or string</li>
+      </ul>
+    </div>
+    <div class="card noncontact">
+      <h3>🌀 Non-contact forces</h3>
+      <p>These work <strong>without touching</strong> — they can act across a gap or even empty space.</p>
+      <ul>
+        <li><strong>Gravity</strong> — pulls objects towards each other</li>
+        <li><strong>Magnetism</strong> — attracts or repels magnetic materials</li>
+        <li><strong>Static electricity</strong> — attracts or repels charged objects</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Real-world examples -->
+  <h2 class="section-heading">Real-world examples</h2>
+
+  <div class="examples-strip">
+    <div class="example-chip contact-chip"><span class="emoji">🛹</span>Friction on a skateboard</div>
+    <div class="example-chip noncontact-chip"><span class="emoji">🍎</span>Gravity pulling an apple</div>
+    <div class="example-chip contact-chip"><span class="emoji">🪂</span>Air resistance on a parachute</div>
+    <div class="example-chip noncontact-chip"><span class="emoji">🧲</span>Magnet on a fridge</div>
+    <div class="example-chip contact-chip"><span class="emoji">🎯</span>Kicking a football</div>
+    <div class="example-chip noncontact-chip"><span class="emoji">🌍</span>Moon orbiting Earth</div>
+    <div class="example-chip contact-chip"><span class="emoji">🏹</span>Tension in a bow</div>
+    <div class="example-chip noncontact-chip"><span class="emoji">⚡</span>Static making hair stand up</div>
+  </div>
+
+  <!-- SECTION 4: Sort activity -->
+  <h2 class="section-heading">Sort it out</h2>
+  <p class="sort-intro">Drag each force into the correct box — is it a <strong>contact</strong> force or a <strong>non-contact</strong> force?</p>
+
+  <div class="token-bank-label">Forces to sort:</div>
+  <div class="token-bank" id="token-bank"></div>
+
+  <div class="sort-grid">
+    <div class="sort-zone contact-zone">
+      <h4>👋 Contact forces</h4>
+      <div class="drop-area" id="drop-contact"></div>
+    </div>
+    <div class="sort-zone noncontact-zone">
+      <h4>🌀 Non-contact forces</h4>
+      <div class="drop-area" id="drop-noncontact"></div>
+    </div>
+  </div>
+
+  <div id="sort-feedback" class="sort-feedback"></div>
+  <button class="btn" onclick="checkSort()">Check my answers ✓</button>
+  <button class="btn reset" onclick="resetSort()">Reset ↺</button>
+
+  <!-- SECTION 5: Reflection -->
+  <h2 class="section-heading" style="margin-top:2.5rem;">Think about it</h2>
+
+  <div class="reflect-box">
+    <label>Can you think of a force you experience every single day? Is it contact or non-contact? How do you know?</label>
+    <textarea placeholder="Write your answer here…" id="reflect1"></textarea>
+  </div>
+
+  <div class="reflect-box">
+    <label>Why do you think it matters whether a force needs contact or not? Can you think of a situation where this makes a big difference?</label>
+    <textarea placeholder="Write your answer here…" id="reflect2"></textarea>
+  </div>
+
+  <!-- SECTION 6: Wordwall game -->
+  <h2 class="section-heading">Ready for a challenge?</h2>
+
+  <a class="wordwall-banner" href="https://wordwall.net/play/114100/376/621" target="_blank" rel="noopener">
+    <span class="wordwall-icon">🎮</span>
+    <div class="wordwall-text">
+      <div class="ww-label">Wordwall activity</div>
+      <div class="ww-title">Contact and Non-Contact Forces — Game</div>
+      <div class="ww-sub">Test what you know with an interactive challenge</div>
+    </div>
+    <span class="wordwall-arrow">→</span>
+  </a>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School</footer>
+
+<script>
+  const FORCES = [
+    { label: 'Friction', type: 'contact' },
+    { label: 'Gravity', type: 'noncontact' },
+    { label: 'Air resistance', type: 'contact' },
+    { label: 'Magnetism', type: 'noncontact' },
+    { label: 'Tension', type: 'contact' },
+    { label: 'Static electricity', type: 'noncontact' },
+    { label: 'Normal force', type: 'contact' },
+  ];
+
+  let dragging = null;
+
+  function buildTokens() {
+    const bank = document.getElementById('token-bank');
+    bank.innerHTML = '';
+    const shuffled = [...FORCES].sort(() => Math.random() - 0.5);
+    shuffled.forEach(f => {
+      const t = makeToken(f);
+      bank.appendChild(t);
+    });
+    document.getElementById('drop-contact').innerHTML = '';
+    document.getElementById('drop-noncontact').innerHTML = '';
+    document.getElementById('sort-feedback').className = 'sort-feedback';
+    document.getElementById('sort-feedback').textContent = '';
+  }
+
+  function makeToken(f) {
+    const t = document.createElement('div');
+    t.className = 'token';
+    t.textContent = f.label;
+    t.dataset.type = f.type;
+    t.draggable = true;
+    t.addEventListener('dragstart', e => {
+      dragging = t;
+      setTimeout(() => t.style.opacity = '0.4', 0);
+    });
+    t.addEventListener('dragend', () => { t.style.opacity = '1'; dragging = null; });
+    return t;
+  }
+
+  ['drop-contact', 'drop-noncontact', 'token-bank'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('dragover', e => { e.preventDefault(); el.style.background = id === 'token-bank' ? '#fff3e8' : (id === 'drop-contact' ? '#d4eedd' : '#dde0f8'); });
+    el.addEventListener('dragleave', () => { el.style.background = ''; });
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.style.background = '';
+      if (dragging) el.appendChild(dragging);
+    });
+  });
+
+  function checkSort() {
+    const contactTokens = [...document.querySelectorAll('#drop-contact .token')];
+    const nonContactTokens = [...document.querySelectorAll('#drop-noncontact .token')];
+    const fb = document.getElementById('sort-feedback');
+
+    let correct = 0, total = FORCES.length;
+    contactTokens.forEach(t => { if (t.dataset.type === 'contact') correct++; });
+    nonContactTokens.forEach(t => { if (t.dataset.type === 'noncontact') correct++; });
+
+    const placed = contactTokens.length + nonContactTokens.length;
+    if (placed < total) {
+      fb.textContent = `You haven't sorted all of them yet — ${total - placed} still in the bank.`;
+      fb.className = 'sort-feedback partial';
+    } else if (correct === total) {
+      fb.textContent = '✅ Perfect! You got all ' + total + ' correct!';
+      fb.className = 'sort-feedback correct';
+    } else {
+      fb.textContent = `You got ${correct} out of ${total} correct. Have another look — some might be in the wrong box.`;
+      fb.className = 'sort-feedback incorrect';
+    }
+  }
+
+  function resetSort() { buildTokens(); }
+
+  buildTokens();
+</script>
+
+</body>
+</html>
