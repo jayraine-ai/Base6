@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard · Week 2 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  /* ── Lock screen ── */
+  #lock-screen { position: fixed; inset: 0; background: #007291; display: flex; align-items: center; justify-content: center; z-index: 1000; flex-direction: column; gap: 1.5rem; padding: 2rem; }
+  #lock-screen h1 { font-size: 1.6rem; color: #fef8f4; text-align: center; }
+  #lock-screen p { font-size: 0.95rem; color: #b8e0ea; text-align: center; }
+  #lock-form { display: flex; flex-direction: column; gap: 0.75rem; width: 100%; max-width: 320px; }
+  #pw-input { padding: 0.75rem 1rem; font-size: 1rem; font-family: 'Atkinson Hyperlegible', sans-serif; border: none; border-radius: 10px; background: #ffffff; color: #1a1a1a; outline: none; }
+  #pw-input:focus { box-shadow: 0 0 0 3px #fde0c0; }
+  #pw-submit { padding: 0.75rem 1rem; font-size: 1rem; font-weight: 700; font-family: 'Atkinson Hyperlegible', sans-serif; background: #fde0c0; color: #1a1a1a; border: none; border-radius: 10px; cursor: pointer; }
+  #pw-submit:hover { background: #fbcfa0; }
+  #pw-error { color: #fde0c0; font-size: 0.9rem; text-align: center; min-height: 1.2em; }
+  #lock-icon { font-size: 3rem; }
+
+  /* ── Header ── */
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .header-left { display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; opacity: 0.5; }
+  .lock-btn { font-size: 0.8rem; font-weight: 700; color: #fef8f4; background: rgba(255,255,255,0.15); border: none; border-radius: 8px; padding: 0.4rem 0.9rem; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  .lock-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* ── Hero ── */
+  .hero { background-color: #007291; padding: 0 2rem 2rem; text-align: center; }
+  .hero .label { font-size: 0.85rem; font-weight: 700; color: #fde0c0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .hero h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; }
+
+  /* ── Main ── */
+  .main { max-width: 1000px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
+
+  /* ── Summary bar ── */
+  .summary-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .summary-card { background: #ffffff; border: 2px solid #007291; border-radius: 12px; padding: 1rem 1.5rem; flex: 1; min-width: 130px; text-align: center; }
+  .summary-card .num { font-size: 2rem; font-weight: 700; color: #007291; line-height: 1; }
+  .summary-card .lbl { font-size: 0.75rem; color: #666; margin-top: 0.3rem; }
+
+  /* ── Student columns ── */
+  .section-header { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1rem; }
+
+  /* ── Subject block ── */
+  .subject-block { background: #ffffff; border: 1.5px solid #d0eaf0; border-radius: 14px; overflow: hidden; }
+  .subject-head { background: #e6f5f8; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+  .subject-head span { font-size: 1rem; font-weight: 700; color: #007291; }
+  .subject-head .subject-link { font-size: 0.78rem; color: #007291; text-decoration: none; opacity: 0.7; margin-left: auto; }
+  .subject-head .subject-link:hover { opacity: 1; }
+
+  /* ── Activity rows ── */
+  .activity-row { display: grid; grid-template-columns: 1fr repeat(5, 38px); align-items: center; gap: 6px; padding: 0.65rem 1.25rem; border-top: 1px solid #f0eae4; }
+  .activity-row:hover { background: #fdfaf7; }
+  .activity-name { font-size: 0.88rem; color: #1a1a1a; line-height: 1.4; }
+  .activity-name a { color: #007291; text-decoration: none; font-weight: 700; }
+  .activity-name a:hover { text-decoration: underline; }
+
+  /* ── Initials buttons ── */
+  .init-btn { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #b0d8e0; background: #ffffff; font-size: 0.65rem; font-weight: 700; color: #007291; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Atkinson Hyperlegible', sans-serif; transition: background 0.12s, border-color 0.12s, color 0.12s; }
+  .init-btn:hover { border-color: #007291; background: #e6f5f8; }
+  .init-btn.done { background: #007291; border-color: #005a73; color: #ffffff; }
+
+  /* ── Column headers ── */
+  .col-headers { display: grid; grid-template-columns: 1fr repeat(5, 38px); gap: 6px; padding: 0.4rem 1.25rem; background: #f7f2ee; }
+  .col-headers span { font-size: 0.7rem; font-weight: 700; color: #888; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; }
+  .col-headers .activity-col { text-align: left; }
+
+  /* ── Notes area ── */
+  .notes-section { background: #ffffff; border: 1.5px solid #d0eaf0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .notes-section h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; }
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; }
+  .note-card { display: flex; flex-direction: column; gap: 0.4rem; }
+  .note-card label { font-size: 0.78rem; font-weight: 700; color: #555; }
+  .note-card textarea { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; color: #1a1a1a; background: #fef8f4; border: 1.5px solid #d0eaf0; border-radius: 8px; padding: 0.5rem 0.75rem; resize: vertical; min-height: 70px; line-height: 1.5; }
+  .note-card textarea:focus { outline: none; border-color: #007291; }
+
+  /* ── Reset ── */
+  .danger-zone { text-align: right; }
+  .reset-all-btn { font-size: 0.8rem; color: #c0392b; background: none; border: 1.5px solid #f5c0bb; border-radius: 8px; padding: 0.4rem 0.9rem; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  .reset-all-btn:hover { background: #fdf0ee; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<!-- ── Lock screen ── -->
+<div id="lock-screen">
+  <div id="lock-icon">🔒</div>
+  <h1>Teacher Dashboard</h1>
+  <p>Base 6 · Week 2 · Chilton Bridge School</p>
+  <div id="lock-form">
+    <input type="password" id="pw-input" placeholder="Enter password" autocomplete="current-password" />
+    <button id="pw-submit">Unlock →</button>
+    <p id="pw-error"></p>
+  </div>
+</div>
+
+<!-- ── Dashboard ── -->
+<div id="dashboard" style="display:none;">
+
+<header class="site-header">
+  <div class="header-left">
+    <a class="back-link" href="../index.html">← Week 2</a>
+    <span class="breadcrumb">/ Teacher Dashboard</span>
+  </div>
+  <button class="lock-btn" onclick="lockDashboard()">🔒 Lock</button>
+</header>
+
+<div class="hero">
+  <p class="label">Teacher View · Week 2</p>
+  <h1>📋 Dashboard</h1>
+</div>
+
+<main class="main">
+
+  <!-- Summary cards -->
+  <div class="summary-row" id="summary-row">
+    <div class="summary-card"><div class="num" id="sum-done">0</div><div class="lbl">Completions</div></div>
+    <div class="summary-card"><div class="num" id="sum-total">0</div><div class="lbl">Possible</div></div>
+    <div class="summary-card"><div class="num" id="sum-pct">0%</div><div class="lbl">Overall</div></div>
+  </div>
+
+  <!-- Activity grid -->
+  <div>
+    <p class="section-header">Activity completion</p>
+    <div id="subjects-container"></div>
+  </div>
+
+  <!-- Notes -->
+  <div class="notes-section">
+    <h2>Student notes</h2>
+    <div class="notes-grid" id="notes-grid"></div>
+  </div>
+
+  <div class="danger-zone">
+    <button class="reset-all-btn" onclick="confirmReset()">Reset all completion data</button>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Teacher Dashboard</footer>
+
+</div><!-- end dashboard -->
+
+<script>
+// ── Config ──────────────────────────────────────────────────────
+const PASSWORD = 'teacher2026'; // ← change this
+
+const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+
+// Each activity has an id that must match the localStorage key used in the subject index pages
+// Format: { subject, subjectKey (folder name), emoji, colour, link, activities[] }
+const SUBJECTS = [
+  {
+    label: 'Maths', emoji: '🔢', colour: 'teal',
+    link: 'maths/index.html',
+    storePrefix: 'base6_w2_maths_tracker',
+    activities: [
+      { id: 'area-el2',     name: 'Area Explorer — Recap',         link: 'maths/area-el2-activity.html' },
+      { id: 'data-charts',  name: 'Data and Charts',               link: 'maths/data-and-charts.html' },
+      { id: 'probability',  name: 'Language of Probability',       link: 'maths/probability-language.html' },
+      { id: 'times-tables', name: 'Times Tables Mission',          link: 'maths/times-tables-60-min.html' },
+      { id: 'data-realms',  name: 'Data Realms: Shadow Defenders', link: 'maths/data-realms-defenders-rpg.html' },
+    ]
+  },
+  {
+    label: 'English', emoji: '📝', colour: 'teal',
+    link: 'english/index.html',
+    storePrefix: 'base6_w2_english_tracker',
+    activities: [
+      { id: 'language-explorer', name: 'Language Explorer',     link: 'english/language-explorer.html' },
+      { id: 'slang-sandbox',     name: 'Slang Sandbox',         link: 'english/slang-sandbox.html' },
+      { id: 'syntax-runner',     name: 'Syntax Runner',         link: 'english/syntax-runner.html' },
+    ]
+  },
+  {
+    label: 'PSHE', emoji: '💬', colour: 'teal',
+    link: 'pshe/index.html',
+    storePrefix: 'base6_w2_pshe_tracker',
+    activities: [
+      { id: 'changing-me',  name: 'Changing Me — Morning Routine', link: 'pshe/changing-me.html' },
+      { id: 'gtr6',         name: 'Grand Theft Routine 6',         link: 'pshe/grand-theft-routine-6.html' },
+    ]
+  },
+  {
+    label: 'Cultural Calendar', emoji: '🌍', colour: 'teal',
+    link: 'cultural-calendar/index.html',
+    storePrefix: 'base6_w2_cultural_tracker',
+    activities: [
+      { id: 'world-oceans-day', name: 'World Oceans Day 2026',  link: 'cultural-calendar/world-oceans-day.html' },
+      { id: 'flappy-fish',      name: 'Ocean Day — Flappy Fish', link: 'cultural-calendar/ocean-day-game.html' },
+    ]
+  },
+  {
+    label: 'Science', emoji: '🔬', colour: 'teal',
+    link: 'science/index.html',
+    storePrefix: 'base6_w2_science_tracker',
+    activities: [
+      { id: 'ai-explorer', name: 'AI Explorer',          link: 'science/ai-explorer.html' },
+      { id: 'ai-pitfalls', name: 'Can You Catch It Out?', link: 'science/ai-pitfalls.html' },
+    ]
+  },
+  {
+    label: 'History', emoji: '📜', colour: 'teal',
+    link: 'history/index.html',
+    storePrefix: 'base6_w2_history_tracker',
+    activities: [
+      { id: 'ww2',      name: 'WW2: Britain and the World', link: 'history/ww2-history-game.html' },
+      { id: 'bias',     name: 'Bias in History',            link: 'history/bias-in-history.html' },
+      { id: 'dinosaur', name: 'Dinosaur Research Lab',      link: 'history/dinosaur-research/index.html' },
+    ]
+  },
+  {
+    label: 'Project', emoji: '🚀', colour: 'teal',
+    link: 'project/index.html',
+    storePrefix: 'base6_w2_project_tracker',
+    activities: [
+      { id: 'project-leo',     name: 'Leo — Wellbeing App',           link: 'project/project-leo.html',     student: 'LS' },
+      { id: 'project-layden',  name: 'Layden — Charity Bake Sale',    link: 'project/project-layden.html',  student: 'LC' },
+      { id: 'project-harrison',name: 'Harrison — Fishing Rod',        link: 'project/project-harrison.html',student: 'HK' },
+      { id: 'project-leon',    name: 'Leon — Box-Man Script',         link: 'project/project-leon.html',    student: 'LW' },
+      { id: 'project-archie',  name: 'Archie — Film & Photography',   link: 'project/project-archie.html',  student: 'AP' },
+    ]
+  },
+];
+
+const NOTES_KEY = 'base6_w2_teacher_notes';
+
+// ── Auth ─────────────────────────────────────────────────────────
+const SESSION_KEY = 'base6_teacher_unlocked';
+
+function checkSession() {
+  if (sessionStorage.getItem(SESSION_KEY) === '1') unlock();
+}
+
+document.getElementById('pw-submit').addEventListener('click', attemptUnlock);
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') attemptUnlock(); });
+
+function attemptUnlock() {
+  const val = document.getElementById('pw-input').value;
+  if (val === PASSWORD) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    unlock();
+  } else {
+    document.getElementById('pw-error').textContent = 'Incorrect password — try again.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function unlock() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  renderDashboard();
+}
+
+function lockDashboard() {
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('lock-screen').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+}
+
+// ── State helpers ─────────────────────────────────────────────────
+function loadSubjectState(storePrefix) {
+  try { return JSON.parse(localStorage.getItem(storePrefix)) || {}; } catch(e) { return {}; }
+}
+function saveSubjectState(storePrefix, state) {
+  try { localStorage.setItem(storePrefix, JSON.stringify(state)); } catch(e) {}
+}
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveNotes(notes) {
+  try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch(e) {}
+}
+
+// ── Render ────────────────────────────────────────────────────────
+function renderDashboard() {
+  renderSubjects();
+  renderNotes();
+  updateSummary();
+}
+
+function renderSubjects() {
+  const container = document.getElementById('subjects-container');
+  container.innerHTML = '';
+  container.style.display = 'flex';
+  container.style.flexDirection = 'column';
+  container.style.gap = '1rem';
+
+  SUBJECTS.forEach(subject => {
+    const state = loadSubjectState(subject.storePrefix);
+
+    const block = document.createElement('div');
+    block.className = 'subject-block';
+
+    // Header
+    const head = document.createElement('div');
+    head.className = 'subject-head';
+    head.innerHTML = `<span>${subject.emoji} ${subject.label}</span><a class="subject-link" href="${subject.link}">View subject page →</a>`;
+    block.appendChild(head);
+
+    // Column headers
+    const colHead = document.createElement('div');
+    colHead.className = 'col-headers';
+    colHead.innerHTML = `<span class="activity-col">Activity</span>` + STUDENTS.map(s => `<span>${s}</span>`).join('');
+    block.appendChild(colHead);
+
+    // Activity rows
+    subject.activities.forEach(act => {
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+
+      const nameCell = document.createElement('div');
+      nameCell.className = 'activity-name';
+      nameCell.innerHTML = `<a href="${act.link}">${act.name}</a>`;
+      row.appendChild(nameCell);
+
+      STUDENTS.forEach(initials => {
+        // If this activity belongs to a specific student, show a placeholder for others
+        if (act.student && act.student !== initials) {
+          const placeholder = document.createElement('div');
+          placeholder.style.cssText = 'width:34px;height:34px;border-radius:50%;background:var(--placeholder-bg,#f4f0ec);border:2px dashed #e0d8d0;flex-shrink:0;';
+          row.appendChild(placeholder);
+          return;
+        }
+
+        const isDone = !!(state[act.id] && state[act.id][initials]);
+        const btn = document.createElement('button');
+        btn.className = 'init-btn' + (isDone ? ' done' : '');
+        btn.textContent = initials;
+        btn.title = isDone ? `${initials} — completed ✓` : `${initials} — not yet done`;
+        btn.addEventListener('click', () => {
+          const s = loadSubjectState(subject.storePrefix);
+          if (!s[act.id]) s[act.id] = {};
+          s[act.id][initials] = !s[act.id][initials];
+          saveSubjectState(subject.storePrefix, s);
+          btn.classList.toggle('done', !!s[act.id][initials]);
+          btn.title = s[act.id][initials] ? `${initials} — completed ✓` : `${initials} — not yet done`;
+          updateSummary();
+        });
+        row.appendChild(btn);
+      });
+
+      block.appendChild(row);
+    });
+
+    container.appendChild(block);
+  });
+}
+
+function renderNotes() {
+  const grid = document.getElementById('notes-grid');
+  grid.innerHTML = '';
+  const notes = loadNotes();
+
+  STUDENTS.forEach(initials => {
+    const card = document.createElement('div');
+    card.className = 'note-card';
+    card.innerHTML = `<label>${initials}</label>`;
+
+    const ta = document.createElement('textarea');
+    ta.placeholder = `Notes for ${initials}…`;
+    ta.value = notes[initials] || '';
+    ta.addEventListener('input', () => {
+      const n = loadNotes();
+      n[initials] = ta.value;
+      saveNotes(n);
+    });
+    card.appendChild(ta);
+    grid.appendChild(card);
+  });
+}
+
+function updateSummary() {
+  let done = 0, total = 0;
+  SUBJECTS.forEach(subject => {
+    const state = loadSubjectState(subject.storePrefix);
+    subject.activities.forEach(act => {
+      if (act.student) {
+        // Single-student activity — only counts once
+        total++;
+        if (state[act.id] && state[act.id][act.student]) done++;
+      } else {
+        STUDENTS.forEach(initials => {
+          total++;
+          if (state[act.id] && state[act.id][initials]) done++;
+        });
+      }
+    });
+  });
+  document.getElementById('sum-done').textContent = done;
+  document.getElementById('sum-total').textContent = total;
+  document.getElementById('sum-pct').textContent = total > 0 ? Math.round((done / total) * 100) + '%' : '0%';
+}
+
+function confirmReset() {
+  if (confirm('Reset ALL completion data for Week 2? This cannot be undone.')) {
+    SUBJECTS.forEach(s => localStorage.removeItem(s.storePrefix));
+    renderSubjects();
+    updateSummary();
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+checkSession();
+</script>
+
+</body>
+</html>
