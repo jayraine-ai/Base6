@@ -102,6 +102,14 @@
   .print-reading-btn:hover { background: #e6f5f8; }
   .save-confirm { font-size: 0.78rem; color: #2e8b57; display: none; }
 
+  /* ── Teacher tools ── */
+  .tools-section { background: #ffffff; border: 1.5px solid #d0eaf0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .tools-section h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; }
+  .tools-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .tool-link-btn { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 700; color: #ffffff; background: #ef7724; border-radius: 10px; padding: 0.65rem 1.2rem; text-decoration: none; }
+  .tool-link-btn:hover { background: #c05a10; }
+  .tool-desc { font-size: 0.82rem; color: #666; line-height: 1.5; }
+
   /* ── Reset ── */
   .danger-zone { text-align: right; }
   .reset-all-btn { font-size: 0.8rem; color: #c0392b; background: none; border: 1.5px solid #f5c0bb; border-radius: 8px; padding: 0.4rem 0.9rem; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
@@ -170,6 +178,15 @@
       <button class="email-reading-btn" onclick="emailReading()">Email to me ✉</button>
       <button class="print-reading-btn" onclick="printReading()">Print / PDF 🖨</button>
       <span class="save-confirm" id="reading-confirm">Saved ✓</span>
+    </div>
+  </div>
+
+  <!-- Teacher tools -->
+  <div class="tools-section">
+    <h2>Teacher tools</h2>
+    <p class="tool-desc">Make a clean evidence link that opens a Google Slides deck in presentation mode at a chosen slide.</p>
+    <div class="tools-row">
+      <a class="tool-link-btn" href="slide-link-maker.html">🔗 Open Slide Link Maker</a>
     </div>
   </div>
 
