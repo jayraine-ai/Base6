@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide Link Maker | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background: #fef8f4;
+    color: #2d2d2d;
+    min-height: 100vh;
+    padding: 24px;
+    text-align: left;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    background: #ef7724;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    color: #007291;
+    font-size: 1.9rem;
+    margin-bottom: 8px;
+  }
+
+  .intro {
+    color: #555;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    max-width: 60ch;
+  }
+
+  .jay-message {
+    background: #fff7f0;
+    border: 2px solid #ef7724;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 22px;
+  }
+
+  .jay-message .jay-title {
+    font-weight: 700;
+    color: #c05a10;
+    margin-bottom: 4px;
+  }
+
+  .jay-message p {
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .card {
+    background: #ffffff;
+    border: 2px solid #e8ddd4;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+
+  label {
+    display: block;
+    font-weight: 700;
+    color: #007291;
+    margin-bottom: 6px;
+    font-size: 1rem;
+  }
+
+  .hint {
+    font-size: 0.88rem;
+    color: #777;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 1rem;
+    border: 2px solid #d8cfc6;
+    border-radius: 10px;
+    background: #fef8f4;
+    color: #2d2d2d;
+    margin-bottom: 18px;
+  }
+
+  input:focus {
+    outline: 3px solid #ef7724;
+    outline-offset: 2px;
+    border-color: #ef7724;
+  }
+
+  .row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .row .field-slide { flex: 0 0 160px; }
+  .row .field-label { flex: 1 1 280px; }
+
+  button {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    cursor: pointer;
+  }
+
+  button:focus-visible {
+    outline: 3px solid #2d2d2d;
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    background: #007291;
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #005a73; }
+
+  .btn-secondary {
+    background: #fff;
+    color: #007291;
+    border: 2px solid #007291;
+    padding: 10px 20px;
+  }
+
+  .btn-secondary:hover { background: #eaf5f8; }
+
+  .btn-small {
+    font-size: 0.88rem;
+    padding: 8px 14px;
+  }
+
+  .error {
+    background: #fdecea;
+    border: 2px solid #e8a39b;
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #8a2a1d;
+    margin-bottom: 18px;
+    display: none;
+    line-height: 1.45;
+  }
+
+  .result {
+    display: none;
+    background: #eaf5f8;
+    border: 2px solid #007291;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 4px;
+  }
+
+  .result-title {
+    font-weight: 700;
+    color: #007291;
+    margin-bottom: 8px;
+  }
+
+  .result-link {
+    display: block;
+    background: #fff;
+    border: 2px solid #c9e2ea;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    word-break: break-all;
+    color: #2d2d2d;
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .copied-msg {
+    color: #1d7a3e;
+    font-weight: 700;
+    align-self: center;
+    display: none;
+  }
+
+  h2 {
+    color: #007291;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+
+  .history-empty {
+    color: #888;
+    padding: 8px 0;
+    line-height: 1.5;
+  }
+
+  .history-item {
+    border: 2px solid #e8ddd4;
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 12px;
+    background: #fffdfb;
+  }
+
+  .history-label {
+    font-weight: 700;
+    color: #2d2d2d;
+    margin-bottom: 2px;
+  }
+
+  .history-meta {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .history-link {
+    font-size: 0.85rem;
+    word-break: break-all;
+    color: #555;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .history-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn-delete {
+    background: #fff;
+    color: #a33;
+    border: 2px solid #d8a09a;
+  }
+
+  .btn-delete:hover { background: #fdecea; }
+
+  .clear-all-row {
+    margin-top: 16px;
+  }
+
+  a.back-link {
+    color: #007291;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  a.back-link:hover { text-decoration: underline; }
+
+  footer {
+    margin-top: 30px;
+    padding-top: 14px;
+    border-top: 2px solid #e8ddd4;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <span class="eyebrow">Staff Tool</span>
+    <h1>Slide Link Maker</h1>
+    <p class="intro">For adding evidence to BridgeLink. Paste any Google Slides link, choose a slide number, and get a clean link that opens straight into presentation mode at that slide. Links you make are saved below on this device so you can copy them again later.</p>
+  </header>
+
+  <div class="jay-message">
+    <p class="jay-title">A message from Jay</p>
+    <p>Hi, I made this to save myself time when linking specific slides as evidence, which Google weirdly doesn't let you do. Hope it helps.</p>
+  </div>
+
+  <div class="card">
+    <label for="slidesUrl">Google Slides link</label>
+    <p class="hint">Any version works — the edit link, the sharing link, whatever Google gives you.</p>
+    <input type="text" id="slidesUrl" placeholder="https://docs.google.com/presentation/d/..." autocomplete="off">
+
+    <div class="row">
+      <div class="field-slide">
+        <label for="slideNumber">Slide number</label>
+        <input type="number" id="slideNumber" min="1" value="1">
+      </div>
+      <div class="field-label">
+        <label for="linkLabel">Label (optional)</label>
+        <input type="text" id="linkLabel" placeholder="e.g. Maths evidence for BridgeLink" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="error" id="errorBox"></div>
+
+    <button class="btn-primary" id="makeBtn" onclick="makeLink()">Make link</button>
+
+    <div class="result" id="resultBox">
+      <p class="result-title" id="resultTitle">Your evidence link</p>
+      <span class="result-link" id="resultLink"></span>
+      <div class="button-row">
+        <button class="btn-primary btn-small" onclick="copyResult()">Copy link</button>
+        <button class="btn-secondary btn-small" onclick="testResult()">Open to check</button>
+        <span class="copied-msg" id="copiedMsg">Copied</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Recent links</h2>
+    <p class="hint">Saved on this device so you can grab them again while evidencing.</p>
+    <div id="historyList"></div>
+    <div class="clear-all-row" id="clearAllRow" style="display:none;">
+      <button class="btn-delete btn-small" onclick="clearAll()">Clear all saved links</button>
+    </div>
+  </div>
+
+  <footer>
+    <a class="back-link" href="../index.html">Back to Base 6</a>
+  </footer>
+
+</div>
+
+<script>
+  const STORAGE_KEY = 'base6_slide_links_staff';
+  let currentLink = '';
+
+  function getHistory() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveHistory(items) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  }
+
+  function extractId(url) {
+    const match = url.match(/\/presentation\/d\/([a-zA-Z0-9_-]+)/);
+    return match ? match[1] : null;
+  }
+
+  function makeLink() {
+    const urlInput = document.getElementById('slidesUrl').value.trim();
+    const slideNum = parseInt(document.getElementById('slideNumber').value, 10);
+    const label = document.getElementById('linkLabel').value.trim();
+    const errorBox = document.getElementById('errorBox');
+    const resultBox = document.getElementById('resultBox');
+
+    errorBox.style.display = 'none';
+    resultBox.style.display = 'none';
+    document.getElementById('copiedMsg').style.display = 'none';
+
+    if (!urlInput) {
+      showError('Paste a Google Slides link first, then try again.');
+      return;
+    }
+
+    const id = extractId(urlInput);
+    if (!id) {
+      showError('That link does not look like a Google Slides link. It should contain /presentation/d/ followed by a long ID. Check the link and try again.');
+      return;
+    }
+
+    if (!slideNum || slideNum < 1) {
+      showError('Choose a slide number of 1 or higher.');
+      return;
+    }
+
+    currentLink = 'https://docs.google.com/presentation/d/' + id + '/preview?rm=minimal&slide=' + slideNum;
+
+    document.getElementById('resultTitle').textContent = label ? label : 'Your evidence link';
+    document.getElementById('resultLink').textContent = currentLink;
+    resultBox.style.display = 'block';
+
+    addToHistory({
+      label: label || 'Untitled link',
+      slide: slideNum,
+      link: currentLink,
+      date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    });
+  }
+
+  function showError(msg) {
+    const errorBox = document.getElementById('errorBox');
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+  }
+
+  function copyResult() {
+    copyText(currentLink, document.getElementById('copiedMsg'));
+  }
+
+  function testResult() {
+    if (currentLink) window.open(currentLink, '_blank');
+  }
+
+  function copyText(text, msgEl) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (msgEl) {
+        msgEl.style.display = 'inline';
+        setTimeout(() => { msgEl.style.display = 'none'; }, 2000);
+      }
+    }).catch(() => {
+      // Fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (msgEl) {
+        msgEl.style.display = 'inline';
+        setTimeout(() => { msgEl.style.display = 'none'; }, 2000);
+      }
+    });
+  }
+
+  function addToHistory(item) {
+    const history = getHistory();
+    // Avoid exact duplicates at the top
+    if (history.length > 0 && history[0].link === item.link) {
+      history[0] = item;
+    } else {
+      history.unshift(item);
+    }
+    if (history.length > 30) history.pop();
+    saveHistory(history);
+    renderHistory();
+  }
+
+  function deleteItem(index) {
+    const history = getHistory();
+    history.splice(index, 1);
+    saveHistory(history);
+    renderHistory();
+  }
+
+  function clearAll() {
+    if (confirm('Remove all saved links? This cannot be undone.')) {
+      saveHistory([]);
+      renderHistory();
+    }
+  }
+
+  function copyHistoryItem(index, btn) {
+    const history = getHistory();
+    if (!history[index]) return;
+    copyText(history[index].link, null);
+    const original = btn.textContent;
+    btn.textContent = 'Copied';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  }
+
+  function renderHistory() {
+    const history = getHistory();
+    const list = document.getElementById('historyList');
+    const clearRow = document.getElementById('clearAllRow');
+
+    if (history.length === 0) {
+      list.innerHTML = '<p class="history-empty">No saved links yet. The first link you make will appear here.</p>';
+      clearRow.style.display = 'none';
+      return;
+    }
+
+    clearRow.style.display = 'block';
+    list.innerHTML = history.map((item, i) => `
+      <div class="history-item">
+        <p class="history-label">${escapeHtml(item.label)}</p>
+        <p class="history-meta">Slide ${item.slide} &middot; ${escapeHtml(item.date)}</p>
+        <p class="history-link">${escapeHtml(item.link)}</p>
+        <div class="history-actions">
+          <button class="btn-secondary btn-small" onclick="copyHistoryItem(${i}, this)">Copy</button>
+          <button class="btn-secondary btn-small" onclick="window.open('${item.link.replace(/'/g, '')}', '_blank')">Open</button>
+          <button class="btn-delete btn-small" onclick="deleteItem(${i})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // Allow Enter to make the link from any input
+  ['slidesUrl', 'slideNumber', 'linkLabel'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') makeLink();
+    });
+  });
+
+  renderHistory();
+</script>
+</body>
+</html>
