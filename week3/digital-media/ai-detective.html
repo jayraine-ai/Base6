@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Detective · Digital Media · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .card h2 { font-size: 1.1rem; color: #007291; margin-bottom: 0.6rem; }
+  .card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+  .card p + p { margin-top: 0.6rem; }
+  .clue-box { background: #fff7f0; border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.9rem 1.1rem; margin-top: 0.9rem; font-size: 0.9rem; line-height: 1.7; }
+  .clue-box strong { color: #c05a10; }
+
+  .score-bar { background: #1f2a30; border-radius: 14px; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .score-bar .case-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fef8f4; opacity: 0.7; }
+  .score-bar .case-score { font-size: 1.1rem; font-weight: 700; color: #7be3a8; }
+
+  .moment { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .moment-time { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ef7724; margin-bottom: 0.3rem; }
+  .moment-text { font-size: 0.95rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.8rem; }
+  .verdict-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .verdict-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 0.55rem 1.3rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .verdict-btn:hover { border-color: #b8d8e0; }
+  .verdict-btn.right { border-color: #2e8b57; background: #e6f5e6; color: #1a5e1a; }
+  .verdict-btn.wrong { border-color: #c0392b; background: #fbeae8; color: #8a2318; }
+  .moment-feedback { display: none; font-size: 0.85rem; line-height: 1.6; margin-top: 0.7rem; padding: 0.6rem 0.85rem; border-radius: 8px; }
+  .moment-feedback.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .moment-feedback.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+
+  .case-closed { display: none; background: #1f2a30; border-radius: 14px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; }
+  .case-closed.show { display: block; }
+  .case-closed h2 { color: #7be3a8; font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .case-closed p { color: #fef8f4; opacity: 0.85; font-size: 0.92rem; line-height: 1.6; }
+
+  .final-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; }
+  .final-card label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.75rem 0 0.35rem; }
+  .final-card input[type=text], .final-card textarea { width: 100%; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; line-height: 1.6; }
+  .final-card input[type=text]:focus, .final-card textarea:focus { border-color: #007291; }
+  .final-card textarea { min-height: 80px; resize: vertical; }
+  .email-btn { margin-top: 1rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; margin-top: 0.75rem; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Digital Media</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Digital Media · Week 3</p>
+  <h1>🕵️ AI Detective</h1>
+  <p>Artificial intelligence is hiding in plain sight, all through an ordinary day. Your case: follow the timeline and decide where AI is at work — and where it's just regular technology doing what it's told.</p>
+</div>
+
+<main class="main">
+
+  <div class="card">
+    <h2>Your detective briefing</h2>
+    <p>First, know your suspect. AI — artificial intelligence — is computer software that learns patterns from lots of examples, then uses those patterns to make predictions or decisions about new things it hasn't seen before.</p>
+    <p>Ordinary technology follows fixed instructions a human wrote, the same way every time. A toaster toasts. A calculator calculates. They never learn anything.</p>
+    <div class="clue-box">
+      <strong>The detective's question:</strong> "Is this machine learning from examples and making predictions — or just following the same instructions every time?" If it learns and predicts, you've found AI.
+    </div>
+  </div>
+
+  <div class="score-bar">
+    <span class="case-label">🔎 Case progress</span>
+    <span class="case-score" id="case-score">0 / 10 verdicts correct</span>
+  </div>
+
+  <div id="timeline"></div>
+
+  <div class="case-closed" id="case-closed">
+    <h2>🏅 Case closed, detective</h2>
+    <p id="case-summary"></p>
+  </div>
+
+  <div class="final-card">
+    <h2 style="font-size: 1.1rem; color: #007291; margin-bottom: 0.4rem;">Your detective's report</h2>
+    <p style="font-size: 0.9rem; color: #555; line-height: 1.6;">One last bit of evidence, if you'd like: where did YOU meet AI this week? It could be a game, an app, a video — anything from your own day.</p>
+    <label for="r-spot">AI I spotted in my own life</label>
+    <textarea id="r-spot"></textarea>
+    <label for="r-name">Your name</label>
+    <input type="text" id="r-name" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send my case file to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Digital Media
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_dm_detective';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const MOMENTS = [
+  { time: '7:15am', text: 'You say "hey, what\'s the weather?" and your smart speaker understands you and answers.', ai: true,
+    fb: 'Understanding human speech is AI — the speaker learned from millions of voice examples to work out what words you said.' },
+  { time: '7:30am', text: 'The toaster pops your toast up after two minutes, like it always does.', ai: false,
+    fb: 'No learning here — it\'s a timer and a spring. Same instructions, same toast, every single time.' },
+  { time: '7:45am', text: 'Your phone unlocks the moment it sees your face.', ai: true,
+    fb: 'Face recognition is AI — the phone learned the patterns of your face and predicts "is this the owner?" every time you look at it.' },
+  { time: '8:20am', text: 'You type "definately" and your phone suggests "definitely".', ai: true,
+    fb: 'Modern keyboards use AI — they learned from huge amounts of text to predict what word you probably meant.' },
+  { time: '8:40am', text: 'You check the paper timetable taped up at the bus stop.', ai: false,
+    fb: 'It\'s paper. Gloriously, completely paper. No predictions, no learning, no AI.' },
+  { time: '12:30pm', text: 'The satnav on the school trip spots traffic ahead and reroutes around it.', ai: true,
+    fb: 'Predicting journey times from live traffic patterns is AI — it learned from millions of past journeys what slow traffic looks like.' },
+  { time: '1:15pm', text: 'You use a calculator to check 4,725 + 2,318 in maths.', ai: false,
+    fb: 'Calculators follow fixed rules of arithmetic, written by humans, the same way every time. Fast — but no learning involved.' },
+  { time: '4:00pm', text: 'YouTube\'s home page suggests three videos that are weirdly exactly your thing.', ai: true,
+    fb: 'Recommendations are classic AI — it learned your patterns from what you watched before, and predicts what you\'ll want next.' },
+  { time: '4:30pm', text: 'A vending machine gives you a drink when you press B4.', ai: false,
+    fb: 'Press B4, get B4. Fixed instructions, zero learning. (If it ever starts suggesting drinks, call us back.)' },
+  { time: '6:00pm', text: 'Your photos app has quietly grouped all the pictures of your dog into one album.', ai: true,
+    fb: 'Recognising "that\'s the same dog" across hundreds of photos is AI — it learned what your dog looks like from the examples in your library.' },
+];
+
+let state = { verdicts: {}, spot: '' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+function render() {
+  const c = document.getElementById('timeline');
+  c.innerHTML = '';
+  MOMENTS.forEach((m, i) => {
+    const picked = state.verdicts[i]; // true = said AI, false = said not AI
+    let aiCls = 'verdict-btn', notCls = 'verdict-btn';
+    if (picked === true) aiCls += m.ai ? ' right' : ' wrong';
+    if (picked === false) notCls += !m.ai ? ' right' : ' wrong';
+    let fbCls = 'moment-feedback', fbTxt = '';
+    if (picked !== undefined) {
+      const right = picked === m.ai;
+      fbCls += right ? ' show-right' : ' show-wrong';
+      fbTxt = right ? '✓ ' + m.fb : 'Hmm — ' + m.fb;
+    }
+    const div = document.createElement('div');
+    div.className = 'moment';
+    div.innerHTML = '<div class="moment-time">' + m.time + '</div>' +
+      '<div class="moment-text">' + m.text + '</div>' +
+      '<div class="verdict-row">' +
+      '<button class="' + aiCls + '" onclick="verdict(' + i + ', true)">🤖 AI at work</button>' +
+      '<button class="' + notCls + '" onclick="verdict(' + i + ', false)">🔧 Not AI</button>' +
+      '</div><div class="' + fbCls + '">' + fbTxt + '</div>';
+    c.appendChild(div);
+  });
+  updateScore();
+}
+
+function verdict(i, v) {
+  state.verdicts[i] = v;
+  save();
+  render();
+}
+
+function correctCount() {
+  return MOMENTS.filter((m, i) => state.verdicts[i] === m.ai).length;
+}
+
+function updateScore() {
+  const n = correctCount();
+  const answered = Object.keys(state.verdicts).length;
+  document.getElementById('case-score').textContent = n + ' / 10 verdicts correct';
+  if (answered === 10) {
+    const box = document.getElementById('case-closed');
+    box.classList.add('show');
+    document.getElementById('case-summary').textContent =
+      n === 10 ? 'A perfect investigation — all 10 verdicts correct. AI cannot hide from you.' :
+      n >= 7 ? n + ' out of 10 correct — sharp detective work. Revisit any orange verdicts to close the file completely.' :
+      n + ' out of 10 so far. The clues are all in the feedback — every verdict can be changed.';
+  }
+}
+
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  state.spot = document.getElementById('r-spot').value.trim();
+  save();
+
+  let body = 'AI DETECTIVE — DIGITAL MEDIA WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Verdicts correct: ' + correctCount() + '/10 (' + Object.keys(state.verdicts).length + '/10 attempted)\n\n';
+  if (state.spot) body += 'AI I spotted in my own life:\n' + state.spot + '\n\n';
+  body += '—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · AI Detective — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now — case file ready to send.';
+  n.classList.add('show');
+}
+
+// Init
+render();
+if (state.spot) document.getElementById('r-spot').value = state.spot;
+</script>
+
+</body>
+</html>
