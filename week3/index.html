@@ -3,397 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Week 3 · Base 6</title>
+<title>English · Week 3 · Base 6</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
 
-  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 0.75rem; }
   .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
   .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; font-weight: 700; opacity: 0.6; }
 
-  .week-hero { background-color: #007291; padding: 2rem 2rem 3rem; text-align: center; }
-  .week-hero .week-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .week-hero h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; line-height: 1.2; margin-bottom: 0.75rem; }
-  .week-hero p { font-size: 1rem; color: #fef8f4; opacity: 0.85; max-width: 540px; margin: 0 auto; }
+  .subject-hero { background-color: #007291; padding: 1.5rem 2rem 2.5rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
 
-  .wotw-banner { background-color: #ef7724; padding: 0.9rem 2rem; text-align: center; }
-  .wotw-banner a { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; }
-  .wotw-banner a:hover { text-decoration: underline; }
+  .main { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
 
-  .main { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .focus-card { background: #fff7f0; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .focus-card p.label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #c05a10; margin-bottom: 0.6rem; }
+  .focus-card ul { list-style: none; }
+  .focus-card li { font-size: 0.93rem; line-height: 1.7; color: #333; padding-left: 1.4rem; position: relative; }
+  .focus-card li::before { content: "✦"; position: absolute; left: 0; color: #ef7724; }
+
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
 
-  .subjects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
 
-  .subject-card { background: #ffffff; border: 2px solid #e8e0d8; border-radius: 14px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.4rem; text-decoration: none; color: inherit; transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s; }
-  .subject-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
-  .card-english { border-color: #ef7724; } .card-english:hover { border-color: #ef7724; } .card-english .subject-name { color: #ef7724; } .card-english .subject-arrow { color: #ef7724; }
-  .card-maths { border-color: #007291; } .card-maths:hover { border-color: #007291; } .card-maths .subject-name { color: #007291; } .card-maths .subject-arrow { color: #007291; }
-  .card-digital { border-color: #4a6fa5; } .card-digital:hover { border-color: #4a6fa5; } .card-digital .subject-name { color: #4a6fa5; } .card-digital .subject-arrow { color: #4a6fa5; }
-  .card-science { border-color: #2e8b57; } .card-science:hover { border-color: #2e8b57; } .card-science .subject-name { color: #2e8b57; } .card-science .subject-arrow { color: #2e8b57; }
-  .card-physical { border-color: #6b8e23; } .card-physical:hover { border-color: #6b8e23; } .card-physical .subject-name { color: #6b8e23; } .card-physical .subject-arrow { color: #6b8e23; }
-  .card-adulthood { border-color: #0e8a9e; } .card-adulthood:hover { border-color: #0e8a9e; } .card-adulthood .subject-name { color: #0e8a9e; } .card-adulthood .subject-arrow { color: #0e8a9e; }
-  .card-relational { border-color: #7b5ea7; } .card-relational:hover { border-color: #7b5ea7; } .card-relational .subject-name { color: #7b5ea7; } .card-relational .subject-arrow { color: #7b5ea7; }
-  .card-human { border-color: #c0392b; } .card-human:hover { border-color: #c0392b; } .card-human .subject-name { color: #c0392b; } .card-human .subject-arrow { color: #c0392b; }
-  .card-creative { border-color: #c2185b; } .card-creative:hover { border-color: #c2185b; } .card-creative .subject-name { color: #c2185b; } .card-creative .subject-arrow { color: #c2185b; }
-  .card-project { border-color: #007291; } .card-project:hover { border-color: #007291; } .card-project .subject-name { color: #007291; } .card-project .subject-arrow { color: #007291; }
+  .resource-card { background: #ffffff; border: 2px solid #ef7724; border-radius: 14px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.4rem; text-decoration: none; color: inherit; transition: box-shadow 0.15s, transform 0.1s; }
+  .resource-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .resource-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+  .resource-name { font-size: 1.1rem; font-weight: 700; color: #ef7724; line-height: 1.3; }
+  .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; flex-grow: 1; }
+  .resource-arrow { margin-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #ef7724; }
 
-  .subject-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
-  .subject-name { font-size: 1.1rem; font-weight: 700; line-height: 1.3; }
-  .subject-desc { font-size: 0.88rem; color: #555; line-height: 1.5; flex-grow: 1; }
-  .subject-arrow { margin-top: 0.75rem; font-size: 0.85rem; font-weight: 700; }
-
-  /* ── CHALLENGE CARD ── */
-  .challenge-section { margin-bottom: 2.5rem; }
-  .challenge-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ef7724; margin-bottom: 1.25rem; }
-
-  .challenge-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.5rem; }
-  .challenge-top { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
-  .challenge-icon { width: 44px; height: 44px; border-radius: 10px; background: #fff3e8; border: 1.5px solid #fcd8bc; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
-  .challenge-meta { flex: 1; }
-  .challenge-optional { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #c05a10; margin-bottom: 0.3rem; }
-  .challenge-question { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; line-height: 1.4; margin-bottom: 0.5rem; }
-  .challenge-desc { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 0.75rem; }
-  .challenge-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-  .challenge-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 20px; border: 1px solid #e0d8d0; color: #888; background: #fff; }
-
-  .challenge-form { border-top: 1px solid #fcd8bc; padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
-  .challenge-form label { font-size: 0.82rem; font-weight: 700; color: #555; }
-  .challenge-form input[type=text] { width: 100%; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #ffffff; color: #1a1a1a; outline: none; }
-  .challenge-form input:focus { border-color: #ef7724; }
-  .challenge-form textarea { width: 100%; min-height: 80px; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #ffffff; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.5; }
-  .challenge-form textarea:focus { border-color: #ef7724; }
-  .challenge-submit { align-self: flex-end; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; background: #ef7724; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
-  .challenge-submit:hover { background: #c05a10; }
-  .challenge-submit:disabled { background: #ccc; cursor: default; }
-
-  /* Stamp revealed state */
-  .challenge-done { border-top: 1px solid #fcd8bc; padding-top: 1.25rem; display: none; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; }
-  .challenge-done.show { display: flex; }
-  .stamp-circle { width: 80px; height: 80px; border-radius: 50%; border: 3px dashed #ef7724; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
-  .stamp-circle .stamp-emoji { font-size: 1.8rem; }
-  .stamp-circle .stamp-wk { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ef7724; }
-  .stamp-done-title { font-size: 1rem; font-weight: 700; color: #1a1a1a; }
-  .stamp-done-sub { font-size: 0.85rem; color: #555; }
-  .stamp-response-preview { font-size: 0.85rem; color: #555; background: #fff3e8; border-radius: 8px; padding: 0.5rem 0.75rem; max-width: 480px; line-height: 1.5; }
-
-  /* ── STAMP CARD ── */
-  .stamp-card-section { margin-bottom: 2.5rem; }
-  .stamp-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; }
-  .stamp-card-title { font-size: 0.9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.25rem; }
-  .stamp-card-sub { font-size: 0.82rem; color: #888; margin-bottom: 1rem; }
-  .stamp-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-  .stamp-slot { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-  .stamp-slot .slot-circle { width: 52px; height: 52px; border-radius: 50%; border: 2px dashed #e0d8d0; background: #fef8f4; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: border-color 0.2s, background 0.2s; }
-  .stamp-slot .slot-circle.filled { border-color: #ef7724; border-style: solid; background: #fff3e8; }
-  .stamp-slot .slot-label { font-size: 0.65rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
-  .stamp-slot .slot-label.filled { color: #ef7724; }
-
-  /* Notify bar */
-  .notify-bar { display: none; padding: 0.65rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-top: 0.5rem; }
-  .notify-bar.show { display: block; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; }
+  /* ── Completion tracker strip ── */
+  .tracker-row { margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid #f0e8e0; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .tracker-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; }
+  .initials-row { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .initial-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.72rem; font-weight: 700; width: 36px; height: 28px; border-radius: 7px; border: 1.5px solid #e0d8d0; background: #fff; color: #999; cursor: pointer; transition: background 0.12s, border-color 0.12s, color 0.12s; }
+  .initial-btn:hover { border-color: #b8d8e0; }
+  .initial-btn.done { background: #e6f5e6; border-color: #2e8b57; color: #1a5e1a; }
 
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
-  .teacher-link { color: #d8d0c8; font-size: 0.72rem; text-decoration: none; margin-left: 1rem; }
-  .teacher-link:hover { color: #888; }
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <a class="back-link" href="../index.html">← Home</a>
+  <a class="back-link" href="../index.html">← Week 3</a>
+  <span class="breadcrumb">/ English</span>
 </header>
 
-<div class="week-hero">
-  <p class="week-label">Week 3</p>
-  <h1>Making Things Better</h1>
-  <p>Choose a subject below to see this week's activities and resources.</p>
-</div>
-
-<div class="wotw-banner">
-  <a href="optimise-explorer.html">Word of the Week — <strong>Optimise</strong> →</a>
+<div class="subject-hero">
+  <p class="subject-label">Week 3 · English</p>
+  <h1>📝 English</h1>
 </div>
 
 <main class="main">
 
-  <p class="section-label">This week's subjects</p>
-  <div class="subjects-grid">
-
-    <a class="subject-card card-english" href="english/index.html">
-      <div class="subject-icon">📝</div>
-      <span class="subject-name">English</span>
-      <span class="subject-desc">Language features, tone, style and communication.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-maths" href="maths/index.html">
-      <div class="subject-icon">🔢</div>
-      <span class="subject-name">Maths</span>
-      <span class="subject-desc">Place value to 10,000 and calculation skills.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-digital" href="digital-media/index.html">
-      <div class="subject-icon">💻</div>
-      <span class="subject-name">Digital Media</span>
-      <span class="subject-desc">Computing and coding — what is AI and where do we meet it every day?</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-science" href="science/index.html">
-      <div class="subject-icon">🧲</div>
-      <span class="subject-name">Science and Environmental</span>
-      <span class="subject-desc">Physics — forces, motion and energy in action.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-physical" href="physical-world/index.html">
-      <div class="subject-icon">🦋</div>
-      <span class="subject-name">Physical World &amp; Exploration</span>
-      <span class="subject-desc">Wildlife exploration — create a mini conservation area and track biodiversity.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-adulthood" href="adulthood/index.html">
-      <div class="subject-icon">🧘</div>
-      <span class="subject-name">Preparation for Adulthood</span>
-      <span class="subject-desc">Wellbeing, leisure and free time — yoga poses and their benefits.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-relational" href="relational/index.html">
-      <div class="subject-icon">💬</div>
-      <span class="subject-name">Relational (PSHE &amp; RSE)</span>
-      <span class="subject-desc">Changing me — personal hygiene, grooming and looking after yourself.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-human" href="human-social/index.html">
-      <div class="subject-icon">📜</div>
-      <span class="subject-name">Human and Social</span>
-      <span class="subject-desc">History — beyond living memory. Sources, artefacts and bias.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
-    <a class="subject-card card-creative" href="https://nastix-design.com/" target="_blank" rel="noopener noreferrer">
-      <div class="subject-icon">🎨</div>
-      <span class="subject-name">Aesthetic and Creative</span>
-      <span class="subject-desc">Design your own fashion — choose a template, then explore materials, colours and patterns.</span>
-      <span class="subject-arrow">Open Nastix Design ↗</span>
-    </a>
-
-    <a class="subject-card card-project" href="project/index.html">
-      <div class="subject-icon">🚀</div>
-      <span class="subject-name">Project</span>
-      <span class="subject-desc">Continued development on individual projects.</span>
-      <span class="subject-arrow">See activities →</span>
-    </a>
-
+  <div class="focus-card">
+    <p class="label">This week we are exploring</p>
+    <ul>
+      <li>Language features — tone, style and register, and how they change for different audiences</li>
+      <li>Using Standard English when the situation calls for it</li>
+      <li>Clearly expressing information, feelings and opinions on topics that matter to you</li>
+    </ul>
   </div>
 
-  <!-- ── STAMP CARD ── -->
-  <div class="stamp-card-section">
-    <p class="section-label">My stamp card</p>
-    <div class="stamp-card">
-      <div class="stamp-card-title">Base 6 · Weekly Challenges</div>
-      <div class="stamp-card-sub">Complete each week's challenge to earn a stamp. Your card saves on this device.</div>
-      <div class="stamp-row" id="stamp-row"></div>
-    </div>
-  </div>
+  <p class="section-label">Resources</p>
+  <div class="resources-grid">
 
-  <!-- ── WEEKLY CHALLENGE ── -->
-  <div class="challenge-section">
-    <p class="challenge-label">This week's challenge</p>
+    <a class="resource-card" href="register-switchboard.html" data-activity="register-switchboard">
+      <div class="resource-icon">📞</div>
+      <span class="resource-name">The Register Switchboard</span>
+      <span class="resource-desc">Work the switchboard: match messages to their audience, sort formal from informal, repair non-Standard sentences, and switch a very cheeky text into a formal message fit for the headteacher.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
 
-    <div class="challenge-card">
-      <div class="challenge-top">
-        <div class="challenge-icon">⚙️</div>
-        <div class="challenge-meta">
-          <div class="challenge-optional">Optional · any time this week</div>
-          <div class="challenge-question">If you could optimise one part of your day — change one small thing so it works better for you — what would it be?</div>
-          <div class="challenge-desc">It could be anything: your morning routine, how you set up your space, when you take breaks. How might that one small change shape your tomorrow?</div>
-          <div class="challenge-tags">
-            <span class="challenge-tag">links to Preparation for Adulthood</span>
-            <span class="challenge-tag">links to Relational</span>
-            <span class="challenge-tag">links to Science</span>
-          </div>
-        </div>
-      </div>
+    <a class="resource-card" href="chilton-fm.html" data-activity="chilton-fm">
+      <div class="resource-icon">🎙️</div>
+      <span class="resource-name">Chilton FM</span>
+      <span class="resource-desc">Host your own radio segment. Build an opinion piece step by step, hear it read back on air, and reply to a caller who wants a four day school week.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
 
-      <!-- Form (hidden once done) -->
-      <div class="challenge-form" id="challenge-form">
-        <div>
-          <label for="c-name">Your name</label>
-          <input type="text" id="c-name" placeholder="Type your name here">
-        </div>
-        <div>
-          <label for="c-answer">Your answer — a sentence or two is fine</label>
-          <textarea id="c-answer" placeholder="e.g. I could optimise my mornings by getting my bag ready the night before..."></textarea>
-        </div>
-        <div class="notify-bar" id="notify-bar"></div>
-        <button class="challenge-submit" id="challenge-submit" onclick="submitChallenge()">Earn my stamp ⚙️</button>
-      </div>
-
-      <!-- Done state -->
-      <div class="challenge-done" id="challenge-done">
-        <div class="stamp-circle">
-          <span class="stamp-emoji">⚙️</span>
-          <span class="stamp-wk">Week 3</span>
-        </div>
-        <div class="stamp-done-title">Challenge complete!</div>
-        <div class="stamp-done-sub">Your stamp has been saved to this device.</div>
-        <div class="stamp-response-preview" id="done-preview"></div>
-      </div>
-
-    </div>
   </div>
 
 </main>
 
 <footer>
-  <span id="reset-target" onclick="handleResetClick()" style="cursor:default;">Base 6 · Chilton Bridge School</span>
-  <a class="teacher-link" href="teacher.html">·</a>
+  Base 6 · Chilton Bridge School
 </footer>
 
 <script>
-// ── Config ──────────────────────────────────────────────
-const THIS_WEEK = 3;
-const TOTAL_WEEKS = 7;
-const STORE_KEY = 'base6_stamps';
-const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+// ── Completion tracker (Week 2 pattern) ─────────────────────────
+// Shared with the Week 3 teacher dashboard:
+//   key: base6_w3_english_tracker
+//   shape: { "<activity-id>": { "LW": true, "AP": true, ... } }
+const TRACKER_KEY = 'base6_w3_english_tracker';
+const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
 
-// Week themes for stamp card
-const WEEK_THEMES = {
-  1: { emoji: '🌱', label: 'Wk 1' },
-  2: { emoji: '🏆', label: 'Wk 2' },
-  3: { emoji: '⚙️', label: 'Wk 3' },
-  4: { emoji: '🔥', label: 'Wk 4' },
-  5: { emoji: '💡', label: 'Wk 5' },
-  6: { emoji: '🚀', label: 'Wk 6' },
-  7: { emoji: '🎓', label: 'Wk 7' },
-};
-
-// ── Storage ─────────────────────────────────────────────
-function loadStamps() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; }
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(TRACKER_KEY)) || {}; } catch(e) { return {}; }
 }
-function saveStamps(stamps) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(stamps)); } catch(e) {} 
+function saveState(s) {
+  try { localStorage.setItem(TRACKER_KEY, JSON.stringify(s)); } catch(e) {}
 }
 
-// ── Render stamp row ────────────────────────────────────
-function renderStampRow() {
-  const stamps = loadStamps();
-  const row = document.getElementById('stamp-row');
-  row.innerHTML = '';
-  for(let w = 1; w <= TOTAL_WEEKS; w++) {
-    const theme = WEEK_THEMES[w];
-    const filled = !!stamps[w];
-    const slot = document.createElement('div');
-    slot.className = 'stamp-slot';
-    slot.innerHTML = `
-      <div class="slot-circle ${filled ? 'filled' : ''}" title="${filled ? 'Week '+w+' complete — '+stamps[w].name : 'Week '+w+' — not yet done'}">
-        ${filled ? theme.emoji : ''}
-      </div>
-      <div class="slot-label ${filled ? 'filled' : ''}">${theme.label}</div>
-    `;
-    row.appendChild(slot);
-  }
+function buildTrackers() {
+  const state = loadState();
+  document.querySelectorAll('.resource-card[data-activity]').forEach(card => {
+    const activity = card.dataset.activity;
+
+    const strip = document.createElement('div');
+    strip.className = 'tracker-row';
+
+    const label = document.createElement('span');
+    label.className = 'tracker-label';
+    label.textContent = 'completed by';
+    strip.appendChild(label);
+
+    const row = document.createElement('div');
+    row.className = 'initials-row';
+
+    STUDENTS.forEach(initials => {
+      const btn = document.createElement('button');
+      btn.className = 'initial-btn' + (state[activity] && state[activity][initials] ? ' done' : '');
+      btn.textContent = initials;
+      btn.title = state[activity] && state[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const s = loadState();
+        if (!s[activity]) s[activity] = {};
+        s[activity][initials] = !s[activity][initials];
+        saveState(s);
+        btn.classList.toggle('done', !!s[activity][initials]);
+        btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      });
+      row.appendChild(btn);
+    });
+
+    strip.appendChild(row);
+    card.appendChild(strip);
+  });
 }
 
-// ── Check if this week already done ─────────────────────
-function checkAlreadyDone() {
-  const stamps = loadStamps();
-  if(stamps[THIS_WEEK]) {
-    showDoneState(stamps[THIS_WEEK].answer, stamps[THIS_WEEK].name);
-  }
-}
-
-function showDoneState(answer, name) {
-  document.getElementById('challenge-form').style.display = 'none';
-  const done = document.getElementById('challenge-done');
-  done.classList.add('show');
-  document.getElementById('done-preview').textContent = '"' + answer + '"';
-}
-
-// ── Submit ───────────────────────────────────────────────
-function submitChallenge() {
-  const name = document.getElementById('c-name').value.trim();
-  const answer = document.getElementById('c-answer').value.trim();
-  const notify = document.getElementById('notify-bar');
-
-  if(!name) {
-    notify.textContent = 'Please type your name first.';
-    notify.className = 'notify-bar show';
-    notify.style.background = '#fff3e6';
-    notify.style.borderColor = '#e8a020';
-    notify.style.color = '#7a4a00';
-    document.getElementById('c-name').focus();
-    return;
-  }
-  if(!answer) {
-    notify.textContent = 'Add your answer before earning the stamp.';
-    notify.className = 'notify-bar show';
-    notify.style.background = '#fff3e6';
-    notify.style.borderColor = '#e8a020';
-    notify.style.color = '#7a4a00';
-    document.getElementById('c-answer').focus();
-    return;
-  }
-
-  // Save stamp
-  const stamps = loadStamps();
-  stamps[THIS_WEEK] = {
-    name,
-    answer,
-    date: new Date().toLocaleDateString('en-GB'),
-    week: THIS_WEEK
-  };
-  saveStamps(stamps);
-
-  // Update stamp row
-  renderStampRow();
-
-  // Show done state
-  showDoneState(answer, name);
-
-  // Email teacher
-  const subject = encodeURIComponent('Base 6 · Week ' + THIS_WEEK + ' Challenge — ' + name);
-  const body = encodeURIComponent(
-    'BASE 6 · WEEKLY CHALLENGE RESPONSE\n\n' +
-    'Student: ' + name + '\n' +
-    'Week: ' + THIS_WEEK + ' — Making Things Better\n' +
-    'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n' +
-    'Challenge: If you could optimise one part of your day — change one small thing so it works better for you — what would it be?\n\n' +
-    'Response:\n' + answer + '\n\n' +
-    '—\nSent automatically from Base 6'
-  );
-  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + subject + '&body=' + body, '_blank');
-}
-
-// ── Init ─────────────────────────────────────────────────
-renderStampRow();
-checkAlreadyDone();
-
-// ── Hidden stamp reset (triple-click footer) ─────────────
-let resetClicks = 0, resetTimer = null;
-function handleResetClick() {
-  resetClicks++;
-  clearTimeout(resetTimer);
-  resetTimer = setTimeout(() => { resetClicks = 0; }, 600);
-  if (resetClicks >= 3) {
-    resetClicks = 0;
-    if (confirm('Reset your stamp card? This will clear all saved stamps on this device.')) {
-      localStorage.removeItem(STORE_KEY);
-      localStorage.removeItem('base6_w3_challenge');
-      document.getElementById('challenge-form').style.display = 'flex';
-      document.getElementById('challenge-done').classList.remove('show');
-      renderStampRow();
-    }
-  }
-}
+buildTrackers();
 </script>
 
 </body>
