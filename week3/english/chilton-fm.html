@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chilton FM · English · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+  .on-air { display: inline-block; margin-top: 0.9rem; background: #c0392b; color: #fff; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 16px; border-radius: 6px; }
+
+  .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .step { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .step-head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+  .step-num { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ef7724; background: #fff3e8; border: 1.5px solid #fcd8bc; border-radius: 20px; padding: 3px 10px; }
+  .step-title { font-size: 1.05rem; font-weight: 700; color: #007291; }
+  .step-sub { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 0.9rem; }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .chip { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .chip:hover { border-color: #b8d8e0; }
+  .chip.on { border-color: #007291; background: #e6f5f8; color: #007291; }
+
+  input[type=text], textarea { width: 100%; padding: 0.7rem 0.95rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #fff; color: #1a1a1a; outline: none; line-height: 1.6; }
+  input[type=text]:focus, textarea:focus { border-color: #007291; }
+  textarea { min-height: 76px; resize: vertical; }
+
+  .starter-note { font-size: 0.8rem; color: #888; margin-bottom: 0.4rem; }
+
+  /* Broadcast card */
+  .broadcast { background: #1f2a30; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .broadcast-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
+  .broadcast-dot { width: 10px; height: 10px; border-radius: 50%; background: #c0392b; }
+  .broadcast-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fef8f4; opacity: 0.8; }
+  .broadcast-script { font-size: 1rem; line-height: 1.8; color: #fef8f4; white-space: pre-wrap; }
+  .broadcast-script .placeholder { opacity: 0.5; }
+
+  .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .action-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #007291; color: #fff; }
+  .action-btn:hover { background: #005a73; }
+  .action-btn.orange { background: #ef7724; }
+  .action-btn.orange:hover { background: #c05a10; }
+  .action-btn.ghost { background: #fff; color: #007291; border: 2px solid #007291; }
+  .action-btn.ghost:hover { background: #e6f5f8; }
+
+  .notify { display: none; margin-top: 0.75rem; font-size: 0.88rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.65rem 1rem; line-height: 1.5; }
+  .notify.show { display: block; }
+
+  /* Caller segment */
+  .caller-box { background: #fff7f0; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .caller-quote { display: none; background: #fff; border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.92rem; line-height: 1.7; margin: 0.9rem 0; }
+  .caller-quote.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← English</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">English · Week 3</p>
+  <h1>🎙️ Chilton FM</h1>
+  <p>You've got your own radio segment: "In My Opinion". Build your piece step by step, hear it read back over the airwaves, and respond to a caller. You're the voice — the studio just helps you shape it.</p>
+  <span class="on-air">● On Air</span>
+</div>
+
+<main class="main">
+
+  <!-- STEP 1: topic -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 1</span><span class="step-title">Pick your topic</span></div>
+    <p class="step-sub">What would you like to talk about on air? Choose one, or type your own.</p>
+    <div class="chip-row" id="topic-chips"></div>
+    <input type="text" id="topic-own" placeholder="...or type your own topic here" oninput="ownTopic()">
+  </div>
+
+  <!-- STEP 2: opinion -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 2</span><span class="step-title">What's your opinion?</span></div>
+    <p class="step-sub">Pick a starter if it helps, then say what you think about your topic.</p>
+    <p class="starter-note">Starters — tap to add one:</p>
+    <div class="chip-row">
+      <button class="chip" onclick="addStarter('opinion', 'I think ')">I think...</button>
+      <button class="chip" onclick="addStarter('opinion', 'In my opinion, ')">In my opinion...</button>
+      <button class="chip" onclick="addStarter('opinion', 'I feel that ')">I feel that...</button>
+    </div>
+    <textarea id="part-opinion" oninput="updateScript()" placeholder="Your opinion..."></textarea>
+  </div>
+
+  <!-- STEP 3: reason -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 3</span><span class="step-title">Give a reason</span></div>
+    <p class="step-sub">Why do you think that? One clear reason is plenty.</p>
+    <p class="starter-note">Starters — tap to add one:</p>
+    <div class="chip-row">
+      <button class="chip" onclick="addStarter('reason', 'One reason is ')">One reason is...</button>
+      <button class="chip" onclick="addStarter('reason', 'This is because ')">This is because...</button>
+      <button class="chip" onclick="addStarter('reason', 'For me, ')">For me...</button>
+    </div>
+    <textarea id="part-reason" oninput="updateScript()" placeholder="Your reason..."></textarea>
+  </div>
+
+  <!-- STEP 4: example -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 4</span><span class="step-title">Add an example</span></div>
+    <p class="step-sub">A real example makes listeners believe you. Something you've seen, done or noticed.</p>
+    <p class="starter-note">Starters — tap to add one:</p>
+    <div class="chip-row">
+      <button class="chip" onclick="addStarter('example', 'For example, ')">For example...</button>
+      <button class="chip" onclick="addStarter('example', 'Last week, ')">Last week...</button>
+      <button class="chip" onclick="addStarter('example', 'I once ')">I once...</button>
+    </div>
+    <textarea id="part-example" oninput="updateScript()" placeholder="Your example..."></textarea>
+  </div>
+
+  <!-- STEP 5: feeling -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 5</span><span class="step-title">How does it make you feel?</span></div>
+    <p class="step-sub">Tap a feeling word if one fits, or use your own.</p>
+    <div class="chip-row" id="feeling-chips"></div>
+    <textarea id="part-feeling" oninput="updateScript()" placeholder="It makes me feel..."></textarea>
+  </div>
+
+  <!-- STEP 6: wrap up -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 6</span><span class="step-title">Wrap it up</span></div>
+    <p class="step-sub">Finish your segment with one closing line.</p>
+    <p class="starter-note">Starters — tap to add one:</p>
+    <div class="chip-row">
+      <button class="chip" onclick="addStarter('wrap', 'So overall, ')">So overall...</button>
+      <button class="chip" onclick="addStarter('wrap', 'That\'s why I think ')">That's why I think...</button>
+      <button class="chip" onclick="addStarter('wrap', 'And that\'s my opinion — ')">And that's my opinion...</button>
+    </div>
+    <textarea id="part-wrap" oninput="updateScript()" placeholder="Your closing line..."></textarea>
+  </div>
+
+  <!-- BROADCAST -->
+  <div class="broadcast">
+    <div class="broadcast-head">
+      <span class="broadcast-dot"></span>
+      <span class="broadcast-title">Chilton FM · Your segment</span>
+    </div>
+    <div class="broadcast-script" id="script-display"><span class="placeholder">Your segment will build here as you write...</span></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="action-btn" onclick="playScript()">🔊 Hear it on air</button>
+    <button class="action-btn ghost" onclick="stopScript()">⏹ Stop</button>
+    <button class="action-btn orange" onclick="emailScript()">📧 Send to Jay</button>
+  </div>
+  <div class="notify" id="script-notify"></div>
+
+  <!-- CALLER SEGMENT -->
+  <div class="caller-box" style="margin-top: 2rem;">
+    <div class="step-head"><span class="step-num">Bonus</span><span class="step-title">📞 Caller of the day</span></div>
+    <p class="step-sub">A listener has called in with their opinion. Press play to hear them (or read it below), then write a polite reply. You can agree or disagree — both are fine, as long as you say why.</p>
+    <div class="btn-row">
+      <button class="action-btn" onclick="playCaller()">🔊 Play the caller</button>
+      <button class="action-btn ghost" onclick="showCaller()">📄 Read it instead</button>
+    </div>
+    <div class="caller-quote" id="caller-quote">
+      "Hi Chilton FM, Alex here. In my opinion, schools should have a four day week. We would all be less tired and I think we would actually get more done. What does everyone else think?"
+    </div>
+    <p class="starter-note" style="margin-top: 0.75rem;">Reply starters — tap to add one:</p>
+    <div class="chip-row">
+      <button class="chip" onclick="addStarter('caller', 'I agree with Alex because ')">I agree because...</button>
+      <button class="chip" onclick="addStarter('caller', 'I see it differently, because ')">I see it differently...</button>
+      <button class="chip" onclick="addStarter('caller', 'That\'s an interesting point, but ')">Interesting point, but...</button>
+    </div>
+    <textarea id="part-caller" oninput="saveAll()" placeholder="Your reply to Alex..."></textarea>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · English
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_eng_chiltonfm';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const TOPICS = ['Gaming', 'Music', 'Animals', 'Food', 'School lunches', 'Sport', 'YouTube'];
+const FEELINGS = ['excited', 'proud', 'frustrated', 'curious', 'happy', 'annoyed', 'hopeful', 'calm'];
+const CALLER_TEXT = 'Hi Chilton FM, Alex here. In my opinion, schools should have a four day week. We would all be less tired and I think we would actually get more done. What does everyone else think?';
+
+let state = { topic: '', parts: {}, caller: '' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+
+function saveAll() {
+  state.parts = {
+    opinion: val('part-opinion'), reason: val('part-reason'), example: val('part-example'),
+    feeling: val('part-feeling'), wrap: val('part-wrap')
+  };
+  state.caller = val('part-caller');
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function val(id) { return document.getElementById(id).value; }
+
+// ── Topic chips ──────────────────────────────────────────
+function renderTopics() {
+  const c = document.getElementById('topic-chips');
+  c.innerHTML = '';
+  TOPICS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (state.topic === t ? ' on' : '');
+    b.textContent = t;
+    b.onclick = () => { state.topic = t; document.getElementById('topic-own').value = ''; renderTopics(); updateScript(); };
+    c.appendChild(b);
+  });
+}
+function ownTopic() {
+  state.topic = val('topic-own').trim();
+  renderTopics();
+  updateScript();
+}
+
+// ── Feeling chips ────────────────────────────────────────
+function renderFeelings() {
+  const c = document.getElementById('feeling-chips');
+  c.innerHTML = '';
+  FEELINGS.forEach(f => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = f;
+    b.onclick = () => {
+      const t = document.getElementById('part-feeling');
+      t.value = t.value ? t.value.replace(/\.?\s*$/, '') + ' and ' + f : 'It makes me feel ' + f;
+      updateScript();
+    };
+    c.appendChild(b);
+  });
+}
+
+// ── Starters ─────────────────────────────────────────────
+function addStarter(part, text) {
+  const t = document.getElementById('part-' + part);
+  if (!t.value.startsWith(text)) t.value = text + t.value;
+  t.focus();
+  if (part === 'caller') { saveAll(); } else { updateScript(); }
+}
+
+// ── Script assembly ──────────────────────────────────────
+function buildScript() {
+  const p = state.parts || {};
+  const lines = [];
+  if (state.topic) lines.push("You're listening to Chilton FM — and today on In My Opinion, we're talking about: " + state.topic + ".");
+  [p.opinion, p.reason, p.example, p.feeling, p.wrap].forEach(x => { if (x && x.trim()) lines.push(x.trim()); });
+  return lines.join('\n\n');
+}
+
+function updateScript() {
+  saveAll();
+  const s = buildScript();
+  const d = document.getElementById('script-display');
+  if (s) { d.textContent = s; }
+  else { d.innerHTML = '<span class="placeholder">Your segment will build here as you write...</span>'; }
+}
+
+// ── Speech ───────────────────────────────────────────────
+function speak(text) {
+  if (!('speechSynthesis' in window) || !text) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB'; u.rate = 0.95;
+  speechSynthesis.speak(u);
+}
+function playScript() {
+  const s = buildScript();
+  if (!s) {
+    notify('Write a little first, then press play to hear it on air.');
+    return;
+  }
+  speak(s);
+}
+function stopScript() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+function playCaller() { showCaller(); speak(CALLER_TEXT); }
+function showCaller() { document.getElementById('caller-quote').classList.add('show'); }
+
+// ── Email ────────────────────────────────────────────────
+function emailScript() {
+  const s = buildScript();
+  if (!s) {
+    notify('Build your segment first — even one or two steps is a great start.');
+    return;
+  }
+  let body = 'CHILTON FM — IN MY OPINION (ENGLISH WEEK 3)\n';
+  body += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'MY SEGMENT:\n' + s + '\n\n';
+  if (state.caller && state.caller.trim()) {
+    body += 'MY REPLY TO THE CALLER:\n' + state.caller.trim() + '\n\n';
+  }
+  body += '—\nSent automatically from Base 6';
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Chilton FM segment') + '&body=' + encodeURIComponent(body), '_blank');
+  notify('✓ Opening your email app now — your segment is ready to send.');
+}
+
+function notify(msg) {
+  const n = document.getElementById('script-notify');
+  n.textContent = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 5000);
+}
+
+// ── Init ─────────────────────────────────────────────────
+renderTopics();
+renderFeelings();
+const p = state.parts || {};
+if (p.opinion) document.getElementById('part-opinion').value = p.opinion;
+if (p.reason) document.getElementById('part-reason').value = p.reason;
+if (p.example) document.getElementById('part-example').value = p.example;
+if (p.feeling) document.getElementById('part-feeling').value = p.feeling;
+if (p.wrap) document.getElementById('part-wrap').value = p.wrap;
+if (state.caller) document.getElementById('part-caller').value = state.caller;
+if (state.topic && !TOPICS.includes(state.topic)) document.getElementById('topic-own').value = state.topic;
+updateScript();
+</script>
+
+</body>
+</html>
