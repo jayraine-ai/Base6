@@ -37,6 +37,14 @@
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; flex-grow: 1; }
   .resource-arrow { margin-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #ef7724; }
 
+  /* ── Completion tracker strip ── */
+  .tracker-row { margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid #f0e8e0; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .tracker-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; }
+  .initials-row { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .initial-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.72rem; font-weight: 700; width: 36px; height: 28px; border-radius: 7px; border: 1.5px solid #e0d8d0; background: #fff; color: #999; cursor: pointer; transition: background 0.12s, border-color 0.12s, color 0.12s; }
+  .initial-btn:hover { border-color: #b8d8e0; }
+  .initial-btn.done { background: #e6f5e6; border-color: #2e8b57; color: #1a5e1a; }
+
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -66,14 +74,14 @@
   <p class="section-label">Resources</p>
   <div class="resources-grid">
 
-    <a class="resource-card" href="register-switchboard.html">
+    <a class="resource-card" href="register-switchboard.html" data-activity="register-switchboard">
       <div class="resource-icon">📞</div>
       <span class="resource-name">The Register Switchboard</span>
       <span class="resource-desc">Work the switchboard: match messages to their audience, sort formal from informal, repair non-Standard sentences, and switch a very cheeky text into a formal message fit for the headteacher.</span>
       <span class="resource-arrow">Open activity →</span>
     </a>
 
-    <a class="resource-card" href="chilton-fm.html">
+    <a class="resource-card" href="chilton-fm.html" data-activity="chilton-fm">
       <div class="resource-icon">🎙️</div>
       <span class="resource-name">Chilton FM</span>
       <span class="resource-desc">Host your own radio segment. Build an opinion piece step by step, hear it read back on air, and reply to a caller who wants a four day school week.</span>
@@ -87,6 +95,63 @@
 <footer>
   Base 6 · Chilton Bridge School
 </footer>
+
+<script>
+// ── Completion tracker (Week 2 pattern) ─────────────────────────
+// Shared with the Week 3 teacher dashboard:
+//   key: base6_w3_english_tracker
+//   shape: { "<activity-id>": { "LW": true, "AP": true, ... } }
+const TRACKER_KEY = 'base6_w3_english_tracker';
+const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(TRACKER_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveState(s) {
+  try { localStorage.setItem(TRACKER_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function buildTrackers() {
+  const state = loadState();
+  document.querySelectorAll('.resource-card[data-activity]').forEach(card => {
+    const activity = card.dataset.activity;
+
+    const strip = document.createElement('div');
+    strip.className = 'tracker-row';
+
+    const label = document.createElement('span');
+    label.className = 'tracker-label';
+    label.textContent = 'completed by';
+    strip.appendChild(label);
+
+    const row = document.createElement('div');
+    row.className = 'initials-row';
+
+    STUDENTS.forEach(initials => {
+      const btn = document.createElement('button');
+      btn.className = 'initial-btn' + (state[activity] && state[activity][initials] ? ' done' : '');
+      btn.textContent = initials;
+      btn.title = state[activity] && state[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const s = loadState();
+        if (!s[activity]) s[activity] = {};
+        s[activity][initials] = !s[activity][initials];
+        saveState(s);
+        btn.classList.toggle('done', !!s[activity][initials]);
+        btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      });
+      row.appendChild(btn);
+    });
+
+    strip.appendChild(row);
+    card.appendChild(strip);
+  });
+}
+
+buildTrackers();
+</script>
 
 </body>
 </html>
