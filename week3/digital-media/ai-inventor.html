@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Inventor's Workshop · Digital Media · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .intro-card { background: #fff7f0; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+  .intro-card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+  .intro-card strong { color: #c05a10; }
+
+  .step { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .step-head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+  .step-num { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ef7724; background: #fff3e8; border: 1.5px solid #fcd8bc; border-radius: 20px; padding: 3px 10px; }
+  .step-title { font-size: 1.05rem; font-weight: 700; color: #007291; }
+  .step-sub { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 0.9rem; }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .chip { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .chip:hover { border-color: #b8d8e0; }
+  .chip.on { border-color: #007291; background: #e6f5f8; color: #007291; }
+
+  input[type=text], textarea { width: 100%; padding: 0.7rem 0.95rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #fff; color: #1a1a1a; outline: none; line-height: 1.6; }
+  input[type=text]:focus, textarea:focus { border-color: #007291; }
+  textarea { min-height: 76px; resize: vertical; }
+  .starter-note { font-size: 0.8rem; color: #888; margin-bottom: 0.4rem; }
+
+  .name-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .name-row input { flex: 1; min-width: 180px; }
+  .dice-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.1rem; border-radius: 8px; cursor: pointer; border: 2px solid #007291; background: #fff; color: #007291; white-space: nowrap; }
+  .dice-btn:hover { background: #e6f5f8; }
+
+  /* Spec card */
+  .spec { background: #1f2a30; border-radius: 16px; padding: 1.6rem; margin: 1.75rem 0 1.25rem; }
+  .spec-top { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .spec-icon { font-size: 2.6rem; }
+  .spec-name { font-size: 1.5rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .spec-tagline { font-size: 0.85rem; color: #7be3a8; font-weight: 700; }
+  .spec-row { padding: 0.7rem 0; border-top: 1px solid #36454e; }
+  .spec-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8da3ad; margin-bottom: 0.25rem; }
+  .spec-value { font-size: 0.93rem; color: #fef8f4; line-height: 1.6; }
+  .spec-value.empty { opacity: 0.4; }
+
+  .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .action-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #007291; color: #fff; }
+  .action-btn:hover { background: #005a73; }
+  .action-btn.orange { background: #ef7724; }
+  .action-btn.orange:hover { background: #c05a10; }
+  .action-btn.ghost { background: #fff; color: #007291; border: 2px solid #007291; }
+  .action-btn.ghost:hover { background: #e6f5f8; }
+
+  .notify { display: none; margin-top: 0.75rem; font-size: 0.88rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.65rem 1rem; line-height: 1.5; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Digital Media</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Digital Media · Week 3</p>
+  <h1>💡 AI Inventor's Workshop</h1>
+  <p>Every AI in the world started as somebody's idea. Today the workshop is yours: invent an AI helper for something you actually care about. There are no wrong answers — just decisions only an inventor can make.</p>
+</div>
+
+<main class="main">
+
+  <div class="intro-card">
+    <p><strong>The inventor's rule:</strong> every real AI needs two things — examples to learn from (its training data) and something to predict or decide. Your design will need both. Everything else is up to you.</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 1</span><span class="step-title">What's your AI for?</span></div>
+    <p class="step-sub">Pick an area of life your AI will help with, or type your own.</p>
+    <div class="chip-row" id="area-chips"></div>
+    <input type="text" id="area-own" placeholder="...or type your own area here" oninput="ownArea()">
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 2</span><span class="step-title">Name your AI</span></div>
+    <p class="step-sub">Every great AI needs a name. Stuck? The name machine has suggestions.</p>
+    <div class="name-row">
+      <input type="text" id="ai-name" placeholder="Your AI's name..." oninput="updateSpec()">
+      <button class="dice-btn" onclick="rollName()">🎲 Name machine</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 3</span><span class="step-title">What does it do?</span></div>
+    <p class="step-sub">Describe your AI's job in a sentence or two.</p>
+    <p class="starter-note">Starters — tap to add one:</p>
+    <div class="chip-row">
+      <button class="chip" onclick="addStarter('does', 'My AI helps you ')">My AI helps you...</button>
+      <button class="chip" onclick="addStarter('does', 'It watches out for ')">It watches out for...</button>
+      <button class="chip" onclick="addStarter('does', 'It saves you time by ')">It saves you time by...</button>
+    </div>
+    <textarea id="part-does" oninput="updateSpec()" placeholder="What your AI does..."></textarea>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 4</span><span class="step-title">What does it learn from?</span></div>
+    <p class="step-sub">AI learns from examples. Pick the training data your AI would need — choose as many as fit.</p>
+    <div class="chip-row" id="data-chips"></div>
+    <input type="text" id="data-own" placeholder="...or your own idea for training data" oninput="updateSpec()">
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 5</span><span class="step-title">What does it predict or decide?</span></div>
+    <p class="step-sub">This is the AI part — after learning from all those examples, what does it work out?</p>
+    <p class="starter-note">Starters — tap to add one:</p>
+    <div class="chip-row">
+      <button class="chip" onclick="addStarter('predicts', 'It predicts ')">It predicts...</button>
+      <button class="chip" onclick="addStarter('predicts', 'It decides ')">It decides...</button>
+      <button class="chip" onclick="addStarter('predicts', 'It spots patterns in ')">It spots patterns in...</button>
+    </div>
+    <textarea id="part-predicts" oninput="updateSpec()" placeholder="What your AI predicts or decides..."></textarea>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">Step 6</span><span class="step-title">What could go wrong?</span></div>
+    <p class="step-sub">Real inventors think about this before anyone else has to. Pick the risks your AI would need to watch for.</p>
+    <div class="chip-row" id="risk-chips"></div>
+    <input type="text" id="risk-own" placeholder="...or your own worry" oninput="updateSpec()">
+  </div>
+
+  <!-- SPEC CARD -->
+  <div class="spec">
+    <div class="spec-top">
+      <span class="spec-icon" id="spec-icon">🤖</span>
+      <div>
+        <div class="spec-name" id="spec-name">Your AI</div>
+        <div class="spec-tagline" id="spec-tagline">Invented at the Base 6 Workshop</div>
+      </div>
+    </div>
+    <div class="spec-row"><div class="spec-label">Helps with</div><div class="spec-value empty" id="spec-area">—</div></div>
+    <div class="spec-row"><div class="spec-label">What it does</div><div class="spec-value empty" id="spec-does">—</div></div>
+    <div class="spec-row"><div class="spec-label">Learns from (training data)</div><div class="spec-value empty" id="spec-data">—</div></div>
+    <div class="spec-row"><div class="spec-label">Predicts / decides</div><div class="spec-value empty" id="spec-predicts">—</div></div>
+    <div class="spec-row"><div class="spec-label">Risks to watch</div><div class="spec-value empty" id="spec-risks">—</div></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="action-btn" onclick="announceAI()">🔊 Announce it to the world</button>
+    <button class="action-btn ghost" onclick="stopSpeech()">⏹ Stop</button>
+    <button class="action-btn orange" onclick="emailSpec()">📧 Send to Jay</button>
+  </div>
+  <div class="notify" id="notify"></div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Digital Media
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_dm_inventor';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const AREAS = [
+  { id: 'gaming',   label: '🎮 Gaming',        icon: '🎮' },
+  { id: 'pets',     label: '🐕 Pets',          icon: '🐕' },
+  { id: 'homework', label: '📚 Homework',      icon: '📚' },
+  { id: 'music',    label: '🎵 Music',         icon: '🎵' },
+  { id: 'sport',    label: '⚽ Sport',          icon: '⚽' },
+  { id: 'cooking',  label: '🍳 Cooking',       icon: '🍳' },
+  { id: 'fishing',  label: '🎣 Fishing',       icon: '🎣' },
+  { id: 'films',    label: '🎬 Films',         icon: '🎬' },
+];
+
+const DATA_OPTIONS = [
+  '📸 Lots of photos', '🎤 Voice recordings', '📊 Your past choices', '🎮 Game data',
+  '🌦️ Weather records', '⏱️ Times and scores', '💬 Messages and words', '🗺️ Maps and routes'
+];
+
+const RISK_OPTIONS = [
+  '❌ Wrong predictions', '⚖️ Unfair to some people', '📉 Not enough training data',
+  '🔒 Privacy — it knows a lot about you', '🤝 People trusting it too much'
+];
+
+const NAMES = ['Sparko', 'Byte', 'Nimbus', 'Echo', 'Pixel', 'Quark', 'Zippy', 'Cog', 'Lumen', 'Fetch', 'Orbit', 'Crumpet', 'Widget', 'Bolt', 'Mango'];
+
+let state = { area: '', name: '', does: '', data: [], dataOwn: '', predicts: '', risks: [], riskOwn: '' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+// ── Chips ────────────────────────────────────────────────
+function renderAreas() {
+  const c = document.getElementById('area-chips');
+  c.innerHTML = '';
+  AREAS.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (state.area === a.label ? ' on' : '');
+    b.textContent = a.label;
+    b.onclick = () => { state.area = state.area === a.label ? '' : a.label; document.getElementById('area-own').value = ''; renderAreas(); updateSpec(); };
+    c.appendChild(b);
+  });
+}
+function ownArea() {
+  state.area = document.getElementById('area-own').value.trim();
+  renderAreas();
+  updateSpec();
+}
+
+function renderMulti(containerId, options, stateKey) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  options.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (state[stateKey].includes(opt) ? ' on' : '');
+    b.textContent = opt;
+    b.onclick = () => {
+      const i = state[stateKey].indexOf(opt);
+      if (i >= 0) state[stateKey].splice(i, 1); else state[stateKey].push(opt);
+      renderMulti(containerId, options, stateKey);
+      updateSpec();
+    };
+    c.appendChild(b);
+  });
+}
+
+function addStarter(part, text) {
+  const t = document.getElementById('part-' + part);
+  if (!t.value.startsWith(text)) t.value = text + t.value;
+  t.focus();
+  updateSpec();
+}
+
+function rollName() {
+  const inp = document.getElementById('ai-name');
+  let pick = NAMES[Math.floor(Math.random() * NAMES.length)];
+  if (pick === inp.value) pick = NAMES[(NAMES.indexOf(pick) + 1) % NAMES.length];
+  inp.value = pick;
+  updateSpec();
+}
+
+// ── Spec card ────────────────────────────────────────────
+function setSpec(id, value) {
+  const el = document.getElementById(id);
+  if (value && value.trim()) { el.textContent = value; el.className = 'spec-value'; }
+  else { el.textContent = '—'; el.className = 'spec-value empty'; }
+}
+
+function cleanChip(c) { return c.replace(/^[^\w]+\s*/, ''); } // strip leading emoji
+
+function updateSpec() {
+  state.name = document.getElementById('ai-name').value.trim();
+  state.does = document.getElementById('part-does').value;
+  state.predicts = document.getElementById('part-predicts').value;
+  state.dataOwn = document.getElementById('data-own').value.trim();
+  state.riskOwn = document.getElementById('risk-own').value.trim();
+  save();
+
+  document.getElementById('spec-name').textContent = state.name || 'Your AI';
+  const areaMatch = AREAS.find(a => a.label === state.area);
+  document.getElementById('spec-icon').textContent = areaMatch ? areaMatch.icon : '🤖';
+
+  setSpec('spec-area', state.area ? cleanChip(state.area) : '');
+  setSpec('spec-does', state.does);
+  const dataBits = state.data.map(cleanChip).concat(state.dataOwn ? [state.dataOwn] : []);
+  setSpec('spec-data', dataBits.join(', '));
+  setSpec('spec-predicts', state.predicts);
+  const riskBits = state.risks.map(cleanChip).concat(state.riskOwn ? [state.riskOwn] : []);
+  setSpec('spec-risks', riskBits.join(', '));
+}
+
+// ── Announce ─────────────────────────────────────────────
+function buildPitch() {
+  if (!state.name && !state.does.trim()) return '';
+  let pitch = 'Introducing ' + (state.name || 'a brand new AI') + '!';
+  if (state.area) pitch += ' The AI for ' + cleanChip(state.area).toLowerCase() + '.';
+  if (state.does.trim()) pitch += ' ' + state.does.trim();
+  const dataBits = state.data.map(cleanChip).concat(state.dataOwn ? [state.dataOwn] : []);
+  if (dataBits.length) pitch += ' It learns from ' + dataBits.join(', ').toLowerCase() + '.';
+  if (state.predicts.trim()) pitch += ' ' + state.predicts.trim();
+  pitch += ' Invented at the Base 6 Workshop.';
+  return pitch;
+}
+
+function announceAI() {
+  const pitch = buildPitch();
+  if (!pitch) { notify('Add a name or a job for your AI first, then announce it.'); return; }
+  if (!('speechSynthesis' in window)) { notify('Speech is not available on this device — but your spec card looks great.'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(pitch);
+  u.lang = 'en-GB'; u.rate = 0.95;
+  speechSynthesis.speak(u);
+}
+function stopSpeech() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+
+// ── Email ────────────────────────────────────────────────
+function emailSpec() {
+  if (!state.name && !state.does.trim()) { notify('Build your AI a little first — even a name and a job is a great start.'); return; }
+  const dataBits = state.data.map(cleanChip).concat(state.dataOwn ? [state.dataOwn] : []);
+  const riskBits = state.risks.map(cleanChip).concat(state.riskOwn ? [state.riskOwn] : []);
+
+  let body = 'AI INVENTOR\'S WORKSHOP — DIGITAL MEDIA WEEK 3\n';
+  body += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'AI NAME: ' + (state.name || 'Unnamed') + '\n';
+  body += 'HELPS WITH: ' + (state.area ? cleanChip(state.area) : 'Not chosen') + '\n\n';
+  body += 'WHAT IT DOES:\n' + (state.does.trim() || '—') + '\n\n';
+  body += 'LEARNS FROM (TRAINING DATA):\n' + (dataBits.join(', ') || '—') + '\n\n';
+  body += 'PREDICTS / DECIDES:\n' + (state.predicts.trim() || '—') + '\n\n';
+  body += 'RISKS TO WATCH:\n' + (riskBits.join(', ') || '—') + '\n\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · AI Inventor — ' + (state.name || 'New AI')) + '&body=' + encodeURIComponent(body), '_blank');
+  notify('✓ Opening your email app now — your invention is ready to send.');
+}
+
+function notify(msg) {
+  const n = document.getElementById('notify');
+  n.textContent = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 5000);
+}
+
+// ── Init ─────────────────────────────────────────────────
+renderAreas();
+renderMulti('data-chips', DATA_OPTIONS, 'data');
+renderMulti('risk-chips', RISK_OPTIONS, 'risks');
+if (state.name) document.getElementById('ai-name').value = state.name;
+if (state.does) document.getElementById('part-does').value = state.does;
+if (state.predicts) document.getElementById('part-predicts').value = state.predicts;
+if (state.dataOwn) document.getElementById('data-own').value = state.dataOwn;
+if (state.riskOwn) document.getElementById('risk-own').value = state.riskOwn;
+if (state.area && !AREAS.find(a => a.label === state.area)) document.getElementById('area-own').value = state.area;
+updateSpec();
+</script>
+
+</body>
+</html>
