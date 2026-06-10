@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English · Week 3 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 0.75rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .breadcrumb { color: #fef8f4; font-size: 0.9rem; font-weight: 700; opacity: 0.6; }
+
+  .subject-hero { background-color: #007291; padding: 1.5rem 2rem 2.5rem; text-align: center; }
+  .subject-hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .subject-hero h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+  .focus-card { background: #fff7f0; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .focus-card p.label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #c05a10; margin-bottom: 0.6rem; }
+  .focus-card ul { list-style: none; }
+  .focus-card li { font-size: 0.93rem; line-height: 1.7; color: #333; padding-left: 1.4rem; position: relative; }
+  .focus-card li::before { content: "✦"; position: absolute; left: 0; color: #ef7724; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+
+  .resource-card { background: #ffffff; border: 2px solid #ef7724; border-radius: 14px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.4rem; text-decoration: none; color: inherit; transition: box-shadow 0.15s, transform 0.1s; }
+  .resource-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .resource-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+  .resource-name { font-size: 1.1rem; font-weight: 700; color: #ef7724; line-height: 1.3; }
+  .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; flex-grow: 1; }
+  .resource-arrow { margin-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #ef7724; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../index.html">← Week 3</a>
+  <span class="breadcrumb">/ English</span>
+</header>
+
+<div class="subject-hero">
+  <p class="subject-label">Week 3 · English</p>
+  <h1>📝 English</h1>
+</div>
+
+<main class="main">
+
+  <div class="focus-card">
+    <p class="label">This week we are exploring</p>
+    <ul>
+      <li>Language features — tone, style and register, and how they change for different audiences</li>
+      <li>Using Standard English when the situation calls for it</li>
+      <li>Clearly expressing information, feelings and opinions on topics that matter to you</li>
+    </ul>
+  </div>
+
+  <p class="section-label">Resources</p>
+  <div class="resources-grid">
+
+    <a class="resource-card" href="register-switchboard.html">
+      <div class="resource-icon">📞</div>
+      <span class="resource-name">The Register Switchboard</span>
+      <span class="resource-desc">Work the switchboard: match messages to their audience, sort formal from informal, repair non-Standard sentences, and switch a very cheeky text into a formal message fit for the headteacher.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
+
+    <a class="resource-card" href="chilton-fm.html">
+      <div class="resource-icon">🎙️</div>
+      <span class="resource-name">Chilton FM</span>
+      <span class="resource-desc">Host your own radio segment. Build an opinion piece step by step, hear it read back on air, and reply to a caller who wants a four day school week.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+</body>
+</html>
