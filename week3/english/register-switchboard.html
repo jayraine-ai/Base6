@@ -338,6 +338,7 @@ function emailSwitch() {
 function markDone(r) {
   document.getElementById('done-' + r).classList.add('show');
   document.getElementById('chip-' + r).classList.add('done');
+  if (!state['done' + r]) { state['done' + r] = true; save(); }
 }
 
 // ── INIT ─────────────────────────────────────────────────
