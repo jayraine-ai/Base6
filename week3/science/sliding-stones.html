@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sliding Stones · Science · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .scoreboard { background: #1f2a30; border-radius: 14px; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .sb-item { text-align: center; }
+  .sb-num { font-size: 1.3rem; font-weight: 700; color: #7be3a8; }
+  .sb-lbl { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #fef8f4; opacity: 0.6; }
+
+  .end-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .end-head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+  .end-num { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ef7724; background: #fff3e8; border: 1.5px solid #fcd8bc; border-radius: 20px; padding: 3px 10px; }
+  .end-title { font-size: 1.05rem; font-weight: 700; color: #007291; }
+  .end-sub { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 1rem; }
+
+  .setup-row { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .setup-group { font-size: 0.82rem; font-weight: 700; color: #555; }
+  .setup-group .pills { display: flex; gap: 0.4rem; margin-top: 0.35rem; }
+  .pill { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.78rem; font-weight: 700; padding: 0.4rem 0.9rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #888; }
+  .pill.fixed { border-color: #007291; background: #e6f5f8; color: #007291; cursor: default; }
+  .pill.pick { cursor: pointer; }
+  .pill.pick:hover { border-color: #b8d8e0; }
+  .pill.pick.on { border-color: #007291; background: #e6f5f8; color: #007291; }
+
+  /* Track */
+  .track-wrap { position: relative; background: linear-gradient(to bottom, #eef6f9, #e2eef3); border: 2px solid #cfe3ea; border-radius: 12px; height: 92px; margin-bottom: 0.9rem; overflow: hidden; }
+  .track-wrap.wood { background: linear-gradient(to bottom, #f4ead9, #ecdcc2); border-color: #dcc9a8; }
+  .track-wrap.carpet { background: linear-gradient(to bottom, #f0e4ee, #e4d2e1); border-color: #cdb3c9; }
+  .zone { position: absolute; top: 0; bottom: 0; opacity: 0.55; }
+  .zone-50 { left: 60%; width: 15%; background: #ffe2b8; }
+  .zone-100 { left: 75%; width: 15%; background: #ffc98a; }
+  .zone-150 { left: 90%; width: 10%; background: #ef7724; opacity: 0.5; }
+  .zone-label { position: absolute; bottom: 4px; font-size: 0.62rem; font-weight: 700; color: #7a4a00; width: 100%; text-align: center; }
+  .stone { position: absolute; top: 50%; left: 0%; transform: translate(-10%, -50%); font-size: 2rem; transition: none; }
+  .surface-tag { position: absolute; top: 6px; left: 10px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #557; opacity: 0.7; }
+
+  .force-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .force-row label { font-size: 0.85rem; font-weight: 700; color: #555; }
+  .force-row input[type=range] { flex: 1; min-width: 150px; accent-color: #ef7724; }
+  .force-val { font-size: 0.9rem; font-weight: 700; color: #ef7724; width: 80px; }
+
+  .push-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; padding: 0.65rem 1.6rem; border-radius: 8px; cursor: pointer; border: none; background: #007291; color: #fff; }
+  .push-btn:hover { background: #005a73; }
+  .push-btn:disabled { background: #ccc; cursor: default; }
+
+  .end-result { min-height: 1.5rem; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 700; line-height: 1.6; }
+  .end-result.good { color: #1a5e1a; }
+  .end-result.ok { color: #c05a10; }
+  .end-result.miss { color: #777; }
+  .end-tip { display: none; margin-top: 0.6rem; font-size: 0.85rem; line-height: 1.6; background: #fff7f0; border: 1.5px solid #fcd8bc; border-radius: 8px; padding: 0.6rem 0.85rem; color: #5a3a1a; }
+  .end-tip.show { display: block; }
+
+  .report-bar { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Science and Environmental</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Science and Environmental · Week 3</p>
+  <h1>🥌 The Sliding Stones</h1>
+  <p>Welcome to the Chilton Sliding Stones Club. Push the stone with just the right force to land it in the scoring zones. The stone's weight and the surface change everything — that's not luck, that's physics.</p>
+</div>
+
+<main class="main">
+
+  <div class="scoreboard">
+    <div class="sb-item"><div class="sb-num" id="sb-total">0</div><div class="sb-lbl">Total points</div></div>
+    <div class="sb-item"><div class="sb-num" id="sb-best">0</div><div class="sb-lbl">Best total</div></div>
+    <div class="sb-item"><div class="sb-num" id="sb-ends">0/5</div><div class="sb-lbl">Ends played</div></div>
+  </div>
+
+  <div id="ends-container"></div>
+
+  <div class="report-bar">
+    <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Science and Environmental
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_sci_stones';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const SURFACES = { ice: { label: 'Ice', factor: 1.6 }, wood: { label: 'Wood', factor: 0.9 }, carpet: { label: 'Carpet', factor: 0.45 } };
+const MASSES = { light: { label: 'Light stone', m: 1 }, medium: { label: 'Medium stone', m: 2 }, heavy: { label: 'Heavy stone', m: 3 } };
+
+const ENDS = [
+  { title: 'Warm up on ice', surface: 'ice', mass: 'light', choice: false,
+    tip: 'On slippery ice there is very little friction to slow the stone — even a small push goes a long way.' },
+  { title: 'Heavy stone, same ice', surface: 'ice', mass: 'heavy', choice: false,
+    tip: 'Same surface, three times the mass. A heavier object needs a bigger force to reach the same speed — notice how much harder you had to push.' },
+  { title: 'Light stone on carpet', surface: 'carpet', mass: 'light', choice: false,
+    tip: 'Carpet pushes back with lots of friction — a force acting against the motion. The stone loses speed quickly, so you need far more push than on ice.' },
+  { title: 'Medium stone on wood', surface: 'wood', mass: 'medium', choice: false,
+    tip: 'Wood sits in the middle — some friction, but not carpet levels. Force, mass and friction all worked together to decide where the stone stopped.' },
+  { title: 'Your lab — you choose', surface: 'ice', mass: 'light', choice: true,
+    tip: 'You just ran your own experiment. Changing one thing at a time — force, mass or surface — is exactly how scientists work out what affects motion.' },
+];
+
+let state = { results: {}, bestTotal: 0 };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+let endSettings = ENDS.map(e => ({ surface: e.surface, mass: e.mass }));
+let animating = false;
+
+function buildEnds() {
+  const c = document.getElementById('ends-container');
+  c.innerHTML = '';
+  ENDS.forEach((end, i) => {
+    const res = state.results[i];
+    const div = document.createElement('div');
+    div.className = 'end-card';
+
+    let setupHtml = '';
+    if (end.choice) {
+      setupHtml = '<div class="setup-group">Stone<div class="pills">' +
+        Object.keys(MASSES).map(k => '<button class="pill pick' + (endSettings[i].mass === k ? ' on' : '') + '" onclick="setMass(' + i + ',\'' + k + '\')">' + MASSES[k].label + '</button>').join('') +
+        '</div></div>' +
+        '<div class="setup-group">Surface<div class="pills">' +
+        Object.keys(SURFACES).map(k => '<button class="pill pick' + (endSettings[i].surface === k ? ' on' : '') + '" onclick="setSurface(' + i + ',\'' + k + '\')">' + SURFACES[k].label + '</button>').join('') +
+        '</div></div>';
+    } else {
+      setupHtml = '<div class="setup-group">Stone<div class="pills"><span class="pill fixed">' + MASSES[end.mass].label + '</span></div></div>' +
+        '<div class="setup-group">Surface<div class="pills"><span class="pill fixed">' + SURFACES[end.surface].label + '</span></div></div>';
+    }
+
+    div.innerHTML =
+      '<div class="end-head"><span class="end-num">End ' + (i + 1) + '</span><span class="end-title">' + end.title + '</span></div>' +
+      '<p class="end-sub">Land the stone in a scoring zone. Push too hard and it flies off the end of the rink.</p>' +
+      '<div class="setup-row">' + setupHtml + '</div>' +
+      '<div class="track-wrap ' + endSettings[i].surface + '" id="track-' + i + '">' +
+        '<span class="surface-tag" id="tag-' + i + '">' + SURFACES[endSettings[i].surface].label + '</span>' +
+        '<div class="zone zone-50"><div class="zone-label">50</div></div>' +
+        '<div class="zone zone-100"><div class="zone-label">100</div></div>' +
+        '<div class="zone zone-150"><div class="zone-label">150</div></div>' +
+        '<span class="stone" id="stone-' + i + '">🥌</span>' +
+      '</div>' +
+      '<div class="force-row"><label for="force-' + i + '">Push force</label>' +
+        '<input type="range" id="force-' + i + '" min="10" max="100" value="50" oninput="document.getElementById(\'fval-' + i + '\').textContent = this.value">' +
+        '<span class="force-val"><span id="fval-' + i + '">50</span> N</span>' +
+        '<button class="push-btn" id="push-' + i + '" onclick="push(' + i + ')">Push! 🥌</button></div>' +
+      '<div class="end-result" id="result-' + i + '">' + (res ? bestText(res) : 'Set your force and push when ready.') + '</div>' +
+      '<div class="end-tip' + (res ? ' show' : '') + '" id="tip-' + i + '">💡 ' + end.tip + '</div>';
+    c.appendChild(div);
+  });
+  updateBoard();
+}
+
+function bestText(res) {
+  return 'Best so far: ' + res.dist + 'm — ' + (res.points > 0 ? res.points + ' points!' : 'no score yet') + ' (' + res.tries + ' ' + (res.tries === 1 ? 'push' : 'pushes') + ')';
+}
+
+function setMass(i, k) { endSettings[i].mass = k; buildEnds(); }
+function setSurface(i, k) { endSettings[i].surface = k; buildEnds(); }
+
+function distanceFor(force, massKey, surfaceKey) {
+  return Math.round(force / MASSES[massKey].m * SURFACES[surfaceKey].factor);
+}
+
+function pointsFor(d) {
+  if (d > 100) return -1;       // off the end
+  if (d >= 90) return 150;
+  if (d >= 75) return 100;
+  if (d >= 60) return 50;
+  return 0;
+}
+
+function push(i) {
+  if (animating) return;
+  animating = true;
+  const force = +document.getElementById('force-' + i).value;
+  const d = distanceFor(force, endSettings[i].mass, endSettings[i].surface);
+  const shown = Math.min(d, 104);
+  const stone = document.getElementById('stone-' + i);
+  const btn = document.getElementById('push-' + i);
+  btn.disabled = true;
+
+  // Animate with ease-out (fast then slowing — like friction)
+  const duration = 900 + shown * 8;
+  const start = performance.now();
+  stone.style.left = '0%';
+
+  function frame(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    stone.style.left = (eased * shown * 0.92) + '%';
+    if (t < 1) requestAnimationFrame(frame);
+    else {
+      animating = false;
+      btn.disabled = false;
+      scoreEnd(i, d, force);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function scoreEnd(i, d, force) {
+  const pts = pointsFor(d);
+  const result = document.getElementById('result-' + i);
+  const prev = state.results[i] || { points: 0, dist: 0, tries: 0 };
+  prev.tries++;
+
+  if (pts === -1) {
+    result.className = 'end-result miss';
+    result.textContent = d + 'm — off the end of the rink! Too much force for this stone and surface. (' + force + 'N)';
+  } else if (pts === 0) {
+    result.className = 'end-result miss';
+    result.textContent = d + 'm — stopped short of the zones. A bigger push needed. (' + force + 'N)';
+  } else {
+    result.className = 'end-result ' + (pts >= 100 ? 'good' : 'ok');
+    result.textContent = d + 'm — ' + pts + ' points' + (pts === 150 ? '! Bullseye zone! 🎯' : '!') + ' (' + force + 'N)';
+  }
+
+  if (pts > prev.points) { prev.points = Math.max(pts, 0); }
+  if (pts >= 0 && d > 0) prev.dist = d;
+  state.results[i] = prev;
+
+  document.getElementById('tip-' + i).classList.add('show');
+  const total = totalPoints();
+  if (total > state.bestTotal) state.bestTotal = total;
+  save();
+  updateBoard();
+}
+
+function totalPoints() {
+  return Object.values(state.results).reduce((sum, r) => sum + (r.points > 0 ? r.points : 0), 0);
+}
+
+function updateBoard() {
+  document.getElementById('sb-total').textContent = totalPoints();
+  document.getElementById('sb-best').textContent = state.bestTotal;
+  document.getElementById('sb-ends').textContent = Object.keys(state.results).length + '/5';
+}
+
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  let body = 'THE SLIDING STONES — SCIENCE WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Total points: ' + totalPoints() + ' (best: ' + state.bestTotal + ')\n';
+  body += 'Ends played: ' + Object.keys(state.results).length + '/5\n\n';
+  ENDS.forEach((end, i) => {
+    const r = state.results[i];
+    body += 'End ' + (i + 1) + ' (' + end.title + '): ' + (r ? r.points + ' pts, best distance ' + r.dist + 'm, ' + r.tries + ' pushes' : 'Not played') + '\n';
+  });
+  body += '\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Sliding Stones — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now.';
+  n.classList.add('show');
+}
+
+// Init
+buildEnds();
+</script>
+
+</body>
+</html>
