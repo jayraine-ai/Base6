@@ -117,8 +117,15 @@
   .ev-chip { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 0.55rem 1.2rem; border-radius: 20px; cursor: pointer; border: 2px solid #e0d8d0; background: #fff; color: #555; }
   .ev-chip:hover { border-color: #b8d8e0; }
   .ev-chip.on { border-color: #007291; background: #e6f5f8; color: #00516a; }
-  #evidence-text { width: 100%; min-height: 170px; padding: 0.8rem 1rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; line-height: 1.65; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fdfaf7; color: #1a1a1a; resize: vertical; outline: none; margin-bottom: 0.6rem; }
-  #evidence-text:focus { border-color: #007291; }
+  .ev-block { border: 2px solid #e8e0d8; border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.9rem; border-left: 5px solid var(--c, #007291); background: #fdfaf7; }
+  .ev-block-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+  .ev-block-title { font-size: 0.92rem; font-weight: 700; color: var(--c, #007291); }
+  .ev-copy-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.78rem; font-weight: 700; padding: 0.45rem 1rem; border-radius: 8px; cursor: pointer; border: 2px solid #007291; background: #fff; color: #007291; }
+  .ev-copy-btn:hover { background: #e6f5f8; }
+  .ev-copy-btn.copied { border-color: #2e8b57; color: #2e8b57; background: #e6f5e6; }
+  .ev-block textarea { width: 100%; min-height: 100px; padding: 0.7rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.86rem; line-height: 1.65; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fff; color: #1a1a1a; resize: vertical; outline: none; }
+  .ev-block textarea:focus { border-color: #007291; }
+  .ev-empty { font-size: 0.88rem; color: #999; line-height: 1.6; }
 
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
@@ -151,9 +158,6 @@
       <button class="tool-btn" onclick="renderAll()">🔄 Refresh</button>
       <button class="tool-btn" onclick="copySummary()">📋 Copy summary</button>
       <button class="tool-btn primary" onclick="emailSummary()">📧 Email me the summary</button>
-      <button class="tool-btn" onclick="exportBackup()">⬇️ Export backup</button>
-      <button class="tool-btn" onclick="document.getElementById('import-file').click()">⬆️ Import backup</button>
-      <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importBackup(this)">
     </div>
 
     <p class="section-label">At a glance</p>
@@ -186,13 +190,9 @@
 
     <p class="section-label">🧾 Evidence generator</p>
     <div class="evidence-card">
-      <p class="evidence-intro">Pick a student and the dashboard assembles their week — completed activities, reading record and your notes — into a ready-made evidence paragraph. Edit it in the box if you like, then copy for BridgeLink.</p>
+      <p class="evidence-intro">Pick a student and the dashboard builds a separate evidence entry for each pillar they've worked in — describing the actual learning, not just the activity names — plus their reading record. Each box is editable, with its own copy button, ready to paste into the matching pillar on BridgeLink.</p>
       <div class="evidence-chips" id="evidence-chips"></div>
-      <textarea id="evidence-text" placeholder="Pick a student above to generate their evidence text..."></textarea>
-      <div class="reading-actions">
-        <button class="tool-btn primary" onclick="copyEvidence()">📋 Copy evidence</button>
-        <span class="save-confirm" id="evidence-copied">✓ Copied</span>
-      </div>
+      <div id="evidence-blocks"></div>
     </div>
 
     <p class="section-label">🧰 Teacher tools</p>
@@ -200,6 +200,14 @@
       <p class="tools-intro">Quick links to your tools — they open in this tab, so use the back button to return.</p>
       <a class="tool-link" href="../week2/slide-link-maker.html">🔗 Slide Link Maker</a>
       <a class="tool-link teal" href="../tools/slide-link-maker.html">🔗 Staff Slide Link Maker</a>
+    </div>
+
+    <p class="section-label">💾 Backup</p>
+    <div class="tools-card">
+      <p class="tools-intro">Tracker data lives in this browser. Export a backup at the end of the day to keep it safe, or to move it between the classroom device and your laptop — import restores everything (trackers, reading record, notes and stamps).</p>
+      <button class="tool-btn" onclick="exportBackup()">⬇️ Export backup</button>
+      <button class="tool-btn" onclick="document.getElementById('import-file').click()">⬆️ Import backup</button>
+      <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importBackup(this)">
     </div>
 
     <div class="danger-zone">
@@ -217,23 +225,61 @@ const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
 
 const SUBJECTS = [
   { name: '📝 English', colour: '#ef7724', key: 'base6_w3_english_tracker', page: 'english/index.html',
-    activities: [ { id: 'register-switchboard', label: 'Register Switchboard' }, { id: 'chilton-fm', label: 'Chilton FM' } ] },
+    activities: [
+      { id: 'register-switchboard', label: 'Register Switchboard',
+        ev: 'matched language to audience and purpose, sorted formal from informal language, repaired non-Standard English into Standard English, and rewrote an informal message in a formal register' },
+      { id: 'chilton-fm', label: 'Chilton FM',
+        ev: 'planned and structured a spoken opinion piece using sentence starters and persuasive language features, expressing opinions clearly and completing a listening task' } ] },
   { name: '🔢 Maths', colour: '#007291', key: 'base6_w3_maths_tracker', page: 'maths/index.html',
-    activities: [ { id: 'number-vault', label: 'The Number Vault' }, { id: 'token-rush', label: 'Token Rush' } ] },
+    activities: [
+      { id: 'number-vault', label: 'The Number Vault',
+        ev: 'worked with place value up to 10,000 — identifying digit values, building four-digit numbers (including zero as a place holder), comparing numbers and rounding' },
+      { id: 'token-rush', label: 'Token Rush',
+        ev: 'consolidated calculation skills through rapid mixed practice of the four operations across increasing difficulty levels' } ] },
   { name: '💻 Digital Media', colour: '#4a6fa5', key: 'base6_w3_digital_tracker', page: 'digital-media/index.html',
-    activities: [ { id: 'ai-detective', label: 'AI Detective' }, { id: 'ai-inventor', label: 'AI Inventor' } ] },
+    activities: [
+      { id: 'ai-detective', label: 'AI Detective',
+        ev: 'identified where AI appears in everyday life and applied the "learns from data vs follows fixed instructions" test to tell AI apart from ordinary software' },
+      { id: 'ai-inventor', label: 'AI Inventor',
+        ev: 'designed their own AI concept — deciding what it would do, what training data it would learn from, and what risks would need managing' } ] },
   { name: '🧲 Science and Environmental', colour: '#2e8b57', key: 'base6_w3_science_tracker', page: 'science/index.html',
-    activities: [ { id: 'sliding-stones', label: 'The Sliding Stones' }, { id: 'push-pull-hq', label: 'Push & Pull HQ' } ] },
+    activities: [
+      { id: 'sliding-stones', label: 'The Sliding Stones',
+        ev: 'investigated how force, mass and friction affect motion, predicting and testing how far an object travels across different surfaces' },
+      { id: 'push-pull-hq', label: 'Push & Pull HQ',
+        ev: 'explored balanced and unbalanced forces, interpreting force arrow diagrams to predict how objects will move' } ] },
   { name: '🦋 Physical World & Exploration', colour: '#6b8e23', key: 'base6_w3_physical_tracker', page: 'physical-world/index.html',
-    activities: [ { id: 'habitat-designer', label: 'Habitat Designer' }, { id: 'wildlife-logger', label: 'Wildlife Logger' } ] },
+    activities: [
+      { id: 'habitat-designer', label: 'Habitat Designer',
+        ev: 'designed a mini conservation area, selecting habitat features and predicting which wildlife each would attract' },
+      { id: 'wildlife-logger', label: 'Wildlife Logger',
+        ev: 'recorded wildlife survey data across multiple sessions and analysed changes in biodiversity (species richness and total sightings over time)' } ] },
   { name: '🧘 Preparation for Adulthood', colour: '#0e8a9e', key: 'base6_w3_adulthood_tracker', page: 'adulthood/index.html',
-    activities: [ { id: 'calm-studio', label: 'The Calm Studio' }, { id: 'wellbeing-lab', label: 'The Wellbeing Lab' } ] },
+    activities: [
+      { id: 'calm-studio', label: 'The Calm Studio',
+        ev: 'identified and practised basic yoga poses, building and following their own guided relaxation routine' },
+      { id: 'wellbeing-lab', label: 'The Wellbeing Lab',
+        ev: 'described the benefits of yoga and slow breathing for physical and mental wellbeing, sorting benefits into body and mind and matching poses to their effects' } ] },
   { name: '💬 Relational (PSHE & RSE)', colour: '#7b5ea7', key: 'base6_w3_relational_tracker', page: 'relational/index.html',
-    activities: [ { id: 'upgrade-garage', label: 'The Upgrade Garage' }, { id: 'myth-lab', label: 'Myth Lab' } ] },
+    activities: [
+      { id: 'upgrade-garage', label: 'The Upgrade Garage',
+        ev: 'explored why personal hygiene routines need to change as bodies grow, sorted daily from weekly hygiene tasks, and built their own morning and evening routine' },
+      { id: 'myth-lab', label: 'Myth Lab',
+        ev: 'tested common hygiene myths against the science (bacteria and body odour, nose blindness, changes during puberty) and applied this understanding to real-life scenarios' } ] },
   { name: '📜 Human and Social', colour: '#c0392b', key: 'base6_w3_human_tracker', page: 'human-social/index.html',
-    activities: [ { id: 'evidence-room', label: 'The Evidence Room' }, { id: 'whose-story', label: 'Whose Story?' } ] },
+    activities: [
+      { id: 'evidence-room', label: 'The Evidence Room',
+        ev: 'interpreted historical artefacts from beyond living memory, distinguishing between direct evidence, reasonable inference and guesswork' },
+      { id: 'whose-story', label: 'Whose Story?',
+        ev: 'analysed bias in two contrasting accounts of Boudicca\'s revolt, identifying loaded language and discussing why the surviving sources are one-sided' } ] },
   { name: '🎨 Aesthetic and Creative', colour: '#c2185b', key: 'base6_w3_creative_tracker', page: 'creative/index.html',
-    activities: [ { id: 'thread-lab', label: 'Thread Lab' }, { id: 'material-world', label: 'Material World' }, { id: 'nastix-design', label: 'Nastix Design' } ] },
+    activities: [
+      { id: 'thread-lab', label: 'Thread Lab',
+        ev: 'used a template to create their own fashion design, making deliberate choices of colour, pattern and material and explaining the reasons behind them' },
+      { id: 'material-world', label: 'Material World',
+        ev: 'sorted natural and synthetic fabrics and selected appropriate materials for different design briefs based on their properties' },
+      { id: 'nastix-design', label: 'Nastix Design',
+        ev: 'explored fashion design using a professional template tool, considering materials, colours and patterns' } ] },
 ];
 
 function tryUnlock() {
@@ -535,60 +581,71 @@ function renderEvidenceChips() {
 function generateEvidence(st) {
   saveReading(false); saveNotes(false);
   const rows = getMatrix();
+  const blocks = [];
 
-  // Activities completed, grouped by subject
-  const bySubject = [];
+  // One block per pillar with completed activities, written from the learning statements
   SUBJECTS.forEach(sub => {
-    const done = rows.filter(r => r.subject === sub && r.done[st]).map(r => r.activity.label);
-    if (done.length) bySubject.push({ name: sub.name.replace(/^\S+\s/, ''), acts: done });
+    const done = rows.filter(r => r.subject === sub && r.done[st]).map(r => r.activity);
+    if (!done.length) return;
+    const pillarName = sub.name.replace(/^\S+\s/, '');
+    let text = 'Base 6 · Week 3 (Making Things Better) · ' + pillarName + '\n\n';
+    done.forEach(act => {
+      text += 'In ' + act.label + ', ' + st + ' ' + act.ev + '.\n\n';
+    });
+    blocks.push({ title: sub.name, colour: sub.colour, text: text.trim() });
   });
-  const totalDone = bySubject.reduce((n, s) => n + s.acts.length, 0);
 
-  let text = 'Base 6 · Week 3 — Making Things Better · ' + st + '\n';
-  text += 'Word of the Week: Optimise\n\n';
-
-  if (totalDone > 0) {
-    text += st + ' completed ' + totalDone + ' Base 6 activit' + (totalDone === 1 ? 'y' : 'ies') + ' this week: ';
-    text += bySubject.map(s => s.acts.join(' and ') + ' (' + s.name + ')').join('; ') + '.\n\n';
-  } else {
-    text += 'No activity completions are ticked for ' + st + ' on this device this week.\n\n';
-  }
-
-  // Reading record
+  // Reading block
   const reading = loadJSON(READING_KEY);
   const entries = DAYS.filter(d => reading[st] && reading[st][d] && reading[st][d].trim());
   if (entries.length > 0) {
-    text += 'Reading (' + entries.length + ' of 5 days recorded):\n';
-    entries.forEach(d => { text += '  ' + d + ' — ' + reading[st][d].trim() + '\n'; });
-    text += '\n';
-  } else {
-    text += 'Reading: no entries recorded this week.\n\n';
+    let text = 'Base 6 · Week 3 (Making Things Better) · Reading\n\n';
+    text += st + ' read on ' + entries.length + ' of 5 days this week:\n';
+    entries.forEach(d => { text += d + ' — ' + reading[st][d].trim() + '\n'; });
+    blocks.push({ title: '📖 Reading', colour: '#007291', text: text.trim() });
   }
 
-  // Teacher note
+  // Teacher notes block
   const notes = loadJSON(NOTES_KEY);
   if (notes[st] && notes[st].trim()) {
-    text += 'Teacher notes: ' + notes[st].trim() + '\n';
+    blocks.push({ title: '📝 Teacher notes', colour: '#888888', text: 'Teacher observations — ' + st + ' (Week 3):\n\n' + notes[st].trim() });
   }
 
-  document.getElementById('evidence-text').value = text.trim();
-}
-
-function copyEvidence() {
-  const text = document.getElementById('evidence-text').value.trim();
-  if (!text) {
-    alert('Pick a student first to generate their evidence text.');
+  // Render
+  const c = document.getElementById('evidence-blocks');
+  c.innerHTML = '';
+  if (!blocks.length) {
+    c.innerHTML = '<p class="ev-empty">Nothing to generate for ' + st + ' yet — no activity ticks, reading entries or notes are saved on this device. Tick activities above (or import a backup) and try again.</p>';
     return;
   }
+  blocks.forEach((b, i) => {
+    const div = document.createElement('div');
+    div.className = 'ev-block';
+    div.style.setProperty('--c', b.colour);
+    div.innerHTML = '<div class="ev-block-head"><span class="ev-block-title">' + b.title + '</span>' +
+      '<button class="ev-copy-btn" id="ev-copy-' + i + '" onclick="copyEvidenceBlock(' + i + ')">📋 Copy</button></div>' +
+      '<textarea id="ev-text-' + i + '"></textarea>';
+    c.appendChild(div);
+    const ta = div.querySelector('textarea');
+    ta.value = b.text;
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight + 6, 400) + 'px';
+  });
+}
+
+function copyEvidenceBlock(i) {
+  const ta = document.getElementById('ev-text-' + i);
+  const btn = document.getElementById('ev-copy-' + i);
+  if (!ta) return;
   const confirmCopied = () => {
-    const s = document.getElementById('evidence-copied');
-    s.style.display = 'inline';
-    setTimeout(() => s.style.display = 'none', 2500);
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2500);
   };
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(confirmCopied);
+    navigator.clipboard.writeText(ta.value.trim()).then(confirmCopied);
   } else {
-    document.getElementById('evidence-text').select();
+    ta.select();
     document.execCommand('copy');
     confirmCopied();
   }
