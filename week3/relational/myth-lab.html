@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Myth Lab · Relational · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .kind-note { background: #f3eef9; border: 2px solid #d4c5e8; border-radius: 14px; padding: 1.1rem 1.4rem; font-size: 0.9rem; line-height: 1.7; color: #4a3470; margin-bottom: 1.5rem; }
+
+  .myth-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .myth-num { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #7b5ea7; margin-bottom: 0.35rem; }
+  .myth-text { font-size: 0.98rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.8rem; }
+  .verdict-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .verdict-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.55rem 1.3rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .verdict-btn:hover { border-color: #c9b8df; }
+  .verdict-btn.right { border-color: #2e8b57; background: #e6f5e6; color: #1a5e1a; }
+  .verdict-btn.wrong { border-color: #c0392b; background: #fbeae8; color: #8a2318; }
+  .myth-fb { display: none; font-size: 0.86rem; line-height: 1.65; margin-top: 0.7rem; padding: 0.65rem 0.9rem; border-radius: 8px; }
+  .myth-fb.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .myth-fb.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+
+  .scenario-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .scenario-q { font-size: 0.95rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.75rem; }
+  .options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .opt-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; text-align: left; padding: 0.6rem 0.9rem; border: 2px solid #e0d8d0; border-radius: 8px; background: #fff; cursor: pointer; line-height: 1.5; }
+  .opt-btn:hover { border-color: #c9b8df; }
+  .opt-btn.right { border-color: #2e8b57; background: #e6f5e6; }
+  .opt-btn.wrong { border-color: #c0392b; background: #fbeae8; }
+  .scenario-fb { display: none; font-size: 0.85rem; line-height: 1.6; margin-top: 0.7rem; padding: 0.6rem 0.85rem; border-radius: 8px; }
+  .scenario-fb.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .scenario-fb.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+
+  .lab-cert { display: none; background: #2a2333; border-radius: 14px; padding: 1.5rem; text-align: center; margin: 1.5rem 0; }
+  .lab-cert.show { display: block; }
+  .lab-cert h2 { color: #c9b8df; font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .lab-cert p { color: #fef8f4; opacity: 0.85; font-size: 0.92rem; line-height: 1.6; }
+
+  .report-bar { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Relational</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Relational (PSHE &amp; RSE) · Week 3</p>
+  <h1>🧪 Myth Lab</h1>
+  <p>There's a lot of nonsense out there about hygiene. Time to test it like scientists: eight claims go under the microscope — you decide which are facts and which are myths.</p>
+</div>
+
+<main class="main">
+
+  <div class="kind-note">
+    💜 Lab note before we start: every single person sweats, gets greasy hair, and has morning breath. It's biology, not a personal failing. Hygiene isn't about being embarrassed — it's just maintenance, like charging your phone.
+  </div>
+
+  <p class="section-label">Under the microscope — myth or fact?</p>
+  <div id="myths"></div>
+
+  <p class="section-label">Field tests — what's the smart move?</p>
+  <div id="scenarios"></div>
+
+  <div class="lab-cert" id="lab-cert">
+    <h2>🔬 Lab certification earned</h2>
+    <p id="cert-text"></p>
+  </div>
+
+  <p class="section-label">Send my lab results</p>
+  <div class="report-bar">
+    <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Relational
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_rel_mythlab';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const MYTHS = [
+  { text: '"You only need deodorant if you can already smell something."', myth: true,
+    fb: 'MYTH — deodorant works best put on clean skin BEFORE sweat shows up, usually after your morning wash. By the time there\'s a smell, the bacteria have already had their party.' },
+  { text: '"Body odour isn\'t actually the sweat — it\'s bacteria eating the sweat."', myth: false,
+    fb: 'FACT — fresh sweat barely smells at all. The odour comes from normal skin bacteria breaking sweat down. That\'s why washing (removing the bacteria\'s dinner) works better than covering smells up.' },
+  { text: '"Brushing your teeth harder gets them cleaner."', myth: true,
+    fb: 'MYTH — scrubbing hard wears down enamel and damages gums. Gentle circles for two full minutes beats thirty seconds of furious scrubbing every time.' },
+  { text: '"You can stop noticing your own smell, even when others can notice it."', myth: false,
+    fb: 'FACT — it\'s called nose blindness, and it happens to everyone. Your nose tunes out constant smells. That\'s exactly why a routine matters more than a sniff test.' },
+  { text: '"Mouthwash means you can skip brushing."', myth: true,
+    fb: 'MYTH — mouthwash can\'t scrape plaque off teeth. It\'s a nice extra, but the brush does the real work.' },
+  { text: '"During puberty your body makes a new kind of sweat that smells stronger."', myth: false,
+    fb: 'FACT — new sweat glands switch on as you grow, and bacteria love what they make. It\'s completely normal, happens to everyone, and it\'s the reason routines need an upgrade around now.' },
+  { text: '"If your hair looks fine, it\'s clean."', myth: true,
+    fb: 'MYTH — oil and scalp sweat build up before hair looks greasy. Regular washing keeps you ahead of it rather than chasing it.' },
+  { text: '"Wearing the same socks two days running is fine because they\'re hidden."', myth: true,
+    fb: 'MYTH — feet have hundreds of thousands of sweat glands and socks soak up everything. Hidden from eyes, very much not hidden from noses. Fresh pair daily.' },
+];
+
+const SCENARIOS = [
+  { q: 'You\'ve just finished PE and you\'re heading to meet friends. The smart move?',
+    opts: ['Spray deodorant over the sweat and dash', 'A quick wash or wipe-down first, then deodorant, then go', 'Nothing — they\'re your friends, they\'ll cope'],
+    correct: 1, fb: 'Wash first, then deodorant. Spraying over sweat just mixes two smells — removing the sweat is what actually works. Two minutes well spent.' },
+  { q: 'You\'re running late and can only do ONE thing before leaving. Which gives the most benefit?',
+    opts: ['Brush your teeth', 'Spend ten minutes on your hair', 'Re-tie your shoelaces in a cooler way'],
+    correct: 0, fb: 'Teeth — it tackles morning breath, protects your teeth all day, and takes two minutes. Hair can be sorted on the move; cool laces, sadly, cannot save you from morning breath.' },
+  { q: 'A friend quietly tells you that your breath smells a bit today. Best response?',
+    opts: ['Never speak to them again', 'Feel embarrassed forever', 'A quick "cheers for telling me", sort it out, move on'],
+    correct: 2, fb: 'It takes guts to tell a friend something like that — they did you a favour. Everyone has off days. Fix it, thank them, forget it.' },
+  { q: 'Your clothes pass the sniff test... you think. But you wore them all yesterday. What does the Myth Lab say?',
+    opts: ['Sniff test passed — wear them', 'Remember nose blindness — your nose is the least reliable judge of your own stuff. Fresh clothes', 'Turn them inside out — that resets them'],
+    correct: 1, fb: 'You literally proved this in the lab — nose blindness means you\'re the worst judge of your own smells. When in doubt, fresh it out. (Inside-out is not a technology.)' },
+];
+
+let state = { myths: {}, scenarios: {} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+function renderMyths() {
+  const c = document.getElementById('myths');
+  c.innerHTML = '';
+  MYTHS.forEach((m, i) => {
+    const picked = state.myths[i]; // true = said myth, false = said fact
+    let mythCls = 'verdict-btn', factCls = 'verdict-btn';
+    if (picked === true) mythCls += m.myth ? ' right' : ' wrong';
+    if (picked === false) factCls += !m.myth ? ' right' : ' wrong';
+    let fbCls = 'myth-fb', fbTxt = '';
+    if (picked !== undefined) {
+      const right = picked === m.myth;
+      fbCls += right ? ' show-right' : ' show-wrong';
+      fbTxt = right ? '✓ ' + m.fb : m.fb;
+    }
+    const div = document.createElement('div');
+    div.className = 'myth-card';
+    div.innerHTML = '<div class="myth-num">Claim ' + (i + 1) + ' of 8</div>' +
+      '<div class="myth-text">' + m.text + '</div>' +
+      '<div class="verdict-row">' +
+      '<button class="' + mythCls + '" onclick="mythVerdict(' + i + ', true)">🚫 Myth</button>' +
+      '<button class="' + factCls + '" onclick="mythVerdict(' + i + ', false)">✅ Fact</button>' +
+      '</div><div class="' + fbCls + '">' + fbTxt + '</div>';
+    c.appendChild(div);
+  });
+  updateCert();
+}
+
+function mythVerdict(i, v) {
+  state.myths[i] = v;
+  save();
+  renderMyths();
+}
+
+function renderScenarios() {
+  const c = document.getElementById('scenarios');
+  c.innerHTML = '';
+  SCENARIOS.forEach((s, i) => {
+    const picked = state.scenarios[i];
+    let opts = '';
+    s.opts.forEach((o, oi) => {
+      let cls = 'opt-btn';
+      if (picked !== undefined && oi === picked) cls += picked === s.correct ? ' right' : ' wrong';
+      opts += '<button class="' + cls + '" onclick="scenarioAnswer(' + i + ',' + oi + ')">' + o + '</button>';
+    });
+    let fbCls = 'scenario-fb', fbTxt = '';
+    if (picked !== undefined) {
+      const right = picked === s.correct;
+      fbCls += right ? ' show-right' : ' show-wrong';
+      fbTxt = right ? '✓ ' + s.fb : s.fb;
+    }
+    const div = document.createElement('div');
+    div.className = 'scenario-card';
+    div.innerHTML = '<div class="scenario-q">' + (i + 1) + '. ' + s.q + '</div><div class="options">' + opts + '</div><div class="' + fbCls + '">' + fbTxt + '</div>';
+    c.appendChild(div);
+  });
+  updateCert();
+}
+
+function scenarioAnswer(i, oi) {
+  state.scenarios[i] = oi;
+  save();
+  renderScenarios();
+}
+
+function mythScore() { return MYTHS.filter((m, i) => state.myths[i] === m.myth).length; }
+function scenarioScore() { return SCENARIOS.filter((s, i) => state.scenarios[i] === s.correct).length; }
+
+function updateCert() {
+  const allDone = Object.keys(state.myths).length === MYTHS.length && Object.keys(state.scenarios).length === SCENARIOS.length;
+  if (allDone) {
+    const total = mythScore() + scenarioScore();
+    const cert = document.getElementById('lab-cert');
+    cert.classList.add('show');
+    document.getElementById('cert-text').textContent =
+      'All claims tested and all field scenarios run — ' + total + ' out of 12 correct. ' +
+      (total === 12 ? 'A flawless investigation. The Myth Lab salutes you.' : 'Any orange verdicts can be retested — the evidence is in the feedback.');
+  }
+}
+
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  let body = 'MYTH LAB — RELATIONAL WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Myth or fact: ' + mythScore() + '/8 (' + Object.keys(state.myths).length + '/8 attempted)\n';
+  body += 'Field scenarios: ' + scenarioScore() + '/4 (' + Object.keys(state.scenarios).length + '/4 attempted)\n\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Myth Lab — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now.';
+  n.classList.add('show');
+}
+
+// Init
+renderMyths();
+renderScenarios();
+</script>
+
+</body>
+</html>
