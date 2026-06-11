@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whose Story? · Human and Social · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+  .card p + p { margin-top: 0.6rem; }
+
+  /* Source */
+  .source { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .source-tag { display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 12px; border-radius: 20px; margin-bottom: 0.6rem; }
+  .source-tag.roman { background: #fdf3f1; border: 1.5px solid #ecc4bd; color: #c0392b; }
+  .source-tag.briton { background: #eef4fb; border: 1.5px solid #bdd4ec; color: #2a5d8f; }
+  .source-title { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.6rem; }
+  .source-text { background: #faf6f1; border: 1.5px solid #e8ddd0; border-radius: 10px; padding: 1rem 1.2rem; font-size: 0.95rem; line-height: 1.9; color: #333; margin-bottom: 1rem; }
+  .task-line { font-size: 0.88rem; font-weight: 700; color: #555; margin-bottom: 0.6rem; }
+  .phrase-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.9rem; }
+  .phrase { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.84rem; font-weight: 700; padding: 0.5rem 0.95rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .phrase:hover { border-color: #b8d8e0; }
+  .phrase.picked { border-color: #007291; background: #e6f5f8; color: #00516a; }
+  .phrase.hit { border-color: #2e8b57; background: #e6f5e6; color: #1a5e1a; }
+  .phrase.missed { border-color: #ef7724; background: #fff3e8; color: #8a4a12; }
+  .phrase.falsealarm { border-color: #c0392b; background: #fbeae8; color: #8a2318; }
+  .check-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 0.6rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #007291; color: #fff; }
+  .check-btn:hover { background: #005a73; }
+  .source-result { display: none; font-size: 0.86rem; line-height: 1.65; margin-top: 0.75rem; padding: 0.65rem 0.9rem; border-radius: 8px; background: #fff7f0; border: 1.5px solid #fcd8bc; color: #5a3a1a; }
+  .source-result.show { display: block; }
+
+  /* Quiz */
+  .quiz-item { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .quiz-q { font-size: 0.95rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.75rem; }
+  .options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .opt-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; text-align: left; padding: 0.6rem 0.9rem; border: 2px solid #e0d8d0; border-radius: 8px; background: #fff; cursor: pointer; line-height: 1.5; }
+  .opt-btn:hover { border-color: #b8d8e0; }
+  .opt-btn.right { border-color: #2e8b57; background: #e6f5e6; }
+  .opt-btn.wrong { border-color: #c0392b; background: #fbeae8; }
+  .quiz-feedback { display: none; font-size: 0.85rem; line-height: 1.6; margin-top: 0.7rem; padding: 0.6rem 0.85rem; border-radius: 8px; }
+  .quiz-feedback.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .quiz-feedback.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+
+  .report-bar { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Human and Social</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Human and Social · Week 3</p>
+  <h1>⚔️ Whose Story?</h1>
+  <p>Nearly 2,000 years ago, Queen Boudicca led Britons in revolt against Rome. Here are two accounts of the same events — and they don't agree at all. Your job: work out whose side each writer is on, and why that matters.</p>
+</div>
+
+<main class="main">
+
+  <p class="section-label">First, the facts both sides agree on</p>
+  <div class="card">
+    <p>Around AD 60, after Roman officials seized Iceni lands and mistreated Queen Boudicca and her daughters, she led a huge uprising. Her forces destroyed three Roman towns, including Londinium (London), before the Roman army defeated them in a final battle. Everything beyond that... depends on who's telling the story.</p>
+  </div>
+
+  <p class="section-label">Source A</p>
+  <div class="source">
+    <span class="source-tag roman">Written from the Roman side</span>
+    <div class="source-title">Based on accounts by Roman writers</div>
+    <div class="source-text">
+      "The savage rebels swept across the land, burning the fine cities Rome had built. Led by the fearsome Boudicca, the lawless mob showed no mercy to civilised people. At last our brave legions, though greatly outnumbered, crushed the uprising and restored peace and order to the province."
+    </div>
+    <p class="task-line">Tap every word or phrase that gives away whose side the writer is on, then check:</p>
+    <div class="phrase-row" id="phrases-a"></div>
+    <button class="check-btn" onclick="checkSource('a')">Check my detective work</button>
+    <div class="source-result" id="result-a"></div>
+  </div>
+
+  <p class="section-label">Source B</p>
+  <div class="source">
+    <span class="source-tag briton">Imagined from the Briton side</span>
+    <div class="source-title">How an Iceni Briton might have told it</div>
+    <div class="source-text">
+      "The greedy invaders stole our lands and shamed our queen. So brave Boudicca rose, and free Britons followed her to drive out the foreign oppressors. Our heroes struck back at the towns built on stolen ground, until the empire's war machine butchered our people in the final battle."
+    </div>
+    <p class="task-line">Same job — tap the words that reveal this writer's side:</p>
+    <div class="phrase-row" id="phrases-b"></div>
+    <button class="check-btn" onclick="checkSource('b')">Check my detective work</button>
+    <div class="source-result" id="result-b"></div>
+  </div>
+
+  <p class="section-label">The historian's questions</p>
+  <div id="quiz-container"></div>
+
+  <p class="section-label">Send my findings</p>
+  <div class="report-bar">
+    <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Human and Social
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_hs_whosestory';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const SOURCES = {
+  a: {
+    phrases: [
+      { text: 'savage rebels', loaded: true }, { text: 'fine cities', loaded: true },
+      { text: 'across the land', loaded: false }, { text: 'lawless mob', loaded: true },
+      { text: 'civilised people', loaded: true }, { text: 'greatly outnumbered', loaded: false },
+      { text: 'brave legions', loaded: true }, { text: 'restored peace and order', loaded: true },
+      { text: 'the final battle', loaded: false },
+    ],
+    explain: 'The Roman writer paints Britons as "savage" and "lawless" while Romans are "brave" and "civilised" — and calls a brutal military victory "restoring peace and order". Every loaded word pushes you to one side.'
+  },
+  b: {
+    phrases: [
+      { text: 'greedy invaders', loaded: true }, { text: 'stole our lands', loaded: true },
+      { text: 'brave Boudicca', loaded: true }, { text: 'followed her', loaded: false },
+      { text: 'foreign oppressors', loaded: true }, { text: 'our heroes', loaded: true },
+      { text: 'the towns', loaded: false }, { text: 'war machine butchered', loaded: true },
+      { text: 'the final battle', loaded: false },
+    ],
+    explain: 'Mirror image! Now Romans are "greedy invaders" and a "war machine", while the same uprising becomes the work of "heroes". Same events, completely different colouring.'
+  }
+};
+
+const QUIZ = [
+  { q: 'Here\'s the twist: almost all REAL surviving accounts of Boudicca were written by Romans. Why might that be?',
+    opts: ['The Britons weren\'t interested in the story', 'The Iceni didn\'t leave written records, and Rome won — so Rome\'s version survived', 'Roman writing was easier to spell'],
+    correct: 1, fb: 'Exactly. The Britons passed stories on by speaking, not writing — and the winners controlled what got written down. That\'s why Source B had to be "imagined": history itself can be one-sided before a historian even opens a book.' },
+  { q: 'A Roman writer describing Britons as "savages" tells us most reliably about...',
+    opts: ['What Britons were really like', 'How Romans wanted Britons to be seen', 'The British weather'],
+    correct: 1, fb: 'Biased sources are still useful — just not in the way they intend. They\'re brilliant evidence of what the WRITER thought and wanted others to think.' },
+  { q: 'Both sources call Boudicca\'s fighters something different — "lawless mob" vs "our heroes". What\'s the historian\'s smartest response?',
+    opts: ['Believe the older source', 'Believe whichever is more exciting', 'Notice the bias in both, and look for facts the two sides AGREE on'],
+    correct: 2, fb: 'Where enemies agree — towns burned, a final Roman victory — you\'re probably close to solid ground. Where they disagree, you\'ve found the bias.' },
+  { q: 'Three good questions to ask of ANY source are...',
+    opts: ['Who wrote it? Why? Who was it for?', 'Is it long? Is it old? Is it famous?', 'Does it rhyme? Is it in colour? Is it laminated?'],
+    correct: 0, fb: 'Who, why, and for whom — the historian\'s toolkit. (Lamination, sadly, proves nothing.)' },
+];
+
+let state = { picks: { a: [], b: [] }, checked: { a: false, b: false }, quiz: {} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+// ── Phrase picking ───────────────────────────────────────
+function renderPhrases(src) {
+  const c = document.getElementById('phrases-' + src);
+  c.innerHTML = '';
+  SOURCES[src].phrases.forEach((p, i) => {
+    const picked = state.picks[src].includes(i);
+    const b = document.createElement('button');
+    let cls = 'phrase';
+    if (state.checked[src]) {
+      if (p.loaded && picked) cls += ' hit';
+      else if (p.loaded && !picked) cls += ' missed';
+      else if (!p.loaded && picked) cls += ' falsealarm';
+    } else if (picked) cls += ' picked';
+    b.className = cls;
+    b.textContent = '"' + p.text + '"';
+    b.onclick = () => {
+      state.checked[src] = false;
+      const idx = state.picks[src].indexOf(i);
+      if (idx >= 0) state.picks[src].splice(idx, 1); else state.picks[src].push(i);
+      save();
+      renderPhrases(src);
+      document.getElementById('result-' + src).classList.remove('show');
+    };
+    c.appendChild(b);
+  });
+}
+
+function checkSource(src) {
+  state.checked[src] = true;
+  save();
+  renderPhrases(src);
+  const phrases = SOURCES[src].phrases;
+  const hits = phrases.filter((p, i) => p.loaded && state.picks[src].includes(i)).length;
+  const total = phrases.filter(p => p.loaded).length;
+  const falseAlarms = phrases.filter((p, i) => !p.loaded && state.picks[src].includes(i)).length;
+
+  const r = document.getElementById('result-' + src);
+  let msg = '🔎 You found ' + hits + ' of ' + total + ' loaded phrases';
+  msg += falseAlarms > 0 ? ', with ' + falseAlarms + ' neutral phrase' + (falseAlarms === 1 ? '' : 's') + ' flagged by mistake (shown in red). ' : '. ';
+  if (hits === total && falseAlarms === 0) msg += 'A perfect sweep! ';
+  else msg += 'Orange phrases are loaded ones you missed — tap to add them. ';
+  msg += SOURCES[src].explain;
+  r.textContent = msg;
+  r.classList.add('show');
+}
+
+// ── Quiz ─────────────────────────────────────────────────
+function renderQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  QUIZ.forEach((item, i) => {
+    const picked = state.quiz[i];
+    let opts = '';
+    item.opts.forEach((o, oi) => {
+      let cls = 'opt-btn';
+      if (picked !== undefined && oi === picked) cls += picked === item.correct ? ' right' : ' wrong';
+      opts += '<button class="' + cls + '" onclick="quizAnswer(' + i + ',' + oi + ')">' + o + '</button>';
+    });
+    let fbCls = 'quiz-feedback', fbTxt = '';
+    if (picked !== undefined) {
+      const right = picked === item.correct;
+      fbCls += right ? ' show-right' : ' show-wrong';
+      fbTxt = right ? '✓ ' + item.fb : 'Have another think — what would a careful historian be most cautious about?';
+    }
+    const div = document.createElement('div');
+    div.className = 'quiz-item';
+    div.innerHTML = '<div class="quiz-q">' + (i + 1) + '. ' + item.q + '</div><div class="options">' + opts + '</div><div class="' + fbCls + '">' + fbTxt + '</div>';
+    c.appendChild(div);
+  });
+}
+
+function quizAnswer(i, oi) {
+  state.quiz[i] = oi;
+  save();
+  renderQuiz();
+}
+
+// ── Email ────────────────────────────────────────────────
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  const quizCorrect = QUIZ.filter((q, i) => state.quiz[i] === q.correct).length;
+  function srcScore(src) {
+    const phrases = SOURCES[src].phrases;
+    const hits = phrases.filter((p, i) => p.loaded && state.picks[src].includes(i)).length;
+    const total = phrases.filter(p => p.loaded).length;
+    return hits + '/' + total + (state.checked[src] ? '' : ' (not yet checked)');
+  }
+
+  let body = 'WHOSE STORY? — HUMAN AND SOCIAL WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Source A (Roman) loaded phrases found: ' + srcScore('a') + '\n';
+  body += 'Source B (Briton) loaded phrases found: ' + srcScore('b') + '\n';
+  body += 'Historian\'s questions: ' + quizCorrect + '/4\n\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Whose Story — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now.';
+  n.classList.add('show');
+}
+
+// Init
+renderPhrases('a');
+renderPhrases('b');
+renderQuiz();
+if (state.checked.a) checkSource('a');
+if (state.checked.b) checkSource('b');
+</script>
+
+</body>
+</html>

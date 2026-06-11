@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Evidence Room · Human and Social · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+  .card p + p { margin-top: 0.6rem; }
+  .rule-box { background: #fdf3f1; border: 1.5px solid #ecc4bd; border-radius: 10px; padding: 0.9rem 1.1rem; margin-top: 0.9rem; font-size: 0.9rem; line-height: 1.7; color: #6e2418; }
+  .rule-box strong { color: #c0392b; }
+
+  /* Artefact */
+  .artefact { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.5rem; }
+  .artefact-head { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.6rem; }
+  .artefact-emoji { font-size: 2.4rem; }
+  .artefact-name { font-size: 1.1rem; font-weight: 700; color: #c0392b; line-height: 1.3; }
+  .artefact-case { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+  .artefact-desc { background: #faf6f1; border: 1.5px solid #e8ddd0; border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.9rem; line-height: 1.7; color: #444; margin-bottom: 1rem; }
+
+  .statement { margin-bottom: 1.1rem; }
+  .statement-text { font-size: 0.93rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.5rem; }
+  .verdict-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .v-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.75rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .v-btn:hover { border-color: #e0b8b2; }
+  .v-btn.right { border-color: #2e8b57; background: #e6f5e6; color: #1a5e1a; }
+  .v-btn.wrong { border-color: #c0392b; background: #fbeae8; color: #8a2318; }
+  .statement-fb { display: none; font-size: 0.84rem; line-height: 1.6; margin-top: 0.5rem; padding: 0.55rem 0.85rem; border-radius: 8px; }
+  .statement-fb.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .statement-fb.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+
+  .progress-banner { display: none; background: #2b1f1d; border-radius: 14px; padding: 1.4rem; text-align: center; margin: 1.5rem 0; }
+  .progress-banner.show { display: block; }
+  .progress-banner h2 { color: #f0b9a8; font-size: 1.15rem; margin-bottom: 0.4rem; }
+  .progress-banner p { color: #fef8f4; opacity: 0.85; font-size: 0.92rem; line-height: 1.6; }
+
+  .report-bar { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Human and Social</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Human and Social · Week 3</p>
+  <h1>🏺 The Evidence Room</h1>
+  <p>Three artefacts from beyond living memory have arrived at the museum, and you're the historian on duty. The trick of the trade: knowing the difference between what the evidence shows, what's a sensible inference — and what's just a guess.</p>
+</div>
+
+<main class="main">
+
+  <p class="section-label">The historian's golden rule</p>
+  <div class="card">
+    <p>Artefacts don't come with labels. Historians build the story in three layers:</p>
+    <div class="rule-box">
+      <strong>🔍 The evidence shows it</strong> — you can see or read it directly on the object.<br>
+      <strong>🧠 Sensible inference</strong> — not written on the object, but a fair conclusion from it.<br>
+      <strong>❓ Just a guess</strong> — the evidence can't tell us this, however fun it sounds.
+    </div>
+    <p style="margin-top: 0.9rem;">For each statement below, give your verdict. Wrong verdicts can be changed — that's how real historians work too.</p>
+  </div>
+
+  <div id="artefacts"></div>
+
+  <div class="progress-banner" id="banner">
+    <h2>🏛️ Investigation complete</h2>
+    <p id="banner-text"></p>
+  </div>
+
+  <p class="section-label">Send my casework</p>
+  <div class="report-bar">
+    <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Human and Social
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_hs_evidence';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const ARTEFACTS = [
+  {
+    emoji: '🪙', name: 'A Roman coin', caseNo: 'Case 1 · Found in a Somerset field',
+    desc: 'A small silver coin dug up by a farmer near Yeovil. One side shows an emperor\'s head with Latin writing around the edge. Experts date it to around AD 270 — over 1,750 years ago.',
+    statements: [
+      { text: 'This coin was made by Romans.', answer: 'evidence',
+        fb: { evidence: 'The Latin writing, the emperor\'s head and the style all show this directly — the object itself is the proof.', other: 'Look at the coin itself — the Latin writing and emperor\'s head are direct evidence of who made it.' } },
+      { text: 'Roman money, or people who used it, reached this part of Somerset.', answer: 'inference',
+        fb: { inference: 'The coin can\'t tell us its own journey, but it ended up in a Somerset field somehow — a fair conclusion that Roman money circulated here.', other: 'The coin doesn\'t say how it got here — but it IS here, so something brought it. That makes this an inference, not direct evidence or a guess.' } },
+      { text: 'The person who dropped it was a Roman soldier.', answer: 'guess',
+        fb: { guess: 'Exactly — it could have been a soldier, a trader, a farmer, or someone\'s lost pocket money centuries later. The coin can\'t tell us who held it.', other: 'Careful — could the coin tell us WHO dropped it? A trader, a farmer or a child are all just as possible.' } },
+      { text: 'Everyone living in Somerset spoke Latin.', answer: 'guess',
+        fb: { guess: 'One coin can\'t speak for a whole population. Most ordinary Britons carried on speaking their own languages.', other: 'One coin, a whole county of people? That\'s far more than this little object can prove.' } },
+    ]
+  },
+  {
+    emoji: '🏺', name: 'A broken clay pot', caseNo: 'Case 2 · Found by a buried hearth',
+    desc: 'Pieces of a thick clay pot found next to the remains of an ancient fireplace. Inside the largest piece: traces of burnt grain. Fingerprint-like ridges show it was shaped by hand.',
+    statements: [
+      { text: 'The pot once held grain.', answer: 'evidence',
+        fb: { evidence: 'The burnt grain is right there inside it — about as direct as evidence gets.', other: 'Check inside the pot — the burnt grain is physically present, which makes this direct evidence.' } },
+      { text: 'People prepared or stored food at this spot.', answer: 'inference',
+        fb: { inference: 'A grain pot next to a hearth strongly suggests food was handled here — a sensible conclusion built from two pieces of evidence together.', other: 'The pot doesn\'t SAY "kitchen" — but grain plus a fireplace adds up to a fair conclusion. That\'s inference territory.' } },
+      { text: 'The pot was shaped by hand rather than on a machine.', answer: 'evidence',
+        fb: { evidence: 'The ridges from fingers are visible on the clay itself — the maker left their marks behind.', other: 'Look closely — the finger ridges are still on the clay. The object shows this directly.' } },
+      { text: 'The cook was a woman named Aelfgifu who made terrible porridge.', answer: 'guess',
+        fb: { guess: 'A glorious story — and the pot can confirm none of it. No name, no person, and definitely no porridge reviews survive.', other: 'However good the story, the pot contains no names and no porridge reviews. Pure guesswork.' } },
+    ]
+  },
+  {
+    emoji: '🖋️', name: 'A child\'s school slate', caseNo: 'Case 3 · Victorian, around 1880',
+    desc: 'A small grey writing slate in a wooden frame, the kind Victorian children used before paper was cheap. Scratched into the surface, still faintly visible: rows of the letter "A", getting neater towards the bottom.',
+    statements: [
+      { text: 'Rows of the letter A were scratched onto this slate.', answer: 'evidence',
+        fb: { evidence: 'The scratches are still there to see — direct evidence on the object.', other: 'You can still see the scratched letters — the slate shows this directly.' } },
+      { text: 'A child was practising their handwriting.', answer: 'inference',
+        fb: { inference: 'Repeated letters getting neater, on a school slate — a very fair conclusion, even though no one wrote "I am practising" on it.', other: 'The slate doesn\'t announce "handwriting practice" — but repeated As getting neater is strong grounds for concluding it. An inference.' } },
+      { text: 'The child found writing hard at first and improved with practice.', answer: 'inference',
+        fb: { inference: 'Wobbly at the top, neater at the bottom — the slate quietly records someone getting better. A careful inference from the evidence.', other: 'Look at the letters again — wobblier at the top, neater at the bottom. The improvement is readable from the object, even though it isn\'t stated.' } },
+      { text: 'The child hated school and wished they were outside playing.', answer: 'guess',
+        fb: { guess: 'Maybe! But feelings don\'t survive on slates. They might equally have loved school. The evidence simply can\'t say.', other: 'Can a slate record feelings? They might have loved school just as easily. The evidence can\'t reach this one.' } },
+    ]
+  },
+];
+
+let state = { verdicts: {} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+const LABELS = { evidence: '🔍 Evidence shows it', inference: '🧠 Sensible inference', guess: '❓ Just a guess' };
+
+function render() {
+  const c = document.getElementById('artefacts');
+  c.innerHTML = '';
+  ARTEFACTS.forEach((a, ai) => {
+    const div = document.createElement('div');
+    div.className = 'artefact';
+    let html = '<div class="artefact-head"><span class="artefact-emoji">' + a.emoji + '</span><div>' +
+      '<div class="artefact-case">' + a.caseNo + '</div>' +
+      '<div class="artefact-name">' + a.name + '</div></div></div>' +
+      '<div class="artefact-desc">' + a.desc + '</div>';
+
+    a.statements.forEach((s, si) => {
+      const key = ai + '-' + si;
+      const picked = state.verdicts[key];
+      let btns = '';
+      ['evidence', 'inference', 'guess'].forEach(v => {
+        let cls = 'v-btn';
+        if (picked !== undefined && picked === v) cls += v === s.answer ? ' right' : ' wrong';
+        btns += '<button class="' + cls + '" onclick="verdict(\'' + key + '\',\'' + v + '\')">' + LABELS[v] + '</button>';
+      });
+      let fbCls = 'statement-fb', fbTxt = '';
+      if (picked !== undefined) {
+        const right = picked === s.answer;
+        fbCls += right ? ' show-right' : ' show-wrong';
+        fbTxt = right ? '✓ ' + s.fb[s.answer] : s.fb.other;
+      }
+      html += '<div class="statement"><div class="statement-text">"' + s.text + '"</div>' +
+        '<div class="verdict-row">' + btns + '</div>' +
+        '<div class="' + fbCls + '">' + fbTxt + '</div></div>';
+    });
+    div.innerHTML = html;
+    c.appendChild(div);
+  });
+  updateBanner();
+}
+
+function verdict(key, v) {
+  state.verdicts[key] = v;
+  save();
+  render();
+}
+
+function totals() {
+  let total = 0, correct = 0, attempted = 0;
+  ARTEFACTS.forEach((a, ai) => a.statements.forEach((s, si) => {
+    total++;
+    const picked = state.verdicts[ai + '-' + si];
+    if (picked !== undefined) {
+      attempted++;
+      if (picked === s.answer) correct++;
+    }
+  }));
+  return { total, correct, attempted };
+}
+
+function updateBanner() {
+  const t = totals();
+  if (t.attempted === t.total) {
+    const b = document.getElementById('banner');
+    b.classList.add('show');
+    document.getElementById('banner-text').textContent =
+      t.correct + ' of ' + t.total + ' verdicts correct. ' +
+      (t.correct === t.total
+        ? 'A model historian — you never let a good story run ahead of the evidence.'
+        : 'Any orange verdicts can be reconsidered — re-reading the evidence is exactly what historians do.');
+  }
+}
+
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  const t = totals();
+  let body = 'THE EVIDENCE ROOM — HUMAN AND SOCIAL WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Verdicts: ' + t.correct + '/' + t.total + ' correct (' + t.attempted + '/' + t.total + ' attempted)\n\n';
+  ARTEFACTS.forEach((a, ai) => {
+    const sub = a.statements.filter((s, si) => state.verdicts[ai + '-' + si] === s.answer).length;
+    body += a.name + ': ' + sub + '/' + a.statements.length + '\n';
+  });
+  body += '\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Evidence Room — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now.';
+  n.classList.add('show');
+}
+
+// Init
+render();
+</script>
+
+</body>
+</html>
