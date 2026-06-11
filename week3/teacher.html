@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard · Week 3 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  /* Lock screen */
+  #lockScreen { position: fixed; inset: 0; background: #007291; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
+  #lockScreen h1 { font-size: 1.8rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+  #lockScreen p { font-size: 0.95rem; color: rgba(255,255,255,0.85); margin-bottom: 1.75rem; line-height: 1.5; }
+  #lockScreen .lock-icon { font-size: 3rem; margin-bottom: 1rem; }
+  #passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.2); color: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.1rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
+  #passwordInput::placeholder { color: rgba(255,255,255,0.5); }
+  #passwordInput:focus { outline: none; border-color: white; }
+  #unlockBtn { padding: 0.7rem 2rem; background: white; color: #007291; border: none; border-radius: 12px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+  #lockError { color: white; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 700; margin-top: 0.75rem; display: none; }
+  #mainContent { display: none; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .header-title { color: #fef8f4; font-size: 1rem; font-weight: 700; }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .device-note { background: #fff8e1; border: 2px solid #f0d080; border-radius: 12px; padding: 0.9rem 1.2rem; font-size: 0.85rem; line-height: 1.6; color: #5a4000; margin-bottom: 1.5rem; }
+
+  .toolbar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .tool-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; border: 2px solid #007291; background: #fff; color: #007291; }
+  .tool-btn:hover { background: #e6f5f8; }
+  .tool-btn.primary { background: #ef7724; border-color: #ef7724; color: #fff; }
+  .tool-btn.primary:hover { background: #c05a10; border-color: #c05a10; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 2rem 0 0.9rem; }
+  .section-label:first-of-type { margin-top: 0; }
+
+  /* Summary */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; }
+  .summary-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 1rem; text-align: center; }
+  .summary-card .s-num { font-size: 1.7rem; font-weight: 700; color: #007291; line-height: 1.1; }
+  .summary-card .s-label { font-size: 0.75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
+  .summary-card.total { border-color: #ef7724; }
+  .summary-card.total .s-num { color: #ef7724; }
+
+  /* Subject tables */
+  .subject-block { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.4rem; margin-bottom: 1rem; border-top: 5px solid var(--c, #007291); }
+  .subject-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .subject-title { font-size: 1rem; font-weight: 700; color: var(--c, #007291); }
+  .subject-open { font-size: 0.78rem; font-weight: 700; color: #888; text-decoration: none; }
+  .subject-open:hover { color: var(--c, #007291); }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #888; padding: 0.45rem 0.5rem; text-align: center; border-bottom: 2px solid #f0e8e0; }
+  th:first-child { text-align: left; }
+  td { padding: 0.55rem 0.5rem; font-size: 0.86rem; border-bottom: 1px solid #f5efe8; text-align: center; }
+  td:first-child { text-align: left; font-weight: 700; }
+  tr:last-child td { border-bottom: none; }
+  .tick { display: inline-block; width: 26px; height: 26px; line-height: 24px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; }
+  .tick.yes { background: #e6f5e6; border: 1.5px solid #2e8b57; color: #1a5e1a; }
+  .tick.no { background: #faf6f1; border: 1.5px solid #e8ddd0; color: #ccc; }
+  .row-count { font-size: 0.78rem; color: #888; font-weight: 700; }
+
+  /* Challenge */
+  .challenge-box { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.25rem 1.4rem; }
+  .challenge-box .c-q { font-size: 0.88rem; font-weight: 700; color: #c05a10; margin-bottom: 0.75rem; line-height: 1.5; }
+  .challenge-entry { background: #fff; border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.85rem 1rem; font-size: 0.88rem; line-height: 1.6; }
+  .challenge-entry .ce-name { font-weight: 700; color: #1a1a1a; }
+  .challenge-entry .ce-date { font-size: 0.75rem; color: #999; font-weight: 700; }
+  .challenge-empty { font-size: 0.88rem; color: #999; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<div id="lockScreen">
+  <div class="lock-icon">🗝️</div>
+  <h1>Teacher Dashboard</h1>
+  <p>Week 3 · Staff access only</p>
+  <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock →</button>
+  <div id="lockError">That password doesn't match.</div>
+</div>
+
+<div id="mainContent">
+  <header class="site-header">
+    <a class="back-link" href="index.html">← Week 3</a>
+    <span class="header-title">🗝️ Teacher Dashboard · Making Things Better</span>
+  </header>
+
+  <main class="main">
+
+    <div class="device-note">
+      💡 <strong>Reminder:</strong> tracker ticks live in this browser's storage, so this dashboard shows the data from the device the class used. Open it on the classroom device for the full picture. Ticks are made on each subject page's "completed by" strips.
+    </div>
+
+    <div class="toolbar">
+      <button class="tool-btn" onclick="renderAll()">🔄 Refresh</button>
+      <button class="tool-btn" onclick="copySummary()">📋 Copy summary</button>
+      <button class="tool-btn primary" onclick="emailSummary()">📧 Email me the summary</button>
+    </div>
+
+    <p class="section-label">At a glance</p>
+    <div class="summary-grid" id="summary-grid"></div>
+
+    <p class="section-label">Subject trackers</p>
+    <div id="subjects"></div>
+
+    <p class="section-label">Week 3 challenge — Optimise ⚙️</p>
+    <div class="challenge-box">
+      <div class="c-q">"If you could optimise one part of your day — change one small thing so it works better for you — what would it be?"</div>
+      <div id="challenge-list"></div>
+    </div>
+
+  </main>
+
+  <footer>Base 6 · Chilton Bridge School · Week 3 Teacher Dashboard</footer>
+</div>
+
+<script>
+const PASSWORD = 'teacher2026';
+const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
+
+const SUBJECTS = [
+  { name: '📝 English', colour: '#ef7724', key: 'base6_w3_english_tracker', page: 'english/index.html',
+    activities: [ { id: 'register-switchboard', label: 'Register Switchboard' }, { id: 'chilton-fm', label: 'Chilton FM' } ] },
+  { name: '🔢 Maths', colour: '#007291', key: 'base6_w3_maths_tracker', page: 'maths/index.html',
+    activities: [ { id: 'number-vault', label: 'The Number Vault' }, { id: 'token-rush', label: 'Token Rush' } ] },
+  { name: '💻 Digital Media', colour: '#4a6fa5', key: 'base6_w3_digital_tracker', page: 'digital-media/index.html',
+    activities: [ { id: 'ai-detective', label: 'AI Detective' }, { id: 'ai-inventor', label: 'AI Inventor' } ] },
+  { name: '🧲 Science and Environmental', colour: '#2e8b57', key: 'base6_w3_science_tracker', page: 'science/index.html',
+    activities: [ { id: 'sliding-stones', label: 'The Sliding Stones' }, { id: 'push-pull-hq', label: 'Push & Pull HQ' } ] },
+  { name: '🦋 Physical World & Exploration', colour: '#6b8e23', key: 'base6_w3_physical_tracker', page: 'physical-world/index.html',
+    activities: [ { id: 'habitat-designer', label: 'Habitat Designer' }, { id: 'wildlife-logger', label: 'Wildlife Logger' } ] },
+  { name: '🧘 Preparation for Adulthood', colour: '#0e8a9e', key: 'base6_w3_adulthood_tracker', page: 'adulthood/index.html',
+    activities: [ { id: 'calm-studio', label: 'The Calm Studio' }, { id: 'wellbeing-lab', label: 'The Wellbeing Lab' } ] },
+  { name: '💬 Relational (PSHE & RSE)', colour: '#7b5ea7', key: 'base6_w3_relational_tracker', page: 'relational/index.html',
+    activities: [ { id: 'upgrade-garage', label: 'The Upgrade Garage' }, { id: 'myth-lab', label: 'Myth Lab' } ] },
+  { name: '📜 Human and Social', colour: '#c0392b', key: 'base6_w3_human_tracker', page: 'human-social/index.html',
+    activities: [ { id: 'evidence-room', label: 'The Evidence Room' }, { id: 'whose-story', label: 'Whose Story?' } ] },
+  { name: '🎨 Aesthetic and Creative', colour: '#c2185b', key: 'base6_w3_creative_tracker', page: 'creative/index.html',
+    activities: [ { id: 'thread-lab', label: 'Thread Lab' }, { id: 'material-world', label: 'Material World' }, { id: 'nastix-design', label: 'Nastix Design' } ] },
+];
+
+function tryUnlock() {
+  if (document.getElementById('passwordInput').value.trim() === PASSWORD) {
+    try { sessionStorage.setItem('base6_w3_teacher', '1'); } catch(e) {}
+    showDashboard();
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
+  }
+}
+function showDashboard() {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+  renderAll();
+}
+
+function loadTracker(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || {}; } catch(e) { return {}; }
+}
+
+function getMatrix() {
+  // Returns { subject, activity, label, done: {student:bool} } rows + totals
+  const rows = [];
+  SUBJECTS.forEach(sub => {
+    const data = loadTracker(sub.key);
+    sub.activities.forEach(act => {
+      const done = {};
+      STUDENTS.forEach(st => { done[st] = !!(data[act.id] && data[act.id][st]); });
+      rows.push({ subject: sub, activity: act, done });
+    });
+  });
+  return rows;
+}
+
+function renderAll() {
+  const rows = getMatrix();
+
+  // Summary
+  const perStudent = {};
+  STUDENTS.forEach(st => perStudent[st] = 0);
+  let total = 0;
+  rows.forEach(r => STUDENTS.forEach(st => { if (r.done[st]) { perStudent[st]++; total++; } }));
+  const totalPossible = rows.length;
+
+  const sg = document.getElementById('summary-grid');
+  sg.innerHTML = '<div class="summary-card total"><div class="s-num">' + total + '</div><div class="s-label">Total ticks</div></div>';
+  STUDENTS.forEach(st => {
+    sg.innerHTML += '<div class="summary-card"><div class="s-num">' + perStudent[st] + '<span style="font-size:0.85rem;color:#bbb;">/' + totalPossible + '</span></div><div class="s-label">' + st + '</div></div>';
+  });
+
+  // Subject tables
+  const c = document.getElementById('subjects');
+  c.innerHTML = '';
+  SUBJECTS.forEach(sub => {
+    const subRows = rows.filter(r => r.subject === sub);
+    let html = '<div class="subject-block" style="--c:' + sub.colour + ';">';
+    html += '<div class="subject-head"><span class="subject-title">' + sub.name + '</span><a class="subject-open" href="' + sub.page + '">open page →</a></div>';
+    html += '<table><thead><tr><th>Activity</th>';
+    STUDENTS.forEach(st => { html += '<th>' + st + '</th>'; });
+    html += '<th></th></tr></thead><tbody>';
+    subRows.forEach(r => {
+      const count = STUDENTS.filter(st => r.done[st]).length;
+      html += '<tr><td>' + r.activity.label + '</td>';
+      STUDENTS.forEach(st => {
+        html += '<td><span class="tick ' + (r.done[st] ? 'yes' : 'no') + '">' + (r.done[st] ? '✓' : '·') + '</span></td>';
+      });
+      html += '<td class="row-count">' + count + '/5</td></tr>';
+    });
+    html += '</tbody></table></div>';
+    c.innerHTML += html;
+  });
+
+  // Challenge stamp
+  renderChallenge();
+}
+
+function renderChallenge() {
+  const list = document.getElementById('challenge-list');
+  let stamps = {};
+  try { stamps = JSON.parse(localStorage.getItem('base6_stamps')) || {}; } catch(e) {}
+  const s = stamps[3];
+  if (s) {
+    list.innerHTML = '<div class="challenge-entry"><span class="ce-name">' + s.name + '</span> <span class="ce-date">· ' + (s.date || '') + '</span><br>"' + s.answer + '"</div>';
+  } else {
+    list.innerHTML = '<p class="challenge-empty">No Week 3 challenge response saved on this device yet. (Each device stores its own — responses are also emailed to you when submitted.)</p>';
+  }
+}
+
+// ── Summary text for copy/email ──
+function buildSummaryText() {
+  const rows = getMatrix();
+  const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  let out = 'BASE 6 · WEEK 3 TRACKER SUMMARY (' + now + ')\nStudents: ' + STUDENTS.join('  ') + '\n\n';
+  SUBJECTS.forEach(sub => {
+    out += sub.name.replace(/^\S+\s/, '').toUpperCase() + '\n';
+    rows.filter(r => r.subject === sub).forEach(r => {
+      const marks = STUDENTS.map(st => r.done[st] ? st + ':✓' : st + ':·').join('  ');
+      out += '  ' + r.activity.label + ' — ' + marks + '\n';
+    });
+    out += '\n';
+  });
+  let stamps = {};
+  try { stamps = JSON.parse(localStorage.getItem('base6_stamps')) || {}; } catch(e) {}
+  out += 'WEEK 3 CHALLENGE (this device): ' + (stamps[3] ? stamps[3].name + ' — "' + stamps[3].answer + '"' : 'none saved') + '\n';
+  return out;
+}
+
+function copySummary() {
+  const text = buildSummaryText();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('Summary copied to clipboard.'));
+  } else {
+    prompt('Copy the summary below:', text);
+  }
+}
+
+function emailSummary() {
+  const now = new Date().toLocaleDateString('en-GB');
+  window.open('mailto:jay.raine@chiltonbridgeschool.co.uk?subject=' + encodeURIComponent('Base 6 · Week 3 tracker summary — ' + now) + '&body=' + encodeURIComponent(buildSummaryText()), '_blank');
+}
+
+// ── Init ──
+try { if (sessionStorage.getItem('base6_w3_teacher') === '1') showDashboard(); } catch(e) {}
+</script>
+
+</body>
+</html>
