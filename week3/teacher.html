@@ -72,6 +72,44 @@
   .challenge-entry .ce-date { font-size: 0.75rem; color: #999; font-weight: 700; }
   .challenge-empty { font-size: 0.88rem; color: #999; }
 
+  /* Lock button */
+  .lock-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 1rem; border-radius: 8px; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); background: transparent; color: #fef8f4; }
+  .lock-btn:hover { background: rgba(255,255,255,0.15); }
+
+  /* Tappable ticks */
+  .tick { cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 0; }
+  .tick:hover { transform: scale(1.12); }
+
+  /* Reading record */
+  .reading-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.4rem; margin-bottom: 1rem; border-top: 5px solid #007291; }
+  .reading-student { font-size: 0.95rem; font-weight: 700; color: #007291; margin-bottom: 0.6rem; }
+  .reading-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.45rem; }
+  .reading-day { width: 44px; flex-shrink: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
+  .reading-row input { flex: 1; padding: 0.5rem 0.75rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #fdfaf7; color: #1a1a1a; outline: none; }
+  .reading-row input:focus { border-color: #007291; }
+  .reading-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem; align-items: center; }
+  .save-confirm { font-size: 0.8rem; font-weight: 700; color: #2e8b57; display: none; }
+
+  /* Student notes */
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.9rem; }
+  .note-box { background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 1rem 1.1rem; }
+  .note-box label { font-size: 0.78rem; font-weight: 700; color: #888; display: block; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .note-box textarea { width: 100%; border: 1.5px solid #e0d8d0; border-radius: 8px; padding: 0.55rem 0.75rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.84rem; color: #1a1a1a; background: #fdfaf7; resize: vertical; min-height: 70px; outline: none; line-height: 1.5; }
+  .note-box textarea:focus { border-color: #007291; }
+
+  /* Teacher tools */
+  .tools-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.4rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .tools-card .tools-intro { font-size: 0.85rem; color: #555; line-height: 1.5; flex-basis: 100%; margin-bottom: 0.25rem; }
+  .tool-link { display: inline-block; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border-radius: 8px; background: #ef7724; color: #fff; text-decoration: none; }
+  .tool-link:hover { background: #c05a10; }
+  .tool-link.teal { background: #007291; }
+  .tool-link.teal:hover { background: #005a73; }
+
+  /* Danger zone */
+  .danger-zone { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 2px dashed #e0d8d0; text-align: center; }
+  .reset-all-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; padding: 0.6rem 1.3rem; border-radius: 8px; cursor: pointer; border: 2px solid #c0392b; background: #fff; color: #c0392b; }
+  .reset-all-btn:hover { background: #fdecea; }
+
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -90,6 +128,7 @@
   <header class="site-header">
     <a class="back-link" href="index.html">← Week 3</a>
     <span class="header-title">🗝️ Teacher Dashboard · Making Things Better</span>
+    <button class="lock-btn" onclick="lockDashboard()">🔒 Lock</button>
   </header>
 
   <main class="main">
@@ -114,6 +153,33 @@
     <div class="challenge-box">
       <div class="c-q">"If you could optimise one part of your day — change one small thing so it works better for you — what would it be?"</div>
       <div id="challenge-list"></div>
+    </div>
+
+    <p class="section-label">📖 Reading record</p>
+    <div id="reading-records"></div>
+    <div class="reading-actions" style="margin-bottom:0.5rem;">
+      <button class="tool-btn" onclick="saveReading(true)">💾 Save reading record</button>
+      <button class="tool-btn" onclick="emailReading()">📧 Email reading record</button>
+      <button class="tool-btn" onclick="printReading()">🖨️ Print / PDF</button>
+      <span class="save-confirm" id="reading-saved">✓ Saved</span>
+    </div>
+
+    <p class="section-label">📝 Student notes</p>
+    <div class="notes-grid" id="notes-grid"></div>
+    <div class="reading-actions">
+      <button class="tool-btn" onclick="saveNotes(true)">💾 Save notes</button>
+      <span class="save-confirm" id="notes-saved">✓ Saved</span>
+    </div>
+
+    <p class="section-label">🧰 Teacher tools</p>
+    <div class="tools-card">
+      <p class="tools-intro">Quick links to your tools — they open in this tab, so use the back button to return.</p>
+      <a class="tool-link" href="../week2/slide-link-maker.html">🔗 Slide Link Maker</a>
+      <a class="tool-link teal" href="../tools/slide-link-maker.html">🔗 Staff Slide Link Maker</a>
+    </div>
+
+    <div class="danger-zone">
+      <button class="reset-all-btn" onclick="confirmResetAll()">Reset ALL Week 3 tracker data on this device</button>
     </div>
 
   </main>
@@ -179,6 +245,14 @@ function getMatrix() {
   return rows;
 }
 
+function toggleTick(key, actId, st) {
+  const data = loadTracker(key);
+  if (!data[actId]) data[actId] = {};
+  data[actId][st] = !data[actId][st];
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+  renderAll();
+}
+
 function renderAll() {
   const rows = getMatrix();
 
@@ -209,7 +283,7 @@ function renderAll() {
       const count = STUDENTS.filter(st => r.done[st]).length;
       html += '<tr><td>' + r.activity.label + '</td>';
       STUDENTS.forEach(st => {
-        html += '<td><span class="tick ' + (r.done[st] ? 'yes' : 'no') + '">' + (r.done[st] ? '✓' : '·') + '</span></td>';
+        html += '<td><button class="tick ' + (r.done[st] ? 'yes' : 'no') + '" onclick="toggleTick(\'' + sub.key + '\',\'' + r.activity.id + '\',\'' + st + '\')" title="' + st + ' — ' + (r.done[st] ? 'completed ✓ (tap to undo)' : 'not yet done (tap to mark done)') + '">' + (r.done[st] ? '✓' : '·') + '</button></td>';
       });
       html += '<td class="row-count">' + count + '/5</td></tr>';
     });
@@ -219,6 +293,10 @@ function renderAll() {
 
   // Challenge stamp
   renderChallenge();
+
+  // Reading record + notes
+  renderReading();
+  renderNotes();
 }
 
 function renderChallenge() {
@@ -231,6 +309,137 @@ function renderChallenge() {
   } else {
     list.innerHTML = '<p class="challenge-empty">No Week 3 challenge response saved on this device yet. (Each device stores its own — responses are also emailed to you when submitted.)</p>';
   }
+}
+
+// ── Reading record ──
+const READING_KEY = 'base6_w3_reading';
+const NOTES_KEY = 'base6_w3_teacher_notes';
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+let readingRendered = false, notesRendered = false;
+
+function loadJSON(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || {}; } catch(e) { return {}; }
+}
+
+function renderReading() {
+  if (readingRendered) return; // don't wipe in-progress typing on tick refresh
+  readingRendered = true;
+  const data = loadJSON(READING_KEY);
+  const c = document.getElementById('reading-records');
+  c.innerHTML = '';
+  STUDENTS.forEach(st => {
+    let rows = '';
+    DAYS.forEach(d => {
+      const v = (data[st] && data[st][d]) ? data[st][d].replace(/"/g, '&quot;') : '';
+      rows += '<div class="reading-row"><span class="reading-day">' + d + '</span><input type="text" id="read-' + st + '-' + d + '" value="' + v + '" placeholder="Book, pages, comments..." oninput="saveReading(false)"></div>';
+    });
+    c.innerHTML += '<div class="reading-card"><div class="reading-student">' + st + '</div>' + rows + '</div>';
+  });
+}
+
+function saveReading(showConfirm) {
+  const data = {};
+  STUDENTS.forEach(st => {
+    data[st] = {};
+    DAYS.forEach(d => {
+      const el = document.getElementById('read-' + st + '-' + d);
+      if (el) data[st][d] = el.value;
+    });
+  });
+  try { localStorage.setItem(READING_KEY, JSON.stringify(data)); } catch(e) {}
+  if (showConfirm) {
+    const s = document.getElementById('reading-saved');
+    s.style.display = 'inline';
+    setTimeout(() => s.style.display = 'none', 2500);
+  }
+}
+
+function buildReadingText() {
+  const data = loadJSON(READING_KEY);
+  const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  let out = 'BASE 6 · WEEK 3 READING RECORD (' + now + ')\n\n';
+  STUDENTS.forEach(st => {
+    out += st + '\n';
+    DAYS.forEach(d => {
+      out += '  ' + d + ': ' + ((data[st] && data[st][d]) ? data[st][d] : '—') + '\n';
+    });
+    out += '\n';
+  });
+  return out;
+}
+
+function emailReading() {
+  saveReading(false);
+  const now = new Date().toLocaleDateString('en-GB');
+  const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('Base 6 · Week 3 reading record — ' + now) + '&body=' + encodeURIComponent(buildReadingText());
+  window.open(gmail, '_blank');
+}
+
+function printReading() {
+  saveReading(false);
+  const data = loadJSON(READING_KEY);
+  const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  let html = '<!DOCTYPE html><html><head><title>Week 3 Reading Record</title><style>' +
+    'body{font-family:Arial,sans-serif;color:#1a1a1a;padding:2rem;}h1{font-size:1.3rem;color:#007291;}h2{font-size:1rem;color:#007291;margin:1.25rem 0 0.4rem;border-bottom:2px solid #e0d8d0;padding-bottom:0.2rem;}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:0.5rem;}td{padding:0.4rem 0.6rem;border:1px solid #ddd;font-size:0.85rem;}td:first-child{width:60px;font-weight:bold;background:#f5f5f5;}' +
+    '</style></head><body><h1>Base 6 · Week 3 Reading Record</h1><p style="font-size:0.85rem;color:#888;">' + now + '</p>';
+  STUDENTS.forEach(st => {
+    html += '<h2>' + st + '</h2><table>';
+    DAYS.forEach(d => {
+      html += '<tr><td>' + d + '</td><td>' + ((data[st] && data[st][d]) ? data[st][d] : '') + '</td></tr>';
+    });
+    html += '</table>';
+  });
+  html += '<script>window.onload=function(){window.print();}<\/script></body></html>';
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+// ── Student notes ──
+function renderNotes() {
+  if (notesRendered) return;
+  notesRendered = true;
+  const data = loadJSON(NOTES_KEY);
+  const c = document.getElementById('notes-grid');
+  c.innerHTML = '';
+  STUDENTS.forEach(st => {
+    const v = data[st] || '';
+    const div = document.createElement('div');
+    div.className = 'note-box';
+    div.innerHTML = '<label for="note-' + st + '">' + st + '</label><textarea id="note-' + st + '" placeholder="Notes for ' + st + ' this week..." oninput="saveNotes(false)"></textarea>';
+    c.appendChild(div);
+    div.querySelector('textarea').value = v;
+  });
+}
+
+function saveNotes(showConfirm) {
+  const data = {};
+  STUDENTS.forEach(st => {
+    const el = document.getElementById('note-' + st);
+    if (el) data[st] = el.value;
+  });
+  try { localStorage.setItem(NOTES_KEY, JSON.stringify(data)); } catch(e) {}
+  if (showConfirm) {
+    const s = document.getElementById('notes-saved');
+    s.style.display = 'inline';
+    setTimeout(() => s.style.display = 'none', 2500);
+  }
+}
+
+// ── Lock + reset ──
+function lockDashboard() {
+  try { sessionStorage.removeItem('base6_w3_teacher'); } catch(e) {}
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('lockError').style.display = 'none';
+}
+
+function confirmResetAll() {
+  if (!confirm('Reset ALL Week 3 tracker data on this device? This clears every subject\'s completion ticks. (Reading record and notes are kept.)')) return;
+  SUBJECTS.forEach(sub => { try { localStorage.removeItem(sub.key); } catch(e) {} });
+  renderAll();
 }
 
 // ── Summary text for copy/email ──
@@ -248,7 +457,10 @@ function buildSummaryText() {
   });
   let stamps = {};
   try { stamps = JSON.parse(localStorage.getItem('base6_stamps')) || {}; } catch(e) {}
-  out += 'WEEK 3 CHALLENGE (this device): ' + (stamps[3] ? stamps[3].name + ' — "' + stamps[3].answer + '"' : 'none saved') + '\n';
+  out += 'WEEK 3 CHALLENGE (this device): ' + (stamps[3] ? stamps[3].name + ' — "' + stamps[3].answer + '"' : 'none saved') + '\n\n';
+  const notes = loadJSON(NOTES_KEY);
+  out += 'STUDENT NOTES\n';
+  STUDENTS.forEach(st => { out += '  ' + st + ': ' + (notes[st] || '—') + '\n'; });
   return out;
 }
 
@@ -262,8 +474,10 @@ function copySummary() {
 }
 
 function emailSummary() {
+  saveNotes(false);
   const now = new Date().toLocaleDateString('en-GB');
-  window.open('mailto:jay.raine@chiltonbridgeschool.co.uk?subject=' + encodeURIComponent('Base 6 · Week 3 tracker summary — ' + now) + '&body=' + encodeURIComponent(buildSummaryText()), '_blank');
+  const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('Base 6 · Week 3 tracker summary — ' + now) + '&body=' + encodeURIComponent(buildSummaryText());
+  window.open(gmail, '_blank');
 }
 
 // ── Init ──
