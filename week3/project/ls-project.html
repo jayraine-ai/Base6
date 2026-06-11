@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LS's Project Space · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --accent: #007291; --accent-light: #e6f5f8; --cream: #fef8f4; --dark: #1a1a1a; --muted: #555; --green: #2e8b57; --green-light: #eaf7f0; --gold: #b8860b; --gold-light: #fff8e1; --red: #c0392b; --red-light: #fdecea; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+  #lockScreen { position: fixed; inset: 0; background: var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
+  #lockScreen h1 { font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+  #lockScreen p { font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 2rem; line-height: 1.5; }
+  #lockScreen .lock-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  #passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.2); color: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.2rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
+  #passwordInput::placeholder { color: rgba(255,255,255,0.5); }
+  #passwordInput:focus { outline: none; border-color: white; background: rgba(255,255,255,0.3); }
+  #unlockBtn { padding: 0.75rem 2rem; background: white; color: var(--accent); border: none; border-radius: 12px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+  #lockError { color: white; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; margin-top: 0.75rem; display: none; }
+  #mainContent { display: none; }
+  .site-header { background: linear-gradient(135deg, #007291, #005a72); padding: 1.5rem 2rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #a8dce8; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 1.8rem; font-weight: 700; color: white; }
+  .site-header p { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-top: 0.4rem; }
+  .back-bar { background: rgba(0,0,50,0.15); padding: 0.6rem 2rem; }
+  .back-link { color: white; font-size: 0.85rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .main { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 2px solid var(--accent-light); }
+  .section-card h2 { font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+  .section-card.gold { border-color: #f0d080; }
+  .section-card.gold h2 { color: var(--gold); }
+  label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; margin-top: 0.9rem; }
+  label:first-of-type { margin-top: 0; }
+  textarea, input[type=text], input[type=number] { width: 100%; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; min-height: 80px; }
+  input[type=text], input[type=number] { min-height: unset; resize: none; }
+  textarea:focus, input:focus { outline: none; border-color: var(--accent); }
+  .hint-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; font-style: italic; }
+  .mood-grid { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
+  .mood-btn { padding: 0.5rem 0.9rem; border-radius: 20px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.15s; color: var(--dark); }
+  .mood-btn.selected { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .star-row { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+  .star-btn { font-size: 1.5rem; cursor: pointer; opacity: 0.3; transition: opacity 0.15s, transform 0.15s; background: none; border: none; padding: 0; }
+  .star-btn.active { opacity: 1; }
+  .feature-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+  .feature-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.9rem; background: var(--accent-light); border-radius: 10px; }
+  .feature-item input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+  .feature-item label { margin: 0; font-size: 0.9rem; cursor: pointer; }
+  .coin-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+  .coin-table th { background: var(--gold-light); padding: 0.7rem 0.9rem; text-align: left; font-size: 0.82rem; font-weight: 700; border-bottom: 2px solid #f0d080; }
+  .coin-table td { padding: 0.6rem 0.9rem; border-bottom: 1px solid #f0e8d0; font-size: 0.88rem; vertical-align: middle; }
+  .coin-table input[type=number] { width: 85px; padding: 0.45rem; font-size: 0.88rem; }
+  .coin-banner { background: var(--gold-light); border: 2px solid #f0d080; border-radius: 12px; padding: 1rem 1.25rem; font-size: 0.92rem; font-weight: 700; color: #5a4000; line-height: 1.6; margin-top: 0.75rem; }
+  .think-card { background: #fafaf8; border: 2px solid #e0d8d0; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.75rem; }
+  .think-card h3 { font-size: 0.92rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem; }
+  .think-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-outline { background: white; color: var(--accent); border: 2px solid var(--accent); }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; justify-content: center; }
+  .success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 1rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+  .info-banner { border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9rem; line-height: 1.6; }
+  .info-banner .ib-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .export-bar { background: var(--accent-light); border-top: 2px solid #c0dce8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<div id="lockScreen">
+  <div class="lock-icon">🏥</div>
+  <h1>LS's Project Space</h1>
+  <p>This is your personal project page.<br>Enter your password to get started.</p>
+  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock →</button>
+  <div id="lockError">That password doesn't match — try again.</div>
+</div>
+<div id="mainContent">
+  <header class="site-header">
+    <p class="tag">Week 3 · Project</p>
+    <h1>🏥 Health Centre</h1>
+    <p>LS's wellbeing app — supporting young people's mental and physical health</p>
+  </header>
+  <div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 3</a></div>
+  <main class="main">
+
+    <div class="section-card">
+      <h2>😊 Check In</h2>
+      <label>How are you feeling today?</label>
+      <div class="mood-grid" id="moodGrid">
+        <button class="mood-btn" onclick="selectMood(this)">😄 Great</button>
+        <button class="mood-btn" onclick="selectMood(this)">🙂 Good</button>
+        <button class="mood-btn" onclick="selectMood(this)">😐 Okay</button>
+        <button class="mood-btn" onclick="selectMood(this)">😔 Not great</button>
+        <button class="mood-btn" onclick="selectMood(this)">😤 Frustrated</button>
+        <button class="mood-btn" onclick="selectMood(this)">😴 Tired</button>
+      </div>
+      <label>Anything on your mind before we start? (optional)</label>
+      <textarea id="checkInNote" placeholder="You don't have to write anything — just a space if you need it..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>🏥 Health Centre — The Concept</h2>
+      <div class="info-banner" style="background:var(--accent-light); border:2px solid #c0dce8;">
+        <span class="ib-icon">✅</span>
+        <span><strong>Decisions made:</strong> the app is called <strong>Health Centre</strong>, and it supports young people with both mental AND physical wellbeing. That's the foundation sorted — now we build on it.</span>
+      </div>
+      <label>App name</label>
+      <input type="text" id="appName" value="Health Centre" />
+      <label>Health Centre covers mental AND physical wellbeing. What might it offer for each side?</label>
+      <p class="hint-text">Mental could be things like mood check-ins or calming exercises. Physical could be step challenges, sleep, stretches...</p>
+      <textarea id="bothSides" placeholder="For mental wellbeing it could have...&#10;For physical wellbeing it could have..."></textarea>
+      <label>Who exactly is it for? Picture one young person who needs it — what's going on for them?</label>
+      <textarea id="targetUser" placeholder="My app is designed for someone who..."></textarea>
+      <label>Which features does Health Centre include? Tick all that apply.</label>
+      <div class="feature-list">
+        <div class="feature-item"><input type="checkbox" id="f1"><label for="f1">Mood tracker</label></div>
+        <div class="feature-item"><input type="checkbox" id="f2"><label for="f2">Breathing or calming exercises</label></div>
+        <div class="feature-item"><input type="checkbox" id="f3"><label for="f3">Daily journal or diary</label></div>
+        <div class="feature-item"><input type="checkbox" id="f4"><label for="f4">Positive affirmations or motivational messages</label></div>
+        <div class="feature-item"><input type="checkbox" id="f5"><label for="f5">Reminders or check-ins</label></div>
+        <div class="feature-item"><input type="checkbox" id="f6"><label for="f6">Step counter or activity challenges</label></div>
+        <div class="feature-item"><input type="checkbox" id="f7"><label for="f7">Sleep tracking</label></div>
+        <div class="feature-item"><input type="checkbox" id="f8" checked><label for="f8">Rewards system with in-app currency</label></div>
+        <div class="feature-item"><input type="checkbox" id="f9"><label for="f9">Something else (describe below)</label></div>
+      </div>
+      <label>Any other features or ideas?</label>
+      <textarea id="otherFeatures" placeholder="Other ideas for my app..."></textarea>
+    </div>
+
+    <div class="section-card gold">
+      <h2>🪙 The Reward Currency — Design Lab</h2>
+      <div class="info-banner" style="background:var(--gold-light); border:2px solid #f0d080;">
+        <span class="ib-icon">💡</span>
+        <span><strong>Your big idea:</strong> users earn in-app currency for engaging with wellbeing activities, and can exchange it for real gift cards. Real apps do this — Sweatcoin pays people in points for steps. So this is a genuinely commercial idea. Let's design it properly.</span>
+      </div>
+      <label>What's the currency called?</label>
+      <input type="text" id="coinName" placeholder="e.g. HealthCoins, Vitality Points, HC Credits..." />
+      <label>What earns coins, and how many? Set your own rates:</label>
+      <table class="coin-table">
+        <thead><tr><th>Activity in the app</th><th>Coins earned</th></tr></thead>
+        <tbody>
+          <tr><td>😊 Daily mood check-in</td><td><input type="number" min="0" value="5" id="c1" oninput="updateCoins()"></td></tr>
+          <tr><td>🫁 Completing a calming exercise</td><td><input type="number" min="0" value="10" id="c2" oninput="updateCoins()"></td></tr>
+          <tr><td>🚶 Hitting a daily step goal</td><td><input type="number" min="0" value="20" id="c3" oninput="updateCoins()"></td></tr>
+          <tr><td>📓 Writing a journal entry</td><td><input type="number" min="0" value="10" id="c4" oninput="updateCoins()"></td></tr>
+          <tr><td>🔥 A 7-day streak bonus</td><td><input type="number" min="0" value="50" id="c5" oninput="updateCoins()"></td></tr>
+        </tbody>
+      </table>
+      <div class="coin-banner" id="coinBanner">A user doing everything daily for a week would earn roughly 365 coins.</div>
+      <label style="margin-top:1rem;">Now the exchange: how many coins for a £5 gift card?</label>
+      <input type="number" min="1" id="exchangeRate" value="500" oninput="updateCoins()" />
+      <div class="coin-banner" id="exchangeBanner" style="margin-top:0.6rem;"></div>
+      <label style="margin-top:1rem;">Which gift cards could users choose from?</label>
+      <textarea id="giftCards" placeholder="e.g. Amazon, game store credit, cinema tickets..."></textarea>
+    </div>
+
+    <div class="section-card gold">
+      <h2>🧠 The Hard Questions (every app designer faces these)</h2>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1rem; line-height:1.6;">A rewards system is a powerful tool — and powerful tools need careful design. Have a think about these. There are no wrong answers, only trade-offs.</p>
+      <div class="think-card">
+        <h3>💷 Who pays for the gift cards?</h3>
+        <p>Real money has to come from somewhere. Some apps charge a subscription, some show adverts, some get sponsors (a sports brand might sponsor step challenges). Sweatcoin uses advertisers and partners.</p>
+      </div>
+      <label>How would Health Centre pay for its rewards?</label>
+      <textarea id="whoPays" placeholder="The money could come from..."></textarea>
+      <div class="think-card">
+        <h3>🎭 The motivation puzzle</h3>
+        <p>If people only do breathing exercises to farm coins, are they actually getting calmer? Designers call this "gaming the system". Some apps cap daily coins, or make streaks (consistency) worth more than bulk activity.</p>
+      </div>
+      <label>How would you stop people gaming the system — and keep the focus on real wellbeing?</label>
+      <textarea id="gaming" placeholder="To keep it genuine, I would..."></textarea>
+      <div class="think-card">
+        <h3>⚖️ The fairness question</h3>
+        <p>A step-goal reward is easy for some people and impossible for others — different bodies, different situations. Great wellbeing apps let users set personal goals rather than one bar for everyone.</p>
+      </div>
+      <label>How could Health Centre keep rewards fair for everyone?</label>
+      <textarea id="fairness" placeholder="To make it fair, I would..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>🎨 Design and Progress</h2>
+      <label>Describe what Health Centre looks like — colours, layout, feel.</label>
+      <p class="hint-text">Think about what would make it feel calm and safe to use. Where does the coin balance show? What does the rewards shop screen look like?</p>
+      <textarea id="appDesign" placeholder="Health Centre would look..."></textarea>
+      <label>What have you worked on this week?</label>
+      <textarea id="weekWork" placeholder="This week I worked on..."></textarea>
+      <label>What is going well with your project?</label>
+      <textarea id="goingWell" placeholder="Something going well is..."></textarea>
+      <label>What is tricky or needs more thought?</label>
+      <textarea id="stuck" placeholder="Something I'm finding tricky is..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>💭 Reflection</h2>
+      <label>How does Health Centre connect to the driving question: "How do our choices today shape the worlds of tomorrow?"</label>
+      <textarea id="drivingQ" placeholder="My app connects to this because..."></textarea>
+      <label>What is one thing you've learned or discovered this week while working on it?</label>
+      <textarea id="learned" placeholder="Something I discovered is..."></textarea>
+      <label>What do you want to work on next?</label>
+      <textarea id="nextSteps" placeholder="Next I want to..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>⭐ Self Assessment</h2>
+      <label>How hard did you work this week?</label>
+      <div class="star-row" id="effortStars">
+        <button class="star-btn" onclick="setStars('effortStars',1)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',2)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',3)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',4)">⭐</button>
+        <button class="star-btn" onclick="setStars('effortStars',5)">⭐</button>
+      </div>
+      <label>How confident do you feel about your project right now?</label>
+      <div class="star-row" id="confStars">
+        <button class="star-btn" onclick="setStars('confStars',1)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',2)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',3)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',4)">⭐</button>
+        <button class="star-btn" onclick="setStars('confStars',5)">⭐</button>
+      </div>
+      <label>Anything else you want your teacher to know?</label>
+      <textarea id="teacherNote" placeholder="A message for your teacher (optional)..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitForm()">📧 Send to teacher</button>
+      <button class="btn btn-outline" onclick="clearForm()">Clear form</button>
+    </div>
+    <div class="success-msg" id="successMsg">✅ Sent! Your teacher will receive your project update.</div>
+  </main>
+  <div class="export-bar">
+    <span>Save your work:</span>
+    <button onclick="submitForm()" style="padding:0.6rem 1.25rem;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Email to teacher</button>
+  </div>
+  <footer>Base 6 · Chilton Bridge School · Week 3 Project</footer>
+</div>
+<script>
+  const PASSWORD = 'ls';
+  let effortRating = 0; let confRating = 0; let mood = '';
+  function tryUnlock() {
+    if (document.getElementById('passwordInput').value.trim().toLowerCase() === PASSWORD) {
+      document.getElementById('lockScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      updateCoins();
+    } else {
+      document.getElementById('lockError').style.display = 'block';
+      document.getElementById('passwordInput').value = '';
+    }
+  }
+  function selectMood(btn) { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); mood=btn.textContent; }
+  function setStars(g,r) { document.getElementById(g).querySelectorAll('.star-btn').forEach((s,i)=>s.classList.toggle('active',i<r)); if(g==='effortStars')effortRating=r; if(g==='confStars')confRating=r; }
+  function getChecked() { return ['f1','f2','f3','f4','f5','f6','f7','f8','f9'].filter(id=>document.getElementById(id).checked).map(id=>document.querySelector('label[for='+id+']').textContent).join(', ') || 'None selected'; }
+
+  function updateCoins() {
+    const n = id => parseFloat(document.getElementById(id).value) || 0;
+    const weekly = (n('c1') + n('c2') + n('c3') + n('c4')) * 7 + n('c5');
+    document.getElementById('coinBanner').textContent = '🪙 A user doing everything daily for a week would earn roughly ' + weekly + ' coins.';
+    const rate = n('exchangeRate');
+    const eb = document.getElementById('exchangeBanner');
+    if (rate > 0 && weekly > 0) {
+      const weeks = rate / weekly;
+      eb.textContent = '💳 At that rate, a dedicated user earns a £5 gift card roughly every ' + (weeks < 1.05 ? 'week' : weeks.toFixed(1) + ' weeks') + '. Too fast costs you a fortune; too slow and people give up. Tweak until it feels right!';
+    } else {
+      eb.textContent = 'Set your earning rates and exchange rate to see how long a gift card takes.';
+    }
+  }
+
+  function submitForm() {
+    const now = new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const val = id => (document.getElementById(id)||{}).value || '(not filled in)';
+    let body = `Project Update — LS — Health Centre (Week 3) — ${now}\n\n`;
+    body += `MOOD: ${mood||'Not selected'}\nCHECK-IN NOTE: ${val('checkInNote')}\n\n`;
+    body += `━━━ CONCEPT ━━━\nAPP NAME: ${val('appName')}\nMENTAL + PHYSICAL OFFER: ${val('bothSides')}\nTARGET USER: ${val('targetUser')}\nFEATURES: ${getChecked()}\nOTHER FEATURES: ${val('otherFeatures')}\n\n`;
+    body += `━━━ REWARD CURRENCY ━━━\nCURRENCY NAME: ${val('coinName')}\nRATES: mood check-in ${val('c1')} | calming exercise ${val('c2')} | step goal ${val('c3')} | journal ${val('c4')} | 7-day streak ${val('c5')}\nEXCHANGE: ${val('exchangeRate')} coins = £5 gift card\nGIFT CARDS: ${val('giftCards')}\nWHO PAYS: ${val('whoPays')}\nANTI-GAMING PLAN: ${val('gaming')}\nFAIRNESS PLAN: ${val('fairness')}\n\n`;
+    body += `━━━ DESIGN & PROGRESS ━━━\nAPP DESIGN: ${val('appDesign')}\nWORK THIS WEEK: ${val('weekWork')}\nGOING WELL: ${val('goingWell')}\nTRICKY/STUCK: ${val('stuck')}\n\n`;
+    body += `━━━ REFLECTION ━━━\nDRIVING QUESTION: ${val('drivingQ')}\nLEARNED: ${val('learned')}\nNEXT STEPS: ${val('nextSteps')}\n\n`;
+    body += `EFFORT: ${effortRating}/5\nCONFIDENCE: ${confRating}/5\nTEACHER NOTE: ${val('teacherNote')}`;
+    const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su='+encodeURIComponent('Project Update — LS — Week 3 — '+now)+'&body='+encodeURIComponent(body);
+    window.open(gmail, '_blank');
+    document.getElementById('successMsg').style.display = 'block';
+  }
+  function clearForm() {
+    if(!confirm('Clear everything?'))return;
+    ['checkInNote','bothSides','targetUser','otherFeatures','coinName','giftCards','whoPays','gaming','fairness','appDesign','weekWork','goingWell','stuck','drivingQ','learned','nextSteps','teacherNote'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('appName').value='Health Centre';
+    ['f1','f2','f3','f4','f5','f6','f7','f9'].forEach(id=>document.getElementById(id).checked=false);
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); mood='';
+    effortRating=0;confRating=0;
+    ['effortStars','confStars'].forEach(g=>document.getElementById(g).querySelectorAll('.star-btn').forEach(s=>s.classList.remove('active')));
+    document.getElementById('successMsg').style.display='none';
+  }
+</script>
+</body>
+</html>

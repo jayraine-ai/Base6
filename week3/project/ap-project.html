@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP's Space · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --accent: #7a3fa8; --accent-light: #f5eeff; --cream: #fef8f4; --dark: #1a1a1a; --muted: #555; --green: #2e8b57; --green-light: #eaf7f0; --orange: #ef7724; --orange-light: #fff3eb; --gold: #b8860b; --gold-light: #fff8e1; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
+  #lockScreen { position: fixed; inset: 0; background: var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
+  #lockScreen h1 { font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+  #lockScreen p { font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; line-height: 1.5; }
+  #lockScreen .lock-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  #passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); color: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.2rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
+  #passwordInput::placeholder { color: rgba(255,255,255,0.5); }
+  #passwordInput:focus { outline: none; border-color: white; background: rgba(255,255,255,0.25); }
+  #unlockBtn { padding: 0.75rem 2rem; background: white; color: var(--accent); border: none; border-radius: 12px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+  #lockError { color: white; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; margin-top: 0.75rem; display: none; }
+  #mainContent { display: none; }
+  .site-header { background: linear-gradient(135deg, #7a3fa8, #5a2a88); padding: 1.5rem 2rem; text-align: center; }
+  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #d8b8f8; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 1.8rem; font-weight: 700; color: white; }
+  .site-header p { font-size: 0.9rem; color: rgba(255,255,255,0.85); margin-top: 0.4rem; }
+  .back-bar { background: rgba(0,0,0,0.2); padding: 0.6rem 2rem; }
+  .back-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+  .main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 2px solid var(--accent-light); }
+  .section-card h2 { font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+  .section-card.orange { border-color: #fcd8bc; }
+  .section-card.orange h2 { color: var(--orange); }
+  .section-card.gold { border-color: #f0d080; }
+  .section-card.gold h2 { color: var(--gold); }
+  .section-card.green { border-color: #a9dfbf; }
+  .section-card.green h2 { color: var(--green); }
+  label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; margin-top: 0.9rem; }
+  label:first-of-type { margin-top: 0; }
+  textarea, input[type=text] { width: 100%; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; min-height: 70px; }
+  input[type=text] { min-height: unset; }
+  textarea:focus, input:focus { outline: none; border-color: var(--accent); }
+  .hint-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; font-style: italic; }
+  .mood-grid { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
+  .mood-btn { padding: 0.5rem 0.9rem; border-radius: 20px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: var(--dark); }
+  .mood-btn.selected { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+
+  .rate-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding: 0.6rem 0.7rem; border-radius: 10px; background: #faf8fc; margin-bottom: 0.5rem; }
+  .rate-text { flex: 1; min-width: 150px; font-size: 0.92rem; font-weight: 700; }
+  .rate-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.05rem; padding: 0.35rem 0.7rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; cursor: pointer; }
+  .rate-btn.on { border-color: var(--accent); background: var(--accent-light); }
+
+  .mission { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.9rem 1rem; border-radius: 12px; background: #fafaf8; border: 2px solid #e0d8d0; margin-bottom: 0.6rem; cursor: pointer; transition: all 0.15s; user-select: none; }
+  .mission:hover { border-color: #d8b8f8; }
+  .mission.done { background: var(--green-light); border-color: var(--green); }
+  .mission .m-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .mission .m-text { font-size: 0.9rem; font-weight: 700; line-height: 1.45; }
+  .mission .m-sub { font-size: 0.78rem; font-weight: 400; color: var(--muted); display: block; margin-top: 2px; }
+  .mission.done .m-text { color: var(--green); }
+
+  .crew-card { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); border-radius: 14px; padding: 1.4rem; color: white; margin-top: 0.5rem; }
+  .crew-card h3 { font-size: 1.05rem; margin-bottom: 0.5rem; color: #f0b9a8; }
+  .crew-card p { font-size: 0.88rem; line-height: 1.65; color: #ccc; margin-bottom: 0.75rem; }
+  .crew-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .crew-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #555; background: transparent; color: #ddd; cursor: pointer; }
+  .crew-btn.on { border-color: #f0b9a8; background: rgba(240,185,168,0.15); color: #f0b9a8; }
+
+  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; justify-content: center; }
+  .success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 1rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+  .info-banner { border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9rem; line-height: 1.6; }
+  .info-banner .ib-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .export-bar { background: var(--accent-light); border-top: 2px solid #d8b8f8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<div id="lockScreen">
+  <div class="lock-icon">🎮</div>
+  <h1>AP's Space</h1>
+  <p>Your page. No catch.<br>Enter your password to open it.</p>
+  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock →</button>
+  <div id="lockError">That password doesn't match — try again.</div>
+</div>
+<div id="mainContent">
+  <header class="site-header">
+    <p class="tag">Week 3 · Project</p>
+    <h1>🎮 AP's Space</h1>
+    <p>Everything here is optional. Taps beat typing. Five minutes counts.</p>
+  </header>
+  <div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 3</a></div>
+  <main class="main">
+
+    <div class="section-card">
+      <h2>😊 Quick Check In</h2>
+      <label>Today is...</label>
+      <div class="mood-grid" id="moodGrid">
+        <button class="mood-btn" onclick="selectMood(this)">😄 Good</button>
+        <button class="mood-btn" onclick="selectMood(this)">😐 Fine</button>
+        <button class="mood-btn" onclick="selectMood(this)">😑 Meh</button>
+        <button class="mood-btn" onclick="selectMood(this)">😔 Rubbish</button>
+        <button class="mood-btn" onclick="selectMood(this)">😴 Tired</button>
+        <button class="mood-btn" onclick="selectMood(this)">🫠 Bored</button>
+      </div>
+      <p class="hint-text" style="margin-top:0.6rem;">Honest answers only — "bored" is a completely valid answer and nobody gets a lecture for it.</p>
+    </div>
+
+    <div class="section-card orange">
+      <h2>🔥 Rate Stuff (zero writing required)</h2>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1rem; line-height:1.6;">Quick taps. Your honest ratings actually tell Jay more about what you'd enjoy than any form ever could.</p>
+      <div id="rateContainer"></div>
+    </div>
+
+    <div class="section-card gold">
+      <h2>⚡ Five-Minute Missions</h2>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1rem; line-height:1.6;">Pick ONE. Or none. Each takes about five minutes, and any of them secretly counts as project work. Tap when done.</p>
+      <div class="mission" onclick="toggleMission(this)" data-key="m1">
+        <span class="m-icon">📸</span>
+        <span class="m-text">Take one photo of something interesting today<span class="m-sub">Weird, cool, ugly, funny — anything that made you look twice.</span></span>
+      </div>
+      <div class="mission" onclick="toggleMission(this)" data-key="m2">
+        <span class="m-icon">🗑️</span>
+        <span class="m-text">Find the worst-designed thing in school<span class="m-sub">A sign, a door, a rule, anything. Bonus points for explaining why it's terrible.</span></span>
+      </div>
+      <div class="mission" onclick="toggleMission(this)" data-key="m3">
+        <span class="m-icon">🎵</span>
+        <span class="m-text">Pick the song that matches today<span class="m-sub">Just decide which one. That's the whole mission.</span></span>
+      </div>
+      <div class="mission" onclick="toggleMission(this)" data-key="m4">
+        <span class="m-icon">🎮</span>
+        <span class="m-text">Review something — a game, a video, a snack<span class="m-sub">One sentence, or just a score out of 10. Critics are basically professional opinion-havers.</span></span>
+      </div>
+      <div class="mission" onclick="toggleMission(this)" data-key="m5">
+        <span class="m-icon">🎬</span>
+        <span class="m-text">Watch 5 minutes of someone else's project happening<span class="m-sub">No joining required. Just watch. Lurking is allowed.</span></span>
+      </div>
+      <label style="margin-top:1rem;">If a mission produced anything (a photo, a verdict, a song) — drop it here. Optional.</label>
+      <textarea id="missionNotes" placeholder="Worst-designed thing: ... / Today's song: ... / Score: ..."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h2>🎬 The Crew Option</h2>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:0.75rem; line-height:1.6;">Not everyone wants to run their own project — and on a real film set, most people don't. They're crew. There's a film being made in this class right now, and it needs people.</p>
+      <div class="crew-card">
+        <h3>📦 BOX-MAN: DELIVERY OF JUSTICE is hiring</h3>
+        <p>LW's improvised superhero film needs crew. No planning, no forms, no pitch — you just show up and do the job. Open roles:</p>
+        <div class="crew-options" id="crewOptions">
+          <button class="crew-btn" onclick="toggleCrew(this)">🎥 Camera operator</button>
+          <button class="crew-btn" onclick="toggleCrew(this)">📸 Behind-the-scenes photographer</button>
+          <button class="crew-btn" onclick="toggleCrew(this)">🎭 Actor (villain? civilian?)</button>
+          <button class="crew-btn" onclick="toggleCrew(this)">✂️ Editor</button>
+          <button class="crew-btn" onclick="toggleCrew(this)">🎵 Music / sound picker</button>
+          <button class="crew-btn" onclick="toggleCrew(this)">🤔 Maybe — tell me more</button>
+        </div>
+        <p style="margin-top:0.75rem; margin-bottom:0;">Tap anything that's even slightly interesting. Tapping is not signing a contract.</p>
+      </div>
+    </div>
+
+    <div class="section-card green">
+      <h2>🃏 The Anti-Project</h2>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:0.75rem; line-height:1.6;">Forget "projects". If you could make, do, break, collect, review, or film literally anything — with no presentation at the end, no write-up, nothing — what would it be?</p>
+      <textarea id="antiProject" placeholder="Honestly? I'd..."></textarea>
+      <p class="hint-text">Whatever goes in this box, Jay's job is to find a way to make it count. That's the deal.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>📬 One Tap to Finish</h2>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:0.5rem; line-height:1.6;">Send whatever you did (or didn't do) to Jay. Even an empty page with a mood is a real answer.</p>
+      <div class="btn-row" style="margin-top:0.75rem;">
+        <button class="btn btn-primary" onclick="submitForm()">📧 Send to Jay</button>
+      </div>
+      <div class="success-msg" id="successMsg">✅ Sent. That's it — you're done.</div>
+    </div>
+
+  </main>
+  <div class="export-bar">
+    <span>Done for today?</span>
+    <button onclick="submitForm()" style="padding:0.6rem 1.25rem;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Send to Jay</button>
+  </div>
+  <footer>Base 6 · Chilton Bridge School · Week 3 Project</footer>
+</div>
+<script>
+  const PASSWORD = 'ap';
+  let mood = '';
+
+  const RATE_ITEMS = [
+    'Making videos', 'Taking photos', 'Editing (cutting clips, adding music)',
+    'Being IN front of a camera', 'Being BEHIND a camera', 'Gaming content (reviews, clips, streams)',
+    'Music — finding it, mixing it, rating it', 'Building or making physical things'
+  ];
+  let ratings = {};
+  try { ratings = JSON.parse(localStorage.getItem('ap_ratings') || '{}'); } catch(e) {}
+
+  function tryUnlock() {
+    if (document.getElementById('passwordInput').value.trim().toLowerCase() === PASSWORD) {
+      document.getElementById('lockScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      renderRatings(); loadMissions();
+    } else {
+      document.getElementById('lockError').style.display = 'block';
+      document.getElementById('passwordInput').value = '';
+    }
+  }
+  function selectMood(btn) { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); mood = btn.textContent; }
+
+  function renderRatings() {
+    const c = document.getElementById('rateContainer');
+    c.innerHTML = '';
+    RATE_ITEMS.forEach((item, i) => {
+      const picked = ratings[i];
+      c.innerHTML += '<div class="rate-row"><span class="rate-text">' + item + '</span>' +
+        '<button class="rate-btn' + (picked==='fire'?' on':'') + '" onclick="rate(' + i + ',\'fire\')">🔥</button>' +
+        '<button class="rate-btn' + (picked==='ok'?' on':'') + '" onclick="rate(' + i + ',\'ok\')">🆗</button>' +
+        '<button class="rate-btn' + (picked==='bin'?' on':'') + '" onclick="rate(' + i + ',\'bin\')">🗑️</button></div>';
+    });
+  }
+  function rate(i, v) {
+    ratings[i] = v;
+    try { localStorage.setItem('ap_ratings', JSON.stringify(ratings)); } catch(e) {}
+    renderRatings();
+  }
+
+  function toggleMission(el) {
+    el.classList.toggle('done');
+    saveMissions();
+  }
+  function saveMissions() {
+    const state = {};
+    document.querySelectorAll('.mission').forEach(m => { state[m.dataset.key] = m.classList.contains('done'); });
+    try { localStorage.setItem('ap_missions', JSON.stringify(state)); } catch(e) {}
+  }
+  function loadMissions() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('ap_missions') || '{}');
+      document.querySelectorAll('.mission').forEach(m => { if (saved[m.dataset.key]) m.classList.add('done'); });
+    } catch(e) {}
+  }
+  function toggleCrew(btn) { btn.classList.toggle('on'); }
+
+  function submitForm() {
+    const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const RATE_LABELS = { fire: '🔥', ok: '🆗', bin: '🗑️' };
+    const rateText = RATE_ITEMS.map((item, i) => (RATE_LABELS[ratings[i]] || '—') + ' ' + item).join('\n');
+    const missions = Array.from(document.querySelectorAll('.mission')).filter(m => m.classList.contains('done')).map(m => '✅ ' + m.querySelector('.m-text').childNodes[0].textContent.trim()).join('\n') || '(none ticked — that\'s fine)';
+    const crew = Array.from(document.querySelectorAll('.crew-btn.on')).map(b => b.textContent.trim()).join(', ') || '(nothing tapped)';
+    const val = id => (document.getElementById(id)||{}).value || '(empty)';
+
+    let body = `AP — Week 3 — ${now}\n\n`;
+    body += `MOOD: ${mood || 'Not selected'}\n\n`;
+    body += `━━━ RATINGS ━━━\n${rateText}\n\n`;
+    body += `━━━ MISSIONS DONE ━━━\n${missions}\nMISSION NOTES: ${val('missionNotes')}\n\n`;
+    body += `━━━ BOX-MAN CREW INTEREST ━━━\n${crew}\n\n`;
+    body += `━━━ THE ANTI-PROJECT ━━━\n${val('antiProject')}`;
+
+    const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('AP — Week 3 — ' + now) + '&body=' + encodeURIComponent(body);
+    window.open(gmail, '_blank');
+    document.getElementById('successMsg').style.display = 'block';
+  }
+</script>
+</body>
+</html>

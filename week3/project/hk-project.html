@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HK's Project Space · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--accent:#2e6b3e;--accent-dark:#1a4a28;--accent-light:#eaf5ee;--accent-mid:#b8d8c0;--cream:#fef8f4;--dark:#1a1a1a;--muted:#555;--green:#2e8b57;--green-light:#eaf7f0;--blue:#1a5276;--blue-light:#eaf4fb;--gold:#b8860b;--gold-light:#fff8e1;--orange:#ef7724;--orange-light:#fff3eb;--red:#c0392b;--red-light:#fdecea}
+  body{font-family:'Atkinson Hyperlegible',sans-serif;background-color:var(--cream);color:var(--dark);min-height:100vh}
+  #lockScreen{position:fixed;inset:0;background:linear-gradient(135deg,#2e6b3e,#1a4a28);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;padding:2rem;text-align:center}
+  #lockScreen h1{font-size:2rem;font-weight:700;color:white;margin-bottom:.5rem}
+  #lockScreen p{font-size:1rem;color:rgba(255,255,255,.85);margin-bottom:2rem;line-height:1.5}
+  #lockScreen .lock-icon{font-size:3.5rem;margin-bottom:1rem}
+  #passwordInput{padding:.75rem 1.25rem;border-radius:12px;border:3px solid rgba(255,255,255,.4);background:rgba(255,255,255,.2);color:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;text-align:center;width:100%;max-width:280px;margin-bottom:1rem}
+  #passwordInput::placeholder{color:rgba(255,255,255,.5)}
+  #passwordInput:focus{outline:none;border-color:white}
+  #unlockBtn{padding:.75rem 2rem;background:white;color:var(--accent);border:none;border-radius:12px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer}
+  #lockError{color:white;background:rgba(0,0,0,.2);border-radius:8px;padding:.5rem 1rem;font-size:.9rem;font-weight:700;margin-top:.75rem;display:none}
+  #mainContent{display:none}
+  .site-header{background:linear-gradient(135deg,#2e6b3e,#1a4a28);padding:1.5rem 2rem;text-align:center}
+  .site-header .tag{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a8d8b8;margin-bottom:.4rem}
+  .site-header h1{font-size:1.8rem;font-weight:700;color:white}
+  .site-header p{font-size:.9rem;color:rgba(255,255,255,.85);margin-top:.4rem}
+  .back-bar{background:rgba(0,0,0,.2);padding:.6rem 2rem}
+  .back-link{color:white;font-size:.85rem;font-weight:700;text-decoration:none;opacity:.85}
+  .tab-nav{background:white;border-bottom:2px solid #e0d8d0;position:sticky;top:0;z-index:100;display:flex;overflow-x:auto}
+  .tab-btn{padding:.9rem 1rem;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.82rem;font-weight:700;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+  .tab-btn:hover{color:var(--accent)}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .main{max-width:800px;margin:0 auto;padding:2rem 1.5rem 4rem}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+  .section-card{background:white;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;border:2px solid var(--accent-light)}
+  .section-card h2{font-size:1.15rem;font-weight:700;color:var(--accent);margin-bottom:1rem}
+  .section-card.gold{border-color:#f0d080}.section-card.gold h2{color:var(--gold)}
+  .section-card.blue{border-color:#aed6f1}.section-card.blue h2{color:var(--blue)}
+  .section-card.orange{border-color:#fcd8bc}.section-card.orange h2{color:var(--orange)}
+  .section-card.red{border-color:#f5b7b1}.section-card.red h2{color:var(--red)}
+  label{display:block;font-size:.88rem;font-weight:700;color:var(--dark);margin-bottom:.4rem;margin-top:.9rem}
+  label:first-of-type{margin-top:0}
+  .check-label{display:flex;align-items:flex-start;gap:.6rem;font-size:.9rem;font-weight:700;color:var(--dark);margin-bottom:.6rem;cursor:pointer;margin-top:0;line-height:1.5}
+  .check-label input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;margin-top:1px}
+  textarea,input[type=text],input[type=number],select{width:100%;padding:.75rem;border:2px solid #e0d8d0;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;color:var(--dark);background:var(--cream);line-height:1.6;resize:vertical;min-height:80px}
+  input[type=text],input[type=number],select{min-height:unset;resize:none}
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent)}
+  .hint-text{font-size:.8rem;color:var(--muted);margin-top:.3rem;line-height:1.4;font-style:italic}
+  .mood-grid{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.4rem}
+  .mood-btn{padding:.5rem .9rem;border-radius:20px;border:2px solid #e0d8d0;background:white;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;color:var(--dark)}
+  .mood-btn.selected{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+  .star-row{display:flex;gap:.4rem;margin-top:.4rem}
+  .star-btn{font-size:1.5rem;cursor:pointer;opacity:.3;background:none;border:none;padding:0}
+  .star-btn.active{opacity:1}
+  .btn{display:inline-block;padding:.75rem 1.75rem;border-radius:10px;border:none;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:var(--accent);color:white}
+  .btn-outline{background:white;color:var(--accent);border:2px solid var(--accent)}
+  .btn-sm{padding:.5rem 1rem;font-size:.85rem}
+  .btn-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem;justify-content:center}
+  .success-msg{background:var(--green-light);border:2px solid var(--green);border-radius:12px;padding:1rem;color:var(--green);font-weight:700;margin-top:1rem;display:none}
+  .photo-prompt{border:2px dashed #b8d8c0;background:var(--accent-light);border-radius:10px;padding:.6rem .85rem;margin-top:.75rem;font-size:.8rem;color:#2e6b3e;font-weight:700}
+  .visual-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.75rem;margin:.75rem 0}
+  .visual-card{background:white;border:2px solid #e0d8d0;border-radius:12px;padding:.9rem .5rem;text-align:center}
+  .visual-card .v-icon{font-size:2rem;display:block;margin-bottom:.35rem}
+  .visual-card .v-label{font-size:.78rem;font-weight:700;color:var(--muted);line-height:1.3}
+  .locked-card{background:var(--accent-light);border:2px solid var(--accent-mid);border-radius:12px;padding:1rem 1.2rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.85rem}
+  .locked-card .lk-icon{font-size:1.5rem;flex-shrink:0}
+  .locked-card .lk-part{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+  .locked-card .lk-choice{font-size:.95rem;font-weight:700;color:var(--dark);line-height:1.4}
+  .step-badge{display:inline-block;background:var(--accent);color:white;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700;margin-right:.5rem}
+  .diary-entry{background:#fafaf8;border:2px solid #e0d8d0;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.75rem}
+  .diary-entry .de-date{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:.4rem}
+  .diary-entry p{font-size:.88rem;line-height:1.65;color:var(--dark);margin-bottom:.25rem}
+  .diary-entry p strong{color:var(--accent-dark)}
+  .diary-del{background:none;border:none;color:#bbb;font-size:.8rem;font-weight:700;cursor:pointer;float:right;font-family:'Atkinson Hyperlegible',sans-serif}
+  .diary-del:hover{color:var(--red)}
+  .tip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem;margin-top:.5rem}
+  .tip-card{background:var(--gold-light);border:2px solid #f0d080;border-radius:12px;padding:1rem}
+  .tip-card .tip-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:.4rem}
+  .tip-card p{font-size:.85rem;color:#5a4000;line-height:1.55}
+  .tip-card.green{background:var(--green-light);border-color:#a9dfbf}.tip-card.green .tip-title{color:var(--green)}.tip-card.green p{color:#1a4a30}
+  .tip-card.blue{background:var(--blue-light);border-color:#aed6f1}.tip-card.blue .tip-title{color:var(--blue)}.tip-card.blue p{color:#1a3a5c}
+  .info-banner{border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:.75rem;font-size:.9rem;line-height:1.6}
+  .info-banner .ib-icon{font-size:1.5rem;flex-shrink:0;margin-top:.1rem}
+  .progress-wrap{background:#e0d8d0;border-radius:20px;height:14px;overflow:hidden;margin-top:.5rem}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#2e6b3e,#1a4a28);border-radius:20px;transition:width .4s ease}
+  .progress-label{font-size:.82rem;color:var(--muted);margin-top:.4rem;font-weight:700}
+  .checklist{list-style:none;padding:0}
+  .checklist li{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;border-radius:10px;margin-bottom:.6rem;background:#fafaf8;border:2px solid #e0d8d0;cursor:pointer;font-size:.92rem;font-weight:700;transition:background .15s;user-select:none}
+  .checklist li:hover{background:var(--accent-light)}
+  .checklist li.done{background:var(--green-light);border-color:var(--green);text-decoration:line-through;color:#888}
+  .checklist li input[type=checkbox]{width:22px;height:22px;cursor:pointer;accent-color:var(--green);flex-shrink:0}
+  .export-bar{background:var(--accent-light);border-top:2px solid var(--accent-mid);padding:1rem 2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center}
+  .export-bar span{font-size:.85rem;font-weight:700;color:var(--accent)}
+  footer{text-align:center;padding:1.5rem;font-size:.8rem;color:#888;border-top:1px solid #e0d8d0}
+</style>
+</head>
+<body>
+<div id="lockScreen">
+  <div class="lock-icon">🎣</div>
+  <h1>HK's Project Space</h1>
+  <p>This is your personal project page.<br>Enter your password to get started.</p>
+  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock →</button>
+  <div id="lockError">That password doesn't match — try again.</div>
+</div>
+<div id="mainContent">
+  <header class="site-header">
+    <p class="tag">Week 3 · Project</p>
+    <h1>🎣 The Recycled Metal Rod</h1>
+    <p>Plan complete — Prototype 1 begins</p>
+  </header>
+  <div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 3</a></div>
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('tab-checkin')">😊 Check In</button>
+    <button class="tab-btn" onclick="showTab('tab-plan')">📋 My Plan</button>
+    <button class="tab-btn" onclick="showTab('tab-diary')">📓 Build Diary</button>
+    <button class="tab-btn" onclick="showTab('tab-safety')">⚠️ Safety</button>
+    <button class="tab-btn" onclick="showTab('tab-testing')">🧪 Testing</button>
+    <button class="tab-btn" onclick="showTab('tab-progress')">📋 Progress</button>
+    <button class="tab-btn" onclick="showTab('tab-reflect')">💭 Reflect</button>
+  </nav>
+  <main class="main">
+
+    <!-- CHECK IN -->
+    <div class="tab-panel active" id="tab-checkin">
+      <div class="section-card">
+        <h2>😊 Check In</h2>
+        <label>How are you feeling today?</label>
+        <div class="mood-grid">
+          <button class="mood-btn" onclick="selectMood(this)">😄 Great</button>
+          <button class="mood-btn" onclick="selectMood(this)">🙂 Good</button>
+          <button class="mood-btn" onclick="selectMood(this)">😐 Okay</button>
+          <button class="mood-btn" onclick="selectMood(this)">😔 Not great</button>
+          <button class="mood-btn" onclick="selectMood(this)">😤 Frustrated</button>
+          <button class="mood-btn" onclick="selectMood(this)">😴 Tired</button>
+          <button class="mood-btn" onclick="selectMood(this)">🤩 Excited</button>
+          <button class="mood-btn" onclick="selectMood(this)">🤔 Thinking</button>
+        </div>
+        <label>Anything on your mind before we start? (optional)</label>
+        <textarea id="checkInNote" placeholder="You don't have to write anything — just a space if you need it..."></textarea>
+      </div>
+      <div class="section-card gold">
+        <h2>🎯 Today's Focus</h2>
+        <label>What do you most want to get done on your rod today?</label>
+        <p class="hint-text">Pick one or two things — keeping it focused helps you actually finish them.</p>
+        <textarea id="sessionGoal" placeholder="Today I want to..."></textarea>
+        <label>How long do you want to work today?</label>
+        <div class="mood-grid">
+          <button class="mood-btn" onclick="selectTime(this)">15 mins</button>
+          <button class="mood-btn" onclick="selectTime(this)">30 mins</button>
+          <button class="mood-btn" onclick="selectTime(this)">45 mins</button>
+          <button class="mood-btn" onclick="selectTime(this)">60 mins</button>
+        </div>
+      </div>
+      <div class="section-card blue">
+        <h2>📌 Carrying Over From Your Plan</h2>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:.75rem;line-height:1.6;">Your planning work is done — brilliant. Three small things from it are still open, whenever you're ready:</p>
+        <label class="check-label"><input type="checkbox" name="carryover"> ✏️ Sketch the rod design and label each part</label>
+        <label class="check-label"><input type="checkbox" name="carryover"> 📝 Write the final materials list (your choices are locked in — just list them)</label>
+        <label class="check-label"><input type="checkbox" name="carryover"> 🧪 Decide what "works" means — your test plan (there's a head start in the Testing tab)</label>
+      </div>
+    </div>
+
+    <!-- MY PLAN -->
+    <div class="tab-panel" id="tab-plan">
+      <div class="section-card">
+        <h2>📋 The Plan — Locked In</h2>
+        <div class="info-banner" style="background:var(--accent-light);border:2px solid var(--accent-mid);">
+          <span class="ib-icon">✅</span>
+          <span><strong>This is what you decided in your planning week.</strong> It's all here so you can check it while you build — and you can still change anything if the build teaches you something new.</span>
+        </div>
+        <div class="locked-card"><span class="lk-icon">🎣</span><div><div class="lk-part">Rod blank / main pole</div><div class="lk-choice">Old umbrella shaft</div></div></div>
+        <div class="locked-card"><span class="lk-icon">✋</span><div><div class="lk-part">Handle / grip</div><div class="lk-choice">Old bicycle handlebar grip</div></div></div>
+        <div class="locked-card"><span class="lk-icon">⭕</span><div><div class="lk-part">Line guides / eyelets</div><div class="lk-choice">Key rings, split rings or small curtain rings</div></div></div>
+        <div class="locked-card"><span class="lk-icon">🧵</span><div><div class="lk-part">Line</div><div class="lk-choice">Reused fishing line</div></div></div>
+        <div class="locked-card"><span class="lk-icon">🌀</span><div><div class="lk-part">Reel / line holder</div><div class="lk-choice">Old kite string winder</div></div></div>
+        <div class="locked-card"><span class="lk-icon">🪝</span><div><div class="lk-part">Hook / end</div><div class="lk-choice">Will's hooks — real hook only with adult permission</div></div></div>
+        <label style="margin-top:1rem;">Material sources you listed: the hub, the dump, the recycle shop, Somerset dump. Anything found so far?</label>
+        <textarea id="materialsFound" placeholder="So far I've found..."></textarea>
+      </div>
+
+      <div class="section-card">
+        <h2>🔨 Build Order</h2>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Your five-step sequence, ready to follow:</p>
+        <p style="font-size:.95rem;font-weight:700;line-height:2.4;">
+          <span class="step-badge">1</span> Choose your rod<br>
+          <span class="step-badge">2</span> Attach the handle<br>
+          <span class="step-badge">3</span> Attach the line guides<br>
+          <span class="step-badge">4</span> Add the line holder and reel<br>
+          <span class="step-badge">5</span> Mount it for display
+        </p>
+        <label style="margin-top:1rem;">Your predicted problem was a good one: glue might not hold metal. Your backup: <strong>use wire instead</strong>. Any other backups worth noting?</label>
+        <textarea id="backupPlans" placeholder="If something else goes wrong, I could..."></textarea>
+        <label>✏️ Design sketch — describe (or sketch on paper and describe) what the finished rod looks like:</label>
+        <textarea id="designSketch" placeholder="My rod will be about ... long, with the grip at..., guides spaced..., and it will be mounted on..."></textarea>
+        <div class="photo-prompt">📸 If you sketch on paper, photograph it for your build diary!</div>
+      </div>
+    </div>
+
+    <!-- BUILD DIARY -->
+    <div class="tab-panel" id="tab-diary">
+      <div class="section-card">
+        <h2>📓 Build Diary</h2>
+        <div class="info-banner" style="background:var(--gold-light);border:2px solid #f0d080;">
+          <span class="ib-icon">🎬</span>
+          <span><strong>Every great build deserves a record.</strong> Each time you work on the rod, add an entry — even two sentences counts. By the end you'll have the full story of Prototype 1, in your own words.</span>
+        </div>
+        <label>What did you do this session?</label>
+        <textarea id="de-did" placeholder="Today I attached the..."></textarea>
+        <label>What worked?</label>
+        <textarea id="de-worked" placeholder="The thing that worked was..."></textarea>
+        <label>What was tricky or didn't go to plan?</label>
+        <textarea id="de-tricky" placeholder="The tricky bit was... (it's fine if nothing was — write 'nothing'!)"></textarea>
+        <label>Next session, I want to...</label>
+        <textarea id="de-next" placeholder="Next time I'll..."></textarea>
+        <div class="btn-row" style="justify-content:flex-start;margin-top:1rem;">
+          <button class="btn btn-primary btn-sm" onclick="addDiaryEntry()">💾 Save this entry</button>
+        </div>
+        <div class="success-msg" id="diaryMsg">✅ Entry saved to your build diary below.</div>
+      </div>
+
+      <div class="section-card">
+        <h2>📚 The Story So Far</h2>
+        <p class="hint-text" style="margin-bottom:1rem;">Your saved entries, newest first. They're included when you email Jay.</p>
+        <div id="diaryList"><p style="font-size:.88rem;color:#999;">No entries yet — your first build session will start the story.</p></div>
+      </div>
+
+      <div class="section-card blue">
+        <h2>📸 Photo Story Checklist</h2>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:.75rem;line-height:1.6;">Photos turn a build into a showcase. Tick each one as you capture it:</p>
+        <label class="check-label"><input type="checkbox" name="photos"> 📸 The raw materials, before anything happens ("before" shot)</label>
+        <label class="check-label"><input type="checkbox" name="photos"> 📸 Your design sketch</label>
+        <label class="check-label"><input type="checkbox" name="photos"> 📸 The handle being attached</label>
+        <label class="check-label"><input type="checkbox" name="photos"> 📸 The guides going on</label>
+        <label class="check-label"><input type="checkbox" name="photos"> 📸 The reel in place</label>
+        <label class="check-label"><input type="checkbox" name="photos"> 📸 You wearing your PPE like a pro</label>
+        <label class="check-label"><input type="checkbox" name="photos"> 📸 The finished Prototype 1, mounted for display ("after" shot)</label>
+      </div>
+    </div>
+
+    <!-- SAFETY -->
+    <div class="tab-panel" id="tab-safety">
+      <div class="section-card red">
+        <h2>⚠️ Safety Plan — Now It Really Matters</h2>
+        <div class="info-banner" style="background:#fdecea;border:2px solid #f5b7b1;">
+          <span class="ib-icon">🛡️</span>
+          <span>Your safety notes from planning: <strong>wear PPE, do as instructed, use goggles.</strong> You're working with metal now, so these go from "plan" to "every single session".</span>
+        </div>
+        <label class="check-label"><input type="checkbox" name="safety" checked> I will ask before using scissors, blades, glue or tools.</label>
+        <label class="check-label"><input type="checkbox" name="safety" checked> I will smooth or cover sharp edges.</label>
+        <label class="check-label"><input type="checkbox" name="safety"> I will wear PPE and goggles whenever I'm building.</label>
+        <label class="check-label"><input type="checkbox" name="safety"> Welding or hot work ONLY happens with an adult running it — never alone.</label>
+        <label class="check-label"><input type="checkbox" name="safety"> I will not use a real hook unless an adult says it is okay.</label>
+        <label>Extra safety note for this build:</label>
+        <textarea id="safetyNote" placeholder="e.g. The umbrella shaft ends might be sharp once cut — I'll tape them..."></textarea>
+      </div>
+      <div class="section-card gold">
+        <h2>🔗 Your Joining Methods</h2>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:.75rem;line-height:1.6;">You chose three: <strong>glue, wire, and metal welding.</strong> Smart order to try them:</p>
+        <div class="tip-grid">
+          <div class="tip-card green"><div class="tip-title">1️⃣ Glue first</div><p>Easiest and safest. Metal needs the right glue (epoxy works on metal; ask Jay) and patience while it dries.</p></div>
+          <div class="tip-card"><div class="tip-title">2️⃣ Wire backup</div><p>Your own predicted fix! Wire wrapping is strong, adjustable, and you can redo it. Cover the twisted ends with tape.</p></div>
+          <div class="tip-card blue"><div class="tip-title">3️⃣ Welding = adult job</div><p>The strongest joint, but it's hot metal work — adult-run only, full PPE, and only if it's truly needed.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TESTING -->
+    <div class="tab-panel" id="tab-testing">
+      <div class="section-card">
+        <h2>🧪 What Does "Works" Mean?</h2>
+        <div class="info-banner" style="background:var(--blue-light);border:2px solid #aed6f1;">
+          <span class="ib-icon">🎯</span>
+          <span>Your goal is a <strong>prototype mounted for display</strong> — so "working" means something specific. Tick the tests that count for YOUR rod:</span>
+        </div>
+        <label class="check-label"><input type="checkbox" name="testing"> Is it strong enough to hold its shape on display?</label>
+        <label class="check-label"><input type="checkbox" name="testing"> Are all the edges smooth or covered — safe to handle?</label>
+        <label class="check-label"><input type="checkbox" name="testing"> Do the guides stay attached when the rod is moved?</label>
+        <label class="check-label"><input type="checkbox" name="testing"> Does the line run from the winder through every guide to the tip?</label>
+        <label class="check-label"><input type="checkbox" name="testing"> Is the handle comfortable and firmly attached?</label>
+        <label style="margin-top:1rem;">My test plan — how and when will you run these tests?</label>
+        <textarea id="testPlan" placeholder="After each build step I will... Before mounting it I will..."></textarea>
+      </div>
+      <div class="section-card blue">
+        <h2>📊 Test Results</h2>
+        <label>What did you test?</label>
+        <textarea id="testDone" placeholder="I tested..."></textarea>
+        <label>What worked well?</label>
+        <textarea id="testWell" placeholder="What worked well was..."></textarea>
+        <label>What needs improving?</label>
+        <textarea id="testImprove" placeholder="Something to improve is..."></textarea>
+        <label>What will you change or try next?</label>
+        <textarea id="testNext" placeholder="Next I'm going to try..."></textarea>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="tab-panel" id="tab-progress">
+      <div class="section-card">
+        <h2>✅ Build Progress Tracker</h2>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.5;">Tap anything you've done to mark it complete. (You can tick the first two right now!)</p>
+        <div class="progress-wrap"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+        <p class="progress-label" id="progressLabel">0 of 8 done</p>
+        <br>
+        <ul class="checklist" id="taskList">
+          <li onclick="toggleTask(this)"><input type="checkbox"> 🔎 Chosen all my materials</li>
+          <li onclick="toggleTask(this)"><input type="checkbox"> 📋 Written my build plan</li>
+          <li onclick="toggleTask(this)"><input type="checkbox"> ✂️ Prepared my materials safely</li>
+          <li onclick="toggleTask(this)"><input type="checkbox"> 🧵 Made and attached the handle</li>
+          <li onclick="toggleTask(this)"><input type="checkbox"> ⭕ Attached the line guides / eyelets</li>
+          <li onclick="toggleTask(this)"><input type="checkbox"> 🎣 Added the reel or line holder</li>
+          <li onclick="toggleTask(this)"><input type="checkbox"> 🧪 Tested the rod</li>
+          <li onclick="toggleTask(this)"><input type="checkbox"> 🏆 Mounted Prototype 1 for display</li>
+        </ul>
+      </div>
+      <div class="section-card">
+        <h2>🔨 Progress This Week</h2>
+        <label>What have you worked on this week?</label>
+        <textarea id="weekWork" placeholder="This week I worked on..."></textarea>
+        <label>What is going well with your build?</label>
+        <textarea id="goingWell" placeholder="Something going well is..."></textarea>
+        <label>What is tricky or needs more thought?</label>
+        <textarea id="stuck" placeholder="Something I'm finding tricky is..."></textarea>
+        <label>What do you need from Jay to keep going?</label>
+        <textarea id="needFromJay" placeholder="e.g. epoxy glue, help finding an umbrella shaft, time at the hub..."></textarea>
+      </div>
+      <div class="section-card gold">
+        <h2>⭐ Self Assessment</h2>
+        <label>How hard did you work this week?</label>
+        <div class="star-row" id="effortStars">
+          <button class="star-btn" onclick="setStars('effortStars',1)">⭐</button>
+          <button class="star-btn" onclick="setStars('effortStars',2)">⭐</button>
+          <button class="star-btn" onclick="setStars('effortStars',3)">⭐</button>
+          <button class="star-btn" onclick="setStars('effortStars',4)">⭐</button>
+          <button class="star-btn" onclick="setStars('effortStars',5)">⭐</button>
+        </div>
+        <label>How confident do you feel about your project?</label>
+        <div class="star-row" id="confStars">
+          <button class="star-btn" onclick="setStars('confStars',1)">⭐</button>
+          <button class="star-btn" onclick="setStars('confStars',2)">⭐</button>
+          <button class="star-btn" onclick="setStars('confStars',3)">⭐</button>
+          <button class="star-btn" onclick="setStars('confStars',4)">⭐</button>
+          <button class="star-btn" onclick="setStars('confStars',5)">⭐</button>
+        </div>
+        <label>How creative did you feel this week?</label>
+        <div class="star-row" id="creativeStars">
+          <button class="star-btn" onclick="setStars('creativeStars',1)">⭐</button>
+          <button class="star-btn" onclick="setStars('creativeStars',2)">⭐</button>
+          <button class="star-btn" onclick="setStars('creativeStars',3)">⭐</button>
+          <button class="star-btn" onclick="setStars('creativeStars',4)">⭐</button>
+          <button class="star-btn" onclick="setStars('creativeStars',5)">⭐</button>
+        </div>
+        <label>Anything else you want Jay to know?</label>
+        <textarea id="teacherNote" placeholder="A message for Jay (optional)..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="submitForm()">📧 Send to Jay</button>
+        <button class="btn btn-outline" onclick="clearForm()">Clear form</button>
+      </div>
+      <div class="success-msg" id="successMsg">✅ Sent! Jay will receive your project update.</div>
+    </div>
+
+    <!-- REFLECT -->
+    <div class="tab-panel" id="tab-reflect">
+      <div class="section-card">
+        <h2>💭 Reflection</h2>
+        <label>How does your recycled fishing rod connect to: <em>"How do our choices today shape the worlds of tomorrow?"</em></label>
+        <textarea id="drivingQ" placeholder="My project connects to this because..."></textarea>
+        <label>What is one thing you've learned or discovered this week?</label>
+        <textarea id="learned" placeholder="Something I discovered is..."></textarea>
+        <label>What do you want to work on next?</label>
+        <textarea id="nextSteps" placeholder="Next I want to..."></textarea>
+      </div>
+      <div class="section-card gold">
+        <h2>🌍 Big Picture Thinking</h2>
+        <label>What's the most interesting problem you've had to solve so far?</label>
+        <textarea id="bigProblem" placeholder="The most interesting problem was..."></textarea>
+        <label>If you could redesign your rod from scratch, what would you do differently?</label>
+        <textarea id="redesign" placeholder="If I started again I would..."></textarea>
+        <label>What advice would you give to someone who wanted to build their own recycled fishing rod?</label>
+        <textarea id="advice" placeholder="My top tip would be..."></textarea>
+      </div>
+    </div>
+
+  </main>
+  <div class="export-bar">
+    <span>Save your work:</span>
+    <button onclick="submitForm()" style="padding:.6rem 1.25rem;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;">📧 Email to Jay</button>
+  </div>
+  <footer>Base 6 · Chilton Bridge School · Week 3 Project</footer>
+</div>
+<script>
+  const PASSWORD='hk';
+  let effortRating=0,confRating=0,creativeRating=0,mood='',sessionTime='';
+  let diary=[];
+  function tryUnlock(){
+    if(document.getElementById('passwordInput').value.trim().toLowerCase()===PASSWORD){
+      document.getElementById('lockScreen').style.display='none';
+      document.getElementById('mainContent').style.display='block';
+      loadProgress();loadDiary();
+    }else{document.getElementById('lockError').style.display='block';document.getElementById('passwordInput').value='';}
+  }
+  function showTab(id){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+  function selectMood(btn){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');mood=btn.textContent;}
+  function selectTime(btn){document.querySelectorAll('#tab-checkin .mood-grid button').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');sessionTime=btn.textContent;}
+  function setStars(g,r){
+    document.getElementById(g).querySelectorAll('.star-btn').forEach((s,i)=>s.classList.toggle('active',i<r));
+    if(g==='effortStars')effortRating=r;if(g==='confStars')confRating=r;if(g==='creativeStars')creativeRating=r;
+  }
+  function toggleTask(li){const cb=li.querySelector('input[type="checkbox"]');cb.checked=!cb.checked;li.classList.toggle('done',cb.checked);updateProgress();saveProgress();}
+  function updateProgress(){
+    const all=document.querySelectorAll('#taskList li').length;
+    const done=document.querySelectorAll('#taskList li.done').length;
+    document.getElementById('progressBar').style.width=Math.round((done/all)*100)+'%';
+    document.getElementById('progressLabel').textContent=done+' of '+all+' done';
+  }
+  function saveProgress(){
+    const state=Array.from(document.querySelectorAll('#taskList li')).map(li=>li.classList.contains('done'));
+    try{localStorage.setItem('hk_tasks',JSON.stringify(state));}catch(e){}
+  }
+  function loadProgress(){
+    try{
+      const saved=JSON.parse(localStorage.getItem('hk_tasks')||'[]');
+      document.querySelectorAll('#taskList li').forEach((li,i)=>{if(saved[i]){li.classList.add('done');li.querySelector('input[type=checkbox]').checked=true;}});
+      updateProgress();
+    }catch(e){}
+  }
+
+  // ── Build diary ──
+  function loadDiary(){
+    try{diary=JSON.parse(localStorage.getItem('hk_build_diary')||'[]');}catch(e){diary=[];}
+    renderDiary();
+  }
+  function saveDiary(){try{localStorage.setItem('hk_build_diary',JSON.stringify(diary));}catch(e){}}
+  function addDiaryEntry(){
+    const get=id=>document.getElementById(id).value.trim();
+    const did=get('de-did');
+    if(!did){document.getElementById('diaryMsg').textContent='Write at least "what did you do" before saving.';document.getElementById('diaryMsg').style.display='block';return;}
+    diary.push({date:new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}),did,worked:get('de-worked'),tricky:get('de-tricky'),next:get('de-next')});
+    saveDiary();
+    ['de-did','de-worked','de-tricky','de-next'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('diaryMsg').textContent='✅ Entry saved to your build diary below.';
+    document.getElementById('diaryMsg').style.display='block';
+    renderDiary();
+  }
+  function deleteDiaryEntry(i){
+    if(!confirm('Delete this diary entry?'))return;
+    diary.splice(i,1);saveDiary();renderDiary();
+  }
+  function renderDiary(){
+    const list=document.getElementById('diaryList');
+    if(diary.length===0){list.innerHTML='<p style="font-size:.88rem;color:#999;">No entries yet — your first build session will start the story.</p>';return;}
+    list.innerHTML='';
+    diary.slice().reverse().forEach((e,ri)=>{
+      const i=diary.length-1-ri;
+      const div=document.createElement('div');
+      div.className='diary-entry';
+      let html='<button class="diary-del" onclick="deleteDiaryEntry('+i+')">delete</button>';
+      html+='<div class="de-date">📓 Session '+(i+1)+' · '+e.date+'</div>';
+      html+='<p><strong>Did:</strong> '+e.did+'</p>';
+      if(e.worked)html+='<p><strong>Worked:</strong> '+e.worked+'</p>';
+      if(e.tricky)html+='<p><strong>Tricky:</strong> '+e.tricky+'</p>';
+      if(e.next)html+='<p><strong>Next:</strong> '+e.next+'</p>';
+      div.innerHTML=html;
+      list.appendChild(div);
+    });
+  }
+
+  function getChecked(name){
+    return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(c=>{const l=c.closest('label');return l?l.textContent.trim():c.value;}).join(', ')||'None selected';
+  }
+  function submitForm(){
+    const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const val=id=>(document.getElementById(id)||{}).value||'(not filled in)';
+    const tasks=Array.from(document.querySelectorAll('#taskList li')).map(li=>(li.classList.contains('done')?'✅':'⬜')+' '+li.textContent.trim()).join('\n');
+    let diaryText=diary.length?diary.map((e,i)=>`Session ${i+1} (${e.date}):\n  Did: ${e.did}\n  Worked: ${e.worked||'-'}\n  Tricky: ${e.tricky||'-'}\n  Next: ${e.next||'-'}`).join('\n\n'):'(no entries yet)';
+    let body=`Project Update — HK — Recycled Metal Rod (Week 3)\n${now}\n\n`;
+    body+=`━━━ CHECK IN ━━━\nMOOD: ${mood||'Not selected'}\nSESSION GOAL: ${val('sessionGoal')}\nNOTE: ${val('checkInNote')}\nCARRY-OVER TASKS: ${getChecked('carryover')}\n\n`;
+    body+=`━━━ PLAN UPDATES ━━━\nMATERIALS FOUND: ${val('materialsFound')}\nBACKUP PLANS: ${val('backupPlans')}\nDESIGN SKETCH (described): ${val('designSketch')}\n\n`;
+    body+=`━━━ BUILD DIARY ━━━\n${diaryText}\n\nPHOTOS CAPTURED: ${getChecked('photos')}\n\n`;
+    body+=`━━━ SAFETY ━━━\nTICKED: ${getChecked('safety')}\nNOTE: ${val('safetyNote')}\n\n`;
+    body+=`━━━ TESTING ━━━\nTESTS THAT COUNT: ${getChecked('testing')}\nTEST PLAN: ${val('testPlan')}\nRESULTS: ${val('testDone')}\nWORKED WELL: ${val('testWell')}\nIMPROVE: ${val('testImprove')}\nNEXT: ${val('testNext')}\n\n`;
+    body+=`━━━ PROGRESS ━━━\n${tasks}\n\nWORK THIS WEEK: ${val('weekWork')}\nGOING WELL: ${val('goingWell')}\nTRICKY: ${val('stuck')}\nNEED FROM JAY: ${val('needFromJay')}\n\n`;
+    body+=`━━━ REFLECTION ━━━\nDRIVING QUESTION: ${val('drivingQ')}\nLEARNED: ${val('learned')}\nNEXT STEPS: ${val('nextSteps')}\nBIG PROBLEM: ${val('bigProblem')}\nREDESIGN: ${val('redesign')}\nADVICE: ${val('advice')}\n\n`;
+    body+=`━━━ SELF ASSESSMENT ━━━\nEFFORT: ${effortRating}/5 | CONFIDENCE: ${confRating}/5 | CREATIVITY: ${creativeRating}/5\nMESSAGE FOR JAY: ${val('teacherNote')}`;
+    const gmail='https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su='+encodeURIComponent('Project Update — HK — Week 3 — '+now)+'&body='+encodeURIComponent(body);
+    window.open(gmail,'_blank');
+    document.getElementById('successMsg').style.display='block';
+  }
+  function clearForm(){
+    if(!confirm('Clear everything? (Your build diary entries will be kept.)'))return;
+    ['checkInNote','sessionGoal','materialsFound','backupPlans','designSketch','safetyNote','testPlan','testDone','testWell','testImprove','testNext','weekWork','goingWell','stuck','needFromJay','teacherNote','drivingQ','learned','nextSteps','bigProblem','redesign','advice'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+    mood='';effortRating=0;confRating=0;creativeRating=0;
+    ['effortStars','confStars','creativeStars'].forEach(g=>document.getElementById(g).querySelectorAll('.star-btn').forEach(s=>s.classList.remove('active')));
+    document.getElementById('successMsg').style.display='none';
+  }
+</script>
+</body>
+</html>
