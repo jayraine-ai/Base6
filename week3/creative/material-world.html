@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material World · Aesthetic and Creative · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+
+  /* Sorting */
+  .sort-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding: 0.55rem 0.6rem; border-radius: 10px; background: #f7f4f0; margin-bottom: 0.55rem; }
+  .sort-text { flex: 1; min-width: 160px; font-size: 0.9rem; font-weight: 700; }
+  .sort-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.74rem; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 20px; cursor: pointer; border: 2px solid #e0d8d0; background: #fff; color: #555; }
+  .sort-btn:hover { border-color: #e8b3c8; }
+  .sort-btn.right { border-color: #2e8b57; background: #e6f5e6; color: #1a5e1a; }
+  .sort-btn.wrong { border-color: #c0392b; background: #fbeae8; color: #8a2318; }
+  .sort-fb { display: none; font-size: 0.82rem; line-height: 1.5; margin: -0.25rem 0 0.6rem; padding: 0.5rem 0.8rem; border-radius: 8px; }
+  .sort-fb.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .sort-fb.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+  .sort-score { font-size: 0.88rem; font-weight: 700; color: #555; margin-top: 0.5rem; }
+
+  /* Commissions */
+  .commission { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .commission-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #c2185b; margin-bottom: 0.4rem; }
+  .commission-q { font-size: 0.95rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.75rem; }
+  .options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .opt-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; text-align: left; padding: 0.6rem 0.9rem; border: 2px solid #e0d8d0; border-radius: 8px; background: #fff; cursor: pointer; line-height: 1.5; }
+  .opt-btn:hover { border-color: #e8b3c8; }
+  .opt-btn.right { border-color: #2e8b57; background: #e6f5e6; }
+  .opt-btn.wrong { border-color: #c0392b; background: #fbeae8; }
+  .commission-fb { display: none; font-size: 0.85rem; line-height: 1.6; margin-top: 0.7rem; padding: 0.6rem 0.85rem; border-radius: 8px; }
+  .commission-fb.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .commission-fb.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+
+  .report-bar { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Aesthetic and Creative</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Aesthetic and Creative · Week 3</p>
+  <h1>🧶 Material World</h1>
+  <p>Great designers know their fabrics before they touch a sketchbook. Sort the materials, then take on five design commissions — clients are waiting, and they have very specific needs.</p>
+</div>
+
+<main class="main">
+
+  <p class="section-label">Part 1 · Natural or synthetic?</p>
+  <div class="card">
+    <p style="margin-bottom: 1rem;">Every fabric starts somewhere — grown on a plant or animal (natural), or made by people from chemicals, often from oil (synthetic). Sort each one.</p>
+    <div id="sort-container"></div>
+    <div class="sort-score" id="sort-score"></div>
+  </div>
+
+  <p class="section-label">Part 2 · The commissions</p>
+  <div id="commissions"></div>
+
+  <p class="section-label">Send my portfolio</p>
+  <div class="report-bar">
+    <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Aesthetic and Creative
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_cre_material';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const SORTS = [
+  { text: '🌱 Cotton', answer: 'natural', fb: 'Natural — fluffy fibres picked from the cotton plant.' },
+  { text: '🧪 Polyester', answer: 'synthetic', fb: 'Synthetic — made by people, mostly from oil. Invented in the 1940s.' },
+  { text: '🐑 Wool', answer: 'natural', fb: 'Natural — sheared from sheep, who grow a fresh coat every year.' },
+  { text: '🧪 Nylon', answer: 'synthetic', fb: 'Synthetic — the first fully man-made fibre, famous for tights and tents.' },
+  { text: '🐛 Silk', answer: 'natural', fb: 'Natural — spun by silkworms making their cocoons. Discovered in China thousands of years ago.' },
+  { text: '🧪 Acrylic', answer: 'synthetic', fb: 'Synthetic — designed to feel like wool but made in a factory.' },
+  { text: '🌱 Linen', answer: 'natural', fb: 'Natural — woven from the flax plant. One of the oldest fabrics humans have ever made.' },
+  { text: '♻️ Fleece', answer: 'synthetic', fb: 'Synthetic — and often made from recycled plastic bottles, which is a brilliant second life for them.' },
+];
+
+const COMMISSIONS = [
+  { tag: 'Commission 1', q: 'A hiker needs a coat for wet Somerset weather. The outer layer should be...',
+    opts: ['Waterproof nylon', 'Silk', 'Knitted wool with big holes'],
+    correct: 0, fb: 'Nylon (with a waterproof coating) keeps the rain out. Silk would be soaked — and very sad — in minutes.' },
+  { tag: 'Commission 2', q: 'A footballer wants a top that stays comfy through a sweaty match. Best choice?',
+    opts: ['Heavy denim', 'Lightweight polyester that dries fast', 'Thick wool'],
+    correct: 1, fb: 'Polyester wicks sweat away and dries quickly — exactly why nearly all sports kits use it. A denim football shirt is a war crime against comfort.' },
+  { tag: 'Commission 3', q: 'A grandparent wants the warmest possible winter jumper. You recommend...',
+    opts: ['Linen', 'Wool', 'A single layer of silk'],
+    correct: 1, fb: 'Wool traps warm air in its fibres and even stays warm when damp. Linen is for summer — it\'s the cool customer of fabrics.' },
+  { tag: 'Commission 4', q: 'A builder needs work trousers that survive kneeling, scraping and snagging. Pick the fabric.',
+    opts: ['Tough denim or canvas', 'Delicate silk', 'Stretchy thin polyester'],
+    correct: 0, fb: 'Denim and canvas are densely woven and hardwearing — that\'s why workwear and jeans have used them for over a century.' },
+  { tag: 'Commission 5', q: 'A dancer wants a flowing dress that catches the light on stage. Your fabric?',
+    opts: ['Stiff canvas', 'Chunky fleece', 'Silk or a silky synthetic'],
+    correct: 2, fb: 'Silk drapes, flows and shines under lights — and silky synthetics do the same job for less money. Fleece flows like a sleeping bag.' },
+];
+
+let state = { sorts: {}, commissions: {} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+function renderSorts() {
+  const c = document.getElementById('sort-container');
+  c.innerHTML = '';
+  SORTS.forEach((s, i) => {
+    const picked = state.sorts[i];
+    let nCls = 'sort-btn', sCls = 'sort-btn';
+    if (picked === 'natural') nCls += s.answer === 'natural' ? ' right' : ' wrong';
+    if (picked === 'synthetic') sCls += s.answer === 'synthetic' ? ' right' : ' wrong';
+    let fbCls = 'sort-fb', fbTxt = '';
+    if (picked !== undefined) {
+      const right = picked === s.answer;
+      fbCls += right ? ' show-right' : ' show-wrong';
+      fbTxt = right ? '✓ ' + s.fb : s.fb;
+    }
+    c.innerHTML += '<div class="sort-row"><span class="sort-text">' + s.text + '</span>' +
+      '<button class="' + nCls + '" onclick="sortAnswer(' + i + ',\'natural\')">🌱 Natural</button>' +
+      '<button class="' + sCls + '" onclick="sortAnswer(' + i + ',\'synthetic\')">🧪 Synthetic</button></div>' +
+      '<div class="' + fbCls + '">' + fbTxt + '</div>';
+  });
+  const correct = SORTS.filter((s, i) => state.sorts[i] === s.answer).length;
+  const attempted = Object.keys(state.sorts).length;
+  document.getElementById('sort-score').textContent = attempted ? correct + ' of ' + SORTS.length + ' sorted correctly' + (correct === SORTS.length ? ' — fabric expert! 🧵' : '') : '';
+}
+
+function sortAnswer(i, val) {
+  state.sorts[i] = val;
+  save();
+  renderSorts();
+}
+
+function renderCommissions() {
+  const c = document.getElementById('commissions');
+  c.innerHTML = '';
+  COMMISSIONS.forEach((item, i) => {
+    const picked = state.commissions[i];
+    let opts = '';
+    item.opts.forEach((o, oi) => {
+      let cls = 'opt-btn';
+      if (picked !== undefined && oi === picked) cls += picked === item.correct ? ' right' : ' wrong';
+      opts += '<button class="' + cls + '" onclick="commissionAnswer(' + i + ',' + oi + ')">' + o + '</button>';
+    });
+    let fbCls = 'commission-fb', fbTxt = '';
+    if (picked !== undefined) {
+      const right = picked === item.correct;
+      fbCls += right ? ' show-right' : ' show-wrong';
+      fbTxt = right ? '✓ ' + item.fb : 'The client looks unconvinced — think about what this fabric is best at.';
+    }
+    const div = document.createElement('div');
+    div.className = 'commission';
+    div.innerHTML = '<div class="commission-tag">' + item.tag + '</div>' +
+      '<div class="commission-q">' + item.q + '</div>' +
+      '<div class="options">' + opts + '</div>' +
+      '<div class="' + fbCls + '">' + fbTxt + '</div>';
+    c.appendChild(div);
+  });
+}
+
+function commissionAnswer(i, oi) {
+  state.commissions[i] = oi;
+  save();
+  renderCommissions();
+}
+
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  const sortCorrect = SORTS.filter((s, i) => state.sorts[i] === s.answer).length;
+  const commCorrect = COMMISSIONS.filter((c, i) => state.commissions[i] === c.correct).length;
+
+  let body = 'MATERIAL WORLD — AESTHETIC AND CREATIVE WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Natural or synthetic: ' + sortCorrect + '/8\n';
+  body += 'Design commissions: ' + commCorrect + '/5\n\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Material World — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now.';
+  n.classList.add('show');
+}
+
+// Init
+renderSorts();
+renderCommissions();
+</script>
+
+</body>
+</html>

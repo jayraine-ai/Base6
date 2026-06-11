@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thread Lab · Aesthetic and Creative · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .studio { display: grid; grid-template-columns: 280px 1fr; gap: 1.25rem; }
+  @media (max-width: 640px) { .studio { grid-template-columns: 1fr; } }
+
+  /* Canvas side */
+  .canvas-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem; text-align: center; }
+  .canvas-card svg { width: 100%; max-width: 230px; height: auto; }
+  .design-meta { font-size: 0.82rem; font-weight: 700; color: #555; margin-top: 0.6rem; line-height: 1.6; }
+
+  /* Controls side */
+  .panel { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.2rem 1.3rem; margin-bottom: 1rem; }
+  .panel-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #c2185b; margin-bottom: 0.7rem; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .chip { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.95rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .chip:hover { border-color: #e8b3c8; }
+  .chip.on { border-color: #c2185b; background: #fbe9f1; color: #8c1048; }
+
+  .swatch-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .swatch { width: 36px; height: 36px; border-radius: 10px; border: 3px solid #e0d8d0; cursor: pointer; }
+  .swatch:hover { transform: scale(1.08); }
+  .swatch.on { border-color: #1a1a1a; }
+
+  .material-info { font-size: 0.82rem; color: #777; line-height: 1.6; margin-top: 0.6rem; min-height: 1.3rem; }
+  .material-info strong { color: #8c1048; }
+
+  /* Designer notes + actions */
+  .notes-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.3rem 1.4rem; margin-top: 1.25rem; }
+  .notes-card label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin-bottom: 0.4rem; }
+  textarea { width: 100%; min-height: 70px; padding: 0.7rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; resize: vertical; line-height: 1.6; margin-bottom: 0.75rem; }
+  textarea:focus { border-color: #c2185b; }
+  .report-bar { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 150px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .action-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 0.65rem 1.3rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .action-btn:hover { background: #c05a10; }
+  .action-btn.ghost { background: #fff; color: #007291; border: 2px solid #007291; }
+  .action-btn.ghost:hover { background: #e6f5f8; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media print {
+    .site-header, .panel, .report-bar, footer { display: none; }
+    .studio { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Aesthetic and Creative</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Aesthetic and Creative · Week 3</p>
+  <h1>🧵 Thread Lab</h1>
+  <p>Welcome to your design studio. Pick a garment template, then make it yours — colour, pattern and material. Every choice changes the design on the mannequin. There are no wrong answers, only your answers.</p>
+</div>
+
+<main class="main">
+
+  <div class="studio">
+
+    <div class="canvas-card">
+      <svg viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg" aria-label="Your fashion design">
+        <defs>
+          <pattern id="pat-stripes" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="7" height="18" fill="#ffffff" opacity="0.45"/>
+          </pattern>
+          <pattern id="pat-dots" width="24" height="24" patternUnits="userSpaceOnUse">
+            <circle cx="12" cy="12" r="4.5" fill="#ffffff" opacity="0.5"/>
+          </pattern>
+          <pattern id="pat-checks" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="12" height="12" fill="#ffffff" opacity="0.32"/>
+            <rect x="12" y="12" width="12" height="12" fill="#ffffff" opacity="0.32"/>
+          </pattern>
+          <pattern id="pat-stars" width="30" height="30" patternUnits="userSpaceOnUse">
+            <text x="6" y="20" font-size="15" fill="#ffffff" opacity="0.6">★</text>
+          </pattern>
+          <pattern id="pat-zigzag" width="24" height="14" patternUnits="userSpaceOnUse">
+            <polyline points="0,11 6,3 12,11 18,3 24,11" fill="none" stroke="#ffffff" stroke-width="2.5" opacity="0.55"/>
+          </pattern>
+        </defs>
+        <path id="garment-colour" d="" fill="#ef7724" stroke="#3a3a3a" stroke-width="2.5" stroke-linejoin="round"/>
+        <path id="garment-pattern" d="" fill="none" stroke="none"/>
+      </svg>
+      <div class="design-meta" id="design-meta"></div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="panel-title">1 · Template</div>
+        <div class="chip-row" id="template-chips"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">2 · Colour</div>
+        <div class="swatch-row" id="swatches"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">3 · Pattern</div>
+        <div class="chip-row" id="pattern-chips"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">4 · Material</div>
+        <div class="chip-row" id="material-chips"></div>
+        <div class="material-info" id="material-info"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="notes-card">
+    <label for="why">Designer's note — why these choices? (a sentence is plenty)</label>
+    <textarea id="why" oninput="saveAll()" placeholder="I chose... because..."></textarea>
+    <div class="report-bar">
+      <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+      <button class="action-btn" onclick="emailDesign()">📧 Send to Jay</button>
+      <button class="action-btn ghost" onclick="window.print()">🖨️ Print design sheet</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Aesthetic and Creative
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_cre_threadlab';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const TEMPLATES = {
+  tshirt: { label: '👕 T-shirt',
+    path: 'M72,30 Q100,46 128,30 L172,55 L152,96 L138,86 L138,205 L62,205 L62,86 L48,96 L28,55 Z' },
+  hoodie: { label: '🧥 Hoodie',
+    path: 'M72,34 Q100,6 128,34 Q100,56 72,34 M72,34 Q100,50 128,34 L172,58 L152,98 L138,88 L138,205 L62,205 L62,88 L48,98 L28,58 Z M75,160 L125,160 L125,200 L75,200 Z' },
+  dress: { label: '👗 Dress',
+    path: 'M76,30 Q100,46 124,30 L138,56 L126,92 L156,205 L44,205 L74,92 L62,56 Z' },
+};
+
+const COLOURS = [
+  { hex: '#ef7724', name: 'Sunset orange' }, { hex: '#007291', name: 'Deep teal' },
+  { hex: '#c2185b', name: 'Raspberry' },     { hex: '#2e8b57', name: 'Forest green' },
+  { hex: '#4a6fa5', name: 'Denim blue' },    { hex: '#f4c430', name: 'Saffron yellow' },
+  { hex: '#7b5ea7', name: 'Plum purple' },   { hex: '#c0392b', name: 'Brick red' },
+  { hex: '#3a3a3a', name: 'Charcoal' },      { hex: '#e8a0bf', name: 'Blossom pink' },
+];
+
+const PATTERNS = [
+  { id: 'plain',  label: 'Plain' }, { id: 'stripes', label: 'Stripes' },
+  { id: 'dots',   label: 'Polka dots' }, { id: 'checks', label: 'Checks' },
+  { id: 'stars',  label: 'Stars' }, { id: 'zigzag', label: 'Zigzag' },
+];
+
+const MATERIALS = [
+  { id: 'cotton', label: 'Cotton', info: 'Soft, breathable and easy to wash — the everyday all-rounder. A natural fibre from the cotton plant.' },
+  { id: 'denim',  label: 'Denim',  info: 'Tough, hardwearing woven cotton — built to survive anything. The fabric of jeans for 150 years.' },
+  { id: 'wool',   label: 'Wool',   info: 'Naturally warm even when damp — sheep have been perfecting it for ages. Best for cosy designs.' },
+  { id: 'silk',   label: 'Silk',   info: 'Light, smooth and shiny — the fancy option. Spun by silkworms and loved by designers for flow and drape.' },
+  { id: 'polyester', label: 'Polyester', info: 'A synthetic fibre — dries fast, resists creases, holds bright colours brilliantly. Sportswear\'s best friend.' },
+  { id: 'fleece', label: 'Fleece', info: 'Synthetic, fluffy and very warm for its weight — and often made from recycled plastic bottles!' },
+];
+
+let state = { template: 'tshirt', colour: '#ef7724', pattern: 'plain', material: 'cotton', why: '' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function saveAll() {
+  state.why = document.getElementById('why').value;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+// ── Render controls ──────────────────────────────────────
+function renderChips(containerId, items, stateKey, getId, getLabel) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  items.forEach(item => {
+    const id = getId(item);
+    const b = document.createElement('button');
+    b.className = 'chip' + (state[stateKey] === id ? ' on' : '');
+    b.textContent = getLabel(item);
+    b.onclick = () => { state[stateKey] = id; saveAll(); renderAll(); };
+    c.appendChild(b);
+  });
+}
+
+function renderSwatches() {
+  const c = document.getElementById('swatches');
+  c.innerHTML = '';
+  COLOURS.forEach(col => {
+    const b = document.createElement('button');
+    b.className = 'swatch' + (state.colour === col.hex ? ' on' : '');
+    b.style.background = col.hex;
+    b.title = col.name;
+    b.setAttribute('aria-label', col.name);
+    b.onclick = () => { state.colour = col.hex; saveAll(); renderAll(); };
+    c.appendChild(b);
+  });
+}
+
+// ── Render garment ───────────────────────────────────────
+function renderGarment() {
+  const t = TEMPLATES[state.template];
+  const colourPath = document.getElementById('garment-colour');
+  const patternPath = document.getElementById('garment-pattern');
+  colourPath.setAttribute('d', t.path);
+  colourPath.setAttribute('fill', state.colour);
+  patternPath.setAttribute('d', t.path);
+  patternPath.setAttribute('fill', state.pattern === 'plain' ? 'none' : 'url(#pat-' + state.pattern + ')');
+
+  const colName = COLOURS.find(c => c.hex === state.colour).name;
+  const patName = PATTERNS.find(p => p.id === state.pattern).label;
+  const matName = MATERIALS.find(m => m.id === state.material).label;
+  document.getElementById('design-meta').textContent =
+    TEMPLATES[state.template].label.replace(/^\S+\s/, '') + ' · ' + colName + ' · ' + patName + ' · ' + matName;
+
+  const mat = MATERIALS.find(m => m.id === state.material);
+  document.getElementById('material-info').innerHTML = '<strong>' + mat.label + ':</strong> ' + mat.info;
+}
+
+function renderAll() {
+  renderChips('template-chips', Object.keys(TEMPLATES).map(k => ({ k })), 'template', i => i.k, i => TEMPLATES[i.k].label);
+  renderSwatches();
+  renderChips('pattern-chips', PATTERNS, 'pattern', p => p.id, p => p.label);
+  renderChips('material-chips', MATERIALS, 'material', m => m.id, m => m.label);
+  renderGarment();
+}
+
+// ── Email ────────────────────────────────────────────────
+function emailDesign() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  const colName = COLOURS.find(c => c.hex === state.colour).name;
+  let body = 'THREAD LAB DESIGN — AESTHETIC AND CREATIVE WEEK 3\n';
+  body += 'Designer: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Template: ' + TEMPLATES[state.template].label.replace(/^\S+\s/, '') + '\n';
+  body += 'Colour: ' + colName + '\n';
+  body += 'Pattern: ' + PATTERNS.find(p => p.id === state.pattern).label + '\n';
+  body += 'Material: ' + MATERIALS.find(m => m.id === state.material).label + '\n\n';
+  if (state.why.trim()) body += 'Designer\'s note:\n' + state.why.trim() + '\n\n';
+  body += '—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Thread Lab design — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now — design sheet ready to send.';
+  n.classList.add('show');
+}
+
+// ── Init ─────────────────────────────────────────────────
+renderAll();
+if (state.why) document.getElementById('why').value = state.why;
+</script>
+
+</body>
+</html>
