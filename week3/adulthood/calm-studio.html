@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Calm Studio · Preparation for Adulthood · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .gentle-note { background: #fff7f0; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.1rem 1.4rem; font-size: 0.9rem; line-height: 1.7; color: #5a3a1a; margin-bottom: 1.5rem; }
+
+  .pose-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.9rem; }
+  .pose-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.1rem 1.2rem; display: flex; flex-direction: column; }
+  .pose-card.in-routine { border-color: #0e8a9e; background: #eef8fa; }
+  .pose-top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+  .pose-emoji { font-size: 1.7rem; }
+  .pose-name { font-size: 1rem; font-weight: 700; color: #0e8a9e; line-height: 1.25; }
+  .pose-how { font-size: 0.82rem; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 0.6rem; }
+  .pose-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.7rem; }
+  .tag { font-size: 0.68rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: #eef8fa; border: 1px solid #bcdfe6; color: #0a6376; }
+  .pose-btns { display: flex; gap: 0.4rem; }
+  .pose-btn { flex: 1; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.74rem; font-weight: 700; padding: 0.5rem 0.4rem; border-radius: 8px; border: 1.5px solid #0e8a9e; background: #fff; color: #0e8a9e; cursor: pointer; }
+  .pose-btn:hover { background: #eef8fa; }
+  .pose-btn.added { background: #0e8a9e; color: #fff; }
+
+  /* Routine + practice */
+  .routine-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; }
+  .routine-list { font-size: 0.92rem; font-weight: 700; color: #333; line-height: 2; margin-bottom: 0.9rem; min-height: 2rem; }
+  .routine-empty { color: #999; font-weight: 400; }
+  .hold-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .hold-row span.lbl { font-size: 0.85rem; font-weight: 700; color: #555; }
+  .hold-pill { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 1rem; border-radius: 20px; border: 2px solid #e0d8d0; background: #fff; color: #777; cursor: pointer; }
+  .hold-pill.on { border-color: #0e8a9e; background: #eef8fa; color: #0a6376; }
+  .voice-toggle { margin-left: auto; font-size: 0.8rem; font-weight: 700; color: #555; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+  .voice-toggle input { accent-color: #0e8a9e; width: 17px; height: 17px; cursor: pointer; }
+
+  .start-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; padding: 0.75rem 1.8rem; border-radius: 10px; cursor: pointer; border: none; background: #0e8a9e; color: #fff; }
+  .start-btn:hover { background: #0a6376; }
+  .start-btn:disabled { background: #ccc; cursor: default; }
+
+  /* Practice overlay-style block */
+  .practice { display: none; background: #10333a; border-radius: 16px; padding: 2rem 1.5rem; text-align: center; margin-top: 1.25rem; }
+  .practice.show { display: block; }
+  .p-progress { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9fd4dd; margin-bottom: 0.75rem; }
+  .p-emoji { font-size: 3.4rem; }
+  .p-name { font-size: 1.4rem; font-weight: 700; color: #fef8f4; margin: 0.4rem 0; }
+  .p-how { font-size: 0.92rem; color: #cfe8ec; line-height: 1.7; max-width: 440px; margin: 0 auto 1rem; }
+  .p-count { font-size: 3rem; font-weight: 700; color: #7be3d8; line-height: 1; margin-bottom: 1.25rem; }
+  .p-btns { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+  .p-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.3rem; border-radius: 8px; border: 2px solid #9fd4dd; background: transparent; color: #cfe8ec; cursor: pointer; }
+  .p-btn:hover { background: rgba(159,212,221,0.15); }
+  .p-done { display: none; }
+  .p-done.show { display: block; }
+  .p-done h2 { color: #7be3d8; font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .p-done p { color: #cfe8ec; font-size: 0.95rem; line-height: 1.7; }
+
+  .report-bar { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 1.5rem; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Preparation for Adulthood</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Preparation for Adulthood · Week 3</p>
+  <h1>🧘 The Calm Studio</h1>
+  <p>Your own yoga studio. Browse the poses, learn what each one does for your body and mind, then build a routine that suits you and let the studio guide you through it.</p>
+</div>
+
+<main class="main">
+
+  <div class="gentle-note">
+    🌿 Studio rules (there's only one): only do what feels comfortable. Wobbling is normal, skipping is fine, and if anything hurts, ease out of it. This is your time.
+  </div>
+
+  <p class="section-label">The pose library</p>
+  <div class="pose-grid" id="pose-grid"></div>
+
+  <p class="section-label">My routine</p>
+  <div class="routine-card">
+    <div class="routine-list" id="routine-list"><span class="routine-empty">Add poses from the library above — 2 or 3 is a lovely place to start.</span></div>
+    <div class="hold-row">
+      <span class="lbl">Hold each pose for:</span>
+      <button class="hold-pill" data-secs="20" onclick="setHold(20)">20s</button>
+      <button class="hold-pill on" data-secs="30" onclick="setHold(30)">30s</button>
+      <button class="hold-pill" data-secs="45" onclick="setHold(45)">45s</button>
+      <label class="voice-toggle"><input type="checkbox" id="voice-on" checked> 🔊 Voice guide</label>
+    </div>
+    <button class="start-btn" id="start-btn" onclick="startPractice()" disabled>Begin practice 🧘</button>
+
+    <div class="practice" id="practice">
+      <div id="p-active">
+        <div class="p-progress" id="p-progress">Pose 1 of 3</div>
+        <div class="p-emoji" id="p-emoji">🧘</div>
+        <div class="p-name" id="p-name"></div>
+        <div class="p-how" id="p-how"></div>
+        <div class="p-count" id="p-count">30</div>
+        <div class="p-btns">
+          <button class="p-btn" onclick="skipPose()">Skip this pose</button>
+          <button class="p-btn" onclick="endPractice()">End practice</button>
+        </div>
+      </div>
+      <div class="p-done" id="p-done">
+        <h2>🌅 Practice complete</h2>
+        <p id="p-done-text">Well done — take a moment before you get up.</p>
+        <div class="p-btns" style="margin-top: 1rem;">
+          <button class="p-btn" onclick="closePractice()">Back to the studio</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-bar">
+    <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Preparation for Adulthood
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_pfa_studio';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const POSES = [
+  { id: 'mountain', emoji: '🏔️', name: 'Mountain Pose',
+    how: 'Stand tall, feet together, arms relaxed by your sides. Imagine a string gently pulling the top of your head up. Breathe slowly.',
+    tags: ['Posture', 'Calm focus'] },
+  { id: 'tree', emoji: '🌳', name: 'Tree Pose',
+    how: 'Stand on one leg and rest the other foot against your ankle or calf (not the knee). Hands together at your chest. Pick a spot to stare at — it helps!',
+    tags: ['Balance', 'Concentration'] },
+  { id: 'child', emoji: '😌', name: "Child's Pose",
+    how: 'Kneel down, sit back on your heels, then fold forward and rest your forehead towards the floor, arms stretched ahead or by your sides.',
+    tags: ['Relaxation', 'Gentle back stretch'] },
+  { id: 'catcow', emoji: '🐱', name: 'Cat-Cow',
+    how: 'On hands and knees. Breathe in and let your belly dip while you look up (cow). Breathe out and round your back like a cross cat. Repeat slowly.',
+    tags: ['Flexible spine', 'Breathing rhythm'] },
+  { id: 'cobra', emoji: '🐍', name: 'Cobra',
+    how: 'Lie on your front, hands under shoulders, and gently push your chest up while your hips stay down. Only as high as feels easy.',
+    tags: ['Chest stretch', 'Stronger back'] },
+  { id: 'dog', emoji: '🐶', name: 'Downward Dog',
+    how: 'From hands and knees, lift your hips up and back to make an upside-down V. Pedal your feet gently. Heels don\'t need to touch the floor.',
+    tags: ['Leg stretch', 'Whole-body wake up'] },
+  { id: 'butterfly', emoji: '🦋', name: 'Butterfly',
+    how: 'Sit with the soles of your feet together, knees out wide. Hold your feet and sit tall. Let your knees flutter gently if you like.',
+    tags: ['Hip flexibility', 'Winding down'] },
+  { id: 'star', emoji: '⭐', name: 'Star Rest',
+    how: 'Lie on your back, arms and legs spread like a star. Close your eyes if that feels okay. Just breathe and let the floor hold you.',
+    tags: ['Deep relaxation', 'Slower heartbeat'] },
+];
+
+let state = { tried: {}, routines: 0 };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+let routine = [];
+let holdSecs = 30;
+
+// ── Library ──────────────────────────────────────────────
+function renderLibrary() {
+  const grid = document.getElementById('pose-grid');
+  grid.innerHTML = '';
+  POSES.forEach(p => {
+    const inRoutine = routine.includes(p.id);
+    const div = document.createElement('div');
+    div.className = 'pose-card' + (inRoutine ? ' in-routine' : '');
+    div.innerHTML = '<div class="pose-top"><span class="pose-emoji">' + p.emoji + '</span><span class="pose-name">' + p.name + '</span></div>' +
+      '<div class="pose-how">' + p.how + '</div>' +
+      '<div class="pose-tags">' + p.tags.map(t => '<span class="tag">' + t + '</span>').join('') + '</div>' +
+      '<div class="pose-btns">' +
+      '<button class="pose-btn' + (inRoutine ? ' added' : '') + '" onclick="toggleRoutine(\'' + p.id + '\')">' + (inRoutine ? '✓ In my routine' : '+ Add to routine') + '</button>' +
+      '</div>';
+    grid.appendChild(div);
+  });
+  renderRoutine();
+}
+
+function toggleRoutine(id) {
+  const i = routine.indexOf(id);
+  if (i >= 0) routine.splice(i, 1); else routine.push(id);
+  renderLibrary();
+}
+
+function renderRoutine() {
+  const list = document.getElementById('routine-list');
+  if (routine.length === 0) {
+    list.innerHTML = '<span class="routine-empty">Add poses from the library above — 2 or 3 is a lovely place to start.</span>';
+  } else {
+    list.textContent = routine.map((id, i) => (i + 1) + '. ' + POSES.find(p => p.id === id).emoji + ' ' + POSES.find(p => p.id === id).name).join('   ');
+  }
+  document.getElementById('start-btn').disabled = routine.length === 0;
+}
+
+function setHold(s) {
+  holdSecs = s;
+  document.querySelectorAll('.hold-pill').forEach(b => b.classList.toggle('on', +b.dataset.secs === s));
+}
+
+// ── Practice ─────────────────────────────────────────────
+let pIndex = 0, timer = null, remaining = 0;
+
+function speak(text) {
+  if (!document.getElementById('voice-on').checked) return;
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB'; u.rate = 0.92;
+  speechSynthesis.speak(u);
+}
+
+function startPractice() {
+  pIndex = 0;
+  document.getElementById('practice').classList.add('show');
+  document.getElementById('p-active').style.display = 'block';
+  document.getElementById('p-done').classList.remove('show');
+  document.getElementById('practice').scrollIntoView({ behavior: 'smooth' });
+  showPose();
+}
+
+function showPose() {
+  const pose = POSES.find(p => p.id === routine[pIndex]);
+  document.getElementById('p-progress').textContent = 'Pose ' + (pIndex + 1) + ' of ' + routine.length;
+  document.getElementById('p-emoji').textContent = pose.emoji;
+  document.getElementById('p-name').textContent = pose.name;
+  document.getElementById('p-how').textContent = pose.how;
+  remaining = holdSecs;
+  document.getElementById('p-count').textContent = remaining;
+
+  state.tried[pose.id] = true;
+  save();
+  speak(pose.name + '. ' + pose.how);
+
+  clearInterval(timer);
+  timer = setInterval(() => {
+    remaining--;
+    document.getElementById('p-count').textContent = Math.max(remaining, 0);
+    if (remaining <= 0) {
+      clearInterval(timer);
+      nextPose();
+    }
+  }, 1000);
+}
+
+function nextPose() {
+  pIndex++;
+  if (pIndex < routine.length) {
+    speak('Gently come out of the pose. Next one when you are ready.');
+    setTimeout(showPose, 1800);
+  } else {
+    finishPractice();
+  }
+}
+
+function skipPose() {
+  clearInterval(timer);
+  nextPose();
+}
+
+function finishPractice() {
+  clearInterval(timer);
+  state.routines = (state.routines || 0) + 1;
+  save();
+  document.getElementById('p-active').style.display = 'none';
+  const done = document.getElementById('p-done');
+  done.classList.add('show');
+  document.getElementById('p-done-text').textContent =
+    'You completed ' + routine.length + ' pose' + (routine.length === 1 ? '' : 's') + '. Notice how your body feels now compared to before — that difference is the benefit.';
+  speak('Practice complete. Well done. Notice how your body feels now.');
+}
+
+function endPractice() {
+  clearInterval(timer);
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  closePractice();
+}
+
+function closePractice() {
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  document.getElementById('practice').classList.remove('show');
+}
+
+// ── Email ────────────────────────────────────────────────
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  const tried = POSES.filter(p => state.tried[p.id]);
+  let body = 'THE CALM STUDIO — PREPARATION FOR ADULTHOOD WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Guided practices completed: ' + (state.routines || 0) + '\n';
+  body += 'Poses tried: ' + tried.length + '/8\n';
+  tried.forEach(p => { body += '  ' + p.name + ' — ' + p.tags.join(', ') + '\n'; });
+  body += '\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Calm Studio — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now.';
+  n.classList.add('show');
+}
+
+// Init
+renderLibrary();
+</script>
+
+</body>
+</html>

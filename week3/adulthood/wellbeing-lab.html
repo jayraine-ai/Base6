@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wellbeing Lab · Preparation for Adulthood · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+
+  /* Breathing bubble */
+  .breath-zone { background: #10333a; border-radius: 16px; padding: 2rem 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+  .bubble-wrap { height: 190px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+  .bubble { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #7be3d8, #0e8a9e); transition: transform 4s ease-in-out; transform: scale(1); }
+  .breath-phase { font-size: 1.2rem; font-weight: 700; color: #cfe8ec; min-height: 1.8rem; margin-bottom: 0.4rem; }
+  .breath-rounds { font-size: 0.82rem; font-weight: 700; color: #9fd4dd; margin-bottom: 1rem; }
+  .breath-btns { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+  .b-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 0.65rem 1.5rem; border-radius: 8px; border: 2px solid #9fd4dd; background: transparent; color: #cfe8ec; cursor: pointer; }
+  .b-btn:hover { background: rgba(159,212,221,0.15); }
+
+  /* Sorting */
+  .sort-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding: 0.55rem 0.6rem; border-radius: 10px; background: #f7f4f0; margin-bottom: 0.55rem; }
+  .sort-text { flex: 1; min-width: 150px; font-size: 0.9rem; font-weight: 700; }
+  .sort-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.76rem; font-weight: 700; padding: 0.4rem 0.9rem; border-radius: 20px; cursor: pointer; border: 2px solid #e0d8d0; background: #fff; color: #555; }
+  .sort-btn:hover { border-color: #b8d8e0; }
+  .sort-btn.right { border-color: #2e8b57; background: #e6f5e6; color: #1a5e1a; }
+  .sort-btn.wrong { border-color: #c0392b; background: #fbeae8; color: #8a2318; }
+  .sort-score { font-size: 0.88rem; font-weight: 700; color: #555; margin-top: 0.75rem; }
+
+  /* Quiz */
+  .quiz-item { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .quiz-q { font-size: 0.95rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.75rem; }
+  .options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .opt-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; text-align: left; padding: 0.6rem 0.9rem; border: 2px solid #e0d8d0; border-radius: 8px; background: #fff; cursor: pointer; line-height: 1.5; }
+  .opt-btn:hover { border-color: #b8d8e0; }
+  .opt-btn.right { border-color: #2e8b57; background: #e6f5e6; }
+  .opt-btn.wrong { border-color: #c0392b; background: #fbeae8; }
+  .quiz-feedback { display: none; font-size: 0.85rem; line-height: 1.6; margin-top: 0.7rem; padding: 0.6rem 0.85rem; border-radius: 8px; }
+  .quiz-feedback.show-right { display: block; background: #e6f5e6; color: #1a5e1a; }
+  .quiz-feedback.show-wrong { display: block; background: #fff3e6; color: #7a4a00; }
+
+  .report-bar { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bubble { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Preparation for Adulthood</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Preparation for Adulthood · Week 3</p>
+  <h1>🫧 The Wellbeing Lab</h1>
+  <p>Yoga isn't just shapes — it's what those shapes do for your body and your mind. Try the breathing bubble, then sort and match the benefits like a wellbeing scientist.</p>
+</div>
+
+<main class="main">
+
+  <p class="section-label">Lab 1 · The breathing bubble</p>
+  <div class="card">
+    <p>Slow breathing tells your nervous system that everything is okay — your heartbeat settles and your mind follows. Try following the bubble: breathe in as it grows, hold, breathe out as it shrinks, hold. Even one round counts.</p>
+  </div>
+  <div class="breath-zone">
+    <div class="bubble-wrap"><div class="bubble" id="bubble"></div></div>
+    <div class="breath-phase" id="breath-phase">Ready when you are</div>
+    <div class="breath-rounds" id="breath-rounds">Rounds completed: 0</div>
+    <div class="breath-btns">
+      <button class="b-btn" id="breath-start" onclick="startBreathing()">▶ Start</button>
+      <button class="b-btn" onclick="stopBreathing()">⏹ Stop</button>
+    </div>
+  </div>
+
+  <p class="section-label">Lab 2 · Body or mind?</p>
+  <div class="card">
+    <p style="margin-bottom: 1rem;">Yoga's benefits land in two places. Sort each one: is it mainly helping your body, or your mind?</p>
+    <div id="sort-container"></div>
+    <div class="sort-score" id="sort-score"></div>
+  </div>
+
+  <p class="section-label">Lab 3 · Match the pose to its power</p>
+  <div id="quiz-container"></div>
+
+  <p class="section-label">Send my results</p>
+  <div class="report-bar">
+    <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+    <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Preparation for Adulthood
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_pfa_lab';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+let state = { sorts: {}, quiz: {}, breathRounds: 0 };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+// ── Breathing bubble (box breathing 4-4-4-4) ─────────────
+const PHASES = [
+  { label: 'Breathe in...', scale: 2.1, secs: 4 },
+  { label: 'Hold...', scale: 2.1, secs: 4 },
+  { label: 'Breathe out...', scale: 1, secs: 4 },
+  { label: 'Hold...', scale: 1, secs: 4 },
+];
+let breathing = false, phaseIdx = 0, breathTimer = null;
+
+function startBreathing() {
+  if (breathing) return;
+  breathing = true;
+  phaseIdx = 0;
+  runPhase();
+}
+
+function runPhase() {
+  if (!breathing) return;
+  const p = PHASES[phaseIdx];
+  document.getElementById('breath-phase').textContent = p.label;
+  document.getElementById('bubble').style.transform = 'scale(' + p.scale + ')';
+  breathTimer = setTimeout(() => {
+    phaseIdx = (phaseIdx + 1) % PHASES.length;
+    if (phaseIdx === 0) {
+      state.breathRounds = (state.breathRounds || 0) + 1;
+      save();
+      document.getElementById('breath-rounds').textContent = 'Rounds completed: ' + state.breathRounds;
+    }
+    runPhase();
+  }, p.secs * 1000);
+}
+
+function stopBreathing() {
+  breathing = false;
+  clearTimeout(breathTimer);
+  document.getElementById('breath-phase').textContent = 'Nicely done. Start again any time.';
+  document.getElementById('bubble').style.transform = 'scale(1)';
+}
+
+// ── Sorting ──────────────────────────────────────────────
+const SORTS = [
+  { text: 'Stretchier, more flexible muscles', answer: 'body' },
+  { text: 'Feeling calmer and less worried', answer: 'mind' },
+  { text: 'Better balance', answer: 'body' },
+  { text: 'Easier to focus and concentrate', answer: 'mind' },
+  { text: 'A slower, steadier heartbeat', answer: 'body' },
+  { text: 'Standing taller — better posture', answer: 'body' },
+  { text: 'Switching off racing thoughts', answer: 'mind' },
+  { text: 'Falling asleep more easily', answer: 'mind' },
+];
+
+function renderSorts() {
+  const c = document.getElementById('sort-container');
+  c.innerHTML = '';
+  SORTS.forEach((s, i) => {
+    const picked = state.sorts[i];
+    let bodyCls = 'sort-btn', mindCls = 'sort-btn';
+    if (picked === 'body') bodyCls += s.answer === 'body' ? ' right' : ' wrong';
+    if (picked === 'mind') mindCls += s.answer === 'mind' ? ' right' : ' wrong';
+    c.innerHTML += '<div class="sort-row"><span class="sort-text">' + s.text + '</span>' +
+      '<button class="' + bodyCls + '" onclick="sortAnswer(' + i + ',\'body\')">💪 Body</button>' +
+      '<button class="' + mindCls + '" onclick="sortAnswer(' + i + ',\'mind\')">🧠 Mind</button></div>';
+  });
+  const correct = SORTS.filter((s, i) => state.sorts[i] === s.answer).length;
+  const attempted = Object.keys(state.sorts).length;
+  document.getElementById('sort-score').textContent = attempted ? correct + ' of ' + SORTS.length + ' sorted correctly' + (correct === SORTS.length ? ' — a clean sweep! 🎉' : '') : '';
+}
+
+function sortAnswer(i, val) {
+  state.sorts[i] = val;
+  save();
+  renderSorts();
+}
+
+// ── Quiz ─────────────────────────────────────────────────
+const QUIZ = [
+  { q: '🌳 Tree Pose — standing on one leg — mainly trains your...',
+    opts: ['Balance and concentration', 'Singing voice', 'Hair'],
+    correct: 0, fb: 'Balancing makes your body and brain work together — and picking a spot to stare at trains focus too.' },
+  { q: '😌 Child\'s Pose — folded up small and still — is brilliant for...',
+    opts: ['Building huge muscles', 'Relaxation and feeling safe and calm', 'Running faster'],
+    correct: 1, fb: 'It\'s a resting shape. Curling up and breathing slowly is deeply calming — that\'s why it\'s the "go here whenever you need to" pose.' },
+  { q: '🐍 Cobra gently stretches your...',
+    opts: ['Toes', 'Ears', 'Chest and back'],
+    correct: 2, fb: 'Lifting the chest opens the front of your body and wakes up your back — the opposite of hunching over a screen.' },
+  { q: 'Why does slow breathing help you feel calmer?',
+    opts: ['It tells your nervous system you\'re safe, so your heartbeat slows', 'It makes you dizzy', 'It doesn\'t — it\'s just for show'],
+    correct: 0, fb: 'Slow, steady breathing is a signal to your whole body: no emergency here. Heart rate drops, mind settles.' },
+  { q: '🐶 Downward Dog gives a big stretch to your...',
+    opts: ['Eyebrows', 'Legs and back', 'Fingernails'],
+    correct: 1, fb: 'The upside-down V stretches the backs of your legs and lengthens your spine — a whole-body wake up.' },
+];
+
+function renderQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  QUIZ.forEach((item, i) => {
+    const picked = state.quiz[i];
+    let opts = '';
+    item.opts.forEach((o, oi) => {
+      let cls = 'opt-btn';
+      if (picked !== undefined && oi === picked) cls += picked === item.correct ? ' right' : ' wrong';
+      opts += '<button class="' + cls + '" onclick="quizAnswer(' + i + ',' + oi + ')">' + o + '</button>';
+    });
+    let fbCls = 'quiz-feedback', fbTxt = '';
+    if (picked !== undefined) {
+      const right = picked === item.correct;
+      fbCls += right ? ' show-right' : ' show-wrong';
+      fbTxt = right ? '✓ ' + item.fb : 'Not quite — think about which part of you the pose is working hardest.';
+    }
+    const div = document.createElement('div');
+    div.className = 'quiz-item';
+    div.innerHTML = '<div class="quiz-q">' + (i + 1) + '. ' + item.q + '</div><div class="options">' + opts + '</div><div class="' + fbCls + '">' + fbTxt + '</div>';
+    c.appendChild(div);
+  });
+}
+
+function quizAnswer(i, oi) {
+  state.quiz[i] = oi;
+  save();
+  renderQuiz();
+}
+
+// ── Email ────────────────────────────────────────────────
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  const sortCorrect = SORTS.filter((s, i) => state.sorts[i] === s.answer).length;
+  const quizCorrect = QUIZ.filter((q, i) => state.quiz[i] === q.correct).length;
+
+  let body = 'THE WELLBEING LAB — PREPARATION FOR ADULTHOOD WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Breathing rounds completed: ' + (state.breathRounds || 0) + '\n';
+  body += 'Body or mind sorting: ' + sortCorrect + '/8\n';
+  body += 'Pose-to-power quiz: ' + quizCorrect + '/5\n\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Wellbeing Lab — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now.';
+  n.classList.add('show');
+}
+
+// Init
+renderSorts();
+renderQuiz();
+document.getElementById('breath-rounds').textContent = 'Rounds completed: ' + (state.breathRounds || 0);
+</script>
+
+</body>
+</html>
