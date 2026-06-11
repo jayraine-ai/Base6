@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wildlife Logger · Physical World · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+
+  /* Species grid */
+  .species-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.6rem; margin-bottom: 1rem; }
+  .species-item { border: 2px solid #e0d8d0; border-radius: 10px; background: #fff; padding: 0.6rem 0.7rem; text-align: center; }
+  .species-item.counted { border-color: #6b8e23; background: #f0f5e4; }
+  .sp-emoji { font-size: 1.5rem; }
+  .sp-name { font-size: 0.8rem; font-weight: 700; margin: 0.2rem 0 0.45rem; }
+  .count-row { display: flex; align-items: center; justify-content: center; gap: 0.45rem; }
+  .count-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; width: 30px; height: 30px; border-radius: 7px; border: 1.5px solid #c4d89a; background: #fff; color: #4a6318; cursor: pointer; }
+  .count-btn:hover { background: #f0f5e4; }
+  .count-num { font-size: 1rem; font-weight: 700; width: 28px; }
+
+  .add-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .add-row input { flex: 1; min-width: 150px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .add-row input:focus { border-color: #007291; }
+  .add-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.1rem; border-radius: 8px; border: 2px solid #6b8e23; background: #fff; color: #4a6318; cursor: pointer; }
+  .add-btn:hover { background: #f0f5e4; }
+
+  .session-bar { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+  .session-bar input { flex: 1; min-width: 140px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .session-bar input:focus { border-color: #007291; }
+  .save-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #007291; color: #fff; }
+  .save-btn:hover { background: #005a73; }
+
+  /* Chart */
+  .chart { display: flex; gap: 1rem; align-items: flex-end; min-height: 150px; padding: 0.5rem 0.25rem 0; overflow-x: auto; }
+  .chart-col { text-align: center; flex-shrink: 0; width: 80px; }
+  .bars { display: flex; gap: 6px; align-items: flex-end; justify-content: center; height: 110px; }
+  .bar { width: 26px; border-radius: 6px 6px 0 0; min-height: 4px; }
+  .bar.richness { background: #6b8e23; }
+  .bar.total { background: #ef7724; }
+  .bar-vals { font-size: 0.72rem; font-weight: 700; color: #555; margin-top: 0.3rem; line-height: 1.4; }
+  .col-name { font-size: 0.72rem; font-weight: 700; color: #888; margin-top: 0.2rem; word-break: break-word; }
+  .legend { display: flex; gap: 1rem; font-size: 0.78rem; font-weight: 700; color: #555; margin-top: 0.9rem; flex-wrap: wrap; }
+  .legend .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+  .chart-empty { font-size: 0.9rem; color: #888; line-height: 1.6; }
+
+  .analysis { background: #f0f5e4; border: 1.5px solid #c4d89a; border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.9rem; line-height: 1.7; color: #3d5214; margin-top: 1rem; display: none; }
+  .analysis.show { display: block; }
+
+  .report-bar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .email-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .email-btn:hover { background: #c05a10; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Physical World &amp; Exploration</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Physical World &amp; Exploration · Week 3</p>
+  <h1>📋 Wildlife Logger</h1>
+  <p>Your conservation area's official field record. Each time you survey, count what you spot, save the session, and watch the chart reveal how biodiversity changes as your habitat settles in.</p>
+</div>
+
+<main class="main">
+
+  <p class="section-label">1 · Today's survey — tally what you spot</p>
+  <div class="card">
+    <p style="margin-bottom: 1rem;">Use + and − as you count. Take your time — sitting quietly for a few minutes usually doubles what you see.</p>
+    <div class="species-grid" id="species-grid"></div>
+    <div class="add-row">
+      <input type="text" id="custom-species" placeholder="Spotted something else? Type it here..." onkeydown="if(event.key==='Enter') addSpecies()">
+      <button class="add-btn" onclick="addSpecies()">+ Add species</button>
+    </div>
+    <div class="session-bar">
+      <input type="text" id="session-name" placeholder="Survey name (e.g. Monday, before lunch)" autocomplete="off">
+      <button class="save-btn" onclick="saveSession()">💾 Save this survey</button>
+    </div>
+  </div>
+
+  <p class="section-label">2 · My results over time</p>
+  <div class="card">
+    <div class="chart" id="chart"><span class="chart-empty">Save your first survey and your chart will start growing here.</span></div>
+    <div class="legend">
+      <span><span class="swatch" style="background:#6b8e23"></span>Different species (richness)</span>
+      <span><span class="swatch" style="background:#ef7724"></span>Total creatures counted</span>
+    </div>
+    <div class="analysis" id="analysis"></div>
+  </div>
+
+  <p class="section-label">3 · Send my field record</p>
+  <div class="card">
+    <div class="report-bar">
+      <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+      <button class="email-btn" onclick="emailReport()">📧 Send to Jay</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Physical World &amp; Exploration
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_pw_logger';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const DEFAULT_SPECIES = [
+  { emoji: '🐦', name: 'Bird' }, { emoji: '🐝', name: 'Bee' }, { emoji: '🦋', name: 'Butterfly' },
+  { emoji: '🐞', name: 'Ladybird' }, { emoji: '🪲', name: 'Beetle' }, { emoji: '🕷️', name: 'Spider' },
+  { emoji: '🐌', name: 'Snail' }, { emoji: '🐛', name: 'Slug or caterpillar' }, { emoji: '🪱', name: 'Worm' },
+  { emoji: '🐜', name: 'Ant' }, { emoji: '🪰', name: 'Fly or hoverfly' }, { emoji: '🦗', name: 'Grasshopper' },
+];
+
+let state = { sessions: [], customSpecies: [] };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+let counts = {}; // current survey tallies, name → number
+
+function allSpecies() {
+  return DEFAULT_SPECIES.concat(state.customSpecies.map(n => ({ emoji: '🔎', name: n })));
+}
+
+// ── Tally grid ───────────────────────────────────────────
+function renderGrid() {
+  const grid = document.getElementById('species-grid');
+  grid.innerHTML = '';
+  allSpecies().forEach(sp => {
+    const n = counts[sp.name] || 0;
+    const div = document.createElement('div');
+    div.className = 'species-item' + (n > 0 ? ' counted' : '');
+    div.innerHTML = '<div class="sp-emoji">' + sp.emoji + '</div>' +
+      '<div class="sp-name">' + sp.name + '</div>' +
+      '<div class="count-row">' +
+      '<button class="count-btn" onclick="bump(\'' + sp.name.replace(/'/g, "\\'") + '\', -1)">−</button>' +
+      '<span class="count-num">' + n + '</span>' +
+      '<button class="count-btn" onclick="bump(\'' + sp.name.replace(/'/g, "\\'") + '\', 1)">+</button>' +
+      '</div>';
+    grid.appendChild(div);
+  });
+}
+
+function bump(name, delta) {
+  counts[name] = Math.max(0, (counts[name] || 0) + delta);
+  if (counts[name] === 0) delete counts[name];
+  renderGrid();
+}
+
+function addSpecies() {
+  const inp = document.getElementById('custom-species');
+  const name = inp.value.trim();
+  if (!name) return;
+  if (!state.customSpecies.includes(name) && !DEFAULT_SPECIES.find(s => s.name.toLowerCase() === name.toLowerCase())) {
+    state.customSpecies.push(name);
+    save();
+  }
+  inp.value = '';
+  renderGrid();
+}
+
+// ── Sessions ─────────────────────────────────────────────
+function saveSession() {
+  const speciesSeen = Object.keys(counts);
+  const n = document.getElementById('notify');
+  if (speciesSeen.length === 0) {
+    n.textContent = 'Tally at least one creature before saving the survey.';
+    n.classList.add('show');
+    setTimeout(() => n.classList.remove('show'), 4000);
+    return;
+  }
+  const nameInput = document.getElementById('session-name');
+  const label = nameInput.value.trim() || 'Survey ' + (state.sessions.length + 1);
+  const total = speciesSeen.reduce((sum, k) => sum + counts[k], 0);
+
+  state.sessions.push({
+    label,
+    date: new Date().toLocaleDateString('en-GB'),
+    counts: { ...counts },
+    richness: speciesSeen.length,
+    total
+  });
+  save();
+
+  counts = {};
+  nameInput.value = '';
+  renderGrid();
+  renderChart();
+
+  n.textContent = '✓ "' + label + '" saved — ' + speciesSeen.length + ' species, ' + total + ' creatures. The chart has it now.';
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 5000);
+}
+
+// ── Chart + analysis ─────────────────────────────────────
+function renderChart() {
+  const chart = document.getElementById('chart');
+  if (state.sessions.length === 0) {
+    chart.innerHTML = '<span class="chart-empty">Save your first survey and your chart will start growing here.</span>';
+    document.getElementById('analysis').classList.remove('show');
+    return;
+  }
+  const maxRich = Math.max(...state.sessions.map(s => s.richness), 1);
+  const maxTotal = Math.max(...state.sessions.map(s => s.total), 1);
+  chart.innerHTML = '';
+  state.sessions.forEach(s => {
+    const col = document.createElement('div');
+    col.className = 'chart-col';
+    col.innerHTML = '<div class="bars">' +
+      '<div class="bar richness" style="height:' + Math.max(6, s.richness / maxRich * 100) + 'px" title="' + s.richness + ' species"></div>' +
+      '<div class="bar total" style="height:' + Math.max(6, s.total / maxTotal * 100) + 'px" title="' + s.total + ' creatures"></div>' +
+      '</div>' +
+      '<div class="bar-vals">' + s.richness + ' sp · ' + s.total + '</div>' +
+      '<div class="col-name">' + s.label + '</div>';
+    chart.appendChild(col);
+  });
+
+  const a = document.getElementById('analysis');
+  if (state.sessions.length >= 2) {
+    const first = state.sessions[0], last = state.sessions[state.sessions.length - 1];
+    const richDiff = last.richness - first.richness;
+    const newSpecies = Object.keys(last.counts).filter(k => !(k in first.counts));
+    let text = '🔍 Analysis: compared with "' + first.label + '", your latest survey found ';
+    text += richDiff > 0 ? richDiff + ' more kind' + (richDiff === 1 ? '' : 's') + ' of creature — your habitat is attracting new residents!'
+         : richDiff < 0 ? Math.abs(richDiff) + ' fewer kinds. That happens — weather, time of day and season all change what comes out. Worth noting WHEN you surveyed.'
+         : 'the same number of kinds — steady so far. Different species might still be swapping in and out.';
+    if (newSpecies.length > 0) text += ' New since your first survey: ' + newSpecies.slice(0, 4).join(', ') + (newSpecies.length > 4 ? ' and more' : '') + '.';
+    a.textContent = text;
+    a.classList.add('show');
+  } else {
+    a.textContent = '🔍 One survey logged. Save another on a different day and the analysis will compare them for you.';
+    a.classList.add('show');
+  }
+}
+
+// ── Email ────────────────────────────────────────────────
+function emailReport() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  if (state.sessions.length === 0) {
+    n.textContent = 'Save at least one survey first.';
+    n.classList.add('show');
+    return;
+  }
+  let body = 'WILDLIFE LOGGER — PHYSICAL WORLD WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'Surveys logged: ' + state.sessions.length + '\n\n';
+  state.sessions.forEach((s, i) => {
+    body += (i + 1) + '. ' + s.label + ' (' + s.date + ') — ' + s.richness + ' species, ' + s.total + ' creatures\n';
+    Object.keys(s.counts).forEach(k => { body += '     ' + k + ': ' + s.counts[k] + '\n'; });
+  });
+  if (state.sessions.length >= 2) {
+    const first = state.sessions[0], last = state.sessions[state.sessions.length - 1];
+    body += '\nCHANGE: ' + first.richness + ' species in first survey → ' + last.richness + ' species in latest.\n';
+  }
+  body += '\n—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Wildlife Logger — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now — field record ready to send.';
+  n.classList.add('show');
+}
+
+// ── Init ─────────────────────────────────────────────────
+renderGrid();
+renderChart();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habitat Designer · Physical World · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 1.75rem 0 0.9rem; }
+  .section-label:first-child { margin-top: 0; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.25rem; }
+  .card p { font-size: 0.93rem; line-height: 1.7; color: #333; }
+
+  /* Palette */
+  .palette { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .pal-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.8rem; font-weight: 700; padding: 0.5rem 0.85rem; border-radius: 10px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+  .pal-btn:hover { border-color: #b8d8e0; }
+  .pal-btn.on { border-color: #6b8e23; background: #f0f5e4; color: #4a6318; }
+  .pal-btn .p-emoji { font-size: 1.1rem; }
+  .pal-info { font-size: 0.82rem; color: #777; line-height: 1.6; min-height: 1.4rem; margin-bottom: 0.9rem; }
+  .pal-info strong { color: #4a6318; }
+
+  /* Plot grid */
+  .plot { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; background: #d9cbb8; border: 3px solid #b39a78; border-radius: 12px; padding: 6px; margin-bottom: 0.9rem; }
+  .cell { aspect-ratio: 1; background: #cfe3b0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: clamp(1rem, 3.4vw, 1.5rem); cursor: pointer; border: none; transition: background 0.1s; }
+  .cell:hover { background: #bcd698; }
+  .cell.filled { background: #e9f2d8; }
+
+  .plot-tools { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .tool-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; padding: 0.5rem 1.1rem; border-radius: 8px; border: 2px solid #e0d8d0; background: #fff; color: #555; cursor: pointer; }
+  .tool-btn:hover { border-color: #b8d8e0; }
+  .tool-btn.on { border-color: #c0392b; background: #fbeae8; color: #8a2318; }
+
+  /* Visitors panel */
+  .visitors { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .visitor-chip { font-size: 0.8rem; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 20px; background: #f0f5e4; border: 1.5px solid #c4d89a; color: #4a6318; }
+  .visitors-empty { font-size: 0.88rem; color: #888; line-height: 1.6; }
+
+  textarea { width: 100%; min-height: 90px; padding: 0.75rem 0.95rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #fff; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.6; }
+  textarea:focus { border-color: #007291; }
+
+  .report-bar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
+  .report-bar input[type=text] { flex: 1; min-width: 160px; padding: 0.6rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; outline: none; }
+  .report-bar input[type=text]:focus { border-color: #007291; }
+  .action-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; border-radius: 8px; cursor: pointer; border: none; background: #ef7724; color: #fff; }
+  .action-btn:hover { background: #c05a10; }
+  .action-btn.ghost { background: #fff; color: #007291; border: 2px solid #007291; }
+  .action-btn.ghost:hover { background: #e6f5f8; }
+  .notify { display: none; width: 100%; font-size: 0.85rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.6rem 0.9rem; }
+  .notify.show { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media print {
+    .site-header, .palette, .pal-info, .plot-tools, .report-bar, footer { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Physical World &amp; Exploration</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Physical World &amp; Exploration · Week 3</p>
+  <h1>🗺️ Habitat Designer</h1>
+  <p>Before you build your real mini conservation area, design it here. Pick features, place them on your plot, and see which wildlife your design is likely to attract. This becomes your blueprint for the real thing.</p>
+</div>
+
+<main class="main">
+
+  <p class="section-label">1 · Choose and place features</p>
+  <div class="card">
+    <p style="margin-bottom: 0.9rem;">Tap a feature, then tap squares on the plot to place it. Tap a feature below to see what it attracts.</p>
+    <div class="palette" id="palette"></div>
+    <div class="pal-info" id="pal-info">Pick a feature to begin.</div>
+    <div class="plot" id="plot"></div>
+    <div class="plot-tools">
+      <button class="tool-btn" id="eraser" onclick="toggleEraser()">🧽 Eraser</button>
+      <button class="tool-btn" onclick="clearPlot()">Start again</button>
+    </div>
+  </div>
+
+  <p class="section-label">2 · Who might move in?</p>
+  <div class="card">
+    <p style="margin-bottom: 0.9rem;">Based on your design, these are the visitors you could expect — and what you'll be looking for in your surveys:</p>
+    <div class="visitors" id="visitors"><span class="visitors-empty">Place some features to see your predicted wildlife.</span></div>
+  </div>
+
+  <p class="section-label">3 · Designer's notes</p>
+  <div class="card">
+    <p style="margin-bottom: 0.75rem;">If you'd like, jot down where your area will go in real life, what you'll need, or why you chose your features.</p>
+    <textarea id="notes" oninput="saveAll()" placeholder="My conservation area will go..."></textarea>
+    <div class="report-bar">
+      <input type="text" id="r-name" placeholder="Type your name here" autocomplete="off">
+      <button class="action-btn" onclick="emailPlan()">📧 Send my plan to Jay</button>
+      <button class="action-btn ghost" onclick="window.print()">🖨️ Print my blueprint</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School · Physical World &amp; Exploration
+</footer>
+
+<script>
+const STORE_KEY = 'base6_w3_pw_designer';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const COLS = 8, ROWS = 5;
+
+const FEATURES = {
+  pond:    { emoji: '💧', name: 'Mini pond',        attracts: ['🐸 Frogs', '🪰 Dragonflies', '🐦 Birds drinking'] },
+  flowers: { emoji: '🌸', name: 'Wildflowers',      attracts: ['🐝 Bees', '🦋 Butterflies', '🐞 Ladybirds'] },
+  logs:    { emoji: '🪵', name: 'Log pile',         attracts: ['🪲 Beetles', '🐌 Snails', '🍄 Fungi'] },
+  grass:   { emoji: '🌾', name: 'Long grass',       attracts: ['🦗 Grasshoppers', '🕷️ Spiders', '🐛 Caterpillars'] },
+  bughotel:{ emoji: '🏨', name: 'Bug hotel',        attracts: ['🐝 Solitary bees', '🐞 Ladybirds', '🪳 Lacewings'] },
+  birdbox: { emoji: '🐦', name: 'Bird box',         attracts: ['🐦 Nesting birds', '🐦‍⬛ Blackbirds'] },
+  stones:  { emoji: '🪨', name: 'Stone pile',       attracts: ['🐜 Ants', '🪱 Worms underneath', '🦎 Maybe a lizard!'] },
+  hedge:   { emoji: '🌳', name: 'Hedge / shrubs',   attracts: ['🐦 Sheltering birds', '🦔 Hedgehogs', '🐌 Snails'] },
+  feeder:  { emoji: '🫘', name: 'Bird feeder',      attracts: ['🐦 Finches', '🐿️ Cheeky squirrels'] },
+  mud:     { emoji: '🟤', name: 'Bare mud patch',   attracts: ['🪱 Worms', '🐦 Birds hunting worms', '🐝 Mining bees'] },
+};
+
+let state = { grid: {}, notes: '' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function saveAll() {
+  state.notes = document.getElementById('notes').value;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+let selected = null, erasing = false;
+
+// ── Palette ──────────────────────────────────────────────
+function renderPalette() {
+  const c = document.getElementById('palette');
+  c.innerHTML = '';
+  Object.keys(FEATURES).forEach(key => {
+    const f = FEATURES[key];
+    const b = document.createElement('button');
+    b.className = 'pal-btn' + (selected === key ? ' on' : '');
+    b.innerHTML = '<span class="p-emoji">' + f.emoji + '</span>' + f.name;
+    b.onclick = () => {
+      selected = selected === key ? null : key;
+      erasing = false;
+      document.getElementById('eraser').classList.remove('on');
+      renderPalette();
+      const info = document.getElementById('pal-info');
+      info.innerHTML = selected
+        ? '<strong>' + f.name + '</strong> attracts: ' + f.attracts.join(', ') + '. Tap squares to place it.'
+        : 'Pick a feature to begin.';
+    };
+    c.appendChild(b);
+  });
+}
+
+function toggleEraser() {
+  erasing = !erasing;
+  selected = null;
+  renderPalette();
+  document.getElementById('eraser').classList.toggle('on', erasing);
+  document.getElementById('pal-info').textContent = erasing ? 'Eraser on — tap squares to clear them.' : 'Pick a feature to begin.';
+}
+
+// ── Plot ─────────────────────────────────────────────────
+function renderPlot() {
+  const plot = document.getElementById('plot');
+  plot.innerHTML = '';
+  for (let i = 0; i < COLS * ROWS; i++) {
+    const key = state.grid[i];
+    const cell = document.createElement('button');
+    cell.className = 'cell' + (key ? ' filled' : '');
+    cell.textContent = key ? FEATURES[key].emoji : '';
+    cell.setAttribute('aria-label', key ? FEATURES[key].name : 'Empty grass');
+    cell.onclick = () => {
+      if (erasing) { delete state.grid[i]; }
+      else if (selected) { state.grid[i] = selected; }
+      saveAll();
+      renderPlot();
+      renderVisitors();
+    };
+    plot.appendChild(cell);
+  }
+}
+
+function clearPlot() {
+  state.grid = {};
+  saveAll();
+  renderPlot();
+  renderVisitors();
+}
+
+// ── Visitors ─────────────────────────────────────────────
+function placedFeatures() {
+  const counts = {};
+  Object.values(state.grid).forEach(k => { counts[k] = (counts[k] || 0) + 1; });
+  return counts;
+}
+
+function renderVisitors() {
+  const counts = placedFeatures();
+  const c = document.getElementById('visitors');
+  const species = new Set();
+  Object.keys(counts).forEach(k => FEATURES[k].attracts.forEach(s => species.add(s)));
+  if (species.size === 0) {
+    c.innerHTML = '<span class="visitors-empty">Place some features to see your predicted wildlife.</span>';
+    return;
+  }
+  c.innerHTML = '';
+  [...species].forEach(s => {
+    const chip = document.createElement('span');
+    chip.className = 'visitor-chip';
+    chip.textContent = s;
+    c.appendChild(chip);
+  });
+}
+
+// ── Email ────────────────────────────────────────────────
+function emailPlan() {
+  const name = document.getElementById('r-name').value.trim();
+  const n = document.getElementById('notify');
+  if (!name) {
+    n.textContent = 'Please type your name first.';
+    n.classList.add('show');
+    return;
+  }
+  const counts = placedFeatures();
+  if (Object.keys(counts).length === 0) {
+    n.textContent = 'Place a few features first, then send your plan.';
+    n.classList.add('show');
+    return;
+  }
+  const species = new Set();
+  Object.keys(counts).forEach(k => FEATURES[k].attracts.forEach(s => species.add(s)));
+
+  let body = 'HABITAT DESIGNER — PHYSICAL WORLD WEEK 3\n';
+  body += 'Student: ' + name + '\nDate: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'MY CONSERVATION AREA PLAN:\n';
+  Object.keys(counts).forEach(k => {
+    body += '  ' + FEATURES[k].name + ' x' + counts[k] + '\n';
+  });
+  body += '\nPREDICTED VISITORS (' + species.size + ' kinds):\n  ' + [...species].join('\n  ') + '\n\n';
+  if (state.notes.trim()) body += 'DESIGNER\'S NOTES:\n' + state.notes.trim() + '\n\n';
+  body += '—\nSent automatically from Base 6';
+
+  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + encodeURIComponent('Base 6 · Habitat plan — ' + name) + '&body=' + encodeURIComponent(body), '_blank');
+  n.textContent = '✓ Opening your email app now — blueprint ready to send.';
+  n.classList.add('show');
+}
+
+// ── Init ─────────────────────────────────────────────────
+renderPalette();
+renderPlot();
+renderVisitors();
+if (state.notes) document.getElementById('notes').value = state.notes;
+</script>
+
+</body>
+</html>
