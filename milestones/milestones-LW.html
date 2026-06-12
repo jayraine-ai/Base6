@@ -260,6 +260,7 @@ function toggle(pillarId) {
 
 function buildAll() {
   const panel = document.getElementById("panel");
+  panel.innerHTML = "";
   PILLARS.forEach(p => {
     const done = !!state[p.id];
     const card = document.createElement("div");
