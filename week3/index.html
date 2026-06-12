@@ -118,6 +118,94 @@
 
 <main class="main">
 
+<!-- ============================================================
+  BASE 6 - WEEK 3 DAY TILES (paste-in snippet)
+  Paste this whole block into week 3 index.html inside <main class="main">,
+  just above the "This week's subjects" section label.
+  Self-contained: brings its own styles and script, prefixed b6- so
+  nothing clashes with your existing classes.
+============================================================ -->
+
+<style>
+  .b6-day-section { margin-bottom: 2.5rem; }
+  .b6-day-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+  .b6-day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.9rem; }
+  .b6-day-tile {
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.15rem;
+    text-decoration: none; color: inherit;
+    background: var(--tile-soft); border: 2px solid var(--tile); border-radius: 14px;
+    padding: 1.1rem 0.8rem; transition: box-shadow 0.15s, transform 0.1s, background 0.15s;
+  }
+  .b6-day-tile:hover { background: #ffffff; box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .b6-tile-emoji { font-size: 1.9rem; line-height: 1.2; }
+  .b6-tile-day { font-size: 1.15rem; font-weight: 700; color: var(--tile); }
+  .b6-tile-date { font-size: 0.82rem; color: #555; }
+  .b6-tile-tag { font-size: 0.8rem; font-weight: 700; color: var(--tile); }
+  .b6-tile-today {
+    display: none; margin-top: 0.5rem; background: var(--tile); color: #ffffff;
+    font-weight: 700; border-radius: 8px; padding: 1px 12px; font-size: 0.78rem;
+  }
+  .b6-day-tile.is-today { border-width: 4px; background: #ffffff; }
+  .b6-day-tile.is-today .b6-tile-today { display: inline-block; }
+</style>
+
+<div class="b6-day-section">
+  <p class="b6-day-label">This week, day by day</p>
+  <div class="b6-day-grid">
+    <a class="b6-day-tile" href="day1.html" data-date="2026-06-15" style="--tile: #007291; --tile-soft: #e3f1f5;">
+      <span class="b6-tile-emoji" aria-hidden="true">🚌</span>
+      <span class="b6-tile-day">Monday</span>
+      <span class="b6-tile-date">Mon 15 June</span>
+      <span class="b6-tile-tag">Trip day</span>
+      <span class="b6-tile-today">Today</span>
+    </a>
+    <a class="b6-day-tile" href="day2.html" data-date="2026-06-16" style="--tile: #ef7724; --tile-soft: #fdeadd;">
+      <span class="b6-tile-emoji" aria-hidden="true">🚀</span>
+      <span class="b6-tile-day">Tuesday</span>
+      <span class="b6-tile-date">Tue 16 June</span>
+      <span class="b6-tile-tag">Project day</span>
+      <span class="b6-tile-today">Today</span>
+    </a>
+    <a class="b6-day-tile" href="day3.html" data-date="2026-06-17" style="--tile: #2e8b57; --tile-soft: #e6f3e6;">
+      <span class="b6-tile-emoji" aria-hidden="true">🌱</span>
+      <span class="b6-tile-day">Wednesday</span>
+      <span class="b6-tile-date">Wed 17 June</span>
+      <span class="b6-tile-tag">Halfway there</span>
+      <span class="b6-tile-today">Today</span>
+    </a>
+    <a class="b6-day-tile" href="day4.html" data-date="2026-06-18" style="--tile: #7b5ea7; --tile-soft: #efe9f6;">
+      <span class="b6-tile-emoji" aria-hidden="true">🔮</span>
+      <span class="b6-tile-day">Thursday</span>
+      <span class="b6-tile-date">Thu 18 June</span>
+      <span class="b6-tile-tag">Project day</span>
+      <span class="b6-tile-today">Today</span>
+    </a>
+    <a class="b6-day-tile" href="day5.html" data-date="2026-06-19" style="--tile: #c2185b; --tile-soft: #fbe4ed;">
+      <span class="b6-tile-emoji" aria-hidden="true">🎉</span>
+      <span class="b6-tile-day">Friday</span>
+      <span class="b6-tile-date">Fri 19 June</span>
+      <span class="b6-tile-tag">Last day of the week</span>
+      <span class="b6-tile-today">Today</span>
+    </a>
+  </div>
+</div>
+
+<script>
+(function () {
+  const now = new Date();
+  const today = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+  document.querySelectorAll('.b6-day-tile').forEach(function (tile) {
+    if (tile.getAttribute('data-date') === today) {
+      tile.classList.add('is-today');
+    }
+  });
+})();
+</script>
+
+<!-- ============ END DAY TILES SNIPPET ============ -->
+
   <p class="section-label">This week's subjects</p>
   <div class="subjects-grid">
 
