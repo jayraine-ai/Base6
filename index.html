@@ -30,9 +30,6 @@
   .week-card.current .week-title { color: #c05a10; }
   .week-card.coming-soon { border-color: #ccc; opacity: 0.65; cursor: default; pointer-events: none; }
   .week-card.coming-soon .week-title { color: #555; }
-  .week-card.locked-preview { border-color: #ccc; opacity: 0.65; cursor: pointer; pointer-events: auto; }
-  .week-card.locked-preview .week-title { color: #555; }
-  .week-card.locked-preview:hover { transform: none; box-shadow: none; }
   .tools-section { margin-top: 1rem; margin-bottom: 2.5rem; }
   .tools-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
   .tool-card { background: #fff7f0; border: 1.5px solid #ef7724; border-radius: 12px; padding: 1rem 1.25rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; font-weight: 700; color: #c05a10; transition: transform 0.15s ease; width: 160px; justify-content: center; flex-direction: column; text-align: center; }
@@ -50,24 +47,6 @@
   .milestone-card.archie  { border-color: #f5b7b1; } .milestone-card.archie  .milestone-initials { color: #880E4F; }
   .milestone-card.harrison{ border-color: #d2b4de; } .milestone-card.harrison .milestone-initials { color: #4527A0; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
-
-  /* ── Week 3 password gate ── */
-  .gate-overlay { display: none; position: fixed; inset: 0; background: rgba(26,26,26,0.45); z-index: 100; align-items: center; justify-content: center; padding: 1.5rem; }
-  .gate-overlay.show { display: flex; }
-  .gate-box { background: #fef8f4; border: 2px solid #007291; border-radius: 14px; padding: 1.5rem; max-width: 380px; width: 100%; }
-  .gate-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ef7724; margin-bottom: 0.4rem; }
-  .gate-title { font-size: 1.15rem; font-weight: 700; color: #007291; margin-bottom: 0.5rem; }
-  .gate-desc { font-size: 0.88rem; color: #555; line-height: 1.5; margin-bottom: 1rem; }
-  .gate-box input[type=password] { width: 100%; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #ffffff; color: #1a1a1a; outline: none; margin-bottom: 0.75rem; }
-  .gate-box input[type=password]:focus { border-color: #007291; }
-  .gate-msg { display: none; font-size: 0.85rem; font-weight: 700; color: #7a4a00; background: #fff3e6; border: 1.5px solid #e8a020; border-radius: 8px; padding: 0.5rem 0.75rem; margin-bottom: 0.75rem; }
-  .gate-msg.show { display: block; }
-  .gate-buttons { display: flex; gap: 0.5rem; justify-content: flex-end; }
-  .gate-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; border: none; transition: background 0.15s; }
-  .gate-btn.primary { background: #007291; color: #ffffff; }
-  .gate-btn.primary:hover { background: #005a73; }
-  .gate-btn.secondary { background: transparent; color: #888; border: 1.5px solid #e0d8d0; }
-  .gate-btn.secondary:hover { color: #555; }
 </style>
 </head>
 <body>
@@ -93,19 +72,19 @@
       <span class="week-status status-available">Available</span>
     </a>
 
-    <a class="week-card current" href="week2/index.html">
+    <a class="week-card" href="week2/index.html">
       <span class="week-number">Week 2</span>
+      <span class="week-title">Week 2</span>
+      <span class="week-desc">Last week's activities are still here to explore.</span>
+      <span class="week-status status-available">Available</span>
+    </a>
+
+    <a class="week-card current" href="week3/index.html">
+      <span class="week-number">Week 3</span>
       <span class="week-title">This Week</span>
       <span class="week-desc">This week's activities are ready for you.</span>
       <span class="week-status status-current">We are here</span>
     </a>
-
-    <div class="week-card locked-preview" onclick="openGate()">
-      <span class="week-number">Week 3</span>
-      <span class="week-title">Coming Soon</span>
-      <span class="week-desc">This week's activities will appear here.</span>
-      <span class="week-status status-soon">Coming soon</span>
-    </div>
 
     <div class="week-card coming-soon">
       <span class="week-number">Week 4</span>
@@ -198,56 +177,6 @@
 <footer>
   Base 6 · Chilton Bridge School
 </footer>
-
-<!-- ── Week 3 password gate ── -->
-<div class="gate-overlay" id="gate-overlay" onclick="if(event.target===this) closeGate()">
-  <div class="gate-box">
-    <p class="gate-label">Week 3 preview</p>
-    <p class="gate-title">🔒 Not open just yet</p>
-    <p class="gate-desc">Week 3 is still being set up. If you have the password, you can take an early look.</p>
-    <input type="password" id="gate-input" autocomplete="off" onkeydown="if(event.key==='Enter') tryGate()">
-    <div class="gate-msg" id="gate-msg">That's not it — Week 3 will open soon.</div>
-    <div class="gate-buttons">
-      <button class="gate-btn secondary" onclick="closeGate()">Close</button>
-      <button class="gate-btn primary" onclick="tryGate()">Open Week 3</button>
-    </div>
-  </div>
-</div>
-
-<script>
-const W3_PASSWORD = 'teacher2026';
-const W3_UNLOCK_KEY = 'base6_w3_preview';
-
-function openGate() {
-  // Already unlocked this session? Go straight in.
-  try {
-    if (sessionStorage.getItem(W3_UNLOCK_KEY) === 'yes') {
-      window.location.href = 'week3/index.html';
-      return;
-    }
-  } catch(e) {}
-  document.getElementById('gate-msg').classList.remove('show');
-  document.getElementById('gate-input').value = '';
-  document.getElementById('gate-overlay').classList.add('show');
-  document.getElementById('gate-input').focus();
-}
-
-function closeGate() {
-  document.getElementById('gate-overlay').classList.remove('show');
-}
-
-function tryGate() {
-  const guess = document.getElementById('gate-input').value.trim();
-  if (guess === W3_PASSWORD) {
-    try { sessionStorage.setItem(W3_UNLOCK_KEY, 'yes'); } catch(e) {}
-    window.location.href = 'week3/index.html';
-  } else {
-    document.getElementById('gate-msg').classList.add('show');
-    document.getElementById('gate-input').value = '';
-    document.getElementById('gate-input').focus();
-  }
-}
-</script>
 
 </body>
 </html>
