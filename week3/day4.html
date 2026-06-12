@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thursday · Week 3 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .day-hero {
+    background: linear-gradient(135deg, #7b5ea7 0%, #7b5ea7 62%, #ef7724 150%);
+    padding: 2rem 2rem 2.4rem; text-align: center; color: #fef8f4;
+  }
+  .day-hero .week-label { font-size: 0.85rem; font-weight: 700; opacity: 0.85; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .day-hero h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.4rem; }
+  .day-hero h1 .hero-emoji { margin-right: 0.5rem; }
+  .day-hero .tagline { font-size: 1rem; opacity: 0.9; }
+  .day-hero .greeting { font-size: 1.02rem; font-weight: 700; margin-top: 0.7rem; }
+  .today-banner {
+    display: none; background: #fef8f4; color: #7b5ea7; border-radius: 10px;
+    padding: 0.4rem 1.1rem; margin: 0.9rem auto 0; font-weight: 700; width: fit-content; font-size: 0.9rem;
+  }
+  .today-banner.show { display: block; }
+  .wotw-banner { background-color: #ef7724; padding: 0.9rem 2rem; text-align: center; }
+  .wotw-banner a { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; }
+  .wotw-banner a:hover { text-decoration: underline; }
+  .main { max-width: 760px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem; }
+  .choice-note {
+    background: #ffffff; border: 2px dashed #7b5ea7; border-radius: 14px;
+    padding: 0.9rem 1.2rem; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6; color: #444;
+  }
+  .slot { margin-bottom: 1.4rem; }
+  .slot-time {
+    color: #7b5ea7; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em;
+    text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem;
+  }
+  .slot-time .dot { width: 11px; height: 11px; border-radius: 50%; background: #7b5ea7; display: inline-block; flex-shrink: 0; }
+  .activity {
+    background: #ffffff; border: 2px solid var(--subject, #7b5ea7); border-radius: 14px;
+    padding: 1.1rem 1.2rem; display: flex; gap: 1rem; align-items: flex-start;
+    transition: box-shadow 0.15s, transform 0.1s;
+  }
+  .activity:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+  .activity.calm { border-style: dashed; background: #efe9f6; }
+  .activity.done { border-color: #ef7724; background: #fff3e8; }
+  .activity-emoji {
+    font-size: 1.7rem; line-height: 1.2; flex-shrink: 0;
+    background: #efe9f6; border-radius: 12px; padding: 0.55rem;
+  }
+  .activity.calm .activity-emoji { background: #ffffff; }
+  .activity-body { flex: 1; }
+  .activity-body h3 { font-size: 1.08rem; font-weight: 700; color: var(--subject, #7b5ea7); margin-bottom: 0.3rem; }
+  .activity.done .activity-body h3 { color: #1a1a1a; }
+  .activity-body p { font-size: 0.9rem; color: #555; line-height: 1.55; }
+  .activity-body .open-link {
+    display: inline-block; margin-top: 0.7rem; text-decoration: none;
+    background: var(--subject, #7b5ea7); color: #ffffff; font-weight: 700;
+    border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.88rem;
+  }
+  .activity-body .open-link:hover { background: #ef7724; }
+  .done-btn {
+    background: #efe9f6; border: 2px solid var(--subject, #7b5ea7); color: var(--subject, #7b5ea7);
+    border-radius: 8px; padding: 0.45rem 0.8rem; font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; flex-shrink: 0;
+  }
+  .done-btn:hover { background: var(--subject, #7b5ea7); color: #ffffff; }
+  .activity.done .done-btn { background: #ef7724; border-color: #ef7724; color: #ffffff; }
+  .bonus-section { margin-top: 2.6rem; }
+  .bonus-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7b5ea7; margin-bottom: 0.4rem; }
+  .bonus-intro { font-size: 0.9rem; color: #555; line-height: 1.55; margin-bottom: 1.1rem; }
+  .bonus-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.8rem; }
+  .bonus-card {
+    background: #ffffff; border: 2px solid var(--subject); border-radius: 12px;
+    padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.25rem;
+    text-decoration: none; color: inherit; transition: box-shadow 0.15s, transform 0.1s;
+  }
+  .bonus-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .bonus-card .b-emoji { font-size: 1.4rem; }
+  .bonus-card .b-name { font-size: 0.95rem; font-weight: 700; color: var(--subject); line-height: 1.3; }
+  .bonus-card .b-desc { font-size: 0.8rem; color: #666; line-height: 1.45; }
+  .day-footer { display: flex; justify-content: space-between; gap: 0.8rem; margin-top: 2.6rem; flex-wrap: wrap; }
+  .day-footer a {
+    text-decoration: none; color: #7b5ea7; background: #ffffff;
+    border: 2px solid #7b5ea7; border-radius: 10px; padding: 0.6rem 1.2rem; font-weight: 700; font-size: 0.9rem;
+  }
+  .day-footer a:hover { background: #7b5ea7; color: #ffffff; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Week 3</a>
+</header>
+
+<div class="day-hero">
+  <p class="week-label">Week 3 · Day 4 · Thu 18 June</p>
+  <h1><span class="hero-emoji" aria-hidden="true">🔮</span>Thursday</h1>
+  <p class="tagline">Project day</p>
+  <p class="greeting" id="greeting">Welcome to Thursday.</p>
+  <div class="today-banner" id="today-banner">This is today</div>
+</div>
+
+<div class="wotw-banner">
+  <a href="optimise-explorer.html">Word of the Week — <strong>Optimise</strong> →</a>
+</div>
+
+<main class="main">
+
+  <div class="choice-note">
+    Here is the shape of Thursday. The times are a guide, not a rule. Marking things as done is optional - it is just there if you find it helpful.
+  </div>
+
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>9:30 - 10:00</p>
+    <div class="activity calm">
+      <div class="activity-emoji" aria-hidden="true">🌅</div>
+      <div class="activity-body">
+        <h3>Breathe In</h3>
+        <p>Ease into the day. Music, a chat, a doodle, or just settling in - whatever works for you this morning.</p>
+      </div>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>10:00 - 10:30</p>
+    <div class="activity" style="--subject: #7b5ea7;" data-activity-id="w3d4-pshe">
+      <div class="activity-emoji" aria-hidden="true">💬</div>
+      <div class="activity-body">
+        <h3>PSHE: Relational (PSHE and RSE)</h3>
+        <p>Changing me - personal hygiene, grooming and looking after yourself.</p>
+        <a class="open-link" href="relational/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>10:30 - 12:00</p>
+    <div class="activity" style="--subject: #007291;" data-activity-id="w3d4-project">
+      <div class="activity-emoji" aria-hidden="true">🚀</div>
+      <div class="activity-body">
+        <h3>Project</h3>
+        <p>Continued development on individual projects.</p>
+        <a class="open-link" href="project/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>12:30 - 1:15</p>
+    <div class="activity" style="--subject: #ef7724;" data-activity-id="w3d4-midday">
+      <div class="activity-emoji" aria-hidden="true">📝</div>
+      <div class="activity-body">
+        <h3>English</h3>
+        <p>Language features, tone, style and communication.</p>
+        <a class="open-link" href="english/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>1:15 - 2:00</p>
+    <div class="activity" style="--subject: #2e8b57;" data-activity-id="w3d4-afternoon">
+      <div class="activity-emoji" aria-hidden="true">🧲</div>
+      <div class="activity-body">
+        <h3>Scientific and Environmental</h3>
+        <p>Physics - forces, motion and energy in action.</p>
+        <a class="open-link" href="science/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>2:00 - 2:30</p>
+    <div class="activity calm">
+      <div class="activity-emoji" aria-hidden="true">🌙</div>
+      <div class="activity-body">
+        <h3>Breathe Out</h3>
+        <p>Wind down time. A book, a doodle, or just some quiet before home.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="bonus-section">
+    <p class="bonus-label">Bonus opportunities</p>
+    <p class="bonus-intro">These are not on today's timetable, but they are open if you finish early, want a change, or fancy working on something different. Totally your call.</p>
+    <div class="bonus-grid">
+    <a class="bonus-card" href="maths/index.html" style="--subject: #007291;">
+      <span class="b-emoji" aria-hidden="true">🔢</span>
+      <span class="b-name">Maths</span>
+      <span class="b-desc">Place value to 10,000 and calculation skills.</span>
+    </a>
+    <a class="bonus-card" href="digital-media/index.html" style="--subject: #4a6fa5;">
+      <span class="b-emoji" aria-hidden="true">💻</span>
+      <span class="b-name">Digital Media</span>
+      <span class="b-desc">What is AI and where do we meet it every day?</span>
+    </a>
+    <a class="bonus-card" href="physical-world/index.html" style="--subject: #6b8e23;">
+      <span class="b-emoji" aria-hidden="true">🦋</span>
+      <span class="b-name">Physical World and Exploration</span>
+      <span class="b-desc">Create a mini conservation area and track biodiversity.</span>
+    </a>
+    <a class="bonus-card" href="adulthood/index.html" style="--subject: #0e8a9e;">
+      <span class="b-emoji" aria-hidden="true">🧘</span>
+      <span class="b-name">Preparation for Adulthood</span>
+      <span class="b-desc">Wellbeing and free time - yoga poses and their benefits.</span>
+    </a>
+    <a class="bonus-card" href="human-social/index.html" style="--subject: #c0392b;">
+      <span class="b-emoji" aria-hidden="true">📜</span>
+      <span class="b-name">Human and Social</span>
+      <span class="b-desc">History beyond living memory - sources, artefacts and bias.</span>
+    </a>
+    <a class="bonus-card" href="creative/index.html" style="--subject: #c2185b;">
+      <span class="b-emoji" aria-hidden="true">🎨</span>
+      <span class="b-name">Aesthetic and Creative</span>
+      <span class="b-desc">Design - textiles, fabrics and fashion.</span>
+    </a>
+    </div>
+  </div>
+
+  <nav class="day-footer" aria-label="Day navigation">
+    <a href="day3.html">← Wednesday</a>
+    <a href="day5.html">Friday →</a>
+  </nav>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School</footer>
+
+<script>
+// ============ CONFIG ============
+const DAY_NAME = "Thursday";
+const DAY_DATE = "2026-06-18";
+const DAY_ID   = "week3-day4";
+// ================================
+
+(function () {
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) {
+      document.getElementById('greeting').textContent =
+        'Hello ' + profile.initials.toUpperCase() + '. Welcome to ' + DAY_NAME + '.';
+    }
+  } catch (e) { /* no profile yet */ }
+})();
+
+(function () {
+  const now = new Date();
+  const today = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+  if (today === DAY_DATE) {
+    document.getElementById('today-banner').classList.add('show');
+  }
+})();
+
+(function () {
+  const KEY = 'base6Done-' + DAY_ID;
+  let done = [];
+  try { done = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { done = []; }
+
+  document.querySelectorAll('.activity[data-activity-id]').forEach(function (card) {
+    const id = card.getAttribute('data-activity-id');
+    const btn = card.querySelector('.done-btn');
+    if (!btn) { return; }
+
+    function render() {
+      const isDone = done.indexOf(id) !== -1;
+      card.classList.toggle('done', isDone);
+      btn.textContent = isDone ? 'Done \u2713' : 'Done';
+      btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
+    }
+
+    btn.addEventListener('click', function () {
+      const i = done.indexOf(id);
+      if (i === -1) { done.push(id); } else { done.splice(i, 1); }
+      localStorage.setItem(KEY, JSON.stringify(done));
+      render();
+    });
+
+    render();
+  });
+})();
+</script>
+
+</body>
+</html>
