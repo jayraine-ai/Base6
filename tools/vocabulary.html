@@ -1,240 +1,755 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Accessible Interactive Key Vocabulary Dictionary - Branded</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Vocabulary — Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f7f5ef;
-  --panel: #fffdf7;
-  --ink: #1f2933;
-  --muted: #53606d;
-  --line: #d8d2c4;
-  --accent: #007291;
-  --accent-2: #ef7724;
-  --accent-soft: #e6f4f7;
-  --accent-2-soft: #fff0e6;
-  --focus: #ef7724;
-  --success: #276749;
-  --danger: #854d0e;
-  --radius: 18px;
-  --font-size: 18px;
-  --space: 1.55;
-  --letter-space: .02em;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: auto; }
-body {
-  margin: 0;
-  font-family: Verdana, Tahoma, Arial, sans-serif;
-  font-size: var(--font-size);
-  line-height: var(--space);
-  letter-spacing: var(--letter-space);
-  background: var(--bg);
-  color: var(--ink);
-}
-body.dark { --bg:#18202a; --panel:#243041; --ink:#f4f7fb; --muted:#cbd5e1; --line:#506076; --accent:#7bd2e5; --accent-2:#ffb27a; --accent-soft:#203f4a; --accent-2-soft:#4a2f20; --focus:#ffb27a; }
-body.plain { --bg:#ffffff; --panel:#ffffff; --ink:#111111; --muted:#333333; --line:#999999; --accent:#007291; --accent-2:#ef7724; --accent-soft:#f2f9fb; --accent-2-soft:#fff6ef; }
-body.focus-mode .card:not(.spotlight) { display:none; }
-body.hide-examples .example { display:none; }
-button, input, select { font: inherit; }
-a, button, input, select { min-height: 44px; }
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 4px solid var(--focus); outline-offset: 2px; }
-header { background: var(--panel); border-bottom: 6px solid var(--accent); padding: 24px 18px; }
-.header-inner, main, .toolbar-inner { max-width: 1180px; margin: auto; }
-h1 { margin: 0 0 10px; font-size: clamp(1.6rem, 4vw, 2.35rem); line-height:1.2; color: var(--accent); }
-.lede { max-width: 900px; margin: 0; color: var(--muted); }
-.friendly-note { margin-top: 14px; padding: 12px 14px; background: var(--accent-soft); border: 1px solid var(--line); border-left: 8px solid var(--accent-2); border-radius: var(--radius); max-width:900px; }
-.toolbar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 94%, transparent); border-bottom: 1px solid var(--line); padding: 12px 14px; backdrop-filter: blur(6px); }
-.toolbar-inner { display: grid; grid-template-columns: 1.3fr .8fr .8fr auto; gap: 10px; align-items: center; }
-input, select, button { border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; background: var(--panel); color: var(--ink); }
-button { cursor: pointer; background: var(--accent); color: white; border-color: var(--accent); font-weight: 700; }
-button.secondary { background: var(--panel); color: var(--accent); border-color: var(--accent); }
-button.soft { background: var(--accent-soft); color: var(--ink); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
-.controls-panel { margin: 18px 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
-.controls-grid { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
-.stats { display:flex; flex-wrap:wrap; gap:10px; margin: 18px 0; }
-.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; color: var(--muted); }
-.stat strong { color: var(--ink); }
-.alpha { display:flex; flex-wrap:wrap; gap:7px; margin: 0 0 18px; }
-.alpha button { padding: 7px 10px; min-height: 40px; }
-.grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-.card { background: var(--panel); border: 2px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: none; }
-.card.spotlight { border-color: var(--focus); box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 30%, transparent); }
-.card h2 { margin: 0 0 8px; font-size: 1.35rem; line-height:1.25; }
-.word-row { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
-.badges { display:flex; flex-wrap:wrap; gap:7px; margin: 8px 0 12px; }
-.badge { font-size:.82rem; border-radius:999px; padding:5px 9px; background:var(--accent-soft); color:var(--ink); border:1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); }
-.definition, .example, .prompt { margin: 10px 0; }
-.definition strong, .example strong, .prompt strong { display:block; margin-bottom: 2px; }
-.example { border-left: 6px solid var(--accent-2); padding-left: 12px; color: var(--muted); }
-.prompt { background: color-mix(in srgb, var(--accent-soft) 80%, var(--panel)); border: 1px dashed var(--line); border-radius: 14px; padding: 10px; }
-.actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-.small { font-size:.95rem; padding:8px 10px; min-height: 42px; }
-.hidden { display:none !important; }
-.quiz { background: var(--panel); border: 2px solid var(--line); border-radius: var(--radius); padding: 18px; margin: 20px 0; }
-.quiz h2 { margin-top:0; }
-.quiz-box { background: var(--accent-soft); border: 2px dashed var(--accent-2); border-radius:14px; padding:14px; }
-.answer { color: var(--success); font-weight: 700; margin-top:10px; }
-details { background: var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding: 10px 14px; margin: 12px 0; }
-summary { cursor:pointer; font-weight:700; }
-footer { color:var(--muted); text-align:center; margin:28px 0 48px; font-size:.95rem; }
-@media (max-width: 860px) { .toolbar-inner { grid-template-columns: 1fr; } .toolbar { position: static; } }
-@media print { .toolbar,.controls-panel,.alpha,.actions,.quiz,details { display:none; } body { background:white; color:black; } .grid { grid-template-columns:1fr 1fr; } .card { break-inside: avoid; } }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition:none !important; scroll-behavior:auto !important; } }
+  :root {
+    --bg: #fef8f4;
+    --card: #ffffff;
+    --teal: #007291;
+    --teal-dark: #005a73;
+    --teal-soft: #e6f5f8;
+    --teal-border: #b0d8e4;
+    --orange: #ef7724;
+    --orange-dark: #c05a10;
+    --orange-soft: #fff7f0;
+    --orange-border: #f5c89a;
+    --border: #e0d8d0;
+    --ink: #1a1a1a;
+    --muted: #555;
+    --font-size: 16px;
+    --line-height: 1.6;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background-color: var(--teal);
+    padding: 1.5rem 2rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .back-link {
+    color: #fef8f4;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .back-link:hover { opacity: 1; }
+  .header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fef8f4;
+    flex: 1;
+    text-align: center;
+  }
+  .header-spacer { width: 80px; }
+
+  /* ── Banner ── */
+  .banner {
+    background-color: var(--orange);
+    padding: 1rem 2rem;
+    text-align: center;
+  }
+  .banner p {
+    color: #fef8f4;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.5;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(254, 248, 244, 0.96);
+    border-bottom: 2px solid var(--border);
+    padding: 0.85rem 1.5rem;
+    backdrop-filter: blur(6px);
+  }
+  .toolbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr auto;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .toolbar input,
+  .toolbar select {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.92rem;
+    background: var(--card);
+    border: 2px solid var(--teal-border);
+    border-radius: 10px;
+    padding: 0.6rem 0.85rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+    min-height: 42px;
+  }
+  .toolbar input:focus,
+  .toolbar select:focus { border-color: var(--teal); }
+  .toolbar input::placeholder { color: #aaa; }
+  .reset-btn {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    color: var(--muted);
+    cursor: pointer;
+    min-height: 42px;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .reset-btn:hover { border-color: var(--orange); color: var(--orange-dark); }
+
+  /* ── Main ── */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 4rem;
+  }
+
+  /* ── Controls row ── */
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .controls-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-right: 0.25rem;
+  }
+  .ctrl-btn {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: var(--teal-soft);
+    border: 1.5px solid var(--teal-border);
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    color: var(--teal);
+    cursor: pointer;
+    min-height: 36px;
+    transition: background 0.12s;
+  }
+  .ctrl-btn:hover { background: #c8e8f0; }
+  .ctrl-btn.active { background: var(--teal); color: #fef8f4; border-color: var(--teal); }
+
+  /* ── Stats ── */
+  .stats-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    align-items: center;
+  }
+  .stat-pill {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .stat-pill strong { color: var(--ink); }
+
+  /* ── Alphabet strip ── */
+  .alpha-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 1.5rem;
+  }
+  .alpha-btn {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.3rem 0.55rem;
+    color: var(--muted);
+    cursor: pointer;
+    min-width: 32px;
+    min-height: 32px;
+    text-align: center;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .alpha-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .alpha-btn.active { background: var(--teal); color: #fef8f4; border-color: var(--teal); }
+
+  /* ── Quiz / Word of the moment ── */
+  .quiz-section {
+    background: var(--orange-soft);
+    border: 2px solid var(--orange);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .quiz-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange-dark);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .quiz-prompt {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 0.85rem;
+    min-height: 1.5em;
+  }
+  .quiz-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .quiz-btn {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    min-height: 38px;
+    border: none;
+    transition: background 0.12s, transform 0.1s;
+  }
+  .quiz-btn:active { transform: scale(0.97); }
+  .quiz-btn.primary { background: var(--orange); color: #fef8f4; }
+  .quiz-btn.primary:hover { background: var(--orange-dark); }
+  .quiz-btn.secondary { background: var(--card); border: 1.5px solid var(--orange-border); color: var(--orange-dark); }
+  .quiz-btn.secondary:hover { background: #fde8d0; }
+  .quiz-answer {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--teal-dark);
+    display: none;
+  }
+
+  /* ── Cards grid ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  /* ── Vocabulary card ── */
+  .vocab-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-left: 5px solid var(--teal);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .card-term {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1.25;
+  }
+  .card-letter {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--teal-soft);
+    color: var(--teal);
+    border: 1px solid var(--teal-border);
+    border-radius: 20px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 8px;
+    color: var(--muted);
+  }
+  .badge.subject { background: var(--teal-soft); border-color: var(--teal-border); color: var(--teal-dark); }
+  .badge.tag { background: var(--orange-soft); border-color: var(--orange-border); color: var(--orange-dark); }
+
+  .card-meaning {
+    font-size: 0.92rem;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .card-meaning strong {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.2rem;
+  }
+
+  .card-example {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    border-left: 4px solid var(--orange);
+    padding-left: 0.75rem;
+  }
+  .card-example strong {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange-dark);
+    margin-bottom: 0.2rem;
+  }
+
+  .card-prompt {
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+    line-height: 1.5;
+  }
+  .card-prompt strong {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+  }
+  .card-btn {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    min-height: 34px;
+    transition: background 0.12s;
+  }
+  .card-btn.read {
+    background: var(--teal-soft);
+    border: 1.5px solid var(--teal-border);
+    color: var(--teal-dark);
+  }
+  .card-btn.read:hover { background: #c8e8f0; }
+
+  /* examples hidden */
+  body.hide-examples .card-example { display: none; }
+
+  /* ── Empty state ── */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+  .empty-state p { font-size: 1rem; margin-bottom: 0.5rem; }
+  .empty-state button {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: var(--teal);
+    color: #fef8f4;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    margin-top: 0.75rem;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    .toolbar-inner { grid-template-columns: 1fr 1fr; }
+    .toolbar-inner input { grid-column: 1 / -1; }
+    .site-header { padding: 1.25rem 1rem; }
+    .header-spacer { display: none; }
+    .main { padding: 1.25rem 1rem 3rem; }
+  }
+  @media (max-width: 420px) {
+    .toolbar-inner { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    .toolbar, .controls-row, .alpha-strip, .quiz-section, .card-actions, .back-link { display: none !important; }
+    body { background: white; }
+    .vocab-card { break-inside: avoid; border-left-width: 3px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="header-inner">
-    <h1>Accessible Interactive Key Vocabulary Dictionary</h1>
-    <p class="lede">A calm, searchable vocabulary dictionary for the supplied learning targets and milestones. It uses clear wording, large text, predictable cards, read-aloud buttons, and choice-based practice.</p>
-    <div class="friendly-note"><strong>Choose your route:</strong> search for one word, filter by subject, browse A–Z, or practise with one random word. No timer. No forced order.</div>
-  </div>
+
+<header class="site-header">
+  <a class="back-link" href="/Base6/index.html">← Base 6</a>
+  <h1 class="header-title">Vocabulary</h1>
+  <div class="header-spacer"></div>
 </header>
-<section class="toolbar" aria-label="Dictionary search and filters">
+
+<div class="banner">
+  <p>Search for a word, filter by subject, or browse A–Z. No timer. No forced order.</p>
+</div>
+
+<nav class="toolbar" aria-label="Search and filter">
   <div class="toolbar-inner">
-    <input id="search" type="search" placeholder="Search one word or idea…" aria-label="Search dictionary" autocomplete="off" />
-    <select id="subject" aria-label="Filter by subject"><option value="">All subjects</option><option value="Aesthetic and Creative">Aesthetic and Creative</option><option value="Cross-curricular Vocabulary">Cross-curricular Vocabulary</option><option value="Digital Media">Digital Media</option><option value="English">English</option><option value="Human and Social">Human and Social</option><option value="Maths">Maths</option><option value="Physical World &amp; Exploration">Physical World &amp; Exploration</option><option value="Preparation for Adulthood">Preparation for Adulthood</option><option value="Relational (PSHE &amp; RSE)">Relational (PSHE &amp; RSE)</option><option value="Scientific &amp; Environmental">Scientific &amp; Environmental</option></select>
-    <select id="strand" aria-label="Filter by strand"><option value="">All strands</option><option value="Changing Me: Embracing Change">Changing Me: Embracing Change</option><option value="Communication &amp; Listening">Communication &amp; Listening</option><option value="Community Impact &amp; Enterprise">Community Impact &amp; Enterprise</option><option value="Computing and Coding: AI">Computing and Coding: AI</option><option value="Fashion">Fashion</option><option value="Fitness Training">Fitness Training</option><option value="History: Beyond Living Memory">History: Beyond Living Memory</option><option value="Language Features / Standard English">Language Features / Standard English</option><option value="Measure and Shape: Area">Measure and Shape: Area</option><option value="Physics: Forces, Motion and Energy">Physics: Forces, Motion and Energy</option><option value="Place Value and Calculations">Place Value and Calculations</option><option value="Planning, Improving and Problem Solving">Planning, Improving and Problem Solving</option><option value="Statistics: Data">Statistics: Data</option><option value="Tone, Style and Register">Tone, Style and Register</option><option value="Wellbeing, Leisure &amp; Free Time: Yoga">Wellbeing, Leisure &amp; Free Time: Yoga</option><option value="Wildlife Exploration">Wildlife Exploration</option><option value="Writing - Composition">Writing - Composition</option></select>
-    <button id="reset" class="secondary" type="button">Reset</button>
+    <input id="search" type="search" placeholder="Search words or meanings…" aria-label="Search vocabulary" autocomplete="off">
+    <select id="subject" aria-label="Filter by subject">
+      <option value="">All subjects</option>
+      <option>Aesthetic and Creative</option>
+      <option>Cross-curricular Vocabulary</option>
+      <option>Digital Media</option>
+      <option>English</option>
+      <option>Human and Social</option>
+      <option>Maths</option>
+      <option>Physical World &amp; Exploration</option>
+      <option>Preparation for Adulthood</option>
+      <option>Relational (PSHE &amp; RSE)</option>
+      <option>Scientific &amp; Environmental</option>
+    </select>
+    <select id="strand" aria-label="Filter by strand">
+      <option value="">All strands</option>
+      <option>Changing Me: Embracing Change</option>
+      <option>Communication &amp; Listening</option>
+      <option>Community Impact &amp; Enterprise</option>
+      <option>Computing and Coding: AI</option>
+      <option>Fashion</option>
+      <option>Fitness Training</option>
+      <option>History: Beyond Living Memory</option>
+      <option>Language Features / Standard English</option>
+      <option>Measure and Shape: Area</option>
+      <option>Physics: Forces, Motion and Energy</option>
+      <option>Place Value and Calculations</option>
+      <option>Planning, Improving and Problem Solving</option>
+      <option>Statistics: Data</option>
+      <option>Tone, Style and Register</option>
+      <option>Wellbeing, Leisure &amp; Free Time: Yoga</option>
+      <option>Wildlife Exploration</option>
+      <option>Writing - Composition</option>
+    </select>
+    <button class="reset-btn" id="reset" type="button">Reset</button>
   </div>
-</section>
-<main>
-  <section class="controls-panel" aria-label="Accessibility choices">
-    <strong>Display choices</strong>
-    <div class="controls-grid" role="group" aria-label="Display choices">
-      <button id="biggerText" class="soft" type="button">Bigger text</button>
-      <button id="smallerText" class="soft" type="button">Smaller text</button>
-      <button id="moreSpace" class="soft" type="button">More spacing</button>
-      <button id="toggleExamples" class="soft" type="button">Hide examples</button>
-      <button id="themeCalm" class="soft" type="button">Calm theme</button>
-      <button id="themeDark" class="soft" type="button">Dark theme</button>
-      <button id="themePlain" class="soft" type="button">Plain theme</button>
-      <button id="clearSpotlight" class="soft" type="button">Show all cards</button>
-    </div>
-  </section>
-  <details>
-    <summary>How this version supports different learners</summary>
-    <p><strong>Autism-friendly:</strong> predictable card layout, literal labels, low visual noise, no timers, and no surprise animations.</p>
-    <p><strong>Dyslexia-friendly:</strong> larger text, wider spacing, off-white background, strong contrast, and short chunked meanings.</p>
-    <p><strong>PDA-friendly:</strong> choice-based wording, optional practice, reset/show-all controls, and no forced sequence.</p>
-    <p><strong>ADHD-friendly:</strong> search-first design, clear filters, one-word focus mode, read-aloud, and quick random practice.</p>
-  </details>
-  <div class="stats" aria-live="polite">
-    <div class="stat"><strong id="visibleCount">0</strong> words showing</div>
-    <div class="stat"><strong>130</strong> total entries</div>
-    <div class="stat"><strong>10</strong> curriculum areas</div>
-    <div class="stat"><strong>6</strong> new requested words added</div>
+</nav>
+
+<main class="main">
+
+  <div class="controls-row" role="group" aria-label="Display options">
+    <span class="controls-label">Display</span>
+    <button class="ctrl-btn" id="biggerText" type="button">Bigger text</button>
+    <button class="ctrl-btn" id="smallerText" type="button">Smaller text</button>
+    <button class="ctrl-btn" id="toggleExamples" type="button">Hide examples</button>
   </div>
-  <div class="alpha" id="alpha" aria-label="Alphabet filter"></div>
-  <section class="quiz" aria-label="Optional practice">
-    <h2>Optional one-word practice</h2>
-    <div class="quiz-box">
-      <p id="quizPrompt">Press “Choose a word” to start.</p>
-      <button id="newQuiz" class="small" type="button">Choose a word</button>
-      <button id="showAnswer" class="secondary small" type="button">Show answer</button>
-      <button id="hearQuiz" class="secondary small" type="button">Read prompt</button>
-      <p id="quizAnswer" class="answer hidden"></p>
+
+  <div class="stats-row" aria-live="polite">
+    <div class="stat-pill"><strong id="visibleCount">0</strong> words showing</div>
+    <div class="stat-pill"><strong>130</strong> total entries</div>
+    <div class="stat-pill"><strong>10</strong> curriculum areas</div>
+  </div>
+
+  <div class="alpha-strip" id="alpha" aria-label="Filter by first letter" role="group"></div>
+
+  <section class="quiz-section" aria-label="Word of the moment">
+    <span class="quiz-label">Word of the moment</span>
+    <p class="quiz-prompt" id="quizPrompt">Press "Pick a word" whenever you feel like it.</p>
+    <div class="quiz-actions">
+      <button class="quiz-btn primary" id="newQuiz" type="button">Pick a word</button>
+      <button class="quiz-btn secondary" id="showAnswer" type="button">Show the answer</button>
+      <button class="quiz-btn secondary" id="hearQuiz" type="button">Read it aloud</button>
     </div>
+    <p class="quiz-answer" id="quizAnswer"></p>
   </section>
-  <section id="cards" class="grid" aria-live="polite" aria-label="Vocabulary cards"></section>
-  <footer>Tip: choose one word, use read aloud, or print the page. You can hide examples to reduce the amount on screen.</footer>
+
+  <section class="cards-grid" id="cards" aria-live="polite" aria-label="Vocabulary cards"></section>
+
 </main>
+
+<footer>Base 6 · Chilton Bridge School</footer>
+
 <script>
-const entries = [{"term": "Account", "short_meaning": "A spoken or written description of what happened.", "definition": "A spoken or written description of what happened.", "example": "The soldier wrote an account of the battle.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Account' in a sentence."}, {"term": "Add", "short_meaning": "To put numbers or amounts together.", "definition": "To put numbers or amounts together.", "example": "I can add 30 and 4 to make 34.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "calculation", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Add' in a sentence."}, {"term": "AI", "short_meaning": "Artificial intelligence: technology that can learn from information, recognise patterns, and make decisions or suggestions.", "definition": "Artificial intelligence: technology that can learn from information, recognise patterns, and make decisions or suggestions.", "example": "The music app uses AI to suggest songs.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'AI' in a sentence."}, {"term": "Air resistance", "short_meaning": "A force from air that pushes against moving objects and can slow them down.", "definition": "A force from air that pushes against moving objects and can slow them down.", "example": "Air resistance slowed the falling paper.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Air resistance' in a sentence."}, {"term": "Analyse", "short_meaning": "To look carefully at information and explain what it may show.", "definition": "To look carefully at information and explain what it may show.", "example": "We analysed the tally chart to see if biodiversity changed.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "thinking", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Analyse' in a sentence."}, {"term": "Area", "short_meaning": "The amount of space a flat shape takes up.", "definition": "The amount of space a flat shape takes up.", "example": "I found the area by counting squares.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Area' in a sentence."}, {"term": "Artefact", "short_meaning": "An object made or used by people in the past.", "definition": "An object made or used by people in the past.", "example": "The old coin is an artefact from Roman Britain.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Artefact' in a sentence."}, {"term": "Artificial intelligence", "short_meaning": "Technology that can do tasks that seem a bit like human thinking, such as recognising, sorting, predicting, or recommending.", "definition": "Technology that can do tasks that seem a bit like human thinking, such as recognising, sorting, predicting, or recommending.", "example": "Artificial intelligence can help a phone recognise a face.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Artificial intelligence' in a sentence."}, {"term": "Audience", "short_meaning": "The person or people who read, watch, or listen to something.", "definition": "The person or people who read, watch, or listen to something.", "example": "I changed my words because my audience was younger children.", "subject": "English", "strand": "Writing - Composition", "tag": "writing", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Audience' in a sentence."}, {"term": "Autocorrect", "short_meaning": "A tool that suggests or changes spellings as you type.", "definition": "A tool that suggests or changes spellings as you type.", "example": "Autocorrect fixed the spelling mistake.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Autocorrect' in a sentence."}, {"term": "Balance", "short_meaning": "Keeping your body steady without falling.", "definition": "Keeping your body steady without falling.", "example": "A standing pose can help with balance.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "body", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Balance' in a sentence."}, {"term": "Basic text", "short_meaning": "A simple piece of writing, such as a note, message, list, card, or short story.", "definition": "A simple piece of writing, such as a note, message, list, card, or short story.", "example": "I wrote a basic text to share news.", "subject": "English", "strand": "Writing - Composition", "tag": "writing", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Basic text' in a sentence."}, {"term": "Bias", "short_meaning": "When information shows one side more strongly than another, often because of someone’s opinions or purpose.", "definition": "When information shows one side more strongly than another, often because of someone’s opinions or purpose.", "example": "The poster showed bias because it only praised one side.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Bias' in a sentence."}, {"term": "Bigger", "short_meaning": "Greater in number, size, or amount.", "definition": "Greater in number, size, or amount.", "example": "45 is bigger than 34.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Bigger' in a sentence."}, {"term": "Biodiversity", "short_meaning": "The variety of living things found in a place.", "definition": "The variety of living things found in a place.", "example": "The garden had more biodiversity after we planted flowers.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Biodiversity' in a sentence."}, {"term": "Bodyweight exercise", "short_meaning": "An exercise that uses your own body as resistance, such as squats or press-ups.", "definition": "An exercise that uses your own body as resistance, such as squats or press-ups.", "example": "A wall sit is a bodyweight exercise.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "fitness", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Bodyweight exercise' in a sentence."}, {"term": "Business idea", "short_meaning": "A plan for something you could sell or a service you could offer.", "definition": "A plan for something you could sell or a service you could offer.", "example": "My business idea is to sell handmade cards.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Business idea' in a sentence."}, {"term": "Calculate", "short_meaning": "To work out an answer using maths.", "definition": "To work out an answer using maths.", "example": "I used place value to calculate the answer.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "calculation", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Calculate' in a sentence."}, {"term": "Cat-cow", "short_meaning": "A yoga movement where you arch and round your back while breathing.", "definition": "A yoga movement where you arch and round your back while breathing.", "example": "Cat-cow helped me stretch my back.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Cat-cow' in a sentence."}, {"term": "Category", "short_meaning": "A group used to sort information or objects.", "definition": "A group used to sort information or objects.", "example": "We sorted animals into categories.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Category' in a sentence."}, {"term": "Change direction", "short_meaning": "To move a different way from before.", "definition": "To move a different way from before.", "example": "The ball changed direction after hitting the wall.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Change direction' in a sentence."}, {"term": "Child’s pose", "short_meaning": "A resting yoga pose where you kneel and fold forward.", "definition": "A resting yoga pose where you kneel and fold forward.", "example": "Child’s pose can help with relaxation.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Child’s pose' in a sentence."}, {"term": "Collect", "short_meaning": "To gather information, objects, or results.", "definition": "To gather information, objects, or results.", "example": "We collected data by asking questions.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Collect' in a sentence."}, {"term": "Colour", "short_meaning": "The shade or hue something has, such as red, green, black, or gold.", "definition": "The shade or hue something has, such as red, green, black, or gold.", "example": "I picked a colour that suited my design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Colour' in a sentence."}, {"term": "Columns", "short_meaning": "Lines of items going down.", "definition": "Lines of items going down.", "example": "The array had 4 columns.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Columns' in a sentence."}, {"term": "Comfortable", "short_meaning": "Feeling okay, safe, or at ease in your body or situation.", "definition": "Feeling okay, safe, or at ease in your body or situation.", "example": "Clean clothes can help me feel comfortable.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "feelings", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Comfortable' in a sentence."}, {"term": "Compare", "short_meaning": "To look at two or more things and say how they are the same or different.", "definition": "To look at two or more things and say how they are the same or different.", "example": "I compared two numbers to find which was bigger.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Compare' in a sentence."}, {"term": "Conservation", "short_meaning": "Protecting and caring for nature and living things.", "definition": "Protecting and caring for nature and living things.", "example": "We made a conservation area for insects.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Conservation' in a sentence."}, {"term": "Control", "short_meaning": "Moving carefully without rushing or wobbling too much.", "definition": "Moving carefully without rushing or wobbling too much.", "example": "I used control when lifting the weight.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "safety", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Control' in a sentence."}, {"term": "Cost", "short_meaning": "The amount of money needed to buy or make something.", "definition": "The amount of money needed to buy or make something.", "example": "The cost of the materials was £5.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Cost' in a sentence."}, {"term": "Customer", "short_meaning": "A person who buys a product or uses a service.", "definition": "A person who buys a product or uses a service.", "example": "The customer paid for a cake.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Customer' in a sentence."}, {"term": "Data", "short_meaning": "Information we collect to find things out.", "definition": "Information we collect to find things out.", "example": "We collected data about favourite fruits.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Data' in a sentence."}, {"term": "Decision", "short_meaning": "A choice made after using information.", "definition": "A choice made after using information.", "example": "AI can make a decision about which song to suggest next.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "thinking", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Decision' in a sentence."}, {"term": "Digit", "short_meaning": "A symbol used to write numbers, such as 0, 1, 2, or 9.", "definition": "A symbol used to write numbers, such as 0, 1, 2, or 9.", "example": "The number 34 has two digits.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Digit' in a sentence."}, {"term": "Dumbbell", "short_meaning": "A small hand-held weight used for exercise.", "definition": "A small hand-held weight used for exercise.", "example": "I lifted a dumbbell with control.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "equipment", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Dumbbell' in a sentence."}, {"term": "Enhance", "short_meaning": "To improve something or make it better, clearer, stronger, or more useful.", "definition": "To improve something or make it better, clearer, stronger, or more useful.", "example": "Adding wildflowers can enhance a mini-conservation area.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "improve", "first_letter": "E", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Enhance' in a sentence."}, {"term": "Evidence", "short_meaning": "Information or clues used to support an idea about what happened.", "definition": "Information or clues used to support an idea about what happened.", "example": "The diary gave evidence about everyday life.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "E", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Evidence' in a sentence."}, {"term": "Fabric", "short_meaning": "Cloth used to make clothes, costumes, or textile items.", "definition": "Cloth used to make clothes, costumes, or textile items.", "example": "The fabric felt smooth and light.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "materials", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Fabric' in a sentence."}, {"term": "Fashion design", "short_meaning": "Planning how clothing or an outfit will look, feel, and be made.", "definition": "Planning how clothing or an outfit will look, feel, and be made.", "example": "My fashion design uses bright colours and soft fabric.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Fashion design' in a sentence."}, {"term": "Feelings", "short_meaning": "Emotions, such as happy, worried, proud, or calm.", "definition": "Emotions, such as happy, worried, proud, or calm.", "example": "I explained my feelings about the change.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Feelings' in a sentence."}, {"term": "Flexibility", "short_meaning": "How easily your muscles and joints can bend and stretch.", "definition": "How easily your muscles and joints can bend and stretch.", "example": "Stretching can improve flexibility.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "body", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Flexibility' in a sentence."}, {"term": "Focus", "short_meaning": "Paying attention to one thing.", "definition": "Paying attention to one thing.", "example": "Yoga breathing helped me focus.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "mind", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Focus' in a sentence."}, {"term": "Force", "short_meaning": "A push or pull that can make something move, stop, speed up, slow down, or change direction.", "definition": "A push or pull that can make something move, stop, speed up, slow down, or change direction.", "example": "I used a force to push the toy car.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Force' in a sentence."}, {"term": "Formal English", "short_meaning": "English used in more official writing or situations, with agreed grammar rules.", "definition": "English used in more official writing or situations, with agreed grammar rules.", "example": "I used formal English in my letter.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Formal English' in a sentence."}, {"term": "Friction", "short_meaning": "A force that slows objects down when surfaces rub together.", "definition": "A force that slows objects down when surfaces rub together.", "example": "Friction slowed the bike tyres on the road.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Friction' in a sentence."}, {"term": "Gesture", "short_meaning": "A movement of the body used to communicate, such as pointing, waving, or thumbs up.", "definition": "A movement of the body used to communicate, such as pointing, waving, or thumbs up.", "example": "I used a gesture to show I agreed.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Gesture' in a sentence."}, {"term": "Gravity", "short_meaning": "The force that pulls objects towards the Earth.", "definition": "The force that pulls objects towards the Earth.", "example": "Gravity pulls a dropped pencil down.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Gravity' in a sentence."}, {"term": "Grid", "short_meaning": "A set of lines that make rows, columns, and squares.", "definition": "A set of lines that make rows, columns, and squares.", "example": "The rectangle was drawn on a grid.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Grid' in a sentence."}, {"term": "Grooming", "short_meaning": "Looking after your appearance, such as hair, nails, clothes, and skin.", "definition": "Looking after your appearance, such as hair, nails, clothes, and skin.", "example": "Combing my hair is part of grooming.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Grooming' in a sentence."}, {"term": "Habitat", "short_meaning": "The place where a plant or animal lives.", "definition": "The place where a plant or animal lives.", "example": "A pond is a habitat for frogs and insects.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "H", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Habitat' in a sentence."}, {"term": "Healthy", "short_meaning": "Helping your body or mind work well.", "definition": "Helping your body or mind work well.", "example": "Washing hands helps keep me healthy.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "H", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Healthy' in a sentence."}, {"term": "Historian", "short_meaning": "A person who studies the past using clues such as sources and artefacts.", "definition": "A person who studies the past using clues such as sources and artefacts.", "example": "The historian compared two different sources.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "H", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Historian' in a sentence."}, {"term": "Initiate", "short_meaning": "To start something.", "definition": "To start something.", "example": "I initiate the investigation by choosing what I want to test first.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "start", "first_letter": "I", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Initiate' in a sentence."}, {"term": "Interpretation", "short_meaning": "A way of understanding or explaining something.", "definition": "A way of understanding or explaining something.", "example": "Two people may have different interpretations of the same event.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "I", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Interpretation' in a sentence."}, {"term": "Investigation", "short_meaning": "A careful test or activity used to find something out.", "definition": "A careful test or activity used to find something out.", "example": "We did an investigation to test friction.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "science skills", "first_letter": "I", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Investigation' in a sentence."}, {"term": "Joint", "short_meaning": "A place where bones meet and the body can bend or move.", "definition": "A place where bones meet and the body can bend or move.", "example": "Good technique supports my joints.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "body", "first_letter": "J", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Joint' in a sentence."}, {"term": "Kettlebell", "short_meaning": "A weight with a handle, used for strength exercises.", "definition": "A weight with a handle, used for strength exercises.", "example": "The kettlebell was light enough for me to use safely.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "equipment", "first_letter": "K", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Kettlebell' in a sentence."}, {"term": "Local spoken forms", "short_meaning": "Ways of speaking used in a local area or community.", "definition": "Ways of speaking used in a local area or community.", "example": "Local spoken forms are real ways people speak, even if formal writing uses different rules.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "L", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Local spoken forms' in a sentence."}, {"term": "Lunge", "short_meaning": "An exercise where one leg steps forward or back and both knees bend.", "definition": "An exercise where one leg steps forward or back and both knees bend.", "example": "Lunges work my legs and balance.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "L", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Lunge' in a sentence."}, {"term": "Marketing", "short_meaning": "Ways of letting people know about a product, service, or business.", "definition": "Ways of letting people know about a product, service, or business.", "example": "A poster is one kind of marketing.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Marketing' in a sentence."}, {"term": "Material", "short_meaning": "What something is made from, such as cotton, wool, denim, paper, or plastic.", "definition": "What something is made from, such as cotton, wool, denim, paper, or plastic.", "example": "I chose a strong material for the bag.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "materials", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Material' in a sentence."}, {"term": "Mini-conservation area", "short_meaning": "A small space set up to help wildlife, such as a bug hotel, wildlife patch, or pond.", "definition": "A small space set up to help wildlife, such as a bug hotel, wildlife patch, or pond.", "example": "Our mini-conservation area included logs and wildflowers.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Mini-conservation area' in a sentence."}, {"term": "Motion", "short_meaning": "Movement from one place or position to another.", "definition": "Movement from one place or position to another.", "example": "The ball’s motion changed when I kicked it.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Motion' in a sentence."}, {"term": "Mountain pose", "short_meaning": "A standing yoga pose where you stand tall and steady.", "definition": "A standing yoga pose where you stand tall and steady.", "example": "Mountain pose helped me practise good posture.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Mountain pose' in a sentence."}, {"term": "Multiplication array", "short_meaning": "An arrangement in rows and columns that shows multiplication.", "definition": "An arrangement in rows and columns that shows multiplication.", "example": "3 rows of 4 is a multiplication array for 3 × 4.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Multiplication array' in a sentence."}, {"term": "Muscle", "short_meaning": "Body tissue that helps you move and stay strong.", "definition": "Body tissue that helps you move and stay strong.", "example": "Strength training helps build muscle.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "body", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Muscle' in a sentence."}, {"term": "Observe", "short_meaning": "To look carefully and notice what happens.", "definition": "To look carefully and notice what happens.", "example": "We observed which insects visited the flowers.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "skills", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Observe' in a sentence."}, {"term": "One-sided", "short_meaning": "Showing only one view and leaving out other information.", "definition": "Showing only one view and leaving out other information.", "example": "A one-sided story may not tell us everything.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'One-sided' in a sentence."}, {"term": "Opinion", "short_meaning": "What someone thinks or believes about something.", "definition": "What someone thinks or believes about something.", "example": "My opinion is that yoga is relaxing.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Opinion' in a sentence."}, {"term": "Optimise", "short_meaning": "To make something work as well as possible.", "definition": "To make something work as well as possible.", "example": "We changed the design to optimise how much light reached the plants.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "improve", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Optimise' in a sentence."}, {"term": "Organise", "short_meaning": "To arrange information so it is easier to understand.", "definition": "To arrange information so it is easier to understand.", "example": "I organised the data into groups.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Organise' in a sentence."}, {"term": "Pattern", "short_meaning": "A repeated design, such as stripes, spots, checks, or shapes.", "definition": "A repeated design, such as stripes, spots, checks, or shapes.", "example": "The pattern on the dress was made from blue stars.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Pattern' in a sentence."}, {"term": "Pattern", "short_meaning": "Something that repeats or can be noticed in information, behaviour, pictures, or sounds.", "definition": "Something that repeats or can be noticed in information, behaviour, pictures, or sounds.", "example": "AI can spot a pattern in what music I like.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Pattern' in a sentence."}, {"term": "Payment", "short_meaning": "Money given for a product or service.", "definition": "Money given for a product or service.", "example": "The shop takes payment by card.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Payment' in a sentence."}, {"term": "Personal hygiene", "short_meaning": "The ways we keep our bodies clean and healthy.", "definition": "The ways we keep our bodies clean and healthy.", "example": "Brushing my teeth is part of personal hygiene.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Personal hygiene' in a sentence."}, {"term": "Place value", "short_meaning": "The value of a digit depending on its position in a number.", "definition": "The value of a digit depending on its position in a number.", "example": "In 34, the 3 has a place value of 30.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Place value' in a sentence."}, {"term": "Plan", "short_meaning": "To think through what you will make and how you will make it before starting.", "definition": "To think through what you will make and how you will make it before starting.", "example": "Designers plan their ideas before making anything.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "process", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Plan' in a sentence."}, {"term": "Point of view", "short_meaning": "The way a person sees or thinks about something.", "definition": "The way a person sees or thinks about something.", "example": "The account was written from one person’s point of view.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Point of view' in a sentence."}, {"term": "Pose", "short_meaning": "A position you hold with your body.", "definition": "A position you hold with your body.", "example": "Child’s pose is a resting yoga pose.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Pose' in a sentence."}, {"term": "Predict", "short_meaning": "To say what you think will happen before it happens.", "definition": "To say what you think will happen before it happens.", "example": "I predicted the heavier toy would move more slowly.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "science skills", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Predict' in a sentence."}, {"term": "Press-up", "short_meaning": "An exercise where you push your body up from the floor or a wall using your arms and chest.", "definition": "An exercise where you push your body up from the floor or a wall using your arms and chest.", "example": "I practised press-ups against the wall.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Press-up' in a sentence."}, {"term": "Prioritise", "short_meaning": "To decide which task or idea is most important and should be done first.", "definition": "To decide which task or idea is most important and should be done first.", "example": "I will prioritise washing my hands before preparing food.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "planning", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Prioritise' in a sentence."}, {"term": "Product", "short_meaning": "Something made or sold.", "definition": "Something made or sold.", "example": "A bracelet can be a product.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Product' in a sentence."}, {"term": "Profit", "short_meaning": "Money left after costs have been taken away from the money earned.", "definition": "Money left after costs have been taken away from the money earned.", "example": "If I spend £3 and sell for £5, my profit is £2.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Profit' in a sentence."}, {"term": "Purpose", "short_meaning": "The reason for doing or writing something.", "definition": "The reason for doing or writing something.", "example": "The purpose of my note was to ask for help.", "subject": "English", "strand": "Writing - Composition", "tag": "writing", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Purpose' in a sentence."}, {"term": "Reason", "short_meaning": "An explanation of why you think or do something.", "definition": "An explanation of why you think or do something.", "example": "I gave a reason for my opinion.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Reason' in a sentence."}, {"term": "Recommendation system", "short_meaning": "Technology that suggests things you might like, such as videos, songs, or products.", "definition": "Technology that suggests things you might like, such as videos, songs, or products.", "example": "A streaming app uses a recommendation system.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Recommendation system' in a sentence."}, {"term": "Record", "short_meaning": "To write down, type, draw, or save information.", "definition": "To write down, type, draw, or save information.", "example": "I recorded the results in a table.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Record' in a sentence."}, {"term": "Rectangle", "short_meaning": "A four-sided shape with opposite sides equal and four right angles.", "definition": "A four-sided shape with opposite sides equal and four right angles.", "example": "I found the area of the rectangle.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Rectangle' in a sentence."}, {"term": "Register", "short_meaning": "The level of formality in language, such as casual, polite, or formal.", "definition": "The level of formality in language, such as casual, polite, or formal.", "example": "I chose a formal register for my application.", "subject": "English", "strand": "Tone, Style and Register", "tag": "language", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Register' in a sentence."}, {"term": "Relationships", "short_meaning": "The connections we have with other people.", "definition": "The connections we have with other people.", "example": "Being clean can help me feel confident in relationships.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "social", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Relationships' in a sentence."}, {"term": "Relaxation", "short_meaning": "Becoming calmer and less tense.", "definition": "Becoming calmer and less tense.", "example": "Slow breathing can support relaxation.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "wellbeing", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Relaxation' in a sentence."}, {"term": "Reliable", "short_meaning": "Likely to be trusted or useful, although historians still check it carefully.", "definition": "Likely to be trusted or useful, although historians still check it carefully.", "example": "We asked whether the source was reliable.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "evaluation", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Reliable' in a sentence."}, {"term": "Reliable", "short_meaning": "Able to be trusted to work well or give correct information most of the time.", "definition": "Able to be trusted to work well or give correct information most of the time.", "example": "We asked whether the AI answer was reliable.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "thinking", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Reliable' in a sentence."}, {"term": "Routine", "short_meaning": "Something you do regularly in the same way or at the same time.", "definition": "Something you do regularly in the same way or at the same time.", "example": "My morning routine includes washing my face.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "habits", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Routine' in a sentence."}, {"term": "Rows", "short_meaning": "Lines of items going across.", "definition": "Lines of items going across.", "example": "The array had 3 rows.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Rows' in a sentence."}, {"term": "Self-care", "short_meaning": "Things you do to look after your body, mind, and feelings.", "definition": "Things you do to look after your body, mind, and feelings.", "example": "Having a shower can be a form of self-care.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Self-care' in a sentence."}, {"term": "Service", "short_meaning": "Work done to help someone, usually for payment.", "definition": "Work done to help someone, usually for payment.", "example": "Gardening can be a service.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Service' in a sentence."}, {"term": "Shelter", "short_meaning": "A place that protects living things from danger or weather.", "definition": "A place that protects living things from danger or weather.", "example": "The bug hotel gives insects shelter.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Shelter' in a sentence."}, {"term": "Sketch", "short_meaning": "A quick drawing used to plan an idea.", "definition": "A quick drawing used to plan an idea.", "example": "I made a sketch before creating my final design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "process", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Sketch' in a sentence."}, {"term": "Slow down", "short_meaning": "To move more slowly.", "definition": "To move more slowly.", "example": "Friction can make an object slow down.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Slow down' in a sentence."}, {"term": "Small business", "short_meaning": "A business run on a small scale, such as a market stall, service, or maker selling products.", "definition": "A business run on a small scale, such as a market stall, service, or maker selling products.", "example": "My small business idea is a dog-walking service.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Small business' in a sentence."}, {"term": "Smaller", "short_meaning": "Less in number, size, or amount.", "definition": "Less in number, size, or amount.", "example": "12 is smaller than 21.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Smaller' in a sentence."}, {"term": "Source", "short_meaning": "Something from the past or about the past that gives information, such as a photo, diary, letter, map, or newspaper.", "definition": "Something from the past or about the past that gives information, such as a photo, diary, letter, map, or newspaper.", "example": "A photograph can be a useful historical source.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Source' in a sentence."}, {"term": "Speed up", "short_meaning": "To move faster.", "definition": "To move faster.", "example": "The car sped up when I pushed it harder.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Speed up' in a sentence."}, {"term": "Spreadsheet", "short_meaning": "A digital tool with cells, rows, and columns for recording and organising data.", "definition": "A digital tool with cells, rows, and columns for recording and organising data.", "example": "I typed my results into a spreadsheet.", "subject": "Maths", "strand": "Statistics: Data", "tag": "digital", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Spreadsheet' in a sentence."}, {"term": "Square unit", "short_meaning": "One square used to measure area.", "definition": "One square used to measure area.", "example": "The shape covered 12 square units.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Square unit' in a sentence."}, {"term": "Squat", "short_meaning": "An exercise where you bend your knees and hips as if sitting down, then stand back up.", "definition": "An exercise where you bend your knees and hips as if sitting down, then stand back up.", "example": "Squats help strengthen my legs.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Squat' in a sentence."}, {"term": "Standard English", "short_meaning": "The form of English often used in formal writing and formal speaking.", "definition": "The form of English often used in formal writing and formal speaking.", "example": "In Standard English we write ‘we were’ instead of ‘we was’.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Standard English' in a sentence."}, {"term": "Straightforward information", "short_meaning": "Clear and simple facts or messages.", "definition": "Clear and simple facts or messages.", "example": "I shared straightforward information about the trip.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Straightforward information' in a sentence."}, {"term": "Strategise", "short_meaning": "To make a plan for how to do something or solve a problem.", "definition": "To make a plan for how to do something or solve a problem.", "example": "We strategise before starting our small business plan.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "planning", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Strategise' in a sentence."}, {"term": "Strength training", "short_meaning": "Exercise that helps muscles become stronger.", "definition": "Exercise that helps muscles become stronger.", "example": "Squats are part of strength training.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "fitness", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Strength training' in a sentence."}, {"term": "Style", "short_meaning": "The way something is written, spoken, designed, or presented.", "definition": "The way something is written, spoken, designed, or presented.", "example": "The style of my story was exciting.", "subject": "English", "strand": "Tone, Style and Register", "tag": "language", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Style' in a sentence."}, {"term": "Subtract", "short_meaning": "To take away one number or amount from another.", "definition": "To take away one number or amount from another.", "example": "I subtract 4 from 34 to get 30.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "calculation", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Subtract' in a sentence."}, {"term": "Suit the design", "short_meaning": "To fit well with the purpose, style, or look of a design.", "definition": "To fit well with the purpose, style, or look of a design.", "example": "The waterproof material suits the design because it is for rainy days.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "evaluation", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Suit the design' in a sentence."}, {"term": "Table", "short_meaning": "A way to organise information in rows and columns.", "definition": "A way to organise information in rows and columns.", "example": "The table showed the results clearly.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Table' in a sentence."}, {"term": "Tally", "short_meaning": "A quick counting method using marks, often grouped in fives.", "definition": "A quick counting method using marks, often grouped in fives.", "example": "We used a tally to count bees.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "data", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Tally' in a sentence."}, {"term": "Tally chart", "short_meaning": "A chart that uses tally marks to count how many there are of each thing.", "definition": "A chart that uses tally marks to count how many there are of each thing.", "example": "We made a tally chart of insects seen.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Tally chart' in a sentence."}, {"term": "Technique", "short_meaning": "The correct and safe way to do a movement.", "definition": "The correct and safe way to do a movement.", "example": "Good technique helps protect my joints.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "safety", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Technique' in a sentence."}, {"term": "Template", "short_meaning": "A guide or outline that helps you make a design in the right shape or size.", "definition": "A guide or outline that helps you make a design in the right shape or size.", "example": "I used a template to sketch my jacket design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Template' in a sentence."}, {"term": "Textiles", "short_meaning": "Materials made from fibres or threads, often used for clothing or decoration.", "definition": "Materials made from fibres or threads, often used for clothing or decoration.", "example": "We explored textiles before choosing fabric for our design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "materials", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Textiles' in a sentence."}, {"term": "Thrive", "short_meaning": "To grow, live well, and stay healthy.", "definition": "To grow, live well, and stay healthy.", "example": "Plants thrive when they have water and light.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Thrive' in a sentence."}, {"term": "Tone", "short_meaning": "The feeling or attitude shown by words or voice.", "definition": "The feeling or attitude shown by words or voice.", "example": "The tone of my message was friendly.", "subject": "English", "strand": "Tone, Style and Register", "tag": "language", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Tone' in a sentence."}, {"term": "Trajectory", "short_meaning": "The path something follows as it moves through space or time.", "definition": "The path something follows as it moves through space or time.", "example": "The ball followed a curved trajectory after it was thrown.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Trajectory' in a sentence."}, {"term": "Two-digit number", "short_meaning": "A number with two digits, such as 12, 34, or 99.", "definition": "A number with two digits, such as 12, 34, or 99.", "example": "34 is a two-digit number.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Two-digit number' in a sentence."}, {"term": "Verb inflection", "short_meaning": "A change to a verb to show tense or who is doing the action, such as was/were or do/did.", "definition": "A change to a verb to show tense or who is doing the action, such as was/were or do/did.", "example": "The verb inflection changes in ‘I was’ and ‘we were’.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "V", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Verb inflection' in a sentence."}, {"term": "Voice assistant", "short_meaning": "AI that listens to spoken commands and responds, such as a smart speaker assistant.", "definition": "AI that listens to spoken commands and responds, such as a smart speaker assistant.", "example": "A voice assistant can set a timer.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "V", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Voice assistant' in a sentence."}, {"term": "Wall sit", "short_meaning": "An exercise where you lean against a wall with bent knees, like sitting on an invisible chair.", "definition": "An exercise where you lean against a wall with bent knees, like sitting on an invisible chair.", "example": "The wall sit made my legs work hard.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "W", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Wall sit' in a sentence."}, {"term": "Wellbeing", "short_meaning": "How healthy, comfortable, and positive someone feels in their body and mind.", "definition": "How healthy, comfortable, and positive someone feels in their body and mind.", "example": "Good hygiene can support my wellbeing.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "feelings", "first_letter": "W", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Wellbeing' in a sentence."}, {"term": "Yoga", "short_meaning": "A way of moving, stretching, balancing, and breathing that can help the body and mind.", "definition": "A way of moving, stretching, balancing, and breathing that can help the body and mind.", "example": "Yoga helped me feel calmer after lunch.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "wellbeing", "first_letter": "Y", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Yoga' in a sentence."}];
-const cards = document.getElementById('cards');
-const search = document.getElementById('search');
-const subject = document.getElementById('subject');
-const strand = document.getElementById('strand');
-const visibleCount = document.getElementById('visibleCount');
-const alpha = document.getElementById('alpha');
+const entries = [{"term": "Account", "short_meaning": "A spoken or written description of what happened.", "definition": "A spoken or written description of what happened.", "example": "The soldier wrote an account of the battle.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Account' in a sentence."}, {"term": "Add", "short_meaning": "To put numbers or amounts together.", "definition": "To put numbers or amounts together.", "example": "I can add 30 and 4 to make 34.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "calculation", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Add' in a sentence."}, {"term": "AI", "short_meaning": "Artificial intelligence: technology that can learn from information, recognise patterns, and make decisions or suggestions.", "definition": "Artificial intelligence: technology that can learn from information, recognise patterns, and make decisions or suggestions.", "example": "The music app uses AI to suggest songs.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'AI' in a sentence."}, {"term": "Air resistance", "short_meaning": "A force from air that pushes against moving objects and can slow them down.", "definition": "A force from air that pushes against moving objects and can slow them down.", "example": "Air resistance slowed the falling paper.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Air resistance' in a sentence."}, {"term": "Analyse", "short_meaning": "To look carefully at information and explain what it may show.", "definition": "To look carefully at information and explain what it may show.", "example": "We analysed the tally chart to see if biodiversity changed.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "thinking", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Analyse' in a sentence."}, {"term": "Area", "short_meaning": "The amount of space a flat shape takes up.", "definition": "The amount of space a flat shape takes up.", "example": "I found the area by counting squares.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Area' in a sentence."}, {"term": "Artefact", "short_meaning": "An object made or used by people in the past.", "definition": "An object made or used by people in the past.", "example": "The old coin is an artefact from Roman Britain.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Artefact' in a sentence."}, {"term": "Artificial intelligence", "short_meaning": "Technology that can do tasks that seem a bit like human thinking, such as recognising, sorting, predicting, or recommending.", "definition": "Technology that can do tasks that seem a bit like human thinking, such as recognising, sorting, predicting, or recommending.", "example": "Artificial intelligence can help a phone recognise a face.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Artificial intelligence' in a sentence."}, {"term": "Audience", "short_meaning": "The person or people who read, watch, or listen to something.", "definition": "The person or people who read, watch, or listen to something.", "example": "I changed my words because my audience was younger children.", "subject": "English", "strand": "Writing - Composition", "tag": "writing", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Audience' in a sentence."}, {"term": "Autocorrect", "short_meaning": "A tool that suggests or changes spellings as you type.", "definition": "A tool that suggests or changes spellings as you type.", "example": "Autocorrect fixed the spelling mistake.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "A", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Autocorrect' in a sentence."}, {"term": "Balance", "short_meaning": "Keeping your body steady without falling.", "definition": "Keeping your body steady without falling.", "example": "A standing pose can help with balance.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "body", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Balance' in a sentence."}, {"term": "Basic text", "short_meaning": "A simple piece of writing, such as a note, message, list, card, or short story.", "definition": "A simple piece of writing, such as a note, message, list, card, or short story.", "example": "I wrote a basic text to share news.", "subject": "English", "strand": "Writing - Composition", "tag": "writing", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Basic text' in a sentence."}, {"term": "Bias", "short_meaning": "When information shows one side more strongly than another, often because of someone's opinions or purpose.", "definition": "When information shows one side more strongly than another, often because of someone's opinions or purpose.", "example": "The poster showed bias because it only praised one side.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Bias' in a sentence."}, {"term": "Bigger", "short_meaning": "Greater in number, size, or amount.", "definition": "Greater in number, size, or amount.", "example": "45 is bigger than 34.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Bigger' in a sentence."}, {"term": "Biodiversity", "short_meaning": "The variety of living things found in a place.", "definition": "The variety of living things found in a place.", "example": "The garden had more biodiversity after we planted flowers.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Biodiversity' in a sentence."}, {"term": "Bodyweight exercise", "short_meaning": "An exercise that uses your own body as resistance, such as squats or press-ups.", "definition": "An exercise that uses your own body as resistance, such as squats or press-ups.", "example": "A wall sit is a bodyweight exercise.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "fitness", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Bodyweight exercise' in a sentence."}, {"term": "Business idea", "short_meaning": "A plan for something you could sell or a service you could offer.", "definition": "A plan for something you could sell or a service you could offer.", "example": "My business idea is to sell handmade cards.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "B", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Business idea' in a sentence."}, {"term": "Calculate", "short_meaning": "To work out an answer using maths.", "definition": "To work out an answer using maths.", "example": "I used place value to calculate the answer.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "calculation", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Calculate' in a sentence."}, {"term": "Cat-cow", "short_meaning": "A yoga movement where you arch and round your back while breathing.", "definition": "A yoga movement where you arch and round your back while breathing.", "example": "Cat-cow helped me stretch my back.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Cat-cow' in a sentence."}, {"term": "Category", "short_meaning": "A group used to sort information or objects.", "definition": "A group used to sort information or objects.", "example": "We sorted animals into categories.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Category' in a sentence."}, {"term": "Change direction", "short_meaning": "To move a different way from before.", "definition": "To move a different way from before.", "example": "The ball changed direction after hitting the wall.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Change direction' in a sentence."}, {"term": "Child's pose", "short_meaning": "A resting yoga pose where you kneel and fold forward.", "definition": "A resting yoga pose where you kneel and fold forward.", "example": "Child's pose can help with relaxation.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Child\u2019s pose' in a sentence."}, {"term": "Collect", "short_meaning": "To gather information, objects, or results.", "definition": "To gather information, objects, or results.", "example": "We collected data by asking questions.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Collect' in a sentence."}, {"term": "Colour", "short_meaning": "The shade or hue something has, such as red, green, black, or gold.", "definition": "The shade or hue something has, such as red, green, black, or gold.", "example": "I picked a colour that suited my design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Colour' in a sentence."}, {"term": "Columns", "short_meaning": "Lines of items going down.", "definition": "Lines of items going down.", "example": "The array had 4 columns.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Columns' in a sentence."}, {"term": "Comfortable", "short_meaning": "Feeling okay, safe, or at ease in your body or situation.", "definition": "Feeling okay, safe, or at ease in your body or situation.", "example": "Clean clothes can help me feel comfortable.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "feelings", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Comfortable' in a sentence."}, {"term": "Compare", "short_meaning": "To look at two or more things and say how they are the same or different.", "definition": "To look at two or more things and say how they are the same or different.", "example": "I compared two numbers to find which was bigger.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Compare' in a sentence."}, {"term": "Conservation", "short_meaning": "Protecting and caring for nature and living things.", "definition": "Protecting and caring for nature and living things.", "example": "We made a conservation area for insects.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Conservation' in a sentence."}, {"term": "Control", "short_meaning": "Moving carefully without rushing or wobbling too much.", "definition": "Moving carefully without rushing or wobbling too much.", "example": "I used control when lifting the weight.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "safety", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Control' in a sentence."}, {"term": "Cost", "short_meaning": "The amount of money needed to buy or make something.", "definition": "The amount of money needed to buy or make something.", "example": "The cost of the materials was \u00a35.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Cost' in a sentence."}, {"term": "Customer", "short_meaning": "A person who buys a product or uses a service.", "definition": "A person who buys a product or uses a service.", "example": "The customer paid for a cake.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "C", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Customer' in a sentence."}, {"term": "Data", "short_meaning": "Information we collect to find things out.", "definition": "Information we collect to find things out.", "example": "We collected data about favourite fruits.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Data' in a sentence."}, {"term": "Decision", "short_meaning": "A choice made after using information.", "definition": "A choice made after using information.", "example": "AI can make a decision about which song to suggest next.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "thinking", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Decision' in a sentence."}, {"term": "Digit", "short_meaning": "A symbol used to write numbers, such as 0, 1, 2, or 9.", "definition": "A symbol used to write numbers, such as 0, 1, 2, or 9.", "example": "The number 34 has two digits.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Digit' in a sentence."}, {"term": "Dumbbell", "short_meaning": "A small hand-held weight used for exercise.", "definition": "A small hand-held weight used for exercise.", "example": "I lifted a dumbbell with control.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "equipment", "first_letter": "D", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Dumbbell' in a sentence."}, {"term": "Enhance", "short_meaning": "To improve something or make it better, clearer, stronger, or more useful.", "definition": "To improve something or make it better, clearer, stronger, or more useful.", "example": "Adding wildflowers can enhance a mini-conservation area.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "improve", "first_letter": "E", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Enhance' in a sentence."}, {"term": "Evidence", "short_meaning": "Information or clues used to support an idea about what happened.", "definition": "Information or clues used to support an idea about what happened.", "example": "The diary gave evidence about everyday life.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "E", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Evidence' in a sentence."}, {"term": "Fabric", "short_meaning": "Cloth used to make clothes, costumes, or textile items.", "definition": "Cloth used to make clothes, costumes, or textile items.", "example": "The fabric felt smooth and light.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "materials", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Fabric' in a sentence."}, {"term": "Fashion design", "short_meaning": "Planning how clothing or an outfit will look, feel, and be made.", "definition": "Planning how clothing or an outfit will look, feel, and be made.", "example": "My fashion design uses bright colours and soft fabric.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Fashion design' in a sentence."}, {"term": "Feelings", "short_meaning": "Emotions, such as happy, worried, proud, or calm.", "definition": "Emotions, such as happy, worried, proud, or calm.", "example": "I explained my feelings about the change.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Feelings' in a sentence."}, {"term": "Flexibility", "short_meaning": "How easily your muscles and joints can bend and stretch.", "definition": "How easily your muscles and joints can bend and stretch.", "example": "Stretching can improve flexibility.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "body", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Flexibility' in a sentence."}, {"term": "Focus", "short_meaning": "Paying attention to one thing.", "definition": "Paying attention to one thing.", "example": "Yoga breathing helped me focus.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "mind", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Focus' in a sentence."}, {"term": "Force", "short_meaning": "A push or pull that can make something move, stop, speed up, slow down, or change direction.", "definition": "A push or pull that can make something move, stop, speed up, slow down, or change direction.", "example": "I used a force to push the toy car.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Force' in a sentence."}, {"term": "Formal English", "short_meaning": "English used in more official writing or situations, with agreed grammar rules.", "definition": "English used in more official writing or situations, with agreed grammar rules.", "example": "I used formal English in my letter.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Formal English' in a sentence."}, {"term": "Friction", "short_meaning": "A force that slows objects down when surfaces rub together.", "definition": "A force that slows objects down when surfaces rub together.", "example": "Friction slowed the bike tyres on the road.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "F", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Friction' in a sentence."}, {"term": "Gesture", "short_meaning": "A movement of the body used to communicate, such as pointing, waving, or thumbs up.", "definition": "A movement of the body used to communicate, such as pointing, waving, or thumbs up.", "example": "I used a gesture to show I agreed.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Gesture' in a sentence."}, {"term": "Gravity", "short_meaning": "The force that pulls objects towards the Earth.", "definition": "The force that pulls objects towards the Earth.", "example": "Gravity pulls a dropped pencil down.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "physics", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Gravity' in a sentence."}, {"term": "Grid", "short_meaning": "A set of lines that make rows, columns, and squares.", "definition": "A set of lines that make rows, columns, and squares.", "example": "The rectangle was drawn on a grid.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Grid' in a sentence."}, {"term": "Grooming", "short_meaning": "Looking after your appearance, such as hair, nails, clothes, and skin.", "definition": "Looking after your appearance, such as hair, nails, clothes, and skin.", "example": "Combing my hair is part of grooming.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "G", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Grooming' in a sentence."}, {"term": "Habitat", "short_meaning": "The place where a plant or animal lives.", "definition": "The place where a plant or animal lives.", "example": "A pond is a habitat for frogs and insects.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "H", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Habitat' in a sentence."}, {"term": "Healthy", "short_meaning": "Helping your body or mind work well.", "definition": "Helping your body or mind work well.", "example": "Washing hands helps keep me healthy.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "H", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Healthy' in a sentence."}, {"term": "Historian", "short_meaning": "A person who studies the past using clues such as sources and artefacts.", "definition": "A person who studies the past using clues such as sources and artefacts.", "example": "The historian compared two different sources.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "H", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Historian' in a sentence."}, {"term": "Initiate", "short_meaning": "To start something.", "definition": "To start something.", "example": "I initiate the investigation by choosing what I want to test first.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "start", "first_letter": "I", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Initiate' in a sentence."}, {"term": "Interpretation", "short_meaning": "A way of understanding or explaining something.", "definition": "A way of understanding or explaining something.", "example": "Two people may have different interpretations of the same event.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "I", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Interpretation' in a sentence."}, {"term": "Investigation", "short_meaning": "A careful test or activity used to find something out.", "definition": "A careful test or activity used to find something out.", "example": "We did an investigation to test friction.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "science skills", "first_letter": "I", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Investigation' in a sentence."}, {"term": "Joint", "short_meaning": "A place where bones meet and the body can bend or move.", "definition": "A place where bones meet and the body can bend or move.", "example": "Good technique supports my joints.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "body", "first_letter": "J", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Joint' in a sentence."}, {"term": "Kettlebell", "short_meaning": "A weight with a handle, used for strength exercises.", "definition": "A weight with a handle, used for strength exercises.", "example": "The kettlebell was light enough for me to use safely.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "equipment", "first_letter": "K", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Kettlebell' in a sentence."}, {"term": "Local spoken forms", "short_meaning": "Ways of speaking used in a local area or community.", "definition": "Ways of speaking used in a local area or community.", "example": "Local spoken forms are real ways people speak, even if formal writing uses different rules.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "L", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Local spoken forms' in a sentence."}, {"term": "Lunge", "short_meaning": "An exercise where one leg steps forward or back and both knees bend.", "definition": "An exercise where one leg steps forward or back and both knees bend.", "example": "Lunges work my legs and balance.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "L", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Lunge' in a sentence."}, {"term": "Marketing", "short_meaning": "Ways of letting people know about a product, service, or business.", "definition": "Ways of letting people know about a product, service, or business.", "example": "A poster is one kind of marketing.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Marketing' in a sentence."}, {"term": "Material", "short_meaning": "What something is made from, such as cotton, wool, denim, paper, or plastic.", "definition": "What something is made from, such as cotton, wool, denim, paper, or plastic.", "example": "I chose a strong material for the bag.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "materials", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Material' in a sentence."}, {"term": "Mini-conservation area", "short_meaning": "A small space set up to help wildlife, such as a bug hotel, wildlife patch, or pond.", "definition": "A small space set up to help wildlife, such as a bug hotel, wildlife patch, or pond.", "example": "Our mini-conservation area included logs and wildflowers.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Mini-conservation area' in a sentence."}, {"term": "Motion", "short_meaning": "Movement from one place or position to another.", "definition": "Movement from one place or position to another.", "example": "The ball's motion changed when I kicked it.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Motion' in a sentence."}, {"term": "Mountain pose", "short_meaning": "A standing yoga pose where you stand tall and steady.", "definition": "A standing yoga pose where you stand tall and steady.", "example": "Mountain pose helped me practise good posture.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Mountain pose' in a sentence."}, {"term": "Multiplication array", "short_meaning": "An arrangement in rows and columns that shows multiplication.", "definition": "An arrangement in rows and columns that shows multiplication.", "example": "3 rows of 4 is a multiplication array for 3 \u00d7 4.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Multiplication array' in a sentence."}, {"term": "Muscle", "short_meaning": "Body tissue that helps you move and stay strong.", "definition": "Body tissue that helps you move and stay strong.", "example": "Strength training helps build muscle.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "body", "first_letter": "M", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Muscle' in a sentence."}, {"term": "Observe", "short_meaning": "To look carefully and notice what happens.", "definition": "To look carefully and notice what happens.", "example": "We observed which insects visited the flowers.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "skills", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Observe' in a sentence."}, {"term": "One-sided", "short_meaning": "Showing only one view and leaving out other information.", "definition": "Showing only one view and leaving out other information.", "example": "A one-sided story may not tell us everything.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'One-sided' in a sentence."}, {"term": "Opinion", "short_meaning": "What someone thinks or believes about something.", "definition": "What someone thinks or believes about something.", "example": "My opinion is that yoga is relaxing.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Opinion' in a sentence."}, {"term": "Optimise", "short_meaning": "To make something work as well as possible.", "definition": "To make something work as well as possible.", "example": "We changed the design to optimise how much light reached the plants.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "improve", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Optimise' in a sentence."}, {"term": "Organise", "short_meaning": "To arrange information so it is easier to understand.", "definition": "To arrange information so it is easier to understand.", "example": "I organised the data into groups.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "O", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Organise' in a sentence."}, {"term": "Pattern", "short_meaning": "A repeated design, such as stripes, spots, checks, or shapes.", "definition": "A repeated design, such as stripes, spots, checks, or shapes.", "example": "The pattern on the dress was made from blue stars.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Pattern' in a sentence."}, {"term": "Pattern", "short_meaning": "Something that repeats or can be noticed in information, behaviour, pictures, or sounds.", "definition": "Something that repeats or can be noticed in information, behaviour, pictures, or sounds.", "example": "AI can spot a pattern in what music I like.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Pattern' in a sentence."}, {"term": "Payment", "short_meaning": "Money given for a product or service.", "definition": "Money given for a product or service.", "example": "The shop takes payment by card.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Payment' in a sentence."}, {"term": "Personal hygiene", "short_meaning": "The ways we keep our bodies clean and healthy.", "definition": "The ways we keep our bodies clean and healthy.", "example": "Brushing my teeth is part of personal hygiene.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Personal hygiene' in a sentence."}, {"term": "Place value", "short_meaning": "The value of a digit depending on its position in a number.", "definition": "The value of a digit depending on its position in a number.", "example": "In 34, the 3 has a place value of 30.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Place value' in a sentence."}, {"term": "Plan", "short_meaning": "To think through what you will make and how you will make it before starting.", "definition": "To think through what you will make and how you will make it before starting.", "example": "Designers plan their ideas before making anything.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "process", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Plan' in a sentence."}, {"term": "Point of view", "short_meaning": "The way a person sees or thinks about something.", "definition": "The way a person sees or thinks about something.", "example": "The account was written from one person's point of view.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "thinking", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Point of view' in a sentence."}, {"term": "Pose", "short_meaning": "A position you hold with your body.", "definition": "A position you hold with your body.", "example": "Child's pose is a resting yoga pose.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "movement", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Pose' in a sentence."}, {"term": "Predict", "short_meaning": "To say what you think will happen before it happens.", "definition": "To say what you think will happen before it happens.", "example": "I predicted the heavier toy would move more slowly.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "science skills", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Predict' in a sentence."}, {"term": "Press-up", "short_meaning": "An exercise where you push your body up from the floor or a wall using your arms and chest.", "definition": "An exercise where you push your body up from the floor or a wall using your arms and chest.", "example": "I practised press-ups against the wall.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Press-up' in a sentence."}, {"term": "Prioritise", "short_meaning": "To decide which task or idea is most important and should be done first.", "definition": "To decide which task or idea is most important and should be done first.", "example": "I will prioritise washing my hands before preparing food.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "planning", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Prioritise' in a sentence."}, {"term": "Product", "short_meaning": "Something made or sold.", "definition": "Something made or sold.", "example": "A bracelet can be a product.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Product' in a sentence."}, {"term": "Profit", "short_meaning": "Money left after costs have been taken away from the money earned.", "definition": "Money left after costs have been taken away from the money earned.", "example": "If I spend \u00a33 and sell for \u00a35, my profit is \u00a32.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "money", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Profit' in a sentence."}, {"term": "Purpose", "short_meaning": "The reason for doing or writing something.", "definition": "The reason for doing or writing something.", "example": "The purpose of my note was to ask for help.", "subject": "English", "strand": "Writing - Composition", "tag": "writing", "first_letter": "P", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Purpose' in a sentence."}, {"term": "Reason", "short_meaning": "An explanation of why you think or do something.", "definition": "An explanation of why you think or do something.", "example": "I gave a reason for my opinion.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Reason' in a sentence."}, {"term": "Recommendation system", "short_meaning": "Technology that suggests things you might like, such as videos, songs, or products.", "definition": "Technology that suggests things you might like, such as videos, songs, or products.", "example": "A streaming app uses a recommendation system.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Recommendation system' in a sentence."}, {"term": "Record", "short_meaning": "To write down, type, draw, or save information.", "definition": "To write down, type, draw, or save information.", "example": "I recorded the results in a table.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Record' in a sentence."}, {"term": "Rectangle", "short_meaning": "A four-sided shape with opposite sides equal and four right angles.", "definition": "A four-sided shape with opposite sides equal and four right angles.", "example": "I found the area of the rectangle.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Rectangle' in a sentence."}, {"term": "Register", "short_meaning": "The level of formality in language, such as casual, polite, or formal.", "definition": "The level of formality in language, such as casual, polite, or formal.", "example": "I chose a formal register for my application.", "subject": "English", "strand": "Tone, Style and Register", "tag": "language", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Register' in a sentence."}, {"term": "Relationships", "short_meaning": "The connections we have with other people.", "definition": "The connections we have with other people.", "example": "Being clean can help me feel confident in relationships.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "social", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Relationships' in a sentence."}, {"term": "Relaxation", "short_meaning": "Becoming calmer and less tense.", "definition": "Becoming calmer and less tense.", "example": "Slow breathing can support relaxation.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "wellbeing", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Relaxation' in a sentence."}, {"term": "Reliable", "short_meaning": "Likely to be trusted or useful, although historians still check it carefully.", "definition": "Likely to be trusted or useful, although historians still check it carefully.", "example": "We asked whether the source was reliable.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "evaluation", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Reliable' in a sentence."}, {"term": "Reliable", "short_meaning": "Able to be trusted to work well or give correct information most of the time.", "definition": "Able to be trusted to work well or give correct information most of the time.", "example": "We asked whether the AI answer was reliable.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "thinking", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Reliable' in a sentence."}, {"term": "Routine", "short_meaning": "Something you do regularly in the same way or at the same time.", "definition": "Something you do regularly in the same way or at the same time.", "example": "My morning routine includes washing my face.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "habits", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Routine' in a sentence."}, {"term": "Rows", "short_meaning": "Lines of items going across.", "definition": "Lines of items going across.", "example": "The array had 3 rows.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "R", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Rows' in a sentence."}, {"term": "Self-care", "short_meaning": "Things you do to look after your body, mind, and feelings.", "definition": "Things you do to look after your body, mind, and feelings.", "example": "Having a shower can be a form of self-care.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "health", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Self-care' in a sentence."}, {"term": "Service", "short_meaning": "Work done to help someone, usually for payment.", "definition": "Work done to help someone, usually for payment.", "example": "Gardening can be a service.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Service' in a sentence."}, {"term": "Shelter", "short_meaning": "A place that protects living things from danger or weather.", "definition": "A place that protects living things from danger or weather.", "example": "The bug hotel gives insects shelter.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Shelter' in a sentence."}, {"term": "Sketch", "short_meaning": "A quick drawing used to plan an idea.", "definition": "A quick drawing used to plan an idea.", "example": "I made a sketch before creating my final design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "process", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Sketch' in a sentence."}, {"term": "Slow down", "short_meaning": "To move more slowly.", "definition": "To move more slowly.", "example": "Friction can make an object slow down.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Slow down' in a sentence."}, {"term": "Small business", "short_meaning": "A business run on a small scale, such as a market stall, service, or maker selling products.", "definition": "A business run on a small scale, such as a market stall, service, or maker selling products.", "example": "My small business idea is a dog-walking service.", "subject": "Preparation for Adulthood", "strand": "Community Impact & Enterprise", "tag": "enterprise", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Small business' in a sentence."}, {"term": "Smaller", "short_meaning": "Less in number, size, or amount.", "definition": "Less in number, size, or amount.", "example": "12 is smaller than 21.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Smaller' in a sentence."}, {"term": "Source", "short_meaning": "Something from the past or about the past that gives information, such as a photo, diary, letter, map, or newspaper.", "definition": "Something from the past or about the past that gives information, such as a photo, diary, letter, map, or newspaper.", "example": "A photograph can be a useful historical source.", "subject": "Human and Social", "strand": "History: Beyond Living Memory", "tag": "history", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Source' in a sentence."}, {"term": "Speed up", "short_meaning": "To move faster.", "definition": "To move faster.", "example": "The car sped up when I pushed it harder.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Speed up' in a sentence."}, {"term": "Spreadsheet", "short_meaning": "A digital tool with cells, rows, and columns for recording and organising data.", "definition": "A digital tool with cells, rows, and columns for recording and organising data.", "example": "I typed my results into a spreadsheet.", "subject": "Maths", "strand": "Statistics: Data", "tag": "digital", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Spreadsheet' in a sentence."}, {"term": "Square unit", "short_meaning": "One square used to measure area.", "definition": "One square used to measure area.", "example": "The shape covered 12 square units.", "subject": "Maths", "strand": "Measure and Shape: Area", "tag": "maths", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Square unit' in a sentence."}, {"term": "Squat", "short_meaning": "An exercise where you bend your knees and hips as if sitting down, then stand back up.", "definition": "An exercise where you bend your knees and hips as if sitting down, then stand back up.", "example": "Squats help strengthen my legs.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Squat' in a sentence."}, {"term": "Standard English", "short_meaning": "The form of English often used in formal writing and formal speaking.", "definition": "The form of English often used in formal writing and formal speaking.", "example": "In Standard English we write 'we were' instead of 'we was'.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Standard English' in a sentence."}, {"term": "Straightforward information", "short_meaning": "Clear and simple facts or messages.", "definition": "Clear and simple facts or messages.", "example": "I shared straightforward information about the trip.", "subject": "English", "strand": "Communication & Listening", "tag": "communication", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Straightforward information' in a sentence."}, {"term": "Strategise", "short_meaning": "To make a plan for how to do something or solve a problem.", "definition": "To make a plan for how to do something or solve a problem.", "example": "We strategise before starting our small business plan.", "subject": "Cross-curricular Vocabulary", "strand": "Planning, Improving and Problem Solving", "tag": "planning", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Strategise' in a sentence."}, {"term": "Strength training", "short_meaning": "Exercise that helps muscles become stronger.", "definition": "Exercise that helps muscles become stronger.", "example": "Squats are part of strength training.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "fitness", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Strength training' in a sentence."}, {"term": "Style", "short_meaning": "The way something is written, spoken, designed, or presented.", "definition": "The way something is written, spoken, designed, or presented.", "example": "The style of my story was exciting.", "subject": "English", "strand": "Tone, Style and Register", "tag": "language", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Style' in a sentence."}, {"term": "Subtract", "short_meaning": "To take away one number or amount from another.", "definition": "To take away one number or amount from another.", "example": "I subtract 4 from 34 to get 30.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "calculation", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Subtract' in a sentence."}, {"term": "Suit the design", "short_meaning": "To fit well with the purpose, style, or look of a design.", "definition": "To fit well with the purpose, style, or look of a design.", "example": "The waterproof material suits the design because it is for rainy days.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "evaluation", "first_letter": "S", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Suit the design' in a sentence."}, {"term": "Table", "short_meaning": "A way to organise information in rows and columns.", "definition": "A way to organise information in rows and columns.", "example": "The table showed the results clearly.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Table' in a sentence."}, {"term": "Tally", "short_meaning": "A quick counting method using marks, often grouped in fives.", "definition": "A quick counting method using marks, often grouped in fives.", "example": "We used a tally to count bees.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "data", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Tally' in a sentence."}, {"term": "Tally chart", "short_meaning": "A chart that uses tally marks to count how many there are of each thing.", "definition": "A chart that uses tally marks to count how many there are of each thing.", "example": "We made a tally chart of insects seen.", "subject": "Maths", "strand": "Statistics: Data", "tag": "statistics", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Tally chart' in a sentence."}, {"term": "Technique", "short_meaning": "The correct and safe way to do a movement.", "definition": "The correct and safe way to do a movement.", "example": "Good technique helps protect my joints.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "safety", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Technique' in a sentence."}, {"term": "Template", "short_meaning": "A guide or outline that helps you make a design in the right shape or size.", "definition": "A guide or outline that helps you make a design in the right shape or size.", "example": "I used a template to sketch my jacket design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "design", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Template' in a sentence."}, {"term": "Textiles", "short_meaning": "Materials made from fibres or threads, often used for clothing or decoration.", "definition": "Materials made from fibres or threads, often used for clothing or decoration.", "example": "We explored textiles before choosing fabric for our design.", "subject": "Aesthetic and Creative", "strand": "Fashion", "tag": "materials", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Textiles' in a sentence."}, {"term": "Thrive", "short_meaning": "To grow, live well, and stay healthy.", "definition": "To grow, live well, and stay healthy.", "example": "Plants thrive when they have water and light.", "subject": "Physical World & Exploration", "strand": "Wildlife Exploration", "tag": "environment", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Thrive' in a sentence."}, {"term": "Tone", "short_meaning": "The feeling or attitude shown by words or voice.", "definition": "The feeling or attitude shown by words or voice.", "example": "The tone of my message was friendly.", "subject": "English", "strand": "Tone, Style and Register", "tag": "language", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Tone' in a sentence."}, {"term": "Trajectory", "short_meaning": "The path something follows as it moves through space or time.", "definition": "The path something follows as it moves through space or time.", "example": "The ball followed a curved trajectory after it was thrown.", "subject": "Scientific & Environmental", "strand": "Physics: Forces, Motion and Energy", "tag": "motion", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Trajectory' in a sentence."}, {"term": "Two-digit number", "short_meaning": "A number with two digits, such as 12, 34, or 99.", "definition": "A number with two digits, such as 12, 34, or 99.", "example": "34 is a two-digit number.", "subject": "Maths", "strand": "Place Value and Calculations", "tag": "number", "first_letter": "T", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Two-digit number' in a sentence."}, {"term": "Verb inflection", "short_meaning": "A change to a verb to show tense or who is doing the action, such as was/were or do/did.", "definition": "A change to a verb to show tense or who is doing the action, such as was/were or do/did.", "example": "The verb inflection changes in 'I was' and 'we were'.", "subject": "English", "strand": "Language Features / Standard English", "tag": "grammar", "first_letter": "V", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Verb inflection' in a sentence."}, {"term": "Voice assistant", "short_meaning": "AI that listens to spoken commands and responds, such as a smart speaker assistant.", "definition": "AI that listens to spoken commands and responds, such as a smart speaker assistant.", "example": "A voice assistant can set a timer.", "subject": "Digital Media", "strand": "Computing and Coding: AI", "tag": "technology", "first_letter": "V", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Voice assistant' in a sentence."}, {"term": "Wall sit", "short_meaning": "An exercise where you lean against a wall with bent knees, like sitting on an invisible chair.", "definition": "An exercise where you lean against a wall with bent knees, like sitting on an invisible chair.", "example": "The wall sit made my legs work hard.", "subject": "Physical World & Exploration", "strand": "Fitness Training", "tag": "movement", "first_letter": "W", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Wall sit' in a sentence."}, {"term": "Wellbeing", "short_meaning": "How healthy, comfortable, and positive someone feels in their body and mind.", "definition": "How healthy, comfortable, and positive someone feels in their body and mind.", "example": "Good hygiene can support my wellbeing.", "subject": "Relational (PSHE & RSE)", "strand": "Changing Me: Embracing Change", "tag": "feelings", "first_letter": "W", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Wellbeing' in a sentence."}, {"term": "Yoga", "short_meaning": "A way of moving, stretching, balancing, and breathing that can help the body and mind.", "definition": "A way of moving, stretching, balancing, and breathing that can help the body and mind.", "example": "Yoga helped me feel calmer after lunch.", "subject": "Preparation for Adulthood", "strand": "Wellbeing, Leisure & Free Time: Yoga", "tag": "wellbeing", "first_letter": "Y", "support_level": "student-friendly", "practice_prompt": "I can use the word 'Yoga' in a sentence."}];
+
+/* ── State ── */
 let letterFilter = '';
+let fontSize = 16;
 let currentQuiz = null;
-let fontSize = 18;
-let spacing = 1.55;
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.cancel();
+let examplesHidden = false;
+
+/* ── Elements ── */
+const searchEl   = document.getElementById('search');
+const subjectEl  = document.getElementById('subject');
+const strandEl   = document.getElementById('strand');
+const cardsEl    = document.getElementById('cards');
+const countEl    = document.getElementById('visibleCount');
+const alphaEl    = document.getElementById('alpha');
+const quizPrompt = document.getElementById('quizPrompt');
+const quizAnswer = document.getElementById('quizAnswer');
+
+/* ── Read aloud ── */
+let activeBtn = null;
+
+function speak(text, btn) {
+  if (activeBtn && activeBtn !== btn) {
+    activeBtn.textContent = '🔊 Read aloud';
+    activeBtn.disabled = false;
+  }
+  activeBtn = btn || null;
+
+  if (!('speechSynthesis' in window)) {
+    if (btn) btn.textContent = '🔊 Not supported';
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  function doSpeak() {
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.86;
+    const voices = speechSynthesis.getVoices();
+    const enVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (enVoice) u.voice = enVoice;
+    u.rate = 0.88;
     u.pitch = 1;
+    u.volume = 1;
+    u.onstart = () => { if (btn) btn.textContent = '⏸ Speaking…'; };
+    u.onend = () => {
+      if (btn) { btn.textContent = '🔊 Read aloud'; btn.disabled = false; }
+      activeBtn = null;
+    };
+    u.onerror = (e) => {
+      if (btn) { btn.textContent = '🔊 Read aloud'; btn.disabled = false; }
+      activeBtn = null;
+      if (e.error !== 'interrupted') console.warn('Speech error:', e.error);
+    };
+    if (btn) btn.disabled = true;
     speechSynthesis.speak(u);
-  } else { alert('Read aloud is not supported in this browser.'); }
+  }
+
+  const voices = speechSynthesis.getVoices();
+  if (voices.length > 0) {
+    setTimeout(doSpeak, 50);
+  } else {
+    speechSynthesis.onvoiceschanged = () => {
+      speechSynthesis.onvoiceschanged = null;
+      setTimeout(doSpeak, 50);
+    };
+  }
 }
-function safe(text) {
-  return String(text).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+/* ── Safety escape ── */
+function esc(str) {
+  return String(str || '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 }
-function spotlight(article) {
-  document.querySelectorAll('.card').forEach(c => c.classList.remove('spotlight'));
-  article.classList.add('spotlight');
-  document.body.classList.add('focus-mode');
-  article.scrollIntoView({block:'start'});
-}
-function makeCard(entry) {
-  const article = document.createElement('article');
-  article.className = 'card';
-  article.innerHTML = `<div class="word-row"><h2>${safe(entry.term)}</h2><span class="badge">${safe(entry.first_letter)}</span></div>
-  <div class="badges"><span class="badge">${safe(entry.subject)}</span><span class="badge">${safe(entry.strand)}</span><span class="badge">${safe(entry.tag)}</span></div>
-  <p class="definition"><strong>Meaning</strong>${safe(entry.short_meaning || entry.definition)}</p>
-  <p class="example"><strong>Example</strong>${safe(entry.example)}</p>
-  <p class="prompt"><strong>Try it</strong>${safe(entry.practice_prompt)}</p>
-  <div class="actions"><button class="small read" type="button">Read aloud</button><button class="secondary small copy" type="button">Copy word</button><button class="secondary small focus" type="button">Focus on this</button></div>`;
-  article.querySelector('.read').addEventListener('click', () => speak(`${entry.term}. Meaning. ${entry.definition} Example. ${entry.example}`));
-  article.querySelector('.copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(entry.term); } catch(e) {} });
-  article.querySelector('.focus').addEventListener('click', () => spotlight(article));
-  return article;
-}
-function activePool() {
-  const q = search.value.trim().toLowerCase();
-  const s = subject.value;
-  const st = strand.value;
+
+/* ── Filtered pool ── */
+function pool() {
+  const q  = searchEl.value.trim().toLowerCase();
+  const s  = subjectEl.value;
+  const st = strandEl.value;
   return entries.filter(e => {
     const text = `${e.term} ${e.definition} ${e.example} ${e.subject} ${e.strand} ${e.tag}`.toLowerCase();
-    return (!q || text.includes(q)) && (!s || e.subject === s) && (!st || e.strand === st) && (!letterFilter || e.term[0].toUpperCase() === letterFilter);
-  }).sort((a,b) => a.term.localeCompare(b.term));
+    return (!q || text.includes(q))
+      && (!s  || e.subject === s)
+      && (!st || e.strand  === st)
+      && (!letterFilter || e.term[0].toUpperCase() === letterFilter);
+  }).sort((a, b) => a.term.localeCompare(b.term));
 }
+
+/* ── Render cards ── */
 function render() {
-  document.body.classList.remove('focus-mode');
-  const filtered = activePool();
-  cards.innerHTML = '';
-  filtered.forEach(e => cards.appendChild(makeCard(e)));
-  visibleCount.textContent = filtered.length;
-}
-function buildAlpha() {
-  ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].forEach(l => {
-    const b = document.createElement('button'); b.className='secondary'; b.type='button'; b.textContent=l; b.setAttribute('aria-label', l === 'All' ? 'Show all letters' : `Show words beginning with ${l}`);
-    b.addEventListener('click', () => { letterFilter = l === 'All' ? '' : l; render(); });
-    alpha.appendChild(b);
+  const filtered = pool();
+  cardsEl.innerHTML = '';
+  countEl.textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    cardsEl.innerHTML = `<div class="empty-state">
+      <p>No words match that search.</p>
+      <button onclick="resetAll()">Clear filters</button>
+    </div>`;
+    return;
+  }
+
+  filtered.forEach(e => {
+    const card = document.createElement('article');
+    card.className = 'vocab-card';
+    card.innerHTML = `
+      <div class="card-top">
+        <h2 class="card-term">${esc(e.term)}</h2>
+        <span class="card-letter">${esc(e.first_letter)}</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge subject">${esc(e.subject)}</span>
+        <span class="badge">${esc(e.strand)}</span>
+        <span class="badge tag">${esc(e.tag)}</span>
+      </div>
+      <div class="card-meaning"><strong>Meaning</strong>${esc(e.short_meaning || e.definition)}</div>
+      <div class="card-example"><strong>Example</strong>${esc(e.example)}</div>
+      <div class="card-prompt"><strong>Try it</strong>${esc(e.practice_prompt)}</div>
+      <div class="card-actions">
+        <button class="card-btn read" type="button">🔊 Read aloud</button>
+      </div>`;
+    card.querySelector('.read').addEventListener('click', function() {
+      speak(`${e.term}. Meaning. ${e.definition} Example. ${e.example}`, this);
+    });
+    cardsEl.appendChild(card);
   });
 }
-function newQuiz() {
-  const pool = activePool().length ? activePool() : entries;
-  currentQuiz = pool[Math.floor(Math.random()*pool.length)] || entries[0];
-  document.getElementById('quizPrompt').textContent = `Which word means: “${currentQuiz.short_meaning || currentQuiz.definition}”`;
-  document.getElementById('quizAnswer').classList.add('hidden');
-  document.getElementById('quizAnswer').textContent = '';
+
+/* ── Alphabet strip ── */
+function buildAlpha() {
+  const allBtn = document.createElement('button');
+  allBtn.className = 'alpha-btn active';
+  allBtn.textContent = 'All';
+  allBtn.setAttribute('aria-label', 'Show all letters');
+  allBtn.addEventListener('click', () => { letterFilter = ''; updateAlpha(allBtn); render(); });
+  alphaEl.appendChild(allBtn);
+
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
+    const btn = document.createElement('button');
+    btn.className = 'alpha-btn';
+    btn.textContent = l;
+    btn.setAttribute('aria-label', `Show words starting with ${l}`);
+    btn.addEventListener('click', () => { letterFilter = l; updateAlpha(btn); render(); });
+    alphaEl.appendChild(btn);
+  });
 }
+
+function updateAlpha(active) {
+  alphaEl.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
+  active.classList.add('active');
+}
+
+/* ── Quiz ── */
+function newQuiz() {
+  const p = pool().length ? pool() : entries;
+  currentQuiz = p[Math.floor(Math.random() * p.length)];
+  quizPrompt.textContent = `Which word means: "${currentQuiz.short_meaning || currentQuiz.definition}"`;
+  quizAnswer.style.display = 'none';
+  quizAnswer.textContent = '';
+}
+
 document.getElementById('newQuiz').addEventListener('click', newQuiz);
 document.getElementById('showAnswer').addEventListener('click', () => {
-  if (!currentQuiz) newQuiz();
-  const ans = document.getElementById('quizAnswer');
-  ans.textContent = `${currentQuiz.term} — ${currentQuiz.example}`;
-  ans.classList.remove('hidden');
+  if (!currentQuiz) { newQuiz(); return; }
+  quizAnswer.textContent = `${currentQuiz.term} — ${currentQuiz.example}`;
+  quizAnswer.style.display = 'block';
 });
-document.getElementById('hearQuiz').addEventListener('click', () => speak(document.getElementById('quizPrompt').textContent));
-document.getElementById('reset').addEventListener('click', () => { search.value=''; subject.value=''; strand.value=''; letterFilter=''; render(); });
-document.getElementById('biggerText').addEventListener('click', () => { fontSize = Math.min(24, fontSize + 2); document.documentElement.style.setProperty('--font-size', fontSize + 'px'); });
-document.getElementById('smallerText').addEventListener('click', () => { fontSize = Math.max(16, fontSize - 2); document.documentElement.style.setProperty('--font-size', fontSize + 'px'); });
-document.getElementById('moreSpace').addEventListener('click', () => { spacing = spacing >= 1.9 ? 1.55 : 1.9; document.documentElement.style.setProperty('--space', spacing); });
-document.getElementById('toggleExamples').addEventListener('click', (e) => { document.body.classList.toggle('hide-examples'); e.target.textContent = document.body.classList.contains('hide-examples') ? 'Show examples' : 'Hide examples'; });
-document.getElementById('themeCalm').addEventListener('click', () => { document.body.classList.remove('dark','plain'); });
-document.getElementById('themeDark').addEventListener('click', () => { document.body.classList.add('dark'); document.body.classList.remove('plain'); });
-document.getElementById('themePlain').addEventListener('click', () => { document.body.classList.add('plain'); document.body.classList.remove('dark'); });
-document.getElementById('clearSpotlight').addEventListener('click', () => { document.body.classList.remove('focus-mode'); document.querySelectorAll('.card').forEach(c => c.classList.remove('spotlight')); });
-[search,subject,strand].forEach(el => el.addEventListener('input', render));
-buildAlpha(); render();
+document.getElementById('hearQuiz').addEventListener('click', function() {
+  speak(quizPrompt.textContent, this);
+});
+
+/* ── Controls ── */
+document.getElementById('biggerText').addEventListener('click', () => {
+  fontSize = Math.min(22, fontSize + 2);
+  document.documentElement.style.setProperty('--font-size', fontSize + 'px');
+});
+document.getElementById('smallerText').addEventListener('click', () => {
+  fontSize = Math.max(14, fontSize - 2);
+  document.documentElement.style.setProperty('--font-size', fontSize + 'px');
+});
+document.getElementById('toggleExamples').addEventListener('click', function () {
+  examplesHidden = !examplesHidden;
+  document.body.classList.toggle('hide-examples', examplesHidden);
+  this.textContent = examplesHidden ? 'Show examples' : 'Hide examples';
+  this.classList.toggle('active', examplesHidden);
+});
+
+/* ── Reset ── */
+function resetAll() {
+  searchEl.value = '';
+  subjectEl.value = '';
+  strandEl.value = '';
+  letterFilter = '';
+  updateAlpha(alphaEl.querySelector('.alpha-btn'));
+  render();
+}
+document.getElementById('reset').addEventListener('click', resetAll);
+
+/* ── Live filter ── */
+[searchEl, subjectEl, strandEl].forEach(el => el.addEventListener('input', render));
+
+/* ── Init ── */
+buildAlpha();
+render();
 </script>
 </body>
 </html>
