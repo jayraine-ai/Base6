@@ -92,46 +92,101 @@
   a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
   .activity-body .open-link:focus-visible, .done-btn:focus-visible { outline: 3px solid #1a1a1a; }
 
-  /* WHO'S HERE picker */
-  .b6w-overlay { position: fixed; inset: 0; background: rgba(0,114,145,0.22); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; }
-  .b6w-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 18px; padding: 1.8rem 1.6rem; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.18); }
-  .b6w-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #ef7724; margin-bottom: 0.4rem; }
-  .b6w-title { font-size: 1.4rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; margin-bottom: 0.5rem; }
-  .b6w-sub { font-size: 0.9rem; color: #555; line-height: 1.55; margin-bottom: 1.4rem; }
-  .b6w-btns { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1.2rem; }
-  .b6w-pick-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.3rem; font-weight: 700; color: #007291; background: #ffffff; border: 2px solid #007291; border-radius: 12px; padding: 0.9rem 0; cursor: pointer; flex: 1 1 calc(33% - 0.6rem); min-width: 84px; transition: background 0.15s, color 0.15s, transform 0.1s; }
-  .b6w-pick-btn:hover { background: #007291; color: #ffffff; transform: translateY(-2px); }
-  .b6w-skip { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; }
-  .b6w-skip:hover { color: #555; }
-  .b6w-chip { position: fixed; bottom: 1rem; right: 1rem; z-index: 900; display: inline-flex; align-items: center; gap: 0.4rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; color: #007291; background: #ffffff; border: 1.5px solid #007291; border-radius: 999px; padding: 0.4rem 0.9rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
-  .b6w-chip:hover { background: #007291; color: #fef8f4; }
-  .b6w-chip-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef7724; flex-shrink: 0; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* ===== BASE 6 AVATAR + COSMETICS (b6a-) ===== */
+  .b6a-badge { position: relative; width: var(--b6a-size,64px); height: var(--b6a-size,64px); border-radius: 50%; background: var(--b6a-bg,#ffe9d6); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .b6a-creature { font-size: calc(var(--b6a-size,64px) * 0.6); line-height: 1; }
+  .b6a-acc { position: absolute; line-height: 1; pointer-events: none; }
+  .b6a-head { top: -10%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.5); }
+  .b6a-eyes { top: 28%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-neck { bottom: 0%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.4); }
+  .b6a-friend { bottom: -8%; right: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+
+  .b6a-hero-badge { display: none; margin: 0.6rem auto 0; }
+
+  /* overlays */
+  .b6a-pick-overlay, .b6a-cust-overlay { position: fixed; inset: 0; background: rgba(0,114,145,0.22); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; }
+  .b6a-pick-card, .b6a-cust-card { position: relative; background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 18px; padding: 1.7rem 1.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.18); max-height: 88vh; overflow-y: auto; }
+  .b6a-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #ef7724; margin-bottom: 0.4rem; }
+  .b6a-pick-title { font-size: 1.35rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; margin-bottom: 0.4rem; }
+  .b6a-pick-sub { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 1.2rem; }
+  .b6a-pick-btns { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; }
+  .b6a-pick-btn { font-family: inherit; font-size: 1.3rem; font-weight: 700; color: #007291; background: #fff; border: 2px solid #007291; border-radius: 12px; padding: 0.8rem 0; cursor: pointer; flex: 1 1 calc(33% - 0.6rem); min-width: 84px; transition: background 0.15s, color 0.15s; }
+  .b6a-pick-btn:hover { background: #007291; color: #fff; }
+  .b6a-skip { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; }
+  .b6a-skip:hover { color: #555; }
+
+  .b6a-creature-grid, .b6a-creature-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .b6a-creature-opt { font-size: 1.7rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.4rem 0.5rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .b6a-creature-opt:hover { border-color: #007291; transform: translateY(-2px); }
+  .b6a-creature-opt.sel { border-color: #ef7724; background: #fff3e8; }
+
+  /* customiser */
+  .b6a-close { position: absolute; top: 0.6rem; right: 0.8rem; font-size: 1.4rem; line-height: 1; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; }
+  .b6a-close:hover { color: #1a1a1a; }
+  .b6a-preview { display: flex; justify-content: center; margin-bottom: 0.6rem; }
+  .b6a-cust-initials { font-size: 1.1rem; font-weight: 700; color: #007291; margin-bottom: 0.3rem; }
+  .b6a-switch { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; margin-bottom: 1rem; }
+  .b6a-switch:hover { color: #555; }
+  .b6a-cust-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #007291; margin: 1rem 0 0.5rem; text-align: left; }
+  .b6a-slot { text-align: left; }
+  .b6a-opt-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .b6a-opt { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #555; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.4rem 0.7rem; cursor: pointer; transition: border-color 0.15s; }
+  .b6a-opt:hover { border-color: #007291; }
+  .b6a-opt.sel { border-color: #ef7724; background: #fff3e8; color: #1a1a1a; }
+  .b6a-empty { font-size: 0.88rem; color: #555; line-height: 1.5; margin-top: 1rem; }
+
+  /* chip */
+  .b6a-chip { position: fixed; bottom: 1rem; right: 1rem; z-index: 900; display: inline-flex; align-items: center; gap: 0.45rem; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #007291; background: #fff; border: 1.5px solid #007291; border-radius: 999px; padding: 0.3rem 0.8rem 0.3rem 0.35rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+  .b6a-chip:hover { background: #f0fafc; }
+
+  /* toast */
+  .b6a-toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: #007291; color: #fef8f4; font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<!-- WHO'S HERE picker + switch chip (self-contained, b6w- prefixed) -->
-<div class="b6w-overlay" id="b6w-overlay" role="dialog" aria-modal="true" aria-labelledby="b6w-title" style="display:none;">
-  <div class="b6w-card">
-    <p class="b6w-eyebrow">Base 6</p>
-    <h2 class="b6w-title" id="b6w-title">Who is working here today?</h2>
-    <p class="b6w-sub">Tap your initials. This device will remember you. You can change it any time.</p>
-    <div class="b6w-btns">
-        <button class="b6w-pick-btn" data-initials="LW">LW</button>
-        <button class="b6w-pick-btn" data-initials="AP">AP</button>
-        <button class="b6w-pick-btn" data-initials="LS">LS</button>
-        <button class="b6w-pick-btn" data-initials="LC">LC</button>
-        <button class="b6w-pick-btn" data-initials="HK">HK</button>
+<!-- ===== BASE 6 AVATAR + COSMETICS (self-contained, b6a-) ===== -->
+<div class="b6a-pick-overlay" id="b6a-pick" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="b6a-pick-title">
+  <div class="b6a-pick-card">
+    <p class="b6a-eyebrow">Base 6</p>
+    <div id="b6a-step1">
+      <h2 class="b6a-pick-title" id="b6a-pick-title">Who is working here today?</h2>
+      <p class="b6a-pick-sub">Tap your initials. This device will remember you.</p>
+      <div class="b6a-pick-btns" id="b6a-initials-row"></div>
+      <button class="b6a-skip" id="b6a-skip">Not now</button>
     </div>
-    <button class="b6w-skip" id="b6w-skip">Not now</button>
+    <div id="b6a-step2" style="display:none;">
+      <h2 class="b6a-pick-title">Choose your avatar</h2>
+      <p class="b6a-pick-sub">Pick a creature. You can change it any time.</p>
+      <div class="b6a-creature-grid" id="b6a-creature-grid"></div>
+    </div>
   </div>
 </div>
 
-<button class="b6w-chip" id="b6w-chip" style="display:none;" aria-label="Change who is working here">
-  <span class="b6w-chip-dot" aria-hidden="true"></span>
-  <span id="b6w-chip-text">&nbsp;</span>
+<div class="b6a-cust-overlay" id="b6a-cust" style="display:none;" role="dialog" aria-modal="true">
+  <div class="b6a-cust-card">
+    <button class="b6a-close" id="b6a-cust-close" aria-label="Close">&times;</button>
+    <p class="b6a-eyebrow">Your avatar</p>
+    <div class="b6a-preview"><span class="b6a-badge" id="b6a-cust-badge" style="--b6a-size:96px;"></span></div>
+    <p class="b6a-cust-initials" id="b6a-cust-initials">&nbsp;</p>
+    <button class="b6a-switch" id="b6a-switch">Switch student</button>
+    <p class="b6a-cust-label">Your creature</p>
+    <div class="b6a-creature-row" id="b6a-creature-row"></div>
+    <div id="b6a-slots"></div>
+    <p class="b6a-empty" id="b6a-empty" style="display:none;">Do an activity this week to unlock things to wear.</p>
+  </div>
+</div>
+
+<button class="b6a-chip" id="b6a-chip" style="display:none;" aria-label="Your avatar">
+  <span class="b6a-badge" id="b6a-chip-badge" style="--b6a-size:30px;"></span>
+  <span id="b6a-chip-text">&nbsp;</span>
 </button>
+
+<div class="b6a-toast" id="b6a-toast" role="status" aria-live="polite" style="display:none;"></div>
+
+
 
 
 <header class="site-header">
@@ -142,6 +197,7 @@
   <p class="week-label">Week 3 · Day 2 · Tue 16 June</p>
   <h1><span class="hero-emoji" aria-hidden="true">🚀</span>Tuesday</h1>
   <p class="tagline">Project day</p>
+  <span class="b6a-badge b6a-hero-badge" id="b6a-hero-badge" style="--b6a-size:54px;display:block;"></span>
   <p class="greeting" id="greeting">Welcome to Tuesday.</p>
   <div class="today-banner" id="today-banner">This is today</div>
 </div>
@@ -328,43 +384,191 @@ const DAY_ID   = "week3-day2";
 </script>
 
 
-<script>
-// ── WHO'S HERE picker + switch chip ───────────────────────
-(function () {
-  const overlay = document.getElementById('b6w-overlay');
-  const chip = document.getElementById('b6w-chip');
-  const chipText = document.getElementById('b6w-chip-text');
 
-  function getProfile() {
-    try { return JSON.parse(localStorage.getItem('base6Profile') || 'null'); } catch (e) { return null; }
+<script>
+// ===== BASE 6 AVATAR + COSMETICS =====
+(function () {
+  var STUDENTS = ['LW','AP','LS','LC','HK'];
+  var CREATURES = ['\uD83E\uDD8A','\uD83D\uDC22','\uD83E\uDD89','\uD83D\uDC19','\uD83E\uDD8B','\uD83D\uDC31','\uD83D\uDC27','\uD83E\uDD81','\uD83D\uDC38','\uD83D\uDC3C'];
+  // Predictable unlock order. The Nth item unlocks at N activities done this week.
+  var ITEMS = [
+    { id:'glasses', slot:'eyes',  emoji:'\uD83D\uDC53', label:'Glasses' },
+    { id:'cap',     slot:'head',  emoji:'\uD83E\uDDE2', label:'Cap' },
+    { id:'bow',     slot:'neck',  emoji:'\uD83C\uDF80', label:'Bow' },
+    { id:'sunny',   slot:'bg',    color:'#fff1c9',      label:'Sunny' },
+    { id:'shades',  slot:'eyes',  emoji:'\uD83D\uDD76\uFE0F', label:'Shades' },
+    { id:'tophat',  slot:'head',  emoji:'\uD83C\uDFA9', label:'Top hat' },
+    { id:'scarf',   slot:'neck',  emoji:'\uD83E\uDDE3', label:'Scarf' },
+    { id:'friend',  slot:'friend',emoji:'\uD83D\uDC25', label:'Friend' },
+    { id:'crown',   slot:'head',  emoji:'\uD83D\uDC51', label:'Crown' },
+    { id:'sky',     slot:'bg',    color:'#e3f1f5',      label:'Sky' }
+  ];
+  var SLOT_ORDER = ['head','eyes','neck','friend','bg'];
+  var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', friend:'Friend', bg:'Background' };
+  var WEEK_KEY = 'base6Avatar-week3';
+  var pendingInitials = null;
+
+  function getProfile(){ try { return JSON.parse(localStorage.getItem('base6Profile') || 'null'); } catch(e){ return null; } }
+  function setProfile(p){ try { localStorage.setItem('base6Profile', JSON.stringify(p)); } catch(e){} }
+  function getWardrobe(){ try { return JSON.parse(localStorage.getItem(WEEK_KEY) || 'null') || { worn:{}, seen:[] }; } catch(e){ return { worn:{}, seen:[] }; } }
+  function setWardrobe(w){ try { localStorage.setItem(WEEK_KEY, JSON.stringify(w)); } catch(e){} }
+  function itemById(id){ for (var i=0;i<ITEMS.length;i++){ if (ITEMS[i].id===id) return ITEMS[i]; } return null; }
+
+  function totalDone(){
+    var t = 0;
+    for (var d=1; d<=5; d++){
+      try { var a = JSON.parse(localStorage.getItem('base6Done-week3-day'+d) || '[]'); if (a && a.length) t += a.length; } catch(e){}
+    }
+    return t;
   }
-  function setProfile(initials) {
-    try { localStorage.setItem('base6Profile', JSON.stringify({ initials: initials.toLowerCase() })); } catch (e) {}
+  function unlockedItems(){ var n = totalDone(); return ITEMS.filter(function(it,i){ return (i+1) <= n; }); }
+
+  function renderBadge(el, size){
+    var p = getProfile(); if (!p || !el) return;
+    var w = getWardrobe(); var worn = w.worn || {};
+    el.style.setProperty('--b6a-size', size + 'px');
+    var bg = '#ffe9d6';
+    if (worn.bg){ var b = itemById(worn.bg); if (b && b.color) bg = b.color; }
+    el.style.setProperty('--b6a-bg', bg);
+    var html = '<span class="b6a-creature" aria-hidden="true">' + (p.creature || CREATURES[0]) + '</span>';
+    ['head','eyes','neck','friend'].forEach(function(slot){
+      var id = worn[slot]; if (!id) return; var it = itemById(id); if (!it || !it.emoji) return;
+      html += '<span class="b6a-acc b6a-' + slot + '" aria-hidden="true">' + it.emoji + '</span>';
+    });
+    el.innerHTML = html;
   }
-  function refreshGreetings() {
-    const p = getProfile();
-    const greet = document.getElementById('greeting');
-    if (p && p.initials) {
-      if (greet) { greet.textContent = 'Hello ' + p.initials.toUpperCase() + '. Welcome to ' + DAY_NAME + '.'; }
-      chipText.textContent = p.initials.toUpperCase();
+
+  function updateGreeting(p){
+    var hero = document.getElementById('hero-greeting');
+    var greet = document.getElementById('greeting');
+    var dn = (typeof DAY_NAME !== 'undefined') ? DAY_NAME : '';
+    if (p && p.initials){
+      if (hero){ hero.textContent = 'Hello ' + p.initials.toUpperCase() + '.'; hero.style.display = 'block'; }
+      else if (greet){ greet.textContent = 'Hello ' + p.initials.toUpperCase() + (dn ? '. Welcome to ' + dn + '.' : '.'); }
+      var cName = document.getElementById('c-name'); if (cName && !cName.value){ cName.value = p.initials; }
+    } else if (hero){ hero.style.display = 'none'; }
+    var hb = document.getElementById('b6a-hero-badge');
+    if (hb){ if (p){ hb.style.display = 'inline-flex'; renderBadge(hb, 54); } else { hb.style.display = 'none'; } }
+  }
+
+  function refreshAll(){
+    var p = getProfile();
+    updateGreeting(p);
+    var chip = document.getElementById('b6a-chip');
+    if (p){
       chip.style.display = 'inline-flex';
-    } else {
-      chip.style.display = 'none';
+      renderBadge(document.getElementById('b6a-chip-badge'), 30);
+      document.getElementById('b6a-chip-text').textContent = p.initials.toUpperCase();
+    } else { chip.style.display = 'none'; }
+  }
+
+  // ---- toast ----
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('b6a-toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.style.display = 'none'; }, 5500);
+  }
+  document.getElementById('b6a-toast').addEventListener('click', function(){ this.style.display = 'none'; });
+
+  function checkUnlocks(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe(); var unlocked = unlockedItems(); var seen = w.seen || [];
+    var fresh = unlocked.filter(function(it){ return seen.indexOf(it.id) === -1; });
+    if (fresh.length > 0){
+      w.seen = unlocked.map(function(it){ return it.id; }); setWardrobe(w);
+      showToast(fresh.length === 1
+        ? 'You unlocked ' + fresh[0].label + '. Tap your avatar to try it on.'
+        : 'You unlocked ' + fresh.length + ' new things. Tap your avatar to try them on.');
     }
   }
-  document.querySelectorAll('.b6w-pick-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      setProfile(btn.getAttribute('data-initials'));
-      overlay.style.display = 'none';
-      refreshGreetings();
+
+  // ---- picker ----
+  var pickOverlay = document.getElementById('b6a-pick');
+  function openPicker(step){ buildPickerOnce(); showStep(step || 1); pickOverlay.style.display = 'flex'; }
+  function closePicker(){ pickOverlay.style.display = 'none'; }
+  function showStep(n){
+    document.getElementById('b6a-step1').style.display = (n === 1) ? 'block' : 'none';
+    document.getElementById('b6a-step2').style.display = (n === 2) ? 'block' : 'none';
+  }
+  var pickerBuilt = false;
+  function buildPickerOnce(){
+    if (pickerBuilt) return; pickerBuilt = true;
+    var ir = document.getElementById('b6a-initials-row');
+    STUDENTS.forEach(function(s){
+      var b = document.createElement('button'); b.className = 'b6a-pick-btn'; b.textContent = s;
+      b.addEventListener('click', function(){ pendingInitials = s; showStep(2); });
+      ir.appendChild(b);
     });
+    var cg = document.getElementById('b6a-creature-grid');
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt'; b.textContent = c;
+      b.addEventListener('click', function(){ commitNew(pendingInitials, c); });
+      cg.appendChild(b);
+    });
+  }
+  function commitNew(initials, creature){
+    setProfile({ initials: initials.toLowerCase(), creature: creature });
+    var w = getWardrobe(); w.seen = unlockedItems().map(function(it){ return it.id; }); setWardrobe(w);
+    closePicker(); refreshAll();
+  }
+  document.getElementById('b6a-skip').addEventListener('click', function(){
+    try { localStorage.setItem('base6ProfileAsked', '1'); } catch(e){}
+    closePicker();
   });
-  document.getElementById('b6w-skip').addEventListener('click', function () {
-    overlay.style.display = 'none';
-  });
-  chip.addEventListener('click', function () { overlay.style.display = 'flex'; });
-  refreshGreetings();
+
+  // ---- customiser ----
+  var custOverlay = document.getElementById('b6a-cust');
+  function openCust(){ buildCust(); custOverlay.style.display = 'flex'; }
+  function closeCust(){ custOverlay.style.display = 'none'; }
+  document.getElementById('b6a-cust-close').addEventListener('click', closeCust);
+  document.getElementById('b6a-switch').addEventListener('click', function(){ closeCust(); openPicker(1); });
+
+  function buildCust(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe();
+    renderBadge(document.getElementById('b6a-cust-badge'), 96);
+    document.getElementById('b6a-cust-initials').textContent = p.initials.toUpperCase();
+
+    var cr = document.getElementById('b6a-creature-row'); cr.innerHTML = '';
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt' + (c === p.creature ? ' sel' : ''); b.textContent = c;
+      b.addEventListener('click', function(){ var pr = getProfile(); pr.creature = c; setProfile(pr); buildCust(); refreshAll(); });
+      cr.appendChild(b);
+    });
+
+    var unlocked = unlockedItems();
+    var slotsEl = document.getElementById('b6a-slots'); slotsEl.innerHTML = ''; var any = false;
+    SLOT_ORDER.forEach(function(slot){
+      var items = unlocked.filter(function(it){ return it.slot === slot; });
+      if (items.length === 0) return; any = true;
+      var wrap = document.createElement('div'); wrap.className = 'b6a-slot';
+      var lab = document.createElement('p'); lab.className = 'b6a-cust-label'; lab.textContent = SLOT_LABELS[slot]; wrap.appendChild(lab);
+      var row = document.createElement('div'); row.className = 'b6a-opt-row';
+      var none = document.createElement('button'); none.className = 'b6a-opt' + (!w.worn[slot] ? ' sel' : ''); none.textContent = 'None';
+      none.addEventListener('click', function(){ var ww = getWardrobe(); delete ww.worn[slot]; setWardrobe(ww); buildCust(); refreshAll(); });
+      row.appendChild(none);
+      items.forEach(function(it){
+        var b = document.createElement('button'); b.className = 'b6a-opt' + (w.worn[slot] === it.id ? ' sel' : '');
+        b.innerHTML = (it.emoji ? '<span aria-hidden="true">' + it.emoji + '</span> ' : '') + it.label;
+        b.addEventListener('click', function(){ var ww = getWardrobe(); ww.worn[slot] = it.id; setWardrobe(ww); buildCust(); refreshAll(); });
+        row.appendChild(b);
+      });
+      wrap.appendChild(row); slotsEl.appendChild(wrap);
+    });
+    document.getElementById('b6a-empty').style.display = any ? 'none' : 'block';
+  }
+
+  document.getElementById('b6a-chip').addEventListener('click', function(){ if (getProfile()) openCust(); else openPicker(1); });
+
+  // ---- init ----
+  var asked = (function(){ try { return localStorage.getItem('base6ProfileAsked'); } catch(e){ return null; } })();
+  if (document.getElementById('hero-greeting') && !getProfile() && !asked){ openPicker(1); }
+  refreshAll();
+  checkUnlocks();
 })();
 </script>
+
 </body>
 </html>
