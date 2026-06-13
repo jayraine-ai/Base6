@@ -17,6 +17,7 @@
   .week-hero .week-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
   .week-hero h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; line-height: 1.2; margin-bottom: 0.75rem; }
   .week-hero p { font-size: 1rem; color: #fef8f4; opacity: 0.85; max-width: 540px; margin: 0 auto; }
+  .week-hero .hero-greeting { font-weight: 700; opacity: 1; margin-top: 0.6rem; }
 
   .wotw-banner { background-color: #ef7724; padding: 0.9rem 2rem; text-align: center; }
   .wotw-banner a { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; }
@@ -95,6 +96,8 @@
   .notify-bar { display: none; padding: 0.65rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-top: 0.5rem; }
   .notify-bar.show { display: block; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; }
 
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .challenge-submit:focus-visible, .wotw-banner a:focus-visible { outline: 3px solid #007291; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
   .teacher-link { color: #d8d0c8; font-size: 0.72rem; text-decoration: none; margin-left: 1rem; }
   .teacher-link:hover { color: #888; }
@@ -110,6 +113,7 @@
   <p class="week-label">Week 3</p>
   <h1>Making Things Better</h1>
   <p>Choose a subject below to see this week's activities and resources.</p>
+  <p class="hero-greeting" id="hero-greeting" style="display:none;">&nbsp;</p>
 </div>
 
 <div class="wotw-banner">
@@ -147,6 +151,10 @@
   }
   .b6-day-tile.is-today { border-width: 4px; background: #ffffff; }
   .b6-day-tile.is-today .b6-tile-today { display: inline-block; }
+  .b6-tile-dots { display: flex; gap: 4px; margin-top: 0.45rem; justify-content: center; min-height: 7px; }
+  .b6-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--tile); background: transparent; }
+  .b6-dot.filled { background: var(--tile); }
+  .b6-day-note { font-size: 0.85rem; color: #555; line-height: 1.55; margin-top: 1rem; }
 </style>
 
 <div class="b6-day-section">
@@ -157,6 +165,7 @@
       <span class="b6-tile-day">Monday</span>
       <span class="b6-tile-date">Mon 15 June</span>
       <span class="b6-tile-tag">Trip day</span>
+      <span class="b6-tile-dots" data-day="1" data-total="3" aria-hidden="true"></span>
       <span class="b6-tile-today">Today</span>
     </a>
     <a class="b6-day-tile" href="day2.html" data-date="2026-06-16" style="--tile: #ef7724; --tile-soft: #fdeadd;">
@@ -164,6 +173,7 @@
       <span class="b6-tile-day">Tuesday</span>
       <span class="b6-tile-date">Tue 16 June</span>
       <span class="b6-tile-tag">Project day</span>
+      <span class="b6-tile-dots" data-day="2" data-total="4" aria-hidden="true"></span>
       <span class="b6-tile-today">Today</span>
     </a>
     <a class="b6-day-tile" href="day3.html" data-date="2026-06-17" style="--tile: #2e8b57; --tile-soft: #e6f3e6;">
@@ -171,6 +181,7 @@
       <span class="b6-tile-day">Wednesday</span>
       <span class="b6-tile-date">Wed 17 June</span>
       <span class="b6-tile-tag">Halfway there</span>
+      <span class="b6-tile-dots" data-day="3" data-total="4" aria-hidden="true"></span>
       <span class="b6-tile-today">Today</span>
     </a>
     <a class="b6-day-tile" href="day4.html" data-date="2026-06-18" style="--tile: #7b5ea7; --tile-soft: #efe9f6;">
@@ -178,16 +189,18 @@
       <span class="b6-tile-day">Thursday</span>
       <span class="b6-tile-date">Thu 18 June</span>
       <span class="b6-tile-tag">Project day</span>
+      <span class="b6-tile-dots" data-day="4" data-total="4" aria-hidden="true"></span>
       <span class="b6-tile-today">Today</span>
     </a>
     <a class="b6-day-tile" href="day5.html" data-date="2026-06-19" style="--tile: #c2185b; --tile-soft: #fbe4ed;">
       <span class="b6-tile-emoji" aria-hidden="true">🎉</span>
       <span class="b6-tile-day">Friday</span>
       <span class="b6-tile-date">Fri 19 June</span>
-      <span class="b6-tile-tag">Last day of the week</span>
+      <span class="b6-tile-dots" data-day="5" data-total="4" aria-hidden="true"></span>
       <span class="b6-tile-today">Today</span>
     </a>
   </div>
+  <p class="b6-day-note">If choosing feels like a lot, you could start with today's tile - it lights up on the day.</p>
 </div>
 
 <script>
@@ -201,6 +214,31 @@
       tile.classList.add('is-today');
     }
   });
+
+  // Quiet progress dots: only appear once a student has marked
+  // something as done on that day's page. No empty dots, no demand.
+  document.querySelectorAll('.b6-tile-dots').forEach(function (el) {
+    const day = el.getAttribute('data-day');
+    const total = parseInt(el.getAttribute('data-total'), 10);
+    let done = [];
+    try { done = JSON.parse(localStorage.getItem('base6Done-week3-day' + day) || '[]'); } catch (e) { done = []; }
+    if (done.length === 0) { return; }
+    let dots = '';
+    for (let i = 0; i < total; i++) {
+      dots += '<span class="b6-dot' + (i < done.length ? ' filled' : '') + '"></span>';
+    }
+    el.innerHTML = dots;
+  });
+
+  // Hello in the hero, if we know who this is
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) {
+      const el = document.getElementById('hero-greeting');
+      el.textContent = 'Hello ' + profile.initials.toUpperCase() + '.';
+      el.style.display = 'block';
+    }
+  } catch (e) { /* no profile yet */ }
 })();
 </script>
 
@@ -313,8 +351,8 @@
       <!-- Form (hidden once done) -->
       <div class="challenge-form" id="challenge-form">
         <div>
-          <label for="c-name">Your name</label>
-          <input type="text" id="c-name" placeholder="Type your name here">
+          <label for="c-name">Your initials</label>
+          <input type="text" id="c-name" placeholder="Type your initials here">
         </div>
         <div>
           <label for="c-answer">Your answer — a sentence or two is fine</label>
@@ -413,7 +451,7 @@ function submitChallenge() {
   const notify = document.getElementById('notify-bar');
 
   if(!name) {
-    notify.textContent = 'Please type your name first.';
+    notify.textContent = 'Please type your initials first.';
     notify.className = 'notify-bar show';
     notify.style.background = '#fff3e6';
     notify.style.borderColor = '#e8a020';
@@ -441,6 +479,9 @@ function submitChallenge() {
   };
   saveStamps(stamps);
 
+  // Remember who this is, so day pages can say hello
+  try { localStorage.setItem('base6Profile', JSON.stringify({ initials: name })); } catch(e) {}
+
   // Update stamp row
   renderStampRow();
 
@@ -458,12 +499,20 @@ function submitChallenge() {
     'Response:\n' + answer + '\n\n' +
     '—\nSent automatically from Base 6'
   );
-  window.open('mailto:' + TEACHER_EMAIL + '?subject=' + subject + '&body=' + body, '_blank');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
 }
 
 // ── Init ─────────────────────────────────────────────────
 renderStampRow();
 checkAlreadyDone();
+
+// Prefill initials if we already know them
+try {
+  const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+  if (profile && profile.initials) {
+    document.getElementById('c-name').value = profile.initials;
+  }
+} catch(e) {}
 
 // ── Hidden stamp reset (triple-click footer) ─────────────
 let resetClicks = 0, resetTimer = null;
@@ -475,7 +524,6 @@ function handleResetClick() {
     resetClicks = 0;
     if (confirm('Reset your stamp card? This will clear all saved stamps on this device.')) {
       localStorage.removeItem(STORE_KEY);
-      localStorage.removeItem('base6_w3_challenge');
       document.getElementById('challenge-form').style.display = 'flex';
       document.getElementById('challenge-done').classList.remove('show');
       renderStampRow();
