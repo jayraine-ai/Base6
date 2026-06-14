@@ -37,6 +37,19 @@
   .resource-desc { font-size: 0.88rem; color: #555; line-height: 1.5; flex-grow: 1; }
   .resource-arrow { margin-top: 0.75rem; font-size: 0.85rem; font-weight: 700; color: #ef7724; }
 
+  /* ── Prodigy activation panel ── */
+  .prodigy-panel { background: #ffffff; border: 2px solid #ef7724; border-radius: 14px; padding: 1.5rem; margin-top: 2.5rem; }
+  .prodigy-head { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.9rem; }
+  .prodigy-logo { font-size: 2rem; line-height: 1; background: #fff3e8; border-radius: 12px; padding: 0.5rem; }
+  .prodigy-head .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c05a10; margin-bottom: 0.2rem; }
+  .prodigy-head h2 { font-size: 1.3rem; font-weight: 700; color: #ef7724; line-height: 1.2; }
+  .prodigy-intro { font-size: 0.92rem; color: #444; line-height: 1.6; margin-bottom: 0.9rem; }
+  .prodigy-steps { margin: 0 0 0.9rem 1.2rem; }
+  .prodigy-steps li { font-size: 0.92rem; line-height: 1.7; color: #333; margin-bottom: 0.25rem; }
+  .prodigy-note { font-size: 0.85rem; color: #555; line-height: 1.6; background: #fff7f0; border: 1px solid #fcd8bc; border-radius: 10px; padding: 0.7rem 0.9rem; margin-bottom: 1.1rem; }
+  .prodigy-btn { display: inline-block; text-decoration: none; background: #ef7724; color: #ffffff; font-weight: 700; border-radius: 10px; padding: 0.6rem 1.3rem; font-size: 0.9rem; }
+  .prodigy-btn:hover { background: #c05a10; }
+
   /* ── Completion tracker strip ── */
   .tracker-row { margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid #f0e8e0; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
   .tracker-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; }
@@ -45,6 +58,7 @@
   .initial-btn:hover { border-color: #b8d8e0; }
   .initial-btn.done { background: #e6f5e6; border-color: #2e8b57; color: #1a5e1a; }
 
+  a:focus-visible, button:focus-visible { outline: 3px solid #007291; outline-offset: 2px; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
@@ -90,6 +104,27 @@
 
   </div>
 
+  <!-- ── Prodigy (instructions only — no logins live here) ── -->
+  <div class="prodigy-panel" data-activity="prodigy-english">
+    <div class="prodigy-head">
+      <span class="prodigy-logo" aria-hidden="true">🧙</span>
+      <div>
+        <p class="label">Something new to try</p>
+        <h2>Prodigy English</h2>
+      </div>
+    </div>
+    <p class="prodigy-intro">Prodigy is a game world where the quests are English questions. You have your own account. Here is how to get in whenever you fancy it.</p>
+    <ol class="prodigy-steps">
+      <li>Go to <strong>play.prodigygame.com</strong> and choose <strong>Log In</strong>, then <strong>Student</strong>.</li>
+      <li>Find your own login card. Jay will give it to you.</li>
+      <li>Type the <strong>username</strong> from your card.</li>
+      <li>Type the <strong>password</strong> from your card.</li>
+      <li>You are in. Play at your own pace and your progress saves on its own.</li>
+    </ol>
+    <p class="prodigy-note">Your username and password live on your card, not on this page. Keep your card somewhere safe and do not share it. If you lose it, just ask Jay for another.</p>
+    <a class="prodigy-btn" href="https://play.prodigygame.com" target="_blank" rel="noopener">Open Prodigy →</a>
+  </div>
+
 </main>
 
 <footer>
@@ -113,15 +148,16 @@ function saveState(s) {
 
 function buildTrackers() {
   const state = loadState();
-  document.querySelectorAll('.resource-card[data-activity]').forEach(card => {
+  document.querySelectorAll('[data-activity]').forEach(card => {
     const activity = card.dataset.activity;
+    const isProdigy = activity.indexOf('prodigy') === 0;
 
     const strip = document.createElement('div');
     strip.className = 'tracker-row';
 
     const label = document.createElement('span');
     label.className = 'tracker-label';
-    label.textContent = 'completed by';
+    label.textContent = isProdigy ? 'activated by' : 'completed by';
     strip.appendChild(label);
 
     const row = document.createElement('div');
@@ -131,7 +167,7 @@ function buildTrackers() {
       const btn = document.createElement('button');
       btn.className = 'initial-btn' + (state[activity] && state[activity][initials] ? ' done' : '');
       btn.textContent = initials;
-      btn.title = state[activity] && state[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+      btn.title = state[activity] && state[activity][initials] ? initials + ' — done ✓' : initials + ' — not yet';
       btn.addEventListener('click', e => {
         e.preventDefault();
         e.stopPropagation();
@@ -140,7 +176,7 @@ function buildTrackers() {
         s[activity][initials] = !s[activity][initials];
         saveState(s);
         btn.classList.toggle('done', !!s[activity][initials]);
-        btn.title = s[activity][initials] ? initials + ' — completed ✓' : initials + ' — not yet done';
+        btn.title = s[activity][initials] ? initials + ' — done ✓' : initials + ' — not yet';
       });
       row.appendChild(btn);
     });
