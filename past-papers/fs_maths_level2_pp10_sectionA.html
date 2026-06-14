@@ -385,17 +385,22 @@
             </div>
             
             <div class="submit-section">
-                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's email below and click to send your answers.</p>
+                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's name below and click to send your answers.</p>
                 <div style="max-width: 420px; margin: 0 auto 20px; text-align: left;">
                     <div class="input-group">
                         <label for="studentName">Your name:</label>
                         <input type="text" id="studentName" name="studentName" placeholder="Type your name">
                     </div>
                     <div class="input-group">
-                        <label for="teacherEmail">Your teacher's email:</label>
-                        <input type="email" id="teacherEmail" name="teacherEmail" placeholder="name@school.co.uk" autocomplete="email">
+                        <label for="teacherFirst">Teacher's first name:</label>
+                        <input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off">
                     </div>
-                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin-bottom:0;"></p>
+                    <div class="input-group">
+                        <label for="teacherLast">Teacher's last name:</label>
+                        <input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off">
+                    </div>
+                    <p id="emailPreview" style="font-size: 14px; color: #007291; font-weight: 700; margin: 4px 0 0;"></p>
+                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin: 8px 0 0;"></p>
                 </div>
                 <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
             </div>
@@ -404,24 +409,46 @@
     </div>
     
     <script>
+        // School email is always firstname.lastname@<SCHOOL_DOMAIN>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+
+        function cleanNamePart(s) {
+            return s.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+        }
+
+        function buildTeacherEmail() {
+            const first = cleanNamePart(document.getElementById('teacherFirst').value);
+            const last = cleanNamePart(document.getElementById('teacherLast').value);
+            if (!first || !last) return '';
+            return first + '.' + last + '@' + SCHOOL_DOMAIN;
+        }
+
+        function updateEmailPreview() {
+            const email = buildTeacherEmail();
+            document.getElementById('emailPreview').textContent = email ? 'This will send to: ' + email : '';
+        }
+
         function submitForm() {
             const form = document.getElementById('assessmentForm');
             const formData = new FormData(form);
 
-            const teacherEmail = document.getElementById('teacherEmail').value.trim();
             const studentName = document.getElementById('studentName').value.trim();
             const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
 
-            const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacherEmail);
-            if (!emailOk) {
-                note.textContent = "Please add your teacher's email address first.";
+            if (!teacherEmail) {
+                note.textContent = "Please add your teacher's first and last name first.";
                 note.style.display = 'block';
-                document.getElementById('teacherEmail').focus();
+                document.getElementById('teacherFirst').focus();
                 return;
             }
             note.style.display = 'none';
 
-            try { localStorage.setItem('base6TeacherEmail', teacherEmail); } catch(e) {}
+            // Remember the teacher's name across papers on this device
+            try {
+                localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim());
+                localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim());
+            } catch(e) {}
             
             let emailBody = "FUNCTIONAL SKILLS MATHEMATICS LEVEL 2\nPAST PAPER 10 - SECTION A (NON-CALCULATOR)\n\n";
             emailBody += "Student: " + (studentName || '[Name not given]') + "\n\n";
@@ -451,11 +478,18 @@
             window.open(gmailUrl, '_blank');
         }
 
-        // Remember the teacher's email across papers on this device
-        try {
-            const savedEmail = localStorage.getItem('base6TeacherEmail');
-            if (savedEmail) document.getElementById('teacherEmail').value = savedEmail;
-        } catch(e) {}
+        // Prefill the teacher's name across papers on this device, and keep the preview live
+        (function() {
+            try {
+                const f = localStorage.getItem('base6TeacherFirst');
+                const l = localStorage.getItem('base6TeacherLast');
+                if (f) document.getElementById('teacherFirst').value = f;
+                if (l) document.getElementById('teacherLast').value = l;
+            } catch(e) {}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+        })();
     </script>
 </body>
 </html>
