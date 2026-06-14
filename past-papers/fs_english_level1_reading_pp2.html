@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS English Level 1 - Reading Practice 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #fef8f4; color: #333; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background-color: #007291; color: #fef8f4; padding: 30px 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        header p { font-size: 16px; opacity: 0.95; }
+        .paper-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; font-size: 14px; }
+        .info-box { background-color: #e8f4f8; padding: 15px; border-left: 4px solid #ef7724; border-radius: 4px; }
+        .info-box strong { display: block; color: #007291; margin-bottom: 5px; }
+        .instructions { background-color: #f0f8ff; border-left: 4px solid #007291; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 14px; }
+
+        /* section heading */
+        .section-head { font-size: 16px; font-weight: 700; color: #ef7724; text-transform: uppercase; letter-spacing: 0.05em; margin: 30px 0 4px; }
+        .section-sub { font-size: 14px; color: #555; margin-bottom: 16px; }
+
+        /* source text */
+        .text-block { background-color: white; border: 2px solid #007291; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .text-label { font-size: 18px; font-weight: 700; color: #007291; margin-bottom: 2px; }
+        .text-kind { font-size: 13px; font-weight: 700; color: #777; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+        .text-content { border: 2px solid #333; border-radius: 6px; padding: 18px; background-color: #fbfbfb; }
+        .text-content p { margin-bottom: 10px; }
+        .text-content ul { margin: 0 0 10px 22px; }
+        .text-content li { margin-bottom: 5px; }
+        .url-line { background:#eef0f2; border:1px solid #d6d9dc; border-radius:6px; padding:6px 10px; margin-bottom:12px; color:#3d4348; font-size:14px; }
+        .avail { color:#ef7724; font-weight:700; font-size:18px; margin-bottom:8px; }
+        .contact-box { border:2px solid #007291; border-radius:6px; background:#e8f4f8; padding:12px 14px; margin-top:12px; font-weight:700; color:#007291; }
+        .blog-title { color:#ef7724; font-size:20px; font-weight:700; margin-bottom:2px; }
+        .blog-strap { color:#555; font-size:16px; margin-bottom:12px; }
+        .blog-sub { color:#007291; font-size:17px; font-weight:700; margin:16px 0 4px; }
+        .leaflet-head { color:#007291; font-size:19px; font-weight:700; margin-bottom:8px; }
+        .photo-slot { border:2px dashed #ccc; border-radius:6px; background:#fff; padding:20px; text-align:center; color:#777; margin:14px 0; }
+        .photo-slot .cap { display:block; font-weight:700; color:#007291; margin-bottom:2px; }
+
+        /* questions */
+        .question-block { background-color: white; border: 2px solid #007291; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .question-number { font-size: 18px; font-weight: 700; color: #007291; margin-bottom: 12px; }
+        .marks { color: #ef7724; font-weight: 700; font-size: 14px; }
+        .question-text { font-size: 16px; margin-bottom: 16px; }
+        .part-label { font-weight: 700; color: #007291; margin: 14px 0 6px; }
+        .quote-inline { background:#fbfbfb; border:1px solid #ccc; border-radius:4px; padding:2px 8px; font-weight:700; display:inline-block; }
+        .quote-block { background:#fbfbfb; border:1px solid #ccc; border-radius:6px; padding:10px 14px; margin-bottom:14px; font-weight:700; }
+        .note-small { background:#f0f8ff; border-left:4px solid #007291; padding:10px 14px; border-radius:4px; font-size:14px; margin:8px 0; }
+        .pick-hint { color:#ef7724; font-weight:700; font-size:14px; margin:4px 0 8px; }
+
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 4px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16px; background-color: #fafafa; }
+        textarea { min-height: 70px; resize: vertical; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #007291; background-color: white; }
+        .answer-row { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+        .answer-row .num { flex:none; font-weight:700; color:#777; padding-top:12px; }
+        label { display: block; margin-bottom: 6px; font-weight: 700; color: #333; }
+
+        /* options */
+        .options { margin-top: 8px; }
+        .option { display:flex; gap:12px; align-items:flex-start; border:2px solid #e0e0e0; border-radius:4px; padding:12px 14px; margin-bottom:8px; cursor:pointer; background:#fafafa; transition: border-color 0.15s, background 0.15s; }
+        .option:hover { border-color:#007291; }
+        .option.selected { border-color:#007291; background:#e8f4f8; }
+        .option .opt-box { flex:none; width:26px; height:26px; border:2px solid #ccc; border-radius:4px; display:flex; align-items:center; justify-content:center; font-weight:700; color:#007291; background:#fff; }
+        .option.selected .opt-box { background:#007291; color:#fff; border-color:#007291; }
+        .option .opt-letter { font-weight:700; margin-right:6px; }
+
+        .total-marks { background-color: #fff3cd; border-left: 4px solid #ef7724; padding: 15px; margin-bottom: 30px; border-radius: 4px; font-weight: 700; }
+        .submit-section { background-color: #e8f4f8; padding: 25px; border-radius: 8px; margin-top: 40px; text-align: center; }
+        .submit-button { background-color: #007291; color: white; padding: 15px 40px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; font-weight: 700; transition: background-color 0.3s; }
+        .submit-button:hover { background-color: #005a74; }
+        .input-group { margin-bottom: 8px; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Skills English Level 1</h1>
+            <p>Reading - Practice 2</p>
+        </header>
+
+        <div class="paper-info">
+            <div class="info-box">
+                <strong>Time: 60 minutes</strong>
+                Component 2: Reading
+            </div>
+            <div class="info-box">
+                <strong>Total Marks: 30</strong>
+                Answer all questions
+            </div>
+        </div>
+
+        <div class="instructions">
+            This is a reading paper, so it checks how well you understand the three texts below. You are not being marked on your writing here, and you do not need to write in full sentences. You can read the texts and answer the questions in any order that suits you, and you may use a dictionary where a question says so. When you are ready, the box at the bottom sends your answers to your teacher.
+        </div>
+
+        <form id="assessmentForm">
+
+            <!-- ============ TEXT A ============ -->
+            <div class="text-block">
+                <div class="text-label">Text A</div>
+                <div class="text-kind">Webpage</div>
+                <div class="text-content">
+                    <div class="url-line">www.rooms4u.web</div>
+                    <p class="avail">Available now!</p>
+                    <p>A spacious double room in a shared house near the town centre is available to rent. The room has a double bed, with under bed storage, a wardrobe, desk and chair. There is a shared bathroom with shower and a kitchen with a washing machine and microwave. There is also a communal living room, a small garden and space to park. The house is in a convenient location near the station and shops. The rent is £500.00 per month, including bills. The room is ideal for a student or someone working locally.</p>
+                    <div class="contact-box">Contact Ali on 0179375943 to view the room.</div>
+                </div>
+            </div>
+
+            <div class="section-head">Section A</div>
+            <div class="section-sub">Read Text A and answer Questions 1 to 3.</div>
+
+            <!-- Q1 -->
+            <div class="question-block">
+                <div class="question-number">Question 1 <span class="marks">(2 marks)</span></div>
+                <div class="part-label">(a) According to Text A, who should you contact if you want to see the room? <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q1a" data-label="Q1(a) who to contact to see the room"></textarea>
+                <div class="part-label">(b) Which organisational feature helped you find this information? <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q1b" data-label="Q1(b) organisational feature that helped"></textarea>
+            </div>
+
+            <!-- Q2 -->
+            <div class="question-block">
+                <div class="question-number">Question 2 <span class="marks">(2 marks)</span></div>
+                <div class="note-small">You may use a dictionary to answer this question.</div>
+                <div class="part-label">(a) <span class="quote-inline">A spacious double room</span> <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Give one word or phrase to replace <strong>spacious</strong> that keeps the meaning the same.</p>
+                <textarea data-id="q2a" data-label="Q2(a) replacement for 'spacious'"></textarea>
+                <div class="part-label">(b) <span class="quote-inline">ideal for a student</span> <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Give one word or phrase to replace <strong>ideal</strong> that keeps the meaning the same.</p>
+                <textarea data-id="q2b" data-label="Q2(b) replacement for 'ideal'"></textarea>
+            </div>
+
+            <!-- Q3 -->
+            <div class="question-block">
+                <div class="question-number">Question 3 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">What is the <strong>main</strong> purpose of Text A?</p>
+                <p class="pick-hint">Choose one.</p>
+                <div class="options" data-single="q3" data-label="Q3 main purpose of Text A">
+                    <div class="option" data-val="A"><span class="opt-box"></span><span><span class="opt-letter">A</span>to describe the town centre</span></div>
+                    <div class="option" data-val="B"><span class="opt-box"></span><span><span class="opt-letter">B</span>to persuade you to buy furniture</span></div>
+                    <div class="option" data-val="C"><span class="opt-box"></span><span><span class="opt-letter">C</span>to advertise a room for rent</span></div>
+                    <div class="option" data-val="D"><span class="opt-box"></span><span><span class="opt-letter">D</span>to tell you about the local shops</span></div>
+                </div>
+            </div>
+
+            <!-- ============ TEXT B ============ -->
+            <div class="text-block">
+                <div class="text-label">Text B</div>
+                <div class="text-kind">Blog</div>
+                <div class="text-content">
+                    <p class="blog-title">Katie's blog</p>
+                    <p class="blog-strap">New home, new start, new life</p>
+                    <p>I've just moved into my first home away from my family. I'm living in a centrally-located shared house with five bedrooms, two bathrooms and a kitchen. The kitchen is unbelievable, with a washing machine, dishwasher, microwave, fridge-freezer and a large dining table – and I made sure everything worked when I visited. There is also a good-sized garden, outdoor seating and a barbecue. The house is near a local shopping centre and a bus ride from my family and friends.</p>
+                    <div class="photo-slot"><span class="cap">Photo 1 (from the original paper)</span>a photograph from Katie's blog</div>
+                    <p class="blog-sub">Finding my new home</p>
+                    <p>I asked my sister for help and she noticed the advert on a website. I made sure the rent was within my budget, rang straightaway and was able to arrange a visit the same day. I loved the room and immediately agreed to take it. I had to pay a deposit which my parents helped me with, and also the first month's rent in advance. The rent includes bills so there will be no additional costs each month.</p>
+                    <p class="blog-sub">A space of my own</p>
+                    <p>My room is well-furnished with a single bed, a wardrobe and a chest of drawers, so there's plenty of storage – I checked this when I visited as I have a ton of stuff. It also has a desk, chair and a desk light. I'm allowed to put posters on the wall, which is REALLY cool. My Dad transported my belongings in his car – incredibly helpful.</p>
+                    <div class="photo-slot"><span class="cap">Photo 2 (from the original paper)</span>a photograph from Katie's blog</div>
+                    <p class="blog-sub">New friends</p>
+                    <p>My housemates were there to welcome me when I arrived – I'd met them when I visited to make sure I liked them. They enjoyed sharing the biscuits my Mum sent. Getting to know them will be an opportunity to make new friends and try different activities. It'll be strange living away from my family, but I'm looking forward to having more freedom, space and independence.</p>
+                </div>
+            </div>
+
+            <div class="section-head">Section B</div>
+            <div class="section-sub">Read Text B and answer Questions 4 to 9.</div>
+
+            <!-- Q4 -->
+            <div class="question-block">
+                <div class="question-number">Question 4 <span class="marks">(3 marks)</span></div>
+                <p class="question-text">Your family wants to know how they can help when you are moving to a new home. Using Text B, identify <strong>three</strong> ways family members can help when you are moving to a new home.</p>
+                <div class="answer-row"><span class="num">1</span><textarea data-id="q4_1" data-label="Q4 way one"></textarea></div>
+                <div class="answer-row"><span class="num">2</span><textarea data-id="q4_2" data-label="Q4 way two"></textarea></div>
+                <div class="answer-row"><span class="num">3</span><textarea data-id="q4_3" data-label="Q4 way three"></textarea></div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="question-block">
+                <div class="question-number">Question 5 <span class="marks">(1 mark)</span></div>
+                <div class="quote-block">The kitchen is unbelievable with a washing machine, dishwasher, microwave, fridge-freezer and a large dining table.</div>
+                <p class="question-text">Why are commas used in this sentence?</p>
+                <p class="pick-hint">Choose one.</p>
+                <div class="options" data-single="q5" data-label="Q5 why commas are used">
+                    <div class="option" data-val="A"><span class="opt-box"></span><span><span class="opt-letter">A</span>to separate the items in a list</span></div>
+                    <div class="option" data-val="B"><span class="opt-box"></span><span><span class="opt-letter">B</span>to show that letters are missing</span></div>
+                    <div class="option" data-val="C"><span class="opt-box"></span><span><span class="opt-letter">C</span>to separate extra information</span></div>
+                    <div class="option" data-val="D"><span class="opt-box"></span><span><span class="opt-letter">D</span>to show that someone is speaking</span></div>
+                </div>
+            </div>
+
+            <!-- Q6 -->
+            <div class="question-block">
+                <div class="question-number">Question 6 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">What <strong>two</strong> things do the photographs in Text B tell you about Katie's new home?</p>
+                <p class="pick-hint">Choose two.</p>
+                <div class="options" data-multi="q6" data-cap="2" data-label="Q6 two things the photographs show">
+                    <div class="option" data-val="A"><span class="opt-box"></span><span><span class="opt-letter">A</span>There is a bus stop very near to the house.</span></div>
+                    <div class="option" data-val="B"><span class="opt-box"></span><span><span class="opt-letter">B</span>Katie's room has a bathroom with shower.</span></div>
+                    <div class="option" data-val="C"><span class="opt-box"></span><span><span class="opt-letter">C</span>There is space to park in front of the house.</span></div>
+                    <div class="option" data-val="D"><span class="opt-box"></span><span><span class="opt-letter">D</span>Katie has to bring her own duvet and pillows.</span></div>
+                    <div class="option" data-val="E"><span class="opt-box"></span><span><span class="opt-letter">E</span>Three housemates have bikes to get to work.</span></div>
+                </div>
+                <div class="note-small">This question is about the two photographs in Text B. The picture slots above are ready for them to be added.</div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="question-block">
+                <div class="question-number">Question 7 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">The writer of Text B uses language features to describe her new home. Which <strong>two</strong> of these language features does she use?</p>
+                <p class="pick-hint">Choose two.</p>
+                <div class="options" data-multi="q7" data-cap="2" data-label="Q7 two language features used">
+                    <div class="option" data-val="A"><span class="opt-box"></span><span><span class="opt-letter">A</span>command</span></div>
+                    <div class="option" data-val="B"><span class="opt-box"></span><span><span class="opt-letter">B</span>exclamation</span></div>
+                    <div class="option" data-val="C"><span class="opt-box"></span><span><span class="opt-letter">C</span>first person</span></div>
+                    <div class="option" data-val="D"><span class="opt-box"></span><span><span class="opt-letter">D</span>statistics</span></div>
+                    <div class="option" data-val="E"><span class="opt-box"></span><span><span class="opt-letter">E</span>rule of three</span></div>
+                </div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="question-block">
+                <div class="question-number">Question 8 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Explain what each of these quotations from Text B means.</p>
+                <div class="part-label">(a) <span class="quote-inline">rent in advance</span> <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q8a" data-label="Q8(a) meaning of 'rent in advance'"></textarea>
+                <div class="part-label">(b) <span class="quote-inline">additional costs</span> <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q8b" data-label="Q8(b) meaning of 'additional costs'"></textarea>
+            </div>
+
+            <!-- Q9 -->
+            <div class="question-block">
+                <div class="question-number">Question 9 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Text B uses subheadings.</p>
+                <div class="part-label">(a) Give the subheading of the section that describes Katie's new room. <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q9a" data-label="Q9(a) subheading describing the room"></textarea>
+                <div class="part-label">(b) Give the subheading of the section that tells you about the people Katie lives with. <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q9b" data-label="Q9(b) subheading about the people"></textarea>
+            </div>
+
+            <!-- ============ TEXT C ============ -->
+            <div class="text-block">
+                <div class="text-label">Text C</div>
+                <div class="text-kind">Leaflet</div>
+                <div class="text-content">
+                    <p class="leaflet-head">Are you looking for accommodation?</p>
+                    <p>Some people think finding accommodation is extremely stressful, but keep calm and you'll get there. The best place to look is online: check out websites and decide whether you want a room in a house or your own flat. You can look in estate agents' windows and ask family and friends.</p>
+                    <p>Don't fork out any cash until you've seen the property. Take your best friend when you visit, as it's safer and they may notice something you don't. If relevant, meet your future housemates to ensure you get on. Ask questions like:</p>
+                    <ul>
+                        <li>how much is the rent?</li>
+                        <li>does the rent include bills?</li>
+                        <li>do you have to pay anything upfront?</li>
+                    </ul>
+                    <p>See whether your friend has any additional questions.</p>
+                    <p>Check the room is big enough for all your possessions and ensure things like the shower work properly. Calculate how long it will take you to travel to work or college; you could also investigate whether the neighbours are noisy.</p>
+                    <p>Think carefully before reaching a decision and ask your best mate for their opinion. Once you've decided, read the contract thoroughly so you know what you're committing yourself to before you sign it and keep a copy in a safe place. Then you can arrange to collect the keys. If it's not suitable, hang on in there – you'll discover the perfect place eventually.</p>
+                </div>
+            </div>
+
+            <div class="section-head">Section C</div>
+            <div class="section-sub">Read Text C and answer Questions 10 to 14.</div>
+
+            <!-- Q10 -->
+            <div class="question-block">
+                <div class="question-number">Question 10 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Using Text C, identify <strong>one</strong> way you can find accommodation to rent.</p>
+                <textarea data-id="q10" data-label="Q10 one way to find accommodation"></textarea>
+            </div>
+
+            <!-- Q11 -->
+            <div class="question-block">
+                <div class="question-number">Question 11 <span class="marks">(3 marks)</span></div>
+                <p class="question-text">Using Text C, identify <strong>three</strong> reasons to take your best friend with you when you visit new accommodation.</p>
+                <div class="answer-row"><span class="num">1</span><textarea data-id="q11_1" data-label="Q11 reason one"></textarea></div>
+                <div class="answer-row"><span class="num">2</span><textarea data-id="q11_2" data-label="Q11 reason two"></textarea></div>
+                <div class="answer-row"><span class="num">3</span><textarea data-id="q11_3" data-label="Q11 reason three"></textarea></div>
+            </div>
+
+            <!-- Q12 -->
+            <div class="question-block">
+                <div class="question-number">Question 12 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Text C includes both facts and opinions. Which <strong>two</strong> of these statements are facts?</p>
+                <p class="pick-hint">Choose two.</p>
+                <div class="options" data-multi="q12" data-cap="2" data-label="Q12 two statements that are facts">
+                    <div class="option" data-val="A"><span class="opt-box"></span><span><span class="opt-letter">A</span>Looking for accommodation is very stressful.</span></div>
+                    <div class="option" data-val="B"><span class="opt-box"></span><span><span class="opt-letter">B</span>Everyone can find an ideal place to live.</span></div>
+                    <div class="option" data-val="C"><span class="opt-box"></span><span><span class="opt-letter">C</span>You can rent one room or a whole flat.</span></div>
+                    <div class="option" data-val="D"><span class="opt-box"></span><span><span class="opt-letter">D</span>It is important to rent a very large room.</span></div>
+                    <div class="option" data-val="E"><span class="opt-box"></span><span><span class="opt-letter">E</span>After signing a contract you can get the keys.</span></div>
+                </div>
+            </div>
+
+            <!-- Q13 -->
+            <div class="question-block">
+                <div class="question-number">Question 13 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Which <strong>two</strong> of these quotations from Text C are examples of formal language?</p>
+                <p class="pick-hint">Choose two.</p>
+                <div class="options" data-multi="q13" data-cap="2" data-label="Q13 two examples of formal language">
+                    <div class="option" data-val="A"><span class="opt-box"></span><span><span class="opt-letter">A</span>'hang on in there'</span></div>
+                    <div class="option" data-val="B"><span class="opt-box"></span><span><span class="opt-letter">B</span>'all your possessions'</span></div>
+                    <div class="option" data-val="C"><span class="opt-box"></span><span><span class="opt-letter">C</span>'fork out any cash'</span></div>
+                    <div class="option" data-val="D"><span class="opt-box"></span><span><span class="opt-letter">D</span>'additional questions'</span></div>
+                    <div class="option" data-val="E"><span class="opt-box"></span><span><span class="opt-letter">E</span>'ask your best mate'</span></div>
+                </div>
+            </div>
+
+            <!-- Q14 -->
+            <div class="question-block">
+                <div class="question-number">Question 14 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Identify <strong>two</strong> quotations from Text C that tell you what to do with the contract.</p>
+                <div class="answer-row"><span class="num">1</span><textarea data-id="q14_1" data-label="Q14 quotation one"></textarea></div>
+                <div class="answer-row"><span class="num">2</span><textarea data-id="q14_2" data-label="Q14 quotation two"></textarea></div>
+            </div>
+
+            <!-- ============ SECTION D ============ -->
+            <div class="section-head">Section D</div>
+            <div class="section-sub">Use Text B and Text C to answer Question 15.</div>
+
+            <!-- Q15 -->
+            <div class="question-block">
+                <div class="question-number">Question 15 <span class="marks">(3 marks)</span></div>
+                <p class="question-text">Compare Text B and Text C to find advice about what to check when you visit new accommodation that is the same.</p>
+                <p class="question-text">In your answer you should:</p>
+                <ul style="margin:0 0 16px 22px;">
+                    <li style="margin-bottom:6px;">give <strong>one</strong> piece of advice about what to check when you visit new accommodation that is the same in Text B and Text C</li>
+                    <li>give <strong>one</strong> quotation from Text B and <strong>one</strong> quotation from Text C which support this advice.</li>
+                </ul>
+                <div class="part-label">Advice <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q15_advice" data-label="Q15 advice that is the same in both texts"></textarea>
+                <div class="part-label">Quotation from Text B <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q15_textB" data-label="Q15 supporting quotation from Text B"></textarea>
+                <div class="part-label">Quotation from Text C <span class="marks">(1 mark)</span></div>
+                <textarea data-id="q15_textC" data-label="Q15 supporting quotation from Text C"></textarea>
+            </div>
+
+            <div class="total-marks">TOTAL FOR PAPER IS 30 MARKS</div>
+
+            <div class="submit-section">
+                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's name below and click to send your answers. You can do this even if some questions are still blank.</p>
+                <div style="max-width: 420px; margin: 0 auto 20px; text-align: left;">
+                    <div class="input-group">
+                        <label for="studentName">Your name:</label>
+                        <input type="text" id="studentName" name="studentName" placeholder="Type your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherFirst">Teacher's first name:</label>
+                        <input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherLast">Teacher's last name:</label>
+                        <input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off">
+                    </div>
+                    <p id="emailPreview" style="font-size: 14px; color: #007291; font-weight: 700; margin: 4px 0 0;"></p>
+                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin: 8px 0 0;"></p>
+                </div>
+                <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+
+        function cleanNamePart(s) { return s.trim().toLowerCase().replace(/[^a-z0-9-]/g, ''); }
+        function buildTeacherEmail() {
+            const first = cleanNamePart(document.getElementById('teacherFirst').value);
+            const last = cleanNamePart(document.getElementById('teacherLast').value);
+            if (!first || !last) return '';
+            return first + '.' + last + '@' + SCHOOL_DOMAIN;
+        }
+        function updateEmailPreview() {
+            const email = buildTeacherEmail();
+            document.getElementById('emailPreview').textContent = email ? 'This will send to: ' + email : '';
+        }
+
+        /* option selection */
+        document.querySelectorAll('.option').forEach(function(opt){
+            opt.addEventListener('click', function(){
+                const group = opt.parentElement;
+                if (group.hasAttribute('data-single')) {
+                    group.querySelectorAll('.option').forEach(function(o){ o.classList.remove('selected'); });
+                    opt.classList.add('selected');
+                } else {
+                    const cap = parseInt(group.getAttribute('data-cap') || '99', 10);
+                    const chosen = group.querySelectorAll('.option.selected');
+                    if (opt.classList.contains('selected')) {
+                        opt.classList.remove('selected');
+                    } else if (chosen.length < cap) {
+                        opt.classList.add('selected');
+                    } else {
+                        chosen[0].classList.remove('selected');
+                        opt.classList.add('selected');
+                    }
+                }
+            });
+        });
+        function selectedVals(group){
+            const v = [];
+            group.querySelectorAll('.option.selected').forEach(function(o){ v.push(o.getAttribute('data-val')); });
+            return v;
+        }
+
+        function submitForm() {
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+            if (!teacherEmail) {
+                note.textContent = "Please add your teacher's first and last name first.";
+                note.style.display = 'block';
+                document.getElementById('teacherFirst').focus();
+                return;
+            }
+            note.style.display = 'none';
+
+            try {
+                localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim());
+                localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim());
+            } catch(e) {}
+
+            let b = "FUNCTIONAL SKILLS ENGLISH LEVEL 1\nREADING - PRACTICE 2\n\n";
+            b += "Student: " + (studentName || '[Name not given]') + "\n\n";
+            b += "===== STUDENT ANSWERS =====\n\n";
+
+            document.querySelectorAll('.question-block').forEach(function(q){
+                q.querySelectorAll('textarea[data-id]').forEach(function(t){
+                    b += t.getAttribute('data-label') + ":\n";
+                    b += (t.value.trim() || '[Not answered]') + "\n\n";
+                });
+                q.querySelectorAll('.options').forEach(function(g){
+                    const vals = selectedVals(g);
+                    b += g.getAttribute('data-label') + ":\n";
+                    b += (vals.length ? vals.join(', ') : '[None chosen]') + "\n\n";
+                });
+            });
+            b += "===== END OF ANSWERS =====\n";
+
+            const subject = "FS English Level 1 Reading Practice 2" + (studentName ? " - " + studentName : "");
+            const gmailUrl = "https://mail.google.com/mail/?ui=2&fs=1&to=" + encodeURIComponent(teacherEmail) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(b);
+            window.open(gmailUrl, '_blank');
+        }
+
+        (function() {
+            try {
+                const f = localStorage.getItem('base6TeacherFirst');
+                const l = localStorage.getItem('base6TeacherLast');
+                if (f) document.getElementById('teacherFirst').value = f;
+                if (l) document.getElementById('teacherLast').value = l;
+            } catch(e) {}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+        })();
+    </script>
+</body>
+</html>
