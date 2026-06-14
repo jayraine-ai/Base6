@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS Maths Entry 3 Set 2 - Section B</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:#fef8f4; color:#333; font-family:'Atkinson Hyperlegible',sans-serif; padding:20px; line-height:1.6; }
+        .container { max-width:900px; margin:0 auto; }
+        header { background:#007291; color:#fef8f4; padding:30px 20px; border-radius:8px; margin-bottom:30px; text-align:center; }
+        header h1 { font-size:28px; margin-bottom:10px; }
+        header p { font-size:16px; opacity:.95; }
+        .paper-info { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:30px; font-size:14px; }
+        .info-box { background:#e8f4f8; padding:15px; border-left:4px solid #ef7724; border-radius:4px; }
+        .info-box strong { display:block; color:#007291; margin-bottom:5px; }
+        .instructions { background:#f0f8ff; border-left:4px solid #007291; padding:15px; margin-bottom:25px; border-radius:4px; font-size:14px; }
+        .question-block { background:#fff; border:2px solid #007291; border-radius:8px; padding:25px; margin-bottom:25px; }
+        .question-number { font-size:18px; font-weight:700; color:#007291; margin-bottom:12px; }
+        .question-text { font-size:16px; margin-bottom:16px; }
+        .marks { color:#ef7724; font-weight:700; font-size:14px; }
+        .input-group { margin-bottom:12px; }
+        label { display:block; margin-bottom:6px; font-weight:700; color:#333; }
+        input[type=text], textarea { width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:4px; font-family:'Atkinson Hyperlegible',sans-serif; font-size:16px; background:#fafafa; }
+        textarea { min-height:80px; resize:vertical; }
+        input[type=text]:focus, textarea:focus { outline:none; border-color:#007291; background:#fff; }
+        .diagram { background:#f0f0f0; border:2px solid #ccc; padding:20px; margin:20px 0; border-radius:4px; text-align:center; }
+        .diagram-label { font-weight:700; margin-bottom:15px; color:#333; }
+        .diagram-svg { max-width:100%; height:auto; }
+        table.data { width:100%; border-collapse:collapse; margin:16px 0; background:#f9f9f9; }
+        table.data th, table.data td { border:1px solid #ddd; padding:10px; text-align:center; }
+        table.data th { background:#007291; color:#fff; }
+        table.data td input { width:100%; }
+        .mc-options { display:flex; flex-direction:column; gap:8px; margin:8px 0; }
+        .mc-options.row { flex-direction:row; flex-wrap:wrap; }
+        .mc-option { display:flex; align-items:center; gap:10px; background:#fafafa; border:2px solid #e0e0e0; border-radius:6px; padding:10px 16px; cursor:pointer; transition:border-color .15s,background .15s; font-weight:700; }
+        .mc-option:hover { border-color:#007291; background:#fff; }
+        .mc-option input { width:20px; height:20px; accent-color:#007291; }
+        .total-line { color:#ef7724; font-weight:700; margin-top:16px; }
+        .total-marks { background:#fff3cd; border-left:4px solid #ef7724; padding:15px; margin-bottom:30px; border-radius:4px; font-weight:700; }
+        .submit-section { background:#e8f4f8; padding:25px; border-radius:8px; margin-top:40px; text-align:center; }
+        .submit-button { background:#007291; color:#fff; padding:15px 40px; font-size:16px; border:none; border-radius:6px; cursor:pointer; font-family:'Atkinson Hyperlegible',sans-serif; font-weight:700; transition:background .3s; }
+        .submit-button:hover { background:#005a74; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline:3px solid #ef7724; outline-offset:2px; }
+</style>
+</head>
+<body>
+    <div class="container">
+        <header><h1>Functional Skills Mathematics Entry 3</h1><p>Set 2 - Section B (Calculator)</p></header>
+        <div class="paper-info">
+            <div class="info-box"><strong>Time: 1 hour 15 minutes</strong>Paper Reference: W64179A</div>
+            <div class="info-box"><strong>Total Marks: 27</strong>You may use a calculator</div>
+        </div>
+        <div class="instructions">Answer every question. Type your answers into the boxes provided. You may use a calculator. Check your work at the end, and ask if you do not understand any words.</div>
+        <form id="assessmentForm">
+<div class="question-block"><div class="question-number">Question 1 <span class="marks">(3 marks)</span></div>
+<p class="question-text">Kemar plans music events. He makes a website about the events. The cost of the website is &pound;10.90 each month. What is the total cost for 24 months? Use correct money format.</p>
+<div class="input-group"><label for="q1_working">Show your working here:</label><textarea id="q1_working" name="q1_working"></textarea></div>
+<div class="input-group"><label for="q1_answer">Your answer: &pound;</label><input type="text" id="q1_answer" name="q1_answer"></div>
+<p class="total-line">Total for Question 1 is 3 marks</p></div>
+<div class="question-block"><div class="question-number">Question 2 <span class="marks">(2 marks)</span></div>
+<p class="question-text">(a) Round &pound;10.90 to the nearest pound.</p>
+<div class="input-group"><label for="q2a_answer">Your answer: &pound;</label><input type="text" id="q2a_answer" name="q2a_answer"></div>
+<p class="question-text">(b) Use the rounded number to check your answer to Question 1.</p>
+<div class="input-group"><label for="q2b_check">Show your check here:</label><textarea id="q2b_check" name="q2b_check"></textarea></div>
+<p class="total-line">Total for Question 2 is 2 marks</p></div>
+<div class="question-block"><div class="question-number">Question 3 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar has a total of 450 tickets for a music event. He keeps 90 of the tickets to sell at the gate. Kemar says one third of the tickets are to sell at the gate. Is Kemar correct? Show why you think this.</p>
+<div class="input-group"><label for="q3_working">Show your working and your answer here:</label><textarea id="q3_working" name="q3_working"></textarea></div>
+<p style="font-weight:700;margin-bottom:6px;">Tick the correct answer:</p><div class="mc-options row"><label class="mc-option"><input type="radio" name="q3_answer" value="Yes"> Yes</label><label class="mc-option"><input type="radio" name="q3_answer" value="No"> No</label></div>
+<p class="total-line">Total for Question 3 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 4 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar needs to hire a tent for serving food.</p>
+<table class="data"><tr><th>Tent</th><th>Length (m)</th><th>Maximum number of people</th><th>Cost (&pound;)</th></tr>
+<tr><td>A</td><td>6</td><td>60</td><td>217</td></tr>
+<tr><td>B</td><td>9</td><td>115</td><td>429</td></tr>
+<tr><td>C</td><td>12</td><td>220</td><td>853</td></tr>
+<tr><td>D</td><td>6</td><td>155</td><td>506</td></tr>
+<tr><td>E</td><td>9</td><td>165</td><td>603</td></tr>
+<tr><td>F</td><td>12</td><td>275</td><td>518</td></tr></table>
+<p class="question-text">Kemar needs a tent that is less than 10 m in length. He needs a tent for 120 people. He wants to spend as little as possible. Which tent will Kemar hire?</p>
+<div class="input-group"><label for="q4_answer">Your answer (tent):</label><input type="text" id="q4_answer" name="q4_answer"></div>
+<p class="total-line">Total for Question 4 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 5 <span class="marks">(3 marks)</span></div>
+<p class="question-text">Kemar puts a video on his website. The graph shows the numbers of people who watch the video.</p>
+<div class="diagram"><div class="diagram-label">Number of people who watch the video over 5 days</div><svg class="diagram-svg"  viewBox="0 0 620 470" style="max-width:560px;height:auto;">
+<line x1="70" y1="420.0" x2="550" y2="420.0" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="409.7" x2="550" y2="409.7" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="399.4" x2="550" y2="399.4" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="389.1" x2="550" y2="389.1" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="378.9" x2="550" y2="378.9" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="368.6" x2="550" y2="368.6" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="358.3" x2="550" y2="358.3" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="348.0" x2="550" y2="348.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="337.7" x2="550" y2="337.7" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="327.4" x2="550" y2="327.4" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="317.1" x2="550" y2="317.1" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="306.9" x2="550" y2="306.9" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="296.6" x2="550" y2="296.6" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="286.3" x2="550" y2="286.3" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="276.0" x2="550" y2="276.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="265.7" x2="550" y2="265.7" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="255.4" x2="550" y2="255.4" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="245.1" x2="550" y2="245.1" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="234.9" x2="550" y2="234.9" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="224.6" x2="550" y2="224.6" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="214.3" x2="550" y2="214.3" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="204.0" x2="550" y2="204.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="193.7" x2="550" y2="193.7" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="183.4" x2="550" y2="183.4" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="173.1" x2="550" y2="173.1" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="162.9" x2="550" y2="162.9" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="152.6" x2="550" y2="152.6" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="142.3" x2="550" y2="142.3" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="132.0" x2="550" y2="132.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="121.7" x2="550" y2="121.7" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="111.4" x2="550" y2="111.4" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="101.1" x2="550" y2="101.1" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="90.9" x2="550" y2="90.9" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="80.6" x2="550" y2="80.6" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="70.3" x2="550" y2="70.3" stroke="#e4eef2" stroke-width="1"/>
+<line x1="70" y1="60.0" x2="550" y2="60.0" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="60" x2="70" y2="420" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="190" y1="60" x2="190" y2="420" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="310" y1="60" x2="310" y2="420" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="430" y1="60" x2="430" y2="420" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="550" y1="60" x2="550" y2="420" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="70" y1="420" x2="550" y2="420" stroke="#000" stroke-width="2"/>
+<line x1="70" y1="420" x2="70" y2="60" stroke="#000" stroke-width="2"/>
+<text x="58" y="424.0" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">0</text>
+<text x="58" y="372.6" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">100</text>
+<text x="58" y="321.1" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">200</text>
+<text x="58" y="269.7" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">300</text>
+<text x="58" y="218.3" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">400</text>
+<text x="58" y="166.9" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">500</text>
+<text x="58" y="115.4" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">600</text>
+<text x="58" y="64.0" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">700</text>
+<text x="70" y="442" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">1</text>
+<text x="190" y="442" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">2</text>
+<text x="310" y="442" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">3</text>
+<text x="430" y="442" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">4</text>
+<text x="550" y="442" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">5</text>
+<text x="310" y="30" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="bold">Number of people who watch the video over 5 days</text>
+<text x="310" y="463" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" font-weight="bold">Day</text>
+<text x="22" y="240" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold" transform="rotate(-90 22 240)">Number of people</text>
+<path d="M 70.0 337.7 L 190.0 90.9 L 310.0 276.0 L 430.0 204.0 L 550.0 162.9" fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
+</svg></div>
+<p class="question-text">Kemar says that more than 900 people in total watched the video on days 2 and 3. Is Kemar correct? Show why you think this.</p>
+<div class="input-group"><label for="q5_working">Show your working and your answer here:</label><textarea id="q5_working" name="q5_working"></textarea></div>
+<p style="font-weight:700;margin-bottom:6px;">Tick the correct answer:</p><div class="mc-options row"><label class="mc-option"><input type="radio" name="q5_answer" value="Yes"> Yes</label><label class="mc-option"><input type="radio" name="q5_answer" value="No"> No</label></div>
+<p class="total-line">Total for Question 5 is 3 marks</p></div>
+<div class="question-block"><div class="question-number">Question 6 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Helpers at the music event will have name badges. Kemar chooses a shape for the badges. Which shape has the fewest right angles?</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;">
+<div style="text-align:center;"><svg class="diagram-svg"  viewBox="0 0 254 186" style="max-width:240px;height:auto;">
+<line x1="8" y1="8" x2="8" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="42" y1="8" x2="42" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="76" y1="8" x2="76" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="110" y1="8" x2="110" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="144" y1="8" x2="144" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="178" y1="8" x2="178" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="212" y1="8" x2="212" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="246" y1="8" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="8" x2="246" y2="8" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="42" x2="246" y2="42" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="76" x2="246" y2="76" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="110" x2="246" y2="110" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="144" x2="246" y2="144" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="178" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<path d="M 42 42 L 178 42 L 178 76 A 68.0 68.0 0 0 1 42 76 Z" fill="none" stroke="#111" stroke-width="2.5"/>
+</svg><div style="font-weight:700;margin-top:6px;">A</div></div>
+<div style="text-align:center;"><svg class="diagram-svg"  viewBox="0 0 254 186" style="max-width:240px;height:auto;">
+<line x1="8" y1="8" x2="8" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="42" y1="8" x2="42" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="76" y1="8" x2="76" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="110" y1="8" x2="110" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="144" y1="8" x2="144" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="178" y1="8" x2="178" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="212" y1="8" x2="212" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="246" y1="8" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="8" x2="246" y2="8" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="42" x2="246" y2="42" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="76" x2="246" y2="76" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="110" x2="246" y2="110" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="144" x2="246" y2="144" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="178" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<polygon points="42,42 212,42 212,110 178,144 76,144 42,110" fill="none" stroke="#111" stroke-width="2.5"/>
+</svg><div style="font-weight:700;margin-top:6px;">B</div></div>
+<div style="text-align:center;"><svg class="diagram-svg"  viewBox="0 0 254 186" style="max-width:240px;height:auto;">
+<line x1="8" y1="8" x2="8" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="42" y1="8" x2="42" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="76" y1="8" x2="76" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="110" y1="8" x2="110" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="144" y1="8" x2="144" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="178" y1="8" x2="178" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="212" y1="8" x2="212" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="246" y1="8" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="8" x2="246" y2="8" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="42" x2="246" y2="42" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="76" x2="246" y2="76" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="110" x2="246" y2="110" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="144" x2="246" y2="144" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="178" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<polygon points="42,42 76,42 76,76 178,76 178,42 212,42 212,144 178,144 178,110 76,110 76,144 42,144" fill="none" stroke="#111" stroke-width="2.5"/>
+</svg><div style="font-weight:700;margin-top:6px;">C</div></div>
+<div style="text-align:center;"><svg class="diagram-svg"  viewBox="0 0 254 186" style="max-width:240px;height:auto;">
+<line x1="8" y1="8" x2="8" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="42" y1="8" x2="42" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="76" y1="8" x2="76" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="110" y1="8" x2="110" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="144" y1="8" x2="144" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="178" y1="8" x2="178" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="212" y1="8" x2="212" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="246" y1="8" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="8" x2="246" y2="8" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="42" x2="246" y2="42" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="76" x2="246" y2="76" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="110" x2="246" y2="110" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="144" x2="246" y2="144" stroke="#d9d9d9" stroke-width="1"/>
+<line x1="8" y1="178" x2="246" y2="178" stroke="#d9d9d9" stroke-width="1"/>
+<polygon points="42,42 178,42 212,144 144,144 76,110" fill="none" stroke="#111" stroke-width="2.5"/>
+</svg><div style="font-weight:700;margin-top:6px;">D</div></div>
+</div>
+<p style="font-weight:700;margin-bottom:6px;">Tick the correct answer:</p><div class="mc-options row"><label class="mc-option"><input type="radio" name="q6_answer" value="A"> A</label><label class="mc-option"><input type="radio" name="q6_answer" value="B"> B</label><label class="mc-option"><input type="radio" name="q6_answer" value="C"> C</label><label class="mc-option"><input type="radio" name="q6_answer" value="D"> D</label></div>
+<p class="total-line">Total for Question 6 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 7 <span class="marks">(3 marks)</span></div>
+<p class="question-text">Kemar makes fruit biscuits to sell at the music event. He weighs fruit.</p>
+<div class="diagram"><div class="diagram-label">Weighing scale (grams)</div><svg class="diagram-svg"  viewBox="0 0 820 180" style="max-width:720px;height:auto;">
+<rect x="40" y="40" width="760" height="110" fill="none" stroke="#333" stroke-width="2"/>
+<line x1="40" y1="95" x2="800" y2="95" stroke="#333" stroke-width="1.5"/>
+<line x1="60.0" y1="95" x2="60.0" y2="121" stroke="#333" stroke-width="1.5"/>
+<text x="60.0" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">0</text>
+<line x1="90.0" y1="95" x2="90.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="120.0" y1="95" x2="120.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="150.0" y1="95" x2="150.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="180.0" y1="95" x2="180.0" y2="121" stroke="#333" stroke-width="1.5"/>
+<text x="180.0" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">100</text>
+<line x1="210.0" y1="95" x2="210.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="240.0" y1="95" x2="240.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="270.0" y1="95" x2="270.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="300.0" y1="95" x2="300.0" y2="121" stroke="#333" stroke-width="1.5"/>
+<text x="300.0" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">200</text>
+<line x1="330.0" y1="95" x2="330.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="360.0" y1="95" x2="360.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="390.0" y1="95" x2="390.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="420.0" y1="95" x2="420.0" y2="121" stroke="#333" stroke-width="1.5"/>
+<text x="420.0" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">300</text>
+<line x1="450.0" y1="95" x2="450.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="480.0" y1="95" x2="480.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="510.0" y1="95" x2="510.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="540.0" y1="95" x2="540.0" y2="121" stroke="#333" stroke-width="1.5"/>
+<text x="540.0" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">400</text>
+<line x1="570.0" y1="95" x2="570.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="600.0" y1="95" x2="600.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="630.0" y1="95" x2="630.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="660.0" y1="95" x2="660.0" y2="121" stroke="#333" stroke-width="1.5"/>
+<text x="660.0" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">500</text>
+<line x1="690.0" y1="95" x2="690.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="720.0" y1="95" x2="720.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="750.0" y1="95" x2="750.0" y2="111" stroke="#333" stroke-width="1"/>
+<line x1="780.0" y1="95" x2="780.0" y2="121" stroke="#333" stroke-width="1.5"/>
+<text x="780.0" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">600</text>
+<polygon points="201.0,45 219.0,45 219.0,78 226.0,78 210.0,92 194.0,78 201.0,78" fill="#111"/>
+<text x="775" y="170" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="15">grams</text>
+</svg></div>
+<p class="question-text">Kemar needs a total of 0.5 kg of fruit. He says he needs 425 g more fruit. Is Kemar correct? Show why you think this.</p>
+<div class="input-group"><label for="q7_working">Show your working and your answer here:</label><textarea id="q7_working" name="q7_working"></textarea></div>
+<p style="font-weight:700;margin-bottom:6px;">Tick the correct answer:</p><div class="mc-options row"><label class="mc-option"><input type="radio" name="q7_answer" value="Yes"> Yes</label><label class="mc-option"><input type="radio" name="q7_answer" value="No"> No</label></div>
+<p class="total-line">Total for Question 7 is 3 marks</p></div>
+<div class="question-block"><div class="question-number">Question 8 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar asks helpers to do jobs at different times.</p>
+<ul style="margin:0 0 16px 22px;">
+<li><strong>Amir</strong> &mdash; Food 6pm, Parking 10pm, Bins 2pm</li>
+<li><strong>Corey</strong> &mdash; Food 10pm, Parking 2pm, Bins 6pm</li>
+<li><strong>Sam</strong> &mdash; Food 2pm, Parking 6pm, Bins 10pm</li></ul>
+<p class="question-text">Kemar wants to show this information in a table. Organise this information in the table.</p>
+<table class="data"><tr><th></th><th>Food</th><th>Parking</th><th>Bins</th></tr>
+<tr><td><strong>Amir</strong></td><td><input type="text" name="q8_amir_food"></td><td><input type="text" name="q8_amir_park"></td><td><input type="text" name="q8_amir_bins"></td></tr>
+<tr><td><strong>Corey</strong></td><td><input type="text" name="q8_corey_food"></td><td><input type="text" name="q8_corey_park"></td><td><input type="text" name="q8_corey_bins"></td></tr>
+<tr><td><strong>Sam</strong></td><td><input type="text" name="q8_sam_food"></td><td><input type="text" name="q8_sam_park"></td><td><input type="text" name="q8_sam_bins"></td></tr></table>
+<p class="total-line">Total for Question 8 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 9 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar has speakers for the music event. He can put the speakers at different heights: 0.9 m, 1.05 m, 1.2 m. The heights follow a pattern. Kemar puts a speaker at the next height up from 1.2 m. At what height does Kemar put the speaker?</p>
+<div class="input-group"><label for="q9_answer">Your answer: ____ m</label><input type="text" id="q9_answer" name="q9_answer"></div>
+<p class="total-line">Total for Question 9 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 10 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar turns a handle to fix the height of the speakers.</p>
+<div class="diagram"><div class="diagram-label">The turn of the handle</div><svg class="diagram-svg"  viewBox="0 0 240 240" style="max-width:200px;height:auto;">
+<circle cx="120" cy="120" r="46" fill="#555"/>
+<circle cx="174.0" cy="120.0" r="6" fill="#555"/>
+<circle cx="166.8" cy="147.0" r="6" fill="#555"/>
+<circle cx="147.0" cy="166.8" r="6" fill="#555"/>
+<circle cx="120.0" cy="174.0" r="6" fill="#555"/>
+<circle cx="93.0" cy="166.8" r="6" fill="#555"/>
+<circle cx="73.2" cy="147.0" r="6" fill="#555"/>
+<circle cx="66.0" cy="120.0" r="6" fill="#555"/>
+<circle cx="73.2" cy="93.0" r="6" fill="#555"/>
+<circle cx="93.0" cy="73.2" r="6" fill="#555"/>
+<circle cx="120.0" cy="66.0" r="6" fill="#555"/>
+<circle cx="147.0" cy="73.2" r="6" fill="#555"/>
+<circle cx="166.8" cy="93.0" r="6" fill="#555"/>
+<circle cx="120" cy="120" r="18" fill="#fff"/>
+<path d="M 120.0 42.0 A 78 78 0 1 1 42.0 120.0" fill="none" stroke="#111" stroke-width="3"/>
+<polygon points="120.0,41.0 132.0,35.0 132.0,47.0" fill="#111"/>
+</svg></div>
+<p class="question-text">Which is the correct description of the fraction that Kemar turns the handle?</p>
+<div class="mc-options"><label class="mc-option"><input type="radio" name="q10_answer" value="one quarter turn"> one quarter turn</label><label class="mc-option"><input type="radio" name="q10_answer" value="one half turn"> one half turn</label><label class="mc-option"><input type="radio" name="q10_answer" value="three quarter turn"> three quarter turn</label><label class="mc-option"><input type="radio" name="q10_answer" value="one full turn"> one full turn</label></div>
+<p class="total-line">Total for Question 10 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 11 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar hires a rubbish bin from a company. He hires the tallest bin the company has. Which bin does he hire?</p>
+<div class="mc-options"><label class="mc-option"><input type="radio" name="q11_answer" value="1.3 m"> 1.3 m</label><label class="mc-option"><input type="radio" name="q11_answer" value="0.98 m"> 0.98 m</label><label class="mc-option"><input type="radio" name="q11_answer" value="1.06 m"> 1.06 m</label><label class="mc-option"><input type="radio" name="q11_answer" value="1.18 m"> 1.18 m</label><label class="mc-option"><input type="radio" name="q11_answer" value="1.2 m"> 1.2 m</label><label class="mc-option"><input type="radio" name="q11_answer" value="0.64 m"> 0.64 m</label></div>
+<p class="total-line">Total for Question 11 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 12 <span class="marks">(2 marks)</span></div>
+<p class="question-text">Kemar sells 289 adult tickets for the music event. He also sells 136 child tickets. What is the total number of tickets he sells?</p>
+<div class="input-group"><label for="q12_working">Show your working here:</label><textarea id="q12_working" name="q12_working"></textarea></div>
+<div class="input-group"><label for="q12_answer">Your answer:</label><input type="text" id="q12_answer" name="q12_answer"></div>
+<p class="total-line">Total for Question 12 is 2 marks</p></div>
+<div class="question-block"><div class="question-number">Question 13 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar has a site map for the music event. A customer at point X wants to find the nearest accessible toilet. Which toilet will the customer choose?</p>
+<div class="diagram"><div class="diagram-label">Site map (each square is 10 m)</div><svg class="diagram-svg"  viewBox="0 0 574 566" style="max-width:540px;height:auto;">
+<line x1="40" y1="18" x2="40" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="78" y1="18" x2="78" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="116" y1="18" x2="116" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="154" y1="18" x2="154" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="192" y1="18" x2="192" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="230" y1="18" x2="230" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="268" y1="18" x2="268" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="306" y1="18" x2="306" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="344" y1="18" x2="344" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="382" y1="18" x2="382" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="420" y1="18" x2="420" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="458" y1="18" x2="458" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="496" y1="18" x2="496" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="534" y1="18" x2="534" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="18" x2="534" y2="18" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="56" x2="534" y2="56" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="94" x2="534" y2="94" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="132" x2="534" y2="132" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="170" x2="534" y2="170" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="208" x2="534" y2="208" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="246" x2="534" y2="246" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="284" x2="534" y2="284" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="322" x2="534" y2="322" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="360" x2="534" y2="360" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="398" x2="534" y2="398" stroke="#cfcfcf" stroke-width="1"/>
+<line x1="40" y1="436" x2="534" y2="436" stroke="#cfcfcf" stroke-width="1"/>
+<polygon points="192,18 306,18 290.79999999999995,56 207.20000000000002,56" fill="#111"/>
+<text x="249.0" y="44.599999999999994" text-anchor="middle" fill="#fff" font-family="Atkinson Hyperlegible" font-size="14" font-weight="bold">stage</text>
+<rect x="420" y="18" fill="#fff" stroke="#333" stroke-width="2"/>
+<text x="477.0" y="59.800000000000004" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">playground</text>
+<rect x="78" y="170" width="76" height="38" fill="#111"/>
+<text x="116" y="194.70000000000002" text-anchor="middle" fill="#fff" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">tent</text>
+<rect x="78" y="132" width="27" height="27" fill="#9a9a9a" stroke="#333" stroke-width="1.5"/>
+<text x="83" y="128" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">A</text>
+<rect x="116" y="132" width="27" height="27" fill="#fff" stroke="#333" stroke-width="1.5"/>
+<text x="121" y="128" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">B</text>
+<rect x="420" y="132" width="27" height="27" fill="#9a9a9a" stroke="#333" stroke-width="1.5"/>
+<text x="424" y="184" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">D</text>
+<rect x="458" y="132" width="27" height="27" fill="#fff" stroke="#333" stroke-width="1.5"/>
+<text x="462" y="184" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">C</text>
+<rect x="78" y="208" width="27" height="27" fill="#fff" stroke="#333" stroke-width="1.5"/>
+<text x="118" y="230.79999999999998" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">E</text>
+<rect x="306" y="322" width="27" height="27" fill="#9a9a9a" stroke="#333" stroke-width="1.5"/>
+<text x="336.4" y="344.8" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">F</text>
+<text x="287.0" y="154.8" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="17" font-weight="bold">X</text>
+<text x="431.40000000000003" y="382.8" font-family="Atkinson Hyperlegible" font-size="13">car park</text>
+<polygon points="496,371.40000000000003 515.0,371.40000000000003 515.0,365.7 534,377.09999999999997 515.0,388.5 515.0,382.8 496,382.8" fill="#111"/>
+<text x="40" y="460" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold">Key</text>
+<rect x="84" y="446" width="18" height="18" fill="#9a9a9a" stroke="#333" stroke-width="1.5"/>
+<text x="110" y="460" font-family="Atkinson Hyperlegible" font-size="13">accessible toilet</text>
+<rect x="84" y="468" width="18" height="18" fill="#fff" stroke="#333" stroke-width="1.5"/>
+<text x="110" y="482" font-family="Atkinson Hyperlegible" font-size="13">standard toilet</text>
+</svg></div>
+<div class="input-group"><label for="q13_answer">Your answer (toilet):</label><input type="text" id="q13_answer" name="q13_answer"></div>
+<p class="total-line">Total for Question 13 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 14 <span class="marks">(1 mark)</span></div>
+<p class="question-text">The music event ends at quarter past eleven in the evening. Which time shows this?</p>
+<div class="mc-options"><label class="mc-option"><input type="radio" name="q14_answer" value="11:15 am"> 11:15 am</label><label class="mc-option"><input type="radio" name="q14_answer" value="11:15 pm"> 11:15 pm</label><label class="mc-option"><input type="radio" name="q14_answer" value="11:45 am"> 11:45 am</label><label class="mc-option"><input type="radio" name="q14_answer" value="11:45 pm"> 11:45 pm</label></div>
+<p class="total-line">Total for Question 14 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 15 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar had 240 T-shirts to sell at the music event.</p>
+<div class="diagram"><div class="diagram-label">Items sold at music event</div><svg class="diagram-svg"  viewBox="0 0 620 460" style="max-width:560px;height:auto;">
+<line x1="90" y1="400.0" x2="560" y2="400.0" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="90" y1="378.0" x2="560" y2="378.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="356.0" x2="560" y2="356.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="334.0" x2="560" y2="334.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="312.0" x2="560" y2="312.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="290.0" x2="560" y2="290.0" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="90" y1="268.0" x2="560" y2="268.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="246.0" x2="560" y2="246.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="224.0" x2="560" y2="224.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="202.0" x2="560" y2="202.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="180.0" x2="560" y2="180.0" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="90" y1="158.0" x2="560" y2="158.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="136.0" x2="560" y2="136.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="114.0" x2="560" y2="114.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="92.0" x2="560" y2="92.0" stroke="#e4eef2" stroke-width="1"/>
+<line x1="90" y1="70.0" x2="560" y2="70.0" stroke="#9fc0cf" stroke-width="1.2"/>
+<line x1="90" y1="400" x2="560" y2="400" stroke="#000" stroke-width="2"/>
+<line x1="90" y1="400" x2="90" y2="60" stroke="#000" stroke-width="2"/>
+<text x="78" y="404.0" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">0</text>
+<text x="78" y="294.0" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">100</text>
+<text x="78" y="184.0" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">200</text>
+<text x="78" y="74.0" text-anchor="end" font-family="Atkinson Hyperlegible" font-size="13">300</text>
+<rect x="128.0" y="92.0" width="70" height="308.0" fill="#888" stroke="#333" stroke-width="1.5"/>
+<text x="163.0" y="420" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">wristband</text>
+<rect x="236.0" y="246.0" width="70" height="154.0" fill="#888" stroke="#333" stroke-width="1.5"/>
+<text x="271.0" y="420" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">hat</text>
+<rect x="344.0" y="334.0" width="70" height="66.0" fill="#888" stroke="#333" stroke-width="1.5"/>
+<text x="379.0" y="420" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">T-shirt</text>
+<rect x="452.0" y="268.0" width="70" height="132.0" fill="#888" stroke="#333" stroke-width="1.5"/>
+<text x="487.0" y="420" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13">cushion</text>
+<text x="325" y="30" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="bold">Items sold at music event</text>
+<text x="325" y="445" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" font-weight="bold">Item</text>
+<text x="30" y="230" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="bold" transform="rotate(-90 30 230)">Number of items</text>
+</svg></div>
+<p class="question-text">How many T-shirts are left over after the music event?</p>
+<div class="input-group"><label for="q15_answer">Your answer:</label><input type="text" id="q15_answer" name="q15_answer"></div>
+<p class="total-line">Total for Question 15 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 16 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar had 9 litres of petrol in a generator before the event. The diagram shows the amount of petrol left over after the event.</p>
+<div class="diagram"><div class="diagram-label">Petrol left (litres)</div><svg class="diagram-svg"  viewBox="0 0 260 520" style="max-width:220px;height:auto;">
+<rect x="70" y="40" width="40" height="440" fill="none" stroke="#333" stroke-width="2"/>
+<rect x="71" y="407.0" width="38" height="72.0" fill="#999"/>
+<line x1="120" y1="50" x2="120" y2="470" stroke="#333" stroke-width="1.5"/>
+<line x1="120" y1="470.0" x2="146" y2="470.0" stroke="#333" stroke-width="1.5"/>
+<text x="152" y="475.0" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">0</text>
+<line x1="120" y1="449.0" x2="134" y2="449.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="428.0" x2="134" y2="428.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="407.0" x2="134" y2="407.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="386.0" x2="134" y2="386.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="365.0" x2="134" y2="365.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="344.0" x2="134" y2="344.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="323.0" x2="134" y2="323.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="302.0" x2="134" y2="302.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="281.0" x2="134" y2="281.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="260.0" x2="146" y2="260.0" stroke="#333" stroke-width="1.5"/>
+<text x="152" y="265.0" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">5</text>
+<line x1="120" y1="239.0" x2="134" y2="239.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="218.0" x2="134" y2="218.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="197.0" x2="134" y2="197.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="176.0" x2="134" y2="176.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="155.0" x2="134" y2="155.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="134.0" x2="134" y2="134.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="113.0" x2="134" y2="113.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="92.0" x2="134" y2="92.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="71.0" x2="134" y2="71.0" stroke="#333" stroke-width="1"/>
+<line x1="120" y1="50.0" x2="146" y2="50.0" stroke="#333" stroke-width="1.5"/>
+<text x="152" y="55.0" font-family="Atkinson Hyperlegible" font-size="16" font-weight="bold">10</text>
+<text x="150" y="28" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15">litres</text>
+</svg></div>
+<p class="question-text">How much petrol did Kemar use, to the nearest division?</p>
+<div class="input-group"><label for="q16_answer">Your answer: ____ litres</label><input type="text" id="q16_answer" name="q16_answer"></div>
+<p class="total-line">Total for Question 16 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 17 <span class="marks">(1 mark)</span></div>
+<p class="question-text">Kemar counts the people who vote for photos on the website. He sorts the numbers of people in order: Photo A 280, Photo B 802, Photo C 820, Photo D 208, Photo E 282, Photo F 882. Which is the second greatest number?</p>
+<div class="mc-options"><label class="mc-option"><input type="radio" name="q17_answer" value="280"> 280</label><label class="mc-option"><input type="radio" name="q17_answer" value="802"> 802</label><label class="mc-option"><input type="radio" name="q17_answer" value="820"> 820</label><label class="mc-option"><input type="radio" name="q17_answer" value="208"> 208</label><label class="mc-option"><input type="radio" name="q17_answer" value="282"> 282</label><label class="mc-option"><input type="radio" name="q17_answer" value="882"> 882</label></div>
+<p class="total-line">Total for Question 17 is 1 mark</p></div>
+<div class="question-block"><div class="question-number">Question 18 <span class="marks">(2 marks)</span></div>
+<p class="question-text">The table shows when tickets for a different event were bought.</p>
+<table class="data"><tr><th>When tickets were bought</th><th>Number of tickets</th></tr>
+<tr><td>same day</td><td>40</td></tr>
+<tr><td>up to 1 week before</td><td>160</td></tr>
+<tr><td>more than 1 week before</td><td>100</td></tr></table>
+<p class="question-text">Kemar needs a bar chart to show this information. A bar chart is hard to draw here, so instead describe the bar chart you would draw: choose a suitable scale and give the height of each bar.</p>
+<div class="input-group"><label for="q18_scale">The scale I would use (for example, each gridline = 20 tickets):</label><input type="text" id="q18_scale" name="q18_scale"></div>
+<div class="input-group"><label for="q18_bars">The height of each bar (same day, up to 1 week before, more than 1 week before):</label><textarea id="q18_bars" name="q18_bars"></textarea></div>
+<p class="total-line">Total for Question 18 is 2 marks</p></div>
+
+            <div class="total-marks">TOTAL FOR SECTION B IS 27 MARKS</div>
+            <div class="submit-section">
+                <p style="margin-bottom:20px;font-size:16px;">When you have finished, add your teacher's name below and click to send your answers.</p>
+                <div style="max-width:420px;margin:0 auto 20px;text-align:left;">
+                    <div class="input-group"><label for="studentName">Your name:</label><input type="text" id="studentName" name="studentName" placeholder="Type your name"></div>
+                    <div class="input-group"><label for="teacherFirst">Teacher's first name:</label><input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off"></div>
+                    <div class="input-group"><label for="teacherLast">Teacher's last name:</label><input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off"></div>
+                    <p id="emailPreview" style="font-size:14px;color:#007291;font-weight:700;margin:4px 0 0;"></p>
+                    <p id="submitNote" style="display:none;color:#c0392b;font-weight:700;margin:8px 0 0;"></p>
+                </div>
+                <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+            </div>
+
+        </form>
+    </div>
+    <script>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+        function cleanNamePart(s){ return s.trim().toLowerCase().replace(/[^a-z0-9-]/g,''); }
+        function buildTeacherEmail(){ const f=cleanNamePart(document.getElementById('teacherFirst').value); const l=cleanNamePart(document.getElementById('teacherLast').value); if(!f||!l) return ''; return f+'.'+l+'@'+SCHOOL_DOMAIN; }
+        function updateEmailPreview(){ const e=buildTeacherEmail(); document.getElementById('emailPreview').textContent = e ? 'This will send to: '+e : ''; }
+        function ans(fd,k){ return fd.get(k) || '[Not answered]'; }
+        function submitForm(){
+            const fd = new FormData(document.getElementById('assessmentForm'));
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+            if(!teacherEmail){ note.textContent="Please add your teacher's first and last name first."; note.style.display='block'; document.getElementById('teacherFirst').focus(); return; }
+            note.style.display='none';
+            try{ localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim()); localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim()); }catch(e){}
+            let b = "FUNCTIONAL SKILLS MATHEMATICS ENTRY 3\nSET 2 - SECTION B (CALCULATOR)\n\n";
+            b += "Student: " + (studentName || '[Name not given]') + "\n\n===== STUDENT ANSWERS =====\n\n";
+            b += "Q1 - Total cost for 24 months:\n  Working: "+ans(fd,'q1_working')+"\n  Answer: \u00a3"+ans(fd,'q1_answer')+"\n\n";
+            b += "Q2 - (a) Round to nearest pound: \u00a3"+ans(fd,'q2a_answer')+"\n  (b) Check: "+ans(fd,'q2b_check')+"\n\n";
+            b += "Q3 - Is 90 one third of 450?\n  Working: "+ans(fd,'q3_working')+"\n  Answer: "+ans(fd,'q3_answer')+"\n\n";
+            b += "Q4 - Which tent: "+ans(fd,'q4_answer')+"\n\n";
+            b += "Q5 - More than 900 on days 2 and 3?\n  Working: "+ans(fd,'q5_working')+"\n  Answer: "+ans(fd,'q5_answer')+"\n\n";
+            b += "Q6 - Shape with fewest right angles: "+ans(fd,'q6_answer')+"\n\n";
+            b += "Q7 - Does he need 425 g more?\n  Working: "+ans(fd,'q7_working')+"\n  Answer: "+ans(fd,'q7_answer')+"\n\n";
+            b += "Q8 - Helper jobs table:\n";
+            b += "  Amir: Food "+ans(fd,'q8_amir_food')+", Parking "+ans(fd,'q8_amir_park')+", Bins "+ans(fd,'q8_amir_bins')+"\n";
+            b += "  Corey: Food "+ans(fd,'q8_corey_food')+", Parking "+ans(fd,'q8_corey_park')+", Bins "+ans(fd,'q8_corey_bins')+"\n";
+            b += "  Sam: Food "+ans(fd,'q8_sam_food')+", Parking "+ans(fd,'q8_sam_park')+", Bins "+ans(fd,'q8_sam_bins')+"\n\n";
+            b += "Q9 - Next speaker height: "+ans(fd,'q9_answer')+" m\n\n";
+            b += "Q10 - Fraction of a turn: "+ans(fd,'q10_answer')+"\n\n";
+            b += "Q11 - Tallest bin: "+ans(fd,'q11_answer')+"\n\n";
+            b += "Q12 - Total tickets:\n  Working: "+ans(fd,'q12_working')+"\n  Answer: "+ans(fd,'q12_answer')+"\n\n";
+            b += "Q13 - Nearest accessible toilet to X: "+ans(fd,'q13_answer')+"\n\n";
+            b += "Q14 - Time: "+ans(fd,'q14_answer')+"\n\n";
+            b += "Q15 - T-shirts left over: "+ans(fd,'q15_answer')+"\n\n";
+            b += "Q16 - Petrol used: "+ans(fd,'q16_answer')+" litres\n\n";
+            b += "Q17 - Second greatest number: "+ans(fd,'q17_answer')+"\n\n";
+            b += "Q18 - Bar chart description:\n  Scale: "+ans(fd,'q18_scale')+"\n  Bar heights: "+ans(fd,'q18_bars')+"\n\n";
+            b += "===== END OF ANSWERS =====\n";
+            const subject = "FS Maths Entry 3 Set 2 Section B" + (studentName ? " - "+studentName : "");
+            window.open("https://mail.google.com/mail/?ui=2&fs=1&to="+encodeURIComponent(teacherEmail)+"&su="+encodeURIComponent(subject)+"&body="+encodeURIComponent(b), '_blank');
+        }
+        (function(){
+            try{ const f=localStorage.getItem('base6TeacherFirst'); const l=localStorage.getItem('base6TeacherLast'); if(f) document.getElementById('teacherFirst').value=f; if(l) document.getElementById('teacherLast').value=l; }catch(e){}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+        })();
+</script>
+</body>
+</html>

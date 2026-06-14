@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS Maths Entry 3 Set 2 - Section A</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #fef8f4; color: #333; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background-color: #007291; color: #fef8f4; padding: 30px 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        header p { font-size: 16px; opacity: 0.95; }
+        .paper-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; font-size: 14px; }
+        .info-box { background-color: #e8f4f8; padding: 15px; border-left: 4px solid #ef7724; border-radius: 4px; }
+        .info-box strong { display: block; color: #007291; margin-bottom: 5px; }
+        .instructions { background-color: #f0f8ff; border-left: 4px solid #007291; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 14px; }
+        .question-block { background-color: white; border: 2px solid #007291; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .question-number { font-size: 18px; font-weight: 700; color: #007291; margin-bottom: 12px; }
+        .question-text { font-size: 16px; margin-bottom: 16px; }
+        .marks { color: #ef7724; font-weight: 700; font-size: 14px; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 6px; font-weight: 700; color: #333; }
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 4px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16px; background-color: #fafafa; }
+        textarea { min-height: 90px; resize: vertical; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #007291; background-color: white; }
+        .diagram { background-color: #f0f0f0; border: 2px solid #ccc; padding: 20px; margin: 20px 0; border-radius: 4px; text-align: center; }
+        .diagram-label { font-weight: 700; margin-bottom: 15px; color: #333; }
+        .diagram-svg { max-width: 100%; height: auto; }
+        .mc-options { display: flex; gap: 12px; margin: 8px 0; flex-wrap: wrap; }
+        .mc-option { display: flex; align-items: center; gap: 10px; background-color: #fafafa; border: 2px solid #e0e0e0; border-radius: 6px; padding: 10px 22px; cursor: pointer; transition: border-color 0.15s, background-color 0.15s; font-weight: 700; }
+        .mc-option:hover { border-color: #007291; background-color: #fff; }
+        .mc-option input { width: 20px; height: 20px; accent-color: #007291; }
+        .total-line { color: #ef7724; font-weight: 700; margin-top: 16px; }
+        .total-marks { background-color: #fff3cd; border-left: 4px solid #ef7724; padding: 15px; margin-bottom: 30px; border-radius: 4px; font-weight: 700; }
+        .submit-section { background-color: #e8f4f8; padding: 25px; border-radius: 8px; margin-top: 40px; text-align: center; }
+        .submit-button { background-color: #007291; color: white; padding: 15px 40px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; font-weight: 700; transition: background-color 0.3s; }
+        .submit-button:hover { background-color: #005a74; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Skills Mathematics Entry 3</h1>
+            <p>Set 2 - Section A (Non-Calculator)</p>
+        </header>
+
+        <div class="paper-info">
+            <div class="info-box">
+                <strong>Time: 25 minutes</strong>
+                Paper Reference: W64178A
+            </div>
+            <div class="info-box">
+                <strong>Total Marks: 9</strong>
+                You must not use a calculator
+            </div>
+        </div>
+
+        <div class="instructions">
+            Answer every question. Type your answers into the boxes provided. You can describe your working in the boxes. You must not use a calculator. Check your work at the end, and ask if you do not understand any words.
+        </div>
+
+        <form id="assessmentForm">
+
+            <!-- QUESTION 1 -->
+            <div class="question-block">
+                <div class="question-number">Question 1 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Kemar plans a car boot sale. He makes a sign with a word and an arrow.</p>
+
+                <div class="diagram">
+                    <div class="diagram-label">Kemar's sign</div>
+                    <svg class="diagram-svg" viewBox="0 0 520 170" style="max-width: 480px; height: auto;">
+                        <!-- Word -->
+                        <text x="30" y="55" font-family="Atkinson Hyperlegible" font-size="34" font-weight="bold" letter-spacing="1">ENTRANCE</text>
+                        <!-- Block arrow -->
+                        <polygon points="330,38 430,38 430,28 470,48 430,68 430,58 330,58" fill="#888" stroke="#333" stroke-width="1.5"/>
+                        <!-- Dimension line for word: 700mm -->
+                        <line x1="30" y1="100" x2="300" y2="100" stroke="#333" stroke-width="1"/>
+                        <line x1="30" y1="94" x2="30" y2="106" stroke="#333" stroke-width="1"/>
+                        <line x1="300" y1="94" x2="300" y2="106" stroke="#333" stroke-width="1"/>
+                        <text x="165" y="124" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="bold">700mm</text>
+                        <!-- Dimension line for arrow: 250mm -->
+                        <line x1="330" y1="100" x2="470" y2="100" stroke="#333" stroke-width="1"/>
+                        <line x1="330" y1="94" x2="330" y2="106" stroke="#333" stroke-width="1"/>
+                        <line x1="470" y1="94" x2="470" y2="106" stroke="#333" stroke-width="1"/>
+                        <text x="400" y="124" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="bold">250mm</text>
+                    </svg>
+                </div>
+
+                <p class="question-text">Kemar says the total length of the word and arrow is less than 1 m. Is Kemar correct? Show why you think this.</p>
+                <div class="input-group">
+                    <label for="q1_working">Show your working and your answer here:</label>
+                    <textarea id="q1_working" name="q1_working" placeholder="Show your working here"></textarea>
+                </div>
+                <p style="font-weight:700; margin-bottom: 6px;">Tick the correct answer:</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q1_answer" value="Yes"> Yes</label>
+                    <label class="mc-option"><input type="radio" name="q1_answer" value="No"> No</label>
+                </div>
+                <p class="total-line">Total for Question 1 is 2 marks</p>
+            </div>
+
+            <!-- QUESTION 2 -->
+            <div class="question-block">
+                <div class="question-number">Question 2 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Each car driver pays Kemar £8 to go to the car boot sale. There are 72 cars at the car boot sale. How much money in total do the car drivers pay?</p>
+                <div class="input-group">
+                    <label for="q2_working">Show your working here:</label>
+                    <textarea id="q2_working" name="q2_working" placeholder="Show your working here"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="q2_answer">Your answer: £</label>
+                    <input type="text" id="q2_answer" name="q2_answer" placeholder="e.g. 576">
+                </div>
+                <p class="total-line">Total for Question 2 is 2 marks</p>
+            </div>
+
+            <!-- QUESTION 3 -->
+            <div class="question-block">
+                <div class="question-number">Question 3 <span class="marks">(3 marks)</span></div>
+                <p class="question-text">Kemar buys 200 bags for the rubbish at the car boot sale. He shares the bags between 16 helpers. Each helper has the same number of bags. How many bags does each helper have? Show how many bags are left over.</p>
+                <div class="input-group">
+                    <label for="q3_working">Show your working here:</label>
+                    <textarea id="q3_working" name="q3_working" placeholder="Show your working here"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="q3_each">Bags for each helper:</label>
+                    <input type="text" id="q3_each" name="q3_each" placeholder="e.g. 12">
+                </div>
+                <div class="input-group">
+                    <label for="q3_left">Bags left over:</label>
+                    <input type="text" id="q3_left" name="q3_left" placeholder="e.g. 8">
+                </div>
+                <div class="input-group">
+                    <label for="q3_meaning">Show what each of your answers means:</label>
+                    <textarea id="q3_meaning" name="q3_meaning" placeholder="Explain what each answer means"></textarea>
+                </div>
+                <p class="total-line">Total for Question 3 is 3 marks</p>
+            </div>
+
+            <!-- QUESTION 4 -->
+            <div class="question-block">
+                <div class="question-number">Question 4 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Kemar works out how much money he made at the car boot sale. Calculate the difference between £973 and £575.</p>
+                <div class="input-group">
+                    <label for="q4_working">Show your working here:</label>
+                    <textarea id="q4_working" name="q4_working" placeholder="Show your working here"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="q4_answer">Your answer: £</label>
+                    <input type="text" id="q4_answer" name="q4_answer" placeholder="e.g. 398">
+                </div>
+                <p class="total-line">Total for Question 4 is 2 marks</p>
+            </div>
+
+            <div class="total-marks">TOTAL FOR SECTION A IS 9 MARKS</div>
+
+            <div class="submit-section">
+                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's name below and click to send your answers.</p>
+                <div style="max-width: 420px; margin: 0 auto 20px; text-align: left;">
+                    <div class="input-group">
+                        <label for="studentName">Your name:</label>
+                        <input type="text" id="studentName" name="studentName" placeholder="Type your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherFirst">Teacher's first name:</label>
+                        <input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherLast">Teacher's last name:</label>
+                        <input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off">
+                    </div>
+                    <p id="emailPreview" style="font-size: 14px; color: #007291; font-weight: 700; margin: 4px 0 0;"></p>
+                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin: 8px 0 0;"></p>
+                </div>
+                <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        // School email is always firstname.lastname@<SCHOOL_DOMAIN>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+
+        function cleanNamePart(s) { return s.trim().toLowerCase().replace(/[^a-z0-9-]/g, ''); }
+
+        function buildTeacherEmail() {
+            const first = cleanNamePart(document.getElementById('teacherFirst').value);
+            const last = cleanNamePart(document.getElementById('teacherLast').value);
+            if (!first || !last) return '';
+            return first + '.' + last + '@' + SCHOOL_DOMAIN;
+        }
+
+        function updateEmailPreview() {
+            const email = buildTeacherEmail();
+            document.getElementById('emailPreview').textContent = email ? 'This will send to: ' + email : '';
+        }
+
+        function ans(formData, key) { return formData.get(key) || '[Not answered]'; }
+
+        function submitForm() {
+            const form = document.getElementById('assessmentForm');
+            const formData = new FormData(form);
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+
+            if (!teacherEmail) {
+                note.textContent = "Please add your teacher's first and last name first.";
+                note.style.display = 'block';
+                document.getElementById('teacherFirst').focus();
+                return;
+            }
+            note.style.display = 'none';
+
+            try {
+                localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim());
+                localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim());
+            } catch(e) {}
+
+            let b = "FUNCTIONAL SKILLS MATHEMATICS ENTRY 3\nSET 2 - SECTION A (NON-CALCULATOR)\n\n";
+            b += "Student: " + (studentName || '[Name not given]') + "\n\n";
+            b += "===== STUDENT ANSWERS =====\n\n";
+
+            b += "QUESTION 1 - Is the total length less than 1 m?\n";
+            b += "  Working: " + ans(formData,'q1_working') + "\n";
+            b += "  Answer: " + ans(formData,'q1_answer') + "\n\n";
+
+            b += "QUESTION 2 - Total money from car drivers:\n";
+            b += "  Working: " + ans(formData,'q2_working') + "\n";
+            b += "  Answer: £" + ans(formData,'q2_answer') + "\n\n";
+
+            b += "QUESTION 3 - Sharing 200 bags between 16 helpers:\n";
+            b += "  Working: " + ans(formData,'q3_working') + "\n";
+            b += "  Bags for each helper: " + ans(formData,'q3_each') + "\n";
+            b += "  Bags left over: " + ans(formData,'q3_left') + "\n";
+            b += "  What each answer means: " + ans(formData,'q3_meaning') + "\n\n";
+
+            b += "QUESTION 4 - Difference between £973 and £575:\n";
+            b += "  Working: " + ans(formData,'q4_working') + "\n";
+            b += "  Answer: £" + ans(formData,'q4_answer') + "\n\n";
+
+            b += "===== END OF ANSWERS =====\n";
+
+            const subject = "FS Maths Entry 3 Set 2 Section A" + (studentName ? " - " + studentName : "");
+            const gmailUrl = "https://mail.google.com/mail/?ui=2&fs=1&to=" + encodeURIComponent(teacherEmail) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(b);
+            window.open(gmailUrl, '_blank');
+        }
+
+        // Prefill the teacher's name across papers on this device, and keep the preview live
+        (function() {
+            try {
+                const f = localStorage.getItem('base6TeacherFirst');
+                const l = localStorage.getItem('base6TeacherLast');
+                if (f) document.getElementById('teacherFirst').value = f;
+                if (l) document.getElementById('teacherLast').value = l;
+            } catch(e) {}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+        })();
+    </script>
+</body>
+</html>
