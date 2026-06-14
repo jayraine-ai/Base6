@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past Papers · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .page-hero { background-color: #007291; padding: 2rem 2rem 3rem; text-align: center; }
+  .page-hero .hero-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .page-hero h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; line-height: 1.2; margin-bottom: 0.75rem; }
+  .page-hero p { font-size: 1rem; color: #fef8f4; opacity: 0.85; max-width: 560px; margin: 0 auto; }
+  .page-hero .hero-greeting { font-weight: 700; opacity: 1; margin-top: 0.6rem; }
+
+  .main { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+  .intro-note { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 2rem; max-width: 640px; }
+
+  /* quick jump */
+  .jump-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .jump-chip { font-size: 0.9rem; font-weight: 700; text-decoration: none; padding: 0.45rem 1rem; border-radius: 999px; border: 2px solid; background: #fff; transition: background 0.15s, color 0.15s; }
+  .jump-maths { color: #007291; border-color: #007291; }
+  .jump-maths:hover { background: #007291; color: #fff; }
+  .jump-english { color: #ef7724; border-color: #ef7724; }
+  .jump-english:hover { background: #ef7724; color: #fff; }
+
+  /* subject block */
+  .subject-section { margin-bottom: 3rem; scroll-margin-top: 1rem; }
+  .subject-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e8e0d8; }
+  .subject-emoji { font-size: 1.6rem; }
+  .subject-title { font-size: 1.4rem; font-weight: 700; }
+  .subject-count { font-size: 0.8rem; font-weight: 700; color: #aaa; margin-left: auto; }
+
+  .level-group { margin-bottom: 1.5rem; }
+  .level-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .level-tag { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; margin-left: 0.5rem; }
+
+  .paper-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; }
+
+  .paper-tile {
+    display: flex; flex-direction: column; gap: 0.3rem; text-decoration: none; color: inherit;
+    background: #fff; border: 2px solid var(--accent, #007291); border-radius: 12px;
+    padding: 1rem 1.1rem; transition: box-shadow 0.15s, transform 0.1s;
+  }
+  .paper-tile:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .paper-tile .pt-top { display: flex; align-items: center; gap: 0.5rem; }
+  .paper-tile .pt-icon { font-size: 1.3rem; }
+  .paper-tile .pt-type { font-size: 1rem; font-weight: 700; color: var(--accent, #007291); }
+  .paper-tile .pt-open { font-size: 0.82rem; font-weight: 700; color: var(--accent, #007291); margin-top: 0.2rem; }
+
+  .paper-tile.soon {
+    border: 2px dashed #e0d8d0; background: #faf6f2; cursor: default;
+  }
+  .paper-tile.soon:hover { box-shadow: none; transform: none; }
+  .paper-tile.soon .pt-type { color: #999; }
+  .paper-tile.soon .pt-icon { filter: grayscale(1); opacity: 0.55; }
+  .paper-tile.soon .pt-soon { font-size: 0.8rem; font-weight: 700; color: #b0a89f; margin-top: 0.2rem; }
+
+  a:focus-visible, .jump-chip:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .paper-tile.card-maths:focus-visible, .jump-maths:focus-visible { outline-color: #007291; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../index.html">← Home</a>
+</header>
+
+<div class="page-hero">
+  <p class="hero-label">Tools</p>
+  <h1>Past Papers</h1>
+  <p>Revision and assessment papers for Maths and English. Pick a level and have a go whenever you like.</p>
+  <p class="hero-greeting" id="hero-greeting" style="display:none;">&nbsp;</p>
+</div>
+
+<main class="main">
+
+  <p class="intro-note">Each paper opens as its own activity. You can type your answers straight in, and when you are done there is a button to send them to your teacher. There is no timer here unless you choose to set one yourself.</p>
+
+  <div class="jump-row">
+    <a class="jump-chip jump-maths" href="#maths">🔢 Maths</a>
+    <a class="jump-chip jump-english" href="#english">📝 English</a>
+  </div>
+
+  <div id="catalogue"></div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+<script>
+/* ============================================================
+   PAST PAPERS CATALOGUE — edit this list to add papers.
+   To switch a paper from "Adding soon" to live, just put its
+   filename into the empty   file: ''   below. Leave blank for
+   papers not built yet. Paths are relative to this page.
+   ============================================================ */
+const SUBJECTS = [
+  {
+    key: 'maths', name: 'Maths', emoji: '🔢',
+    accent: '#007291',
+    levels: [
+      { name: 'Functional Skills Level 2', tag: 'Functional Skills', papers: [
+        { type: 'Non-calculator', icon: '✏️', file: 'fs_maths_level2_pp10_sectionA.html' },
+        { type: 'Calculator',     icon: '🧮', file: 'fs_maths_level2_pp10_sectionB.html' },
+      ]},
+      { name: 'Functional Skills Level 1', tag: 'Functional Skills', papers: [
+        { type: 'Non-calculator', icon: '✏️', file: '' },
+        { type: 'Calculator',     icon: '🧮', file: '' },
+      ]},
+      { name: 'Entry Level 3', tag: 'Entry Level', papers: [
+        { type: 'Non-calculator', icon: '✏️', file: '' },
+        { type: 'Calculator',     icon: '🧮', file: '' },
+      ]},
+      { name: 'Entry Level 2', tag: 'Entry Level', papers: [
+        { type: 'Non-calculator', icon: '✏️', file: '' },
+        { type: 'Calculator',     icon: '🧮', file: '' },
+      ]},
+      { name: 'Entry Level 1', tag: 'Entry Level', papers: [
+        { type: 'Non-calculator', icon: '✏️', file: '' },
+        { type: 'Calculator',     icon: '🧮', file: '' },
+      ]},
+    ]
+  },
+  {
+    key: 'english', name: 'English', emoji: '📝',
+    accent: '#ef7724',
+    levels: [
+      { name: 'Functional Skills Level 2', tag: 'Functional Skills', papers: [
+        { type: 'Reading', icon: '📖', file: '' },
+        { type: 'Writing', icon: '✍️', file: '' },
+      ]},
+      { name: 'Functional Skills Level 1', tag: 'Functional Skills', papers: [
+        { type: 'Reading', icon: '📖', file: '' },
+        { type: 'Writing', icon: '✍️', file: '' },
+      ]},
+      { name: 'Entry Level 3', tag: 'Entry Level', papers: [
+        { type: 'Reading', icon: '📖', file: '' },
+        { type: 'Writing', icon: '✍️', file: '' },
+      ]},
+      { name: 'Entry Level 2', tag: 'Entry Level', papers: [
+        { type: 'Reading', icon: '📖', file: '' },
+        { type: 'Writing', icon: '✍️', file: '' },
+      ]},
+      { name: 'Entry Level 1', tag: 'Entry Level', papers: [
+        { type: 'Reading', icon: '📖', file: '' },
+        { type: 'Writing', icon: '✍️', file: '' },
+      ]},
+    ]
+  }
+];
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderCatalogue(){
+  const root = document.getElementById('catalogue');
+  let html = '';
+
+  SUBJECTS.forEach(sub => {
+    const all = sub.levels.flatMap(l => l.papers);
+    const ready = all.filter(p => p.file).length;
+    const total = all.length;
+
+    html += `<section class="subject-section" id="${sub.key}">`;
+    html += `<div class="subject-head">
+               <span class="subject-emoji" aria-hidden="true">${sub.emoji}</span>
+               <span class="subject-title" style="color:${sub.accent}">${esc(sub.name)}</span>
+               <span class="subject-count">${ready} of ${total} ready</span>
+             </div>`;
+
+    sub.levels.forEach(level => {
+      html += `<div class="level-group">`;
+      html += `<div class="level-name">${esc(level.name)}<span class="level-tag">${esc(level.tag)}</span></div>`;
+      html += `<div class="paper-pair">`;
+      level.papers.forEach(p => {
+        if (p.file) {
+          html += `<a class="paper-tile" href="${encodeURI(p.file)}" style="--accent:${sub.accent}">
+                     <div class="pt-top"><span class="pt-icon" aria-hidden="true">${p.icon}</span><span class="pt-type">${esc(p.type)}</span></div>
+                     <span class="pt-open">Open paper →</span>
+                   </a>`;
+        } else {
+          html += `<div class="paper-tile soon" aria-disabled="true">
+                     <div class="pt-top"><span class="pt-icon" aria-hidden="true">${p.icon}</span><span class="pt-type">${esc(p.type)}</span></div>
+                     <span class="pt-soon">Adding soon</span>
+                   </div>`;
+        }
+      });
+      html += `</div></div>`;
+    });
+
+    html += `</section>`;
+  });
+
+  root.innerHTML = html;
+}
+
+/* gentle greeting if this device already knows the student */
+(function(){
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) {
+      const el = document.getElementById('hero-greeting');
+      el.textContent = 'Hello ' + profile.initials.toUpperCase() + '.';
+      el.style.display = 'block';
+    }
+  } catch(e) {}
+})();
+
+renderCatalogue();
+</script>
+
+</body>
+</html>
