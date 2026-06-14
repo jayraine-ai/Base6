@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS English Entry 3 - Reading Paper 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #fef8f4; color: #333; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background-color: #007291; color: #fef8f4; padding: 30px 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        header p { font-size: 16px; opacity: 0.95; }
+        .paper-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; font-size: 14px; }
+        .info-box { background-color: #e8f4f8; padding: 15px; border-left: 4px solid #ef7724; border-radius: 4px; }
+        .info-box strong { display: block; color: #007291; margin-bottom: 5px; }
+        .instructions { background-color: #f0f8ff; border-left: 4px solid #007291; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 14px; }
+        .text-intro { font-weight: 700; color: #007291; margin: 30px 0 12px; font-size: 17px; }
+        .text-passage { background-color: white; border: 2px solid #007291; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .text-passage .text-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .text-passage .text-byline { margin-bottom: 14px; }
+        .text-passage p { margin-bottom: 14px; }
+        .text-passage .subhead { font-weight: 700; margin-bottom: 8px; }
+        .text-passage ul, .text-passage ol { margin: 0 0 14px 22px; }
+        .text-passage li { margin-bottom: 6px; }
+        .text-passage .letter-head { text-align: right; margin-bottom: 14px; }
+        .question-block { background-color: white; border: 2px solid #007291; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .question-number { font-size: 18px; font-weight: 700; color: #007291; margin-bottom: 12px; }
+        .question-text { font-size: 16px; margin-bottom: 16px; }
+        .quote { background-color: #f5f5f5; border-left: 3px solid #ef7724; padding: 8px 14px; margin: 12px 0; }
+        .marks { color: #ef7724; font-weight: 700; font-size: 14px; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 6px; font-weight: 700; color: #333; }
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 4px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16px; background-color: #fafafa; }
+        textarea { min-height: 80px; resize: vertical; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #007291; background-color: white; }
+        .mc-options { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .mc-option { display: flex; align-items: center; gap: 12px; background-color: #fafafa; border: 2px solid #e0e0e0; border-radius: 6px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background-color 0.15s; }
+        .mc-option:hover { border-color: #007291; background-color: #fff; }
+        .mc-option input { width: 20px; height: 20px; flex-shrink: 0; accent-color: #007291; }
+        .mc-letter { font-weight: 700; color: #007291; min-width: 18px; }
+        .total-line { color: #ef7724; font-weight: 700; margin-top: 16px; }
+        .total-marks { background-color: #fff3cd; border-left: 4px solid #ef7724; padding: 15px; margin-bottom: 30px; border-radius: 4px; font-weight: 700; }
+        .submit-section { background-color: #e8f4f8; padding: 25px; border-radius: 8px; margin-top: 40px; text-align: center; }
+        .submit-button { background-color: #007291; color: white; padding: 15px 40px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; font-weight: 700; transition: background-color 0.3s; }
+        .submit-button:hover { background-color: #005a74; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Skills English Entry 3</h1>
+            <p>Reading - Paper 1</p>
+        </header>
+
+        <div class="paper-info">
+            <div class="info-box">
+                <strong>Time: 45 minutes</strong>
+                Paper Reference: E3R
+            </div>
+            <div class="info-box">
+                <strong>Total Marks: 24</strong>
+                You may use a dictionary
+            </div>
+        </div>
+
+        <div class="instructions">
+            Answer all questions. Type your answers into the boxes provided. Some questions ask you to choose one option. Read each text carefully and check your work at the end. You may use a dictionary.
+        </div>
+
+        <form id="assessmentForm">
+
+            <!-- ============ TEXT A ============ -->
+            <p class="text-intro">Read Text A and answer Questions 1 to 5.</p>
+            <div class="text-passage">
+                <div class="text-title">King Karn's best music yet</div>
+                <p>Although King Karn is fairly new on the music scene, his recent release will make him famous. It's amazing.</p>
+                <p>If you've not had a chance to listen to his new song Treasure, you're missing out. I got it last week. It has loud guitars, heavy drums and great words. Even though some people criticise his singing, I love it.</p>
+                <p>The song is not on his latest album, which is called Develop. Anybody who likes good music will like the album. It has 10 songs on it, including rock music and rap. I enjoy these styles of music. It also has contributions by guest stars. Purchase it now!</p>
+                <div class="subhead">Tour news</div>
+                <p>King Karn will play live shows this autumn. You must be over 12 years old to attend. Tickets go on general sale on 10 May, but fans can buy them from Karn's site from 8 May. The tour starts on 8 October. There's also a competition for the chance to meet Karn. Details are available online.</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 1 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Give two things you can hear on the song Treasure.</p>
+                <div class="input-group"><label for="q1_1">1.</label><input type="text" id="q1_1" name="q1_1"></div>
+                <div class="input-group"><label for="q1_2">2.</label><input type="text" id="q1_2" name="q1_2"></div>
+                <p class="total-line">Total for Question 1 is 2 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 2 <span class="marks">(3 marks)</span></div>
+                <p class="question-text">List three things that are on the album Develop.</p>
+                <div class="input-group"><label for="q2_1">1.</label><input type="text" id="q2_1" name="q2_1"></div>
+                <div class="input-group"><label for="q2_2">2.</label><input type="text" id="q2_2" name="q2_2"></div>
+                <div class="input-group"><label for="q2_3">3.</label><input type="text" id="q2_3" name="q2_3"></div>
+                <p class="total-line">Total for Question 2 is 3 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 3 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">You may use a dictionary to answer this question.</p>
+                <div class="quote">'Purchase it now!'</div>
+                <p class="question-text">The word purchase means:</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q3" value="A - try"><span class="mc-letter">A</span> try</label>
+                    <label class="mc-option"><input type="radio" name="q3" value="B - beat"><span class="mc-letter">B</span> beat</label>
+                    <label class="mc-option"><input type="radio" name="q3" value="C - take"><span class="mc-letter">C</span> take</label>
+                    <label class="mc-option"><input type="radio" name="q3" value="D - buy"><span class="mc-letter">D</span> buy</label>
+                </div>
+                <p class="total-line">Total for Question 3 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 4 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">On what date does the tour start?</p>
+                <div class="input-group"><label for="q4">Your answer:</label><input type="text" id="q4" name="q4"></div>
+                <p class="total-line">Total for Question 4 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 5 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">The purpose of the text is to:</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q5" value="A - tell the reader about the competition"><span class="mc-letter">A</span> tell the reader about the competition</label>
+                    <label class="mc-option"><input type="radio" name="q5" value="B - describe the music of King Karn"><span class="mc-letter">B</span> describe the music of King Karn</label>
+                    <label class="mc-option"><input type="radio" name="q5" value="C - tell the reader about guitars"><span class="mc-letter">C</span> tell the reader about guitars</label>
+                    <label class="mc-option"><input type="radio" name="q5" value="D - describe the guest stars"><span class="mc-letter">D</span> describe the guest stars</label>
+                </div>
+                <p class="total-line">Total for Question 5 is 1 mark</p>
+            </div>
+
+            <!-- ============ TEXT B ============ -->
+            <p class="text-intro">Read Text B and answer Questions 6 to 12.</p>
+            <div class="text-passage">
+                <div class="letter-head">20 Bright Street<br>Hexford<br>2 November</div>
+                <p>Dear Mr Watson</p>
+                <p>I am writing in regard to a phone I bought from your online store last month. I have spoken to your employees and sent emails but have not had a satisfactory response. I would like you as the manager of the company to sort this problem out.</p>
+                <p>On 20 October I bought a new phone. When it arrived, I noticed that it was the wrong colour and the screen was scratched. The sound was very quiet too.</p>
+                <p>The next day I:</p>
+                <ol>
+                    <li>Spoke to Gavin (salesperson) who said he would look into the problem but did nothing.</li>
+                    <li>Emailed Amina (store manager) who promised to get back to me the next day but didn't.</li>
+                    <li>Rang the helpline but no one answered.</li>
+                </ol>
+                <p>So far, all of your employees have let me down. I am disappointed by the appalling customer service you have provided and would like you to:</p>
+                <ul>
+                    <li>explain why my new phone is faulty</li>
+                    <li>guarantee to supply a new phone immediately.</li>
+                </ul>
+                <p>I realise that mistakes happen, but I have read lots of similar complaints about your company on social media. I would appreciate a response to this letter. If you would like to call me I am available from 4 pm every day.</p>
+                <p>Yours sincerely<br>K Swift<br>Miss K Swift</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 6 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Name two problems with the phone.</p>
+                <div class="input-group"><label for="q6_1">1.</label><input type="text" id="q6_1" name="q6_1"></div>
+                <div class="input-group"><label for="q6_2">2.</label><input type="text" id="q6_2" name="q6_2"></div>
+                <p class="total-line">Total for Question 6 is 2 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 7 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Which one of these is true?</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q7" value="A - Gavin helped with the problem."><span class="mc-letter">A</span> Gavin helped with the problem.</label>
+                    <label class="mc-option"><input type="radio" name="q7" value="B - Amina is the store manager."><span class="mc-letter">B</span> Amina is the store manager.</label>
+                    <label class="mc-option"><input type="radio" name="q7" value="C - Gavin is head of the company."><span class="mc-letter">C</span> Gavin is head of the company.</label>
+                    <label class="mc-option"><input type="radio" name="q7" value="D - Amina solved the problem."><span class="mc-letter">D</span> Amina solved the problem.</label>
+                </div>
+                <p class="total-line">Total for Question 7 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 8 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">You may use a dictionary to answer this question.</p>
+                <div class="quote">'I am disappointed by the appalling customer service'</div>
+                <p class="question-text">The word appalling means:</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q8" value="A - very bad"><span class="mc-letter">A</span> very bad</label>
+                    <label class="mc-option"><input type="radio" name="q8" value="B - thoughtful"><span class="mc-letter">B</span> thoughtful</label>
+                    <label class="mc-option"><input type="radio" name="q8" value="C - very good"><span class="mc-letter">C</span> very good</label>
+                    <label class="mc-option"><input type="radio" name="q8" value="D - aggressive"><span class="mc-letter">D</span> aggressive</label>
+                </div>
+                <p class="total-line">Total for Question 8 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 9 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Name one thing Miss Swift would like Mr Watson to do.</p>
+                <div class="input-group"><label for="q9">Your answer:</label><input type="text" id="q9" name="q9"></div>
+                <p class="total-line">Total for Question 9 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 10 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Where has Miss Swift read complaints about the company?</p>
+                <div class="input-group"><label for="q10">Your answer:</label><input type="text" id="q10" name="q10"></div>
+                <p class="total-line">Total for Question 10 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 11 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">When can Mr Watson call Miss Swift?</p>
+                <div class="input-group"><label for="q11">Your answer:</label><input type="text" id="q11" name="q11"></div>
+                <p class="total-line">Total for Question 11 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 12 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">The main purpose of this letter is to complain about:</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q12" value="A - Mr Watson's opinions"><span class="mc-letter">A</span> Mr Watson's opinions</label>
+                    <label class="mc-option"><input type="radio" name="q12" value="B - the phone colour"><span class="mc-letter">B</span> the phone colour</label>
+                    <label class="mc-option"><input type="radio" name="q12" value="C - poor customer service"><span class="mc-letter">C</span> poor customer service</label>
+                    <label class="mc-option"><input type="radio" name="q12" value="D - the helpline"><span class="mc-letter">D</span> the helpline</label>
+                </div>
+                <p class="total-line">Total for Question 12 is 1 mark</p>
+            </div>
+
+            <!-- ============ TEXT C ============ -->
+            <p class="text-intro">Read Text C and answer Questions 13 to 17.</p>
+            <div class="text-passage">
+                <div class="text-title">Improving your English</div>
+                <div class="text-byline">by Abbas</div>
+                <p>Being able to communicate clearly is so important. I always wanted to improve my skill in writing letters, stories and emails and have had some success.</p>
+                <div class="subhead">How could you improve?</div>
+                <p>There are various things you can do to become excellent at English. You could:</p>
+                <ul>
+                    <li>join an English class</li>
+                    <li>use a dictionary</li>
+                    <li>re-read your work to check for errors</li>
+                    <li>experiment with different words.</li>
+                </ul>
+                <p>The more writing you do, the better you will become. Make time to practise your writing.</p>
+                <p>My English teacher, Ms Wicks, has helped me a lot. She taught me how to spell and helped me to prepare for tests.</p>
+                <p>These days, I feel more confident about my English skills.</p>
+                <p>Good luck!<br>Abbas</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 13 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Name two things Abbas wanted to become better at.</p>
+                <div class="input-group"><label for="q13_1">1.</label><input type="text" id="q13_1" name="q13_1"></div>
+                <div class="input-group"><label for="q13_2">2.</label><input type="text" id="q13_2" name="q13_2"></div>
+                <p class="total-line">Total for Question 13 is 2 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 14 <span class="marks">(3 marks)</span></div>
+                <p class="question-text">List three things you could do to develop your skills.</p>
+                <div class="input-group"><label for="q14_1">1.</label><input type="text" id="q14_1" name="q14_1"></div>
+                <div class="input-group"><label for="q14_2">2.</label><input type="text" id="q14_2" name="q14_2"></div>
+                <div class="input-group"><label for="q14_3">3.</label><input type="text" id="q14_3" name="q14_3"></div>
+                <p class="total-line">Total for Question 14 is 3 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 15 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Name one thing Ms Wicks has helped Abbas with.</p>
+                <div class="input-group"><label for="q15">Your answer:</label><input type="text" id="q15" name="q15"></div>
+                <p class="total-line">Total for Question 15 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 16 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">You may use a dictionary to answer this question.</p>
+                <div class="quote">'I feel more confident about my English skills'</div>
+                <p class="question-text">The word skills means:</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q16" value="A - books"><span class="mc-letter">A</span> books</label>
+                    <label class="mc-option"><input type="radio" name="q16" value="B - attitudes"><span class="mc-letter">B</span> attitudes</label>
+                    <label class="mc-option"><input type="radio" name="q16" value="C - lessons"><span class="mc-letter">C</span> lessons</label>
+                    <label class="mc-option"><input type="radio" name="q16" value="D - abilities"><span class="mc-letter">D</span> abilities</label>
+                </div>
+                <p class="total-line">Total for Question 16 is 1 mark</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 17 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">The main purpose of this text is to give the reader:</p>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q17" value="A - advice about finding an English teacher"><span class="mc-letter">A</span> advice about finding an English teacher</label>
+                    <label class="mc-option"><input type="radio" name="q17" value="B - reasons why Abbas improved"><span class="mc-letter">B</span> reasons why Abbas improved</label>
+                    <label class="mc-option"><input type="radio" name="q17" value="C - advice about improving your English"><span class="mc-letter">C</span> advice about improving your English</label>
+                    <label class="mc-option"><input type="radio" name="q17" value="D - information about Ms Wicks"><span class="mc-letter">D</span> information about Ms Wicks</label>
+                </div>
+                <p class="total-line">Total for Question 17 is 1 mark</p>
+            </div>
+
+            <div class="total-marks">TOTAL FOR PAPER IS 24 MARKS</div>
+
+            <div class="submit-section">
+                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's name below and click to send your answers.</p>
+                <div style="max-width: 420px; margin: 0 auto 20px; text-align: left;">
+                    <div class="input-group">
+                        <label for="studentName">Your name:</label>
+                        <input type="text" id="studentName" name="studentName" placeholder="Type your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherFirst">Teacher's first name:</label>
+                        <input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherLast">Teacher's last name:</label>
+                        <input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off">
+                    </div>
+                    <p id="emailPreview" style="font-size: 14px; color: #007291; font-weight: 700; margin: 4px 0 0;"></p>
+                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin: 8px 0 0;"></p>
+                </div>
+                <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        // School email is always firstname.lastname@<SCHOOL_DOMAIN>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+
+        function cleanNamePart(s) { return s.trim().toLowerCase().replace(/[^a-z0-9-]/g, ''); }
+
+        function buildTeacherEmail() {
+            const first = cleanNamePart(document.getElementById('teacherFirst').value);
+            const last = cleanNamePart(document.getElementById('teacherLast').value);
+            if (!first || !last) return '';
+            return first + '.' + last + '@' + SCHOOL_DOMAIN;
+        }
+
+        function updateEmailPreview() {
+            const email = buildTeacherEmail();
+            document.getElementById('emailPreview').textContent = email ? 'This will send to: ' + email : '';
+        }
+
+        function ans(formData, key) { return formData.get(key) || '[Not answered]'; }
+
+        function submitForm() {
+            const form = document.getElementById('assessmentForm');
+            const formData = new FormData(form);
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+
+            if (!teacherEmail) {
+                note.textContent = "Please add your teacher's first and last name first.";
+                note.style.display = 'block';
+                document.getElementById('teacherFirst').focus();
+                return;
+            }
+            note.style.display = 'none';
+
+            try {
+                localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim());
+                localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim());
+            } catch(e) {}
+
+            let b = "FUNCTIONAL SKILLS ENGLISH ENTRY 3\nREADING - PAPER 1\n\n";
+            b += "Student: " + (studentName || '[Name not given]') + "\n\n";
+            b += "===== STUDENT ANSWERS =====\n\n";
+
+            b += "TEXT A\n";
+            b += "Q1 - Two things you can hear on Treasure:\n  1. " + ans(formData,'q1_1') + "\n  2. " + ans(formData,'q1_2') + "\n";
+            b += "Q2 - Three things on the album Develop:\n  1. " + ans(formData,'q2_1') + "\n  2. " + ans(formData,'q2_2') + "\n  3. " + ans(formData,'q2_3') + "\n";
+            b += "Q3 - 'purchase' means: " + ans(formData,'q3') + "\n";
+            b += "Q4 - Tour start date: " + ans(formData,'q4') + "\n";
+            b += "Q5 - Purpose of the text: " + ans(formData,'q5') + "\n\n";
+
+            b += "TEXT B\n";
+            b += "Q6 - Two problems with the phone:\n  1. " + ans(formData,'q6_1') + "\n  2. " + ans(formData,'q6_2') + "\n";
+            b += "Q7 - Which is true: " + ans(formData,'q7') + "\n";
+            b += "Q8 - 'appalling' means: " + ans(formData,'q8') + "\n";
+            b += "Q9 - One thing Miss Swift wants Mr Watson to do: " + ans(formData,'q9') + "\n";
+            b += "Q10 - Where complaints were read: " + ans(formData,'q10') + "\n";
+            b += "Q11 - When Mr Watson can call: " + ans(formData,'q11') + "\n";
+            b += "Q12 - Main purpose of letter: " + ans(formData,'q12') + "\n\n";
+
+            b += "TEXT C\n";
+            b += "Q13 - Two things Abbas wanted to be better at:\n  1. " + ans(formData,'q13_1') + "\n  2. " + ans(formData,'q13_2') + "\n";
+            b += "Q14 - Three things to develop your skills:\n  1. " + ans(formData,'q14_1') + "\n  2. " + ans(formData,'q14_2') + "\n  3. " + ans(formData,'q14_3') + "\n";
+            b += "Q15 - One thing Ms Wicks helped with: " + ans(formData,'q15') + "\n";
+            b += "Q16 - 'skills' means: " + ans(formData,'q16') + "\n";
+            b += "Q17 - Main purpose of the text: " + ans(formData,'q17') + "\n\n";
+
+            b += "===== END OF ANSWERS =====\n";
+
+            const subject = "FS English Entry 3 Reading Paper 1" + (studentName ? " - " + studentName : "");
+            const gmailUrl = "https://mail.google.com/mail/?ui=2&fs=1&to=" + encodeURIComponent(teacherEmail) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(b);
+            window.open(gmailUrl, '_blank');
+        }
+
+        // Prefill the teacher's name across papers on this device, and keep the preview live
+        (function() {
+            try {
+                const f = localStorage.getItem('base6TeacherFirst');
+                const l = localStorage.getItem('base6TeacherLast');
+                if (f) document.getElementById('teacherFirst').value = f;
+                if (l) document.getElementById('teacherLast').value = l;
+            } catch(e) {}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+        })();
+    </script>
+</body>
+</html>

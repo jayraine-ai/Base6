@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS English Entry 3 - Writing Paper 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #fef8f4; color: #333; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background-color: #007291; color: #fef8f4; padding: 30px 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        header p { font-size: 16px; opacity: 0.95; }
+        .paper-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; font-size: 14px; }
+        .info-box { background-color: #e8f4f8; padding: 15px; border-left: 4px solid #ef7724; border-radius: 4px; }
+        .info-box strong { display: block; color: #007291; margin-bottom: 5px; }
+        .instructions { background-color: #f0f8ff; border-left: 4px solid #007291; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 14px; }
+        .question-block { background-color: white; border: 2px solid #007291; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .question-number { font-size: 18px; font-weight: 700; color: #007291; margin-bottom: 12px; }
+        .question-text { font-size: 16px; margin-bottom: 16px; }
+        .task-list { margin: 0 0 16px 22px; }
+        .task-list li { margin-bottom: 6px; }
+        .marks { color: #ef7724; font-weight: 700; font-size: 14px; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 6px; font-weight: 700; color: #333; }
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 4px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16px; background-color: #fafafa; }
+        textarea { resize: vertical; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #007291; background-color: white; }
+        .word-box { display: flex; flex-wrap: wrap; gap: 12px; background-color: #f0f8ff; border: 2px solid #007291; border-radius: 6px; padding: 14px; margin-bottom: 16px; }
+        .word-box span { font-weight: 700; font-size: 17px; }
+        .plural-table { width: 100%; max-width: 480px; border-collapse: collapse; margin-bottom: 12px; }
+        .plural-table th, .plural-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .plural-table th { background-color: #007291; color: white; }
+        .plural-table input { width: 100%; }
+        .email-mock { border: 2px solid #ccc; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+        .email-row { display: flex; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; font-size: 15px; }
+        .email-row .field-label { font-weight: 700; min-width: 70px; color: #555; }
+        .email-row.subject { background-color: #fff; }
+        .email-row.subject input { border: none; background: transparent; padding: 0; font-size: 15px; }
+        .email-row.subject input:focus { outline: none; }
+        .mc-options { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 4px; }
+        .mc-option { display: flex; align-items: center; gap: 12px; background-color: #fafafa; border: 2px solid #e0e0e0; border-radius: 6px; padding: 10px 14px; cursor: pointer; transition: border-color 0.15s, background-color 0.15s; }
+        .mc-option:hover { border-color: #007291; background-color: #fff; }
+        .mc-option input { width: 20px; height: 20px; flex-shrink: 0; accent-color: #007291; }
+        .spell-stem { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .spell-item { margin-bottom: 22px; }
+        .example-note { background-color: #eef7ee; border-left: 4px solid #2e8b57; padding: 10px 14px; border-radius: 4px; margin-bottom: 18px; font-size: 15px; }
+        .total-line { color: #ef7724; font-weight: 700; margin-top: 16px; }
+        .total-marks { background-color: #fff3cd; border-left: 4px solid #ef7724; padding: 15px; margin-bottom: 30px; border-radius: 4px; font-weight: 700; }
+        .submit-section { background-color: #e8f4f8; padding: 25px; border-radius: 8px; margin-top: 40px; text-align: center; }
+        .submit-button { background-color: #007291; color: white; padding: 15px 40px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; font-weight: 700; transition: background-color 0.3s; }
+        .submit-button:hover { background-color: #005a74; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Skills English Entry 3</h1>
+            <p>Writing - Paper 1</p>
+        </header>
+
+        <div class="paper-info">
+            <div class="info-box">
+                <strong>Time: 50 minutes</strong>
+                Entry 3 Writing - Paper 1
+            </div>
+            <div class="info-box">
+                <strong>Total Marks: 36</strong>
+                Dictionaries are not allowed
+            </div>
+        </div>
+
+        <div class="instructions">
+            Answer all questions. Type your answers into the boxes provided. Write in complete sentences. You will be assessed on spelling, punctuation and grammar. Check your work at the end. Dictionaries are not allowed.
+        </div>
+
+        <form id="assessmentForm">
+
+            <!-- QUESTION 1 -->
+            <div class="question-block">
+                <div class="question-number">Question 1 <span class="marks">(1 mark)</span></div>
+                <p class="question-text">Write the words in the box in alphabetical order.</p>
+                <div class="word-box">
+                    <span>clean</span><span>claim</span><span>clothes</span><span>click</span>
+                </div>
+                <div class="input-group"><label for="q1_1">1.</label><input type="text" id="q1_1" name="q1_1"></div>
+                <div class="input-group"><label for="q1_2">2.</label><input type="text" id="q1_2" name="q1_2"></div>
+                <div class="input-group"><label for="q1_3">3.</label><input type="text" id="q1_3" name="q1_3"></div>
+                <div class="input-group"><label for="q1_4">4.</label><input type="text" id="q1_4" name="q1_4"></div>
+                <p class="total-line">Total for Question 1 is 1 mark</p>
+            </div>
+
+            <!-- QUESTION 2 -->
+            <div class="question-block">
+                <div class="question-number">Question 2 <span class="marks">(2 marks)</span></div>
+                <p class="question-text">Write the following words as plurals.</p>
+                <table class="plural-table">
+                    <tr><th>Singular</th><th>Plural</th></tr>
+                    <tr><td>foot</td><td><input type="text" id="q2_foot" name="q2_foot"></td></tr>
+                    <tr><td>half</td><td><input type="text" id="q2_half" name="q2_half"></td></tr>
+                </table>
+                <p class="total-line">Total for Question 2 is 2 marks</p>
+            </div>
+
+            <!-- QUESTION 3 -->
+            <div class="question-block">
+                <div class="question-number">Question 3 <span class="marks">(9 marks)</span></div>
+                <p class="question-text">You have recently been to a sports match. Write an email to a friend to tell them about the sports match.</p>
+                <p class="question-text">You should include:</p>
+                <ul class="task-list">
+                    <li>the name of the sport</li>
+                    <li>when the sports match took place</li>
+                    <li>details about what you saw and did at the sports match.</li>
+                </ul>
+                <p class="question-text">You must include a subject and use bullet points. Write 4 to 6 sentences.</p>
+                <div class="email-mock">
+                    <div class="email-row"><span class="field-label">From:</span> you@mailbox.biz</div>
+                    <div class="email-row"><span class="field-label">To:</span> yourfriend@mailbox.biz</div>
+                    <div class="email-row subject"><span class="field-label">Subject:</span> <input type="text" id="q3_subject" name="q3_subject" placeholder="Write your subject here"></div>
+                </div>
+                <div class="input-group">
+                    <label for="q3_body">Your email:</label>
+                    <textarea id="q3_body" name="q3_body" style="min-height: 180px;" placeholder="Write your email here"></textarea>
+                </div>
+                <p class="total-line">Total for Question 3 is 9 marks</p>
+            </div>
+
+            <!-- QUESTION 4 -->
+            <div class="question-block">
+                <div class="question-number">Question 4 <span class="marks">(14 marks)</span></div>
+                <p class="question-text">Write an article for a local magazine about a music event.</p>
+                <p class="question-text">You should include:</p>
+                <ul class="task-list">
+                    <li>where the event was held</li>
+                    <li>how long the event lasted</li>
+                    <li>what you liked about the event and why</li>
+                    <li>what you didn't like about the event and why.</li>
+                </ul>
+                <p class="question-text">Write at least 8 sentences. These must include at least 3 compound sentences that use conjunctions, for example: and, but, also, because. Use at least 2 paragraphs.</p>
+                <div class="input-group">
+                    <label for="q4_article">Your article:</label>
+                    <textarea id="q4_article" name="q4_article" style="min-height: 300px;" placeholder="Write your article here"></textarea>
+                </div>
+                <p class="total-line">Total for Question 4 is 14 marks</p>
+            </div>
+
+            <!-- QUESTION 5 -->
+            <div class="question-block">
+                <div class="question-number">Question 5 <span class="marks">(10 marks)</span></div>
+                <p class="question-text">Choose the correct word to complete each sentence. The first one has been done for you.</p>
+                <div class="example-note"><strong>Example:</strong> I go to <strong>college</strong> on Mondays. (college)</div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(a) ____ is my favourite season.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5a" value="Autumn"> Autumn</label>
+                        <label class="mc-option"><input type="radio" name="q5a" value="Ortum"> Ortum</label>
+                        <label class="mc-option"><input type="radio" name="q5a" value="Autumm"> Autumm</label>
+                        <label class="mc-option"><input type="radio" name="q5a" value="Ortumn"> Ortumn</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(b) I like to ____ to music.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5b" value="lisson"> lisson</label>
+                        <label class="mc-option"><input type="radio" name="q5b" value="listin"> listin</label>
+                        <label class="mc-option"><input type="radio" name="q5b" value="lissen"> lissen</label>
+                        <label class="mc-option"><input type="radio" name="q5b" value="listen"> listen</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(c) If you go out, you can't ____.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5c" value="ree-enter"> ree-enter</label>
+                        <label class="mc-option"><input type="radio" name="q5c" value="re-enta"> re-enta</label>
+                        <label class="mc-option"><input type="radio" name="q5c" value="re-enter"> re-enter</label>
+                        <label class="mc-option"><input type="radio" name="q5c" value="ree-enta"> ree-enta</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(d) I want a good ____.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5d" value="educashion"> educashion</label>
+                        <label class="mc-option"><input type="radio" name="q5d" value="education"> education</label>
+                        <label class="mc-option"><input type="radio" name="q5d" value="educasion"> educasion</label>
+                        <label class="mc-option"><input type="radio" name="q5d" value="educateon"> educateon</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(e) Tim wants to ____ his skills.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5e" value="divelope"> divelope</label>
+                        <label class="mc-option"><input type="radio" name="q5e" value="develope"> develope</label>
+                        <label class="mc-option"><input type="radio" name="q5e" value="develop"> develop</label>
+                        <label class="mc-option"><input type="radio" name="q5e" value="divelop"> divelop</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(f) She lives ____ me.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5f" value="opposit"> opposit</label>
+                        <label class="mc-option"><input type="radio" name="q5f" value="opossite"> opossite</label>
+                        <label class="mc-option"><input type="radio" name="q5f" value="opposite"> opposite</label>
+                        <label class="mc-option"><input type="radio" name="q5f" value="opossit"> opossit</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(g) Tahir won with ____.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5g" value="ease"> ease</label>
+                        <label class="mc-option"><input type="radio" name="q5g" value="easse"> easse</label>
+                        <label class="mc-option"><input type="radio" name="q5g" value="eaze"> eaze</label>
+                        <label class="mc-option"><input type="radio" name="q5g" value="eazze"> eazze</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(h) The lesson was very ____.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5h" value="thurrow"> thurrow</label>
+                        <label class="mc-option"><input type="radio" name="q5h" value="thurough"> thurough</label>
+                        <label class="mc-option"><input type="radio" name="q5h" value="through"> through</label>
+                        <label class="mc-option"><input type="radio" name="q5h" value="thorough"> thorough</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(i) ____ your seatbelt!</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5i" value="Fasten"> Fasten</label>
+                        <label class="mc-option"><input type="radio" name="q5i" value="Fassten"> Fassten</label>
+                        <label class="mc-option"><input type="radio" name="q5i" value="Fastten"> Fastten</label>
+                        <label class="mc-option"><input type="radio" name="q5i" value="Fassen"> Fassen</label>
+                    </div>
+                </div>
+
+                <div class="spell-item">
+                    <div class="spell-stem">(j) I paid my bus ____.</div>
+                    <div class="mc-options">
+                        <label class="mc-option"><input type="radio" name="q5j" value="fair"> fair</label>
+                        <label class="mc-option"><input type="radio" name="q5j" value="fayr"> fayr</label>
+                        <label class="mc-option"><input type="radio" name="q5j" value="farre"> farre</label>
+                        <label class="mc-option"><input type="radio" name="q5j" value="fare"> fare</label>
+                    </div>
+                </div>
+
+                <p class="total-line">Total for Question 5 is 10 marks</p>
+            </div>
+
+            <div class="total-marks">TOTAL FOR PAPER IS 36 MARKS</div>
+
+            <div class="submit-section">
+                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's name below and click to send your answers.</p>
+                <div style="max-width: 420px; margin: 0 auto 20px; text-align: left;">
+                    <div class="input-group">
+                        <label for="studentName">Your name:</label>
+                        <input type="text" id="studentName" name="studentName" placeholder="Type your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherFirst">Teacher's first name:</label>
+                        <input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherLast">Teacher's last name:</label>
+                        <input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off">
+                    </div>
+                    <p id="emailPreview" style="font-size: 14px; color: #007291; font-weight: 700; margin: 4px 0 0;"></p>
+                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin: 8px 0 0;"></p>
+                </div>
+                <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        // School email is always firstname.lastname@<SCHOOL_DOMAIN>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+
+        function cleanNamePart(s) { return s.trim().toLowerCase().replace(/[^a-z0-9-]/g, ''); }
+
+        function buildTeacherEmail() {
+            const first = cleanNamePart(document.getElementById('teacherFirst').value);
+            const last = cleanNamePart(document.getElementById('teacherLast').value);
+            if (!first || !last) return '';
+            return first + '.' + last + '@' + SCHOOL_DOMAIN;
+        }
+
+        function updateEmailPreview() {
+            const email = buildTeacherEmail();
+            document.getElementById('emailPreview').textContent = email ? 'This will send to: ' + email : '';
+        }
+
+        function ans(formData, key) { return formData.get(key) || '[Not answered]'; }
+
+        function submitForm() {
+            const form = document.getElementById('assessmentForm');
+            const formData = new FormData(form);
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+
+            if (!teacherEmail) {
+                note.textContent = "Please add your teacher's first and last name first.";
+                note.style.display = 'block';
+                document.getElementById('teacherFirst').focus();
+                return;
+            }
+            note.style.display = 'none';
+
+            try {
+                localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim());
+                localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim());
+            } catch(e) {}
+
+            let b = "FUNCTIONAL SKILLS ENGLISH ENTRY 3\nWRITING - PAPER 1\n\n";
+            b += "Student: " + (studentName || '[Name not given]') + "\n\n";
+            b += "===== STUDENT ANSWERS =====\n\n";
+
+            b += "QUESTION 1 - Alphabetical order:\n  1. " + ans(formData,'q1_1') + "\n  2. " + ans(formData,'q1_2') + "\n  3. " + ans(formData,'q1_3') + "\n  4. " + ans(formData,'q1_4') + "\n\n";
+
+            b += "QUESTION 2 - Plurals:\n  foot -> " + ans(formData,'q2_foot') + "\n  half -> " + ans(formData,'q2_half') + "\n\n";
+
+            b += "QUESTION 3 - Email about a sports match:\n";
+            b += "  Subject: " + ans(formData,'q3_subject') + "\n";
+            b += "  Email:\n" + ans(formData,'q3_body') + "\n\n";
+
+            b += "QUESTION 4 - Article about a music event:\n" + ans(formData,'q4_article') + "\n\n";
+
+            b += "QUESTION 5 - Spelling choices:\n";
+            ['a','b','c','d','e','f','g','h','i','j'].forEach(function(letter){
+                b += "  (" + letter + ") " + ans(formData,'q5'+letter) + "\n";
+            });
+            b += "\n";
+
+            b += "===== END OF ANSWERS =====\n";
+
+            const subject = "FS English Entry 3 Writing Paper 1" + (studentName ? " - " + studentName : "");
+            const gmailUrl = "https://mail.google.com/mail/?ui=2&fs=1&to=" + encodeURIComponent(teacherEmail) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(b);
+            window.open(gmailUrl, '_blank');
+        }
+
+        // Prefill the teacher's name across papers on this device, and keep the preview live
+        (function() {
+            try {
+                const f = localStorage.getItem('base6TeacherFirst');
+                const l = localStorage.getItem('base6TeacherLast');
+                if (f) document.getElementById('teacherFirst').value = f;
+                if (l) document.getElementById('teacherLast').value = l;
+            } catch(e) {}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+        })();
+    </script>
+</body>
+</html>
