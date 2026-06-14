@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS English Level 1 - Writing Practice 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #fef8f4; color: #333; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background-color: #007291; color: #fef8f4; padding: 30px 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        header p { font-size: 16px; opacity: 0.95; }
+        .paper-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; font-size: 14px; }
+        .info-box { background-color: #e8f4f8; padding: 15px; border-left: 4px solid #ef7724; border-radius: 4px; }
+        .info-box strong { display: block; color: #007291; margin-bottom: 5px; }
+        .instructions { background-color: #f0f8ff; border-left: 4px solid #007291; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 14px; }
+        .question-block { background-color: white; border: 2px solid #007291; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .question-number { font-size: 18px; font-weight: 700; color: #007291; margin-bottom: 12px; }
+        .question-text { font-size: 16px; margin-bottom: 16px; }
+        .prompt-box { border: 2px solid #333; border-radius: 6px; padding: 18px; margin-bottom: 18px; background-color: #fbfbfb; }
+        .prompt-box .prompt-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 12px; }
+        .prompt-box p { margin-bottom: 10px; }
+        .prompt-box ul { margin: 0 0 10px 22px; }
+        .prompt-box li { margin-bottom: 5px; }
+        .prompt-box .signoff { margin-top: 12px; }
+        .task-list { margin: 0 0 16px 22px; }
+        .task-list li { margin-bottom: 6px; }
+        .marks { color: #ef7724; font-weight: 700; font-size: 14px; }
+        .wordtarget { font-weight: 700; margin-bottom: 8px; }
+        .input-group { margin-bottom: 8px; }
+        label { display: block; margin-bottom: 6px; font-weight: 700; color: #333; }
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 4px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16px; background-color: #fafafa; }
+        textarea { min-height: 300px; resize: vertical; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #007291; background-color: white; }
+        .wordcount { font-size: 14px; font-weight: 700; color: #007291; margin-top: 6px; }
+        .total-line { color: #ef7724; font-weight: 700; margin-top: 16px; }
+        .total-marks { background-color: #fff3cd; border-left: 4px solid #ef7724; padding: 15px; margin-bottom: 30px; border-radius: 4px; font-weight: 700; }
+        .submit-section { background-color: #e8f4f8; padding: 25px; border-radius: 8px; margin-top: 40px; text-align: center; }
+        .submit-button { background-color: #007291; color: white; padding: 15px 40px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; font-weight: 700; transition: background-color 0.3s; }
+        .submit-button:hover { background-color: #005a74; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Skills English Level 1</h1>
+            <p>Writing - Practice 2</p>
+        </header>
+
+        <div class="paper-info">
+            <div class="info-box">
+                <strong>Time: 60 minutes</strong>
+                Component 1: Writing
+            </div>
+            <div class="info-box">
+                <strong>Total Marks: 36</strong>
+                Answer both tasks
+            </div>
+        </div>
+
+        <div class="instructions">
+            Answer both writing tasks. Type your answers into the boxes provided. Write in complete sentences and use paragraphs. You will be assessed on spelling, punctuation and grammar as well as how well your writing suits its purpose. Check your work at the end.
+        </div>
+
+        <form id="assessmentForm">
+
+            <!-- TASK 1 -->
+            <div class="question-block">
+                <div class="question-number">Task 1 <span class="marks">(21 marks)</span></div>
+                <p class="question-text" style="font-weight:700;">Information</p>
+                <div class="prompt-box">
+                    <div class="prompt-title">Canteen feedback needed</div>
+                    <p>I am concerned that not enough people are using the canteen so I want to make some changes.</p>
+                    <p>Please write me a report telling me what you think about the food as well as the service and environment.</p>
+                    <p>I also want your ideas for any improvements we could make.</p>
+                    <p>Your report should include sections on:</p>
+                    <ul>
+                        <li>the food</li>
+                        <li>the service and the appearance (tables, decoration, etc.)</li>
+                        <li>suggested improvements.</li>
+                    </ul>
+                    <div class="signoff">Lottie Smith<br>The Canteen Manager.</div>
+                </div>
+
+                <p class="question-text" style="font-weight:700;">Writing Task</p>
+                <p class="question-text">Write a report for Lottie Smith about the canteen. In your report, you should:</p>
+                <ul class="task-list">
+                    <li>say what you like and dislike about the food</li>
+                    <li>comment on the service and appearance</li>
+                    <li>suggest improvements which could be made.</li>
+                </ul>
+                <p class="wordtarget">Aim to write about 200 to 250 words.</p>
+                <div class="input-group">
+                    <label for="task1">Your report:</label>
+                    <textarea id="task1" name="task1" placeholder="Write your report here"></textarea>
+                </div>
+                <p class="wordcount" id="task1count">0 words</p>
+                <p class="total-line">Total for Task 1 is 21 marks</p>
+            </div>
+
+            <!-- TASK 2 -->
+            <div class="question-block">
+                <div class="question-number">Task 2 <span class="marks">(15 marks)</span></div>
+                <p class="question-text" style="font-weight:700;">Information</p>
+                <div class="prompt-box">
+                    <p>Everyone has favourite performers.</p>
+                    <p>They might be singers or members of a band.</p>
+                    <p>Or they might be in TV programmes or films.</p>
+                    <p>They might even be magicians, dancers or comedians.</p>
+                    <p>Please tell us about two or more of your favourite performers and why you think they are special.</p>
+                </div>
+
+                <p class="question-text" style="font-weight:700;">Writing Task</p>
+                <p class="question-text">Write an article about your favourite performers. In your article, you should:</p>
+                <ul class="task-list">
+                    <li>say who your favourite performers are</li>
+                    <li>explain why you think they are special.</li>
+                </ul>
+                <p class="wordtarget">Aim to write about 150 to 200 words.</p>
+                <div class="input-group">
+                    <label for="task2">Your article:</label>
+                    <textarea id="task2" name="task2" placeholder="Write your article here"></textarea>
+                </div>
+                <p class="wordcount" id="task2count">0 words</p>
+                <p class="total-line">Total for Task 2 is 15 marks</p>
+            </div>
+
+            <div class="total-marks">TOTAL FOR PAPER IS 36 MARKS</div>
+
+            <div class="submit-section">
+                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's name below and click to send your answers.</p>
+                <div style="max-width: 420px; margin: 0 auto 20px; text-align: left;">
+                    <div class="input-group">
+                        <label for="studentName">Your name:</label>
+                        <input type="text" id="studentName" name="studentName" placeholder="Type your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherFirst">Teacher's first name:</label>
+                        <input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherLast">Teacher's last name:</label>
+                        <input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off">
+                    </div>
+                    <p id="emailPreview" style="font-size: 14px; color: #007291; font-weight: 700; margin: 4px 0 0;"></p>
+                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin: 8px 0 0;"></p>
+                </div>
+                <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+
+        function cleanNamePart(s) { return s.trim().toLowerCase().replace(/[^a-z0-9-]/g, ''); }
+        function buildTeacherEmail() {
+            const first = cleanNamePart(document.getElementById('teacherFirst').value);
+            const last = cleanNamePart(document.getElementById('teacherLast').value);
+            if (!first || !last) return '';
+            return first + '.' + last + '@' + SCHOOL_DOMAIN;
+        }
+        function updateEmailPreview() {
+            const email = buildTeacherEmail();
+            document.getElementById('emailPreview').textContent = email ? 'This will send to: ' + email : '';
+        }
+        function countWords(s) { const t = s.trim(); return t ? t.split(/\s+/).length : 0; }
+        function wireCounter(id, countId) {
+            const el = document.getElementById(id);
+            const out = document.getElementById(countId);
+            el.addEventListener('input', function(){ out.textContent = countWords(el.value) + ' words'; });
+        }
+
+        function submitForm() {
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+            if (!teacherEmail) {
+                note.textContent = "Please add your teacher's first and last name first.";
+                note.style.display = 'block';
+                document.getElementById('teacherFirst').focus();
+                return;
+            }
+            note.style.display = 'none';
+
+            try {
+                localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim());
+                localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim());
+            } catch(e) {}
+
+            const t1 = document.getElementById('task1').value.trim();
+            const t2 = document.getElementById('task2').value.trim();
+
+            let b = "FUNCTIONAL SKILLS ENGLISH LEVEL 1\nWRITING - PRACTICE 2\n\n";
+            b += "Student: " + (studentName || '[Name not given]') + "\n\n";
+            b += "===== STUDENT ANSWERS =====\n\n";
+            b += "TASK 1 - Report for Lottie Smith about the canteen (" + countWords(t1) + " words):\n";
+            b += (t1 || '[Not answered]') + "\n\n";
+            b += "TASK 2 - Article about your favourite performers (" + countWords(t2) + " words):\n";
+            b += (t2 || '[Not answered]') + "\n\n";
+            b += "===== END OF ANSWERS =====\n";
+
+            const subject = "FS English Level 1 Writing Practice 2" + (studentName ? " - " + studentName : "");
+            const gmailUrl = "https://mail.google.com/mail/?ui=2&fs=1&to=" + encodeURIComponent(teacherEmail) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(b);
+            window.open(gmailUrl, '_blank');
+        }
+
+        (function() {
+            try {
+                const f = localStorage.getItem('base6TeacherFirst');
+                const l = localStorage.getItem('base6TeacherLast');
+                if (f) document.getElementById('teacherFirst').value = f;
+                if (l) document.getElementById('teacherLast').value = l;
+            } catch(e) {}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+            wireCounter('task1','task1count');
+            wireCounter('task2','task2count');
+        })();
+    </script>
+</body>
+</html>
